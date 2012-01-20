@@ -8,20 +8,20 @@ It helps in particular to create (trully) **object oriented** structures for the
 
 SOJA is associated with several fundamental plugins:
 
-* `UndoManager`, to make **snapshots of your application** and to navigate through them (e.g. with Ctrl-Z)
-* `BrowserState`, to get a model of the browser, including window size, current url parameters (e.g. to ease navigation), ...
-* `Synchronizer` allows several clients or servers to ease (RESTful) **patches and bidirectionnal communications**. It permits e.g. to **share models** between several distant users, to communicate with databases, etc...
+* [`UndoManager`](tree/master/plugins/UndoManager), to make **snapshots of your application** and to navigate through them (e.g. with Ctrl-Z)
+* [`BrowserState`](tree/master/plugins/BrowserState), to get a model of the browser, including window size, current url parameters (e.g. to ease navigation), ...
+* [`Synchronizer`](tree/master/plugins/Synchronizer) allows several clients or servers to ease (RESTful) **patches and bidirectionnal communications**. It permits e.g. to **share models** between several distant users, to communicate with databases, etc...
 
 The repository contains also plugin to help building GUIs:
 
-* `ModelEditor`, to **automatically** create a form view / controler of a Model
-* `CanvasManager` to describe 2D or a 3D objects (`Cam`, `Mesh`, `Image`, `Point`...), and draw or edit them in a 2D or WebGl canvas .
-* `LayoutManager` to split / resize / join div elements in a dynamic way (think of a standard desktop application where a panel can be splitted, resized, ... and the proportions are maintained if the window is resized).
-* `TreeView` to draw / control a hierarchical tree representation.
+* [`ModelEditor`](tree/master/plugins/ModelEditor), to **automatically** create a form view / controler of a Model
+* [`CanvasManager`](tree/master/plugins/CanvasManager) to describe 2D or a 3D objects (`Cam`, `Mesh`, `Image`, `Point`...), and draw or edit them in a 2D or WebGl canvas .
+* [`LayoutManager`](tree/master/plugins/LayoutManager) to split / resize / join div elements in a dynamic way (think of a standard desktop application where a panel can be splitted, resized, ... and the proportions are maintained if the window is resized).
+* [`TreeView`](tree/master/plugins/TreeView) to draw / control a hierarchical tree representation.
 
 There is also a "basic" application framework, based on the preceding tools:
 
-* `TreeApp` permits to define modular applications based with one or several canvas, a construction tree and an icon bar. 
+* [`TreeApp`](tree/master/frameworks/TreeApp) permits to define modular applications based with one or several canvas, a construction tree and an icon bar. 
 
 # How SOJA works ?
 
