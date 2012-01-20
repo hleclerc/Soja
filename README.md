@@ -4,7 +4,7 @@ SOJA stands for *Synchronized Objects in JAvascript*.
 
 The goal is to ease and make natural the development of **model-driven** Javascript applications.
 
-It helps in particular to create (trully) **object oriented** structures for their applications, with headache-free automatic synchronization between data and their multiple representations.
+It helps in particular to create (trully) **object oriented** structures for their applications, with headache-free automatic synchronization between the data and their multiple representations.
 
 SOJA is associated with several fundamental plugins:
 
@@ -34,13 +34,13 @@ It was designed with the following principles:
 * Views are changed **by rounds** (in a lazy fashion). It means for example that
   * **views are updated only once** if it's not necessary to update them several times.
   * you dont have to write things like "make_silent_modification()" because you want to change several models that may cause several updates of the same view (would be a real headache for real applications)
-  * you can make **atomic model changes** (if e.g. you don't want an update until all your data are changed)
+  * you can easilly make **atomic model changes** (if e.g. you don't want an update until all your data are changed)
 * prototypes of basic javascript or dom objects are unmodified (meaning that you can associate Soja with any kind of other javascript library)
 
 
 # Starting guide
 
-Soja is written in the great [coffee-script](http://jashkenas.github.com/coffee-script/ "coffee-script") language, so you need to install the coffeescript compiler. To ease the compilation, you will also need working make and python installations.
+Soja is written in the great [coffeescript](http://jashkenas.github.com/coffee-script/ "coffee-script") language, so you need... to install the coffeescript compiler. To ease the compilation, you will also need working make and python installations.
 
 After that, a `make` in the root directory should permit to compile the main sources, the plugins and the tests.
 
@@ -70,7 +70,8 @@ setTimeout( function() { m.a.set( 13 ); }, 1000 );
 
 In this example, we first create a generic Model from the anonymous object `{ a: 10, ... }`. It recursively creates sub-models, so that `m.a`, `m.b` or `m.b[1]` are also models that can be observed, saved, restored, ...
 
-The second line registers a function that will be called if the data of `m` have been changed in a preceding "round". A "round" can be defined as a contiguous set of instructions, so that in this example, the function will be called two times:
+The second line permits to register a function that will be called if the data of `m` have been changed in a preceding "round". A "round" can be defined as a contiguous set of instructions, so that in this example, the function will be called twice:
+
 * one time at the beginning (due to the creation of `m`),
 * one time and after the timeout.
 
@@ -235,7 +236,7 @@ For example `Val.get()` will give you a number. If you make an aggregate, `get()
 JSON is a very convenient representation for objects but is limited for several reasons:
 
 * within JSON, objects are not typed (JSON support only basic types and anonymous aggregates)
- * JSON permits to represents trees but not graphs, e.g. in presence of cyclic references or if an object is referenced by several parents.
+* JSON permits to represents trees but not graphs, e.g. in presence of cyclic references or if an object is referenced by several parents.
 
 Due to theses limitations, Soja uses an alternative but very simple representation. For example,
 
@@ -317,5 +318,6 @@ From plugins :
 * ...
 
 It is worth mentionning that Lst can be extended to change its basic behavior:
+
 * by default, length is dynamic, but it can be fixed by surdefining `static_length`. In this case, surdefining `default_value` can be usefull (e.g. for construction).
 * by default, Lst can accept any kind of model but if `base_type` is surdefined, one can force conversions during operations like `push`, `set`, `[ n ].set`, ...
