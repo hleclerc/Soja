@@ -187,6 +187,31 @@ new MyView m.a, document.body # instance 2
 Or in javascript
 
 ```javascript
+var MyView = (function() {
+    __extends(MyView, View);
+    function MyView(model, parent) {
+        this.model = model;
+        MyView.__super__.constructor.call(this, model);
+        this.input = new_dom_element({
+            parentNode: parent,
+            type: "checkbox",
+            nodeName: "input",
+            onchange: __bind(function() {
+                return this.model.set(this.input.checked);
+            }, this)
+        });
+    }
+    MyView.prototype.onchange = function() {
+        return this.input.checked = this.model.toBoolean();
+    };
+    return MyView;
+})();
+var m = new Model({
+    a: true,
+    b: ["yop"]
+});
+new MyView(m.a, document.body);
+new MyView(m.a, document.body);
 ```
 
 `new_dom_element` comes from the `DomHelper` library.
@@ -197,7 +222,7 @@ Or in javascript
 
 If you want to change the value of a model, you have to call the `set` method.
 
-In most of the cases, `set` can take other models as argument, or standard javascript objects. It deeply compares the argument and stored values. If different, the stored value is changed, the model is marked as directly changed, and the parent models are marked as changed. If no new round is planned, we create a timeout with a 1 ms delay to prepare a new round.
+In most of the cases, `set` can take other models as argument, or standard javascript objects. It deeply compares the argument and stored values. If different, the stored value is changed, the model is marked as *directly* changed, and the parent models are marked as changed. If no new round is planned, a 1 ms timeout is created to prepare a new round.
 
 ### get
 
@@ -207,9 +232,10 @@ For example `Val.get()` will give you a number. If you make an aggregate, `get()
 
 ### get_state
 
-JSON is a very simple kind of representation but is limited for several reasons :
-  * objects are not typed (JSON support only basic types and anonymous aggregates)
-  * JSON permits to represents trees but not graphs, e.g. in presence of cyclic references or if an object is references by several parents.
+JSON is a very convenient representation for objects but is limited for several reasons:
+
+* within JSON, objects are not typed (JSON support only basic types and anonymous aggregates)
+ * JSON permits to represents trees but not graphs, e.g. in presence of cyclic references or if an object is referenced by several parents.
 
 Due to theses limitations, Soja uses an alternative but very simple representation. For example,
 
@@ -217,12 +243,15 @@ Due to theses limitations, Soja uses an alternative but very simple representati
 m = new Model a: [ 8 ]
 console.log m.get_state()
 ```
+
+or (in javascript)
+ 
 ```javascript
 var m = new Model({ a: [ 8 ] });
 console.log( m.get_state() );
 ```
 
-will give the following string
+will give the following text:
 
 ```
 2
@@ -233,7 +262,7 @@ will give the following string
 
 The first column represents the model id, the second represents the type and the third is type dependant.
 
-It permits for example to get the full state of an application, but also to get changes since a given *model date* as get_state can take a *model date* as first parameter. The current model date is given by `Model._counter`.
+It permits for example to get the full state of an application, but also to get changes since a given *model date* (as get_state can take a *model date* as first parameter). The current model date is given by `Model._counter`.
 
 ### set_state
 
@@ -245,15 +274,16 @@ This procedure is used for example in the `Synchronizer` or the `UndoManager` pl
 
 `equals` permits to compare models with other models or objects.
 
-`toString` and `toBoolean` permits to make some conversions...
+`toString` and `toBoolean` permits to make some (hopefully ) conversions...
 
-`size` permits to get an array representing tensorial size. For a scalar, it returns []. For an array, it returns [length], ...
+`size` permits to get an array representing tensorial size. For a scalar, it returns []. For an array, it returns [length], etc...
 
 ## Basic model objects
 
 From Soja.js :
-  * Model -> ancestor class, used for anonymous aggregates
-  * Lst -> a list of models. It contains some usual methods for list manipulation :
+
+* Model -> ancestor class, used for anonymous aggregates
+* Lst -> a list of models. It contains some usual methods for list manipulation :
     * push: ( value ) -> appends value at the end of the list
     * pop: -> remove and return the last element
     * shift: -> remove and return the first element
@@ -266,31 +296,26 @@ From Soja.js :
     * toggle: ( v ) -> toggle presence of `v`
     * splice: ( index, n = 1 ) -> remove `n` items starting from `index`
     * join: ( sep ) -> return a string with representation of items, separated by `sep`
-  * Str -> a string
+* Str -> a string
     * toggle: ( str, space = " " ) -> toggle presence of str in this
     * contains: ( str ) -> true if str is contained in this
-  * Val -> a number
-  * Bool -> a Boolean
+* Val -> a number
+* Bool -> a Boolean
     * toggle: -> self not
-  * Vec -> a list of number
-  * Choice -> a choice of a value inside a list
-  * ConstrainedVal -> a value with potentially a miniminum, a maximum, ticks, ...
+* Vec -> a list of number
+* Choice -> a choice of a value inside a list
+* ConstrainedVal -> a value with potentially a miniminum, a maximum, ticks, ...
 
 From plugins :
-  * Color (Color) -> set of constrained rgba values
-  * Gradient (Color) -> color gradient
-  * BrowserState (BrowserState) -> a model representing browser state (window size, current url, ...)
-  * Layout (LayoutManager) -> a (dynamic) page layout description
-  * Cam (CanvasManager) -> a 3D / 2D camera
-  * Mesh / Point / ... (CanvasManager) -> drawable objects
-  * ...
+
+* Color (Color) -> set of constrained rgba values
+* Gradient (Color) -> color gradient
+* BrowserState (BrowserState) -> a model representing browser state (window size, current url, ...)
+* Layout (LayoutManager) -> a (dynamic) page layout description
+* Cam (CanvasManager) -> a 3D / 2D camera
+* Mesh / Point / ... (CanvasManager) -> drawable objects
+* ...
 
 It is worth mentionning that Lst can be extended to change its basic behavior:
-  * by default, length is dynamic, but it can be fixed by surdefining `static_length`. In this case, surdefining `default_value` can be usefull (e.g. for construction).
-  * by default, Lst can accept any kind of model but if `base_type` is surdefined, one can force conversions during operations like `push`, `set`, `[ n ].set`, ...
-
-## And now, what ?
-
-Feel free to explore the plugins listed at the beginning.
-
-... here a list of awesome applications which use Soja (among tons of other libraries but we won't speak about that) ...
+* by default, length is dynamic, but it can be fixed by surdefining `static_length`. In this case, surdefining `default_value` can be usefull (e.g. for construction).
+* by default, Lst can accept any kind of model but if `base_type` is surdefined, one can force conversions during operations like `push`, `set`, `[ n ].set`, ...
