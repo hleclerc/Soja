@@ -1,18 +1,20 @@
 # Goal of the Tree plugin 
 
-Tree plugin furnishes mainly a tree view (`TreeView`) of a model, with optionnal functionnalities for:
+It permits to get a tree representation of a model. It contains optionnal functionnalities for:
 
 * drag and drop
-* selection / multiple selection
+* (multiple) selection
 * icons at different positions
 
 By default, a `TreeView` use the following attributes of a tree model:
+
 * `_children`: children in the tree
 * `_name`: name appearing in the tree
 * `_ico`: src file of icon in the left
 * `_viewable`: boolean to define if a tree item can have a *visible* icon on the right
 
 Thus, the following example will simply display a tree with 1 root and 2 children
+
 ```coffeescript
 d = new Lst [
     _name: "root"
@@ -47,15 +49,14 @@ class TreeView
 
 `@selected`, `@visible` and `@closed` are or will be (if not specified) `Lst` models which describes respectively:
 
-* selected entities, as a list of string like `"2_3"` which is `join( model_id_path_to_selected_item, "_" )`
+* selected entities, as a list of path of references
 * items where the visible icon is checked (a list of models)
 * visually closed items in the tree (same format than `@selected`).
 
 
+... but this describes mostly the default behavior which can be changed.
 
-But this describes mostly the default behavior which can be changed.
-
-If user wants to use different attributes and / or to obtain different kinds of displays, they redefine
+If user wants to use different attributes and / or to obtain different kinds of displays, they may redefine
 
 * `get_children_of: ( item )`
 * `insert_child: ( par, pos, chi )`
