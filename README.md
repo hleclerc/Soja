@@ -1,24 +1,31 @@
 # What is SOJA ?
 
-SOJA is an event oriented Model / View library for Javascript applications. Basically, a model is a typed representation of the data. One of the main purpose is to help users create Object Oriented structures for their GUIs, with *headache-free* automatic synchronization between models and views.
+SOJA stands for *Synchronized Objects in JAvascript*.
+
+The goal is to ease and make natural the development of **model-driven** Javascript applications.
+
+In particular, it helps creating (trully) **object oriented** structures for their applications, with headache-free automatic synchronization between data and their multiple representations.
 
 SOJA is associated with several fundamental plugins:
+
 * `UndoManager`, to make **snapshots of your application** and to navigate through them (e.g. with Ctrl-Z)
 * `BrowserState`, to get a model of the browser, including window size, current url parameters (e.g. to ease navigation), ...
 * `Synchronizer` allows several clients or servers to ease (RESTful) **patches and bidirectionnal communications**. It permits e.g. to **share models** between several distant users, to communicate with databases, etc...
 
 The repository contains also plugin to help building GUIs:
+
 * `ModelEditor`, to **automatically** create a form view / controler of a Model
 * `CanvasManager` to describe 2D or a 3D objects (`Cam`, `Mesh`, `Image`, `Point`...), and draw or edit them in a 2D or WebGl canvas .
 * `LayoutManager` to split / resize / join div elements in a dynamic way (think of a standard desktop application where a panel can be splitted, resized, ... and the proportions are maintained if the window is resized).
 * `TreeView` to draw / control a hierarchical tree representation.
 
 There is also a "basic" application framework, based on the preceding tools:
+
 * `TreeApp` permits to define modular applications based with one or several canvas, a construction tree and an icon bar. 
 
 # How SOJA works ?
 
-SOJA stands for *Synchronized Objects in JAvascript*. It was designed with the following principles:
+It was designed with the following principles:
 
 * Models can de defined **recursively**, and are typed (e.g. Val, Vec, Color, Layout, ConstrainedVal, ...) meaning for example that
   * you can use models to define another models (a very very basic need for Object Oriented Programming)
@@ -91,6 +98,9 @@ class Color extends Model
     lum: -> 
         ( @r.get() + @g.get() + @b.get() ) / 3
 ```
+
+or, in javascript:
+
 ```javascript
 var Color = ( function() {
     __extends( Color, Model );
@@ -123,6 +133,9 @@ new_model_editor el: new_dom_element( parentNode: document.body, style: {width:3
 l = new_dom_element parentNode: document.body
 bind c, -> l.innerHTML = "Luminance = #{c.lum()}"
 ```
+
+or, in javascript:
+
 ```javascript
 var c = new Color;
 
