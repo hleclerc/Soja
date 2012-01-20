@@ -61,6 +61,7 @@ test_CanvasManager = ->
     d = new_dom_element
         parentNode: document.body
         style     : { position: "fixed", top: 0, left: "70%", right: 0, bottom: 0 }
+        
     e = new_model_editor
         el    : d, 
         model : c.cam,
