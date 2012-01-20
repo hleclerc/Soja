@@ -1,0 +1,55 @@
+.ColorPickerSatLumSelect {
+    background: url('img/colorpicker_select.png') transparent;
+    width     : 11px;
+    height    : 11px;
+}
+.ColorPickerChromiSelect {
+    background: url('img/custom_indic.png') transparent;
+    width     : 35px;
+    height    : 9px;
+}
+.ColorPicker {
+/*     background: url('img/slider-th-opa.png') transparent; */
+    width     : 11px;
+    height    : 17px;
+}
+
+/* --------------------------- Color Picker --------------------------- */
+.colorSelector {
+    cursor    :pointer;
+    position  : relative;
+    width     : 36px;
+    height    : 36px;
+    background: url('colorpicker_select.png');
+}
+.colorSelector div {
+    position  : absolute;
+    top       : 3px;
+    left      : 3px;
+    width     : 30px;
+    height    : 30px;
+    background: url('colorpicker_select.png') center;
+}
+.colorPicker {
+    z-index: 101;
+}
+
+/* --------------------------- Gradient Picker --------------------------- */
+.rightContainer {
+    float:right;
+    width:85%;
+}
+.preDefinedGradient {
+    margin-top:0.5em;
+    cursor:pointer;
+    margin-right:1%
+}
+.nameLegendRadient {
+    position  : absolute;
+    margin-top: 320px;
+}
+.savePredefinedGradient {
+    margin-top : 0.5em;
+    display   : inline-block;
+    width: 47px;
+}

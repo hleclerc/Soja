@@ -1,0 +1,42 @@
+.TreeView {
+    /* font-family: "Verdana, Arial, Helvetica, sans-serif"; */
+    /* margin-left: 6px; */
+    font-size  : 13px;
+}
+
+.TreeSelected {
+    background : rgb( 200, 200, 255 );
+}
+.TreePartiallySelected {
+    background : rgb( 220, 220, 255 );
+}
+
+.TreeLine {
+    background : #888;
+    height     : 2;
+}
+
+
+.TreeVisibleItem {
+    background : transparent url( 'img/layer-visible-on.png' );
+    width      : 16;
+    height     : 16;
+}
+
+.TreeHiddenItem {
+    background : transparent url( 'img/layer-visible-off.png' );
+    width      : 16;
+    height     : 16;
+}
+
+/* data:image/png;base64, */
+.TreeIcon_tree_cnt     { background: transparent url( 'img/tree_cnt.png'     ); }
+.TreeIcon_tree_beg     { background: transparent url( 'img/tree_beg.png'     ); }
+.TreeIcon_tree_beg_add { background: transparent url( 'img/tree_beg_add.png' ); }
+.TreeIcon_tree_beg_sub { background: transparent url( 'img/tree_beg_sub.png' ); }
+.TreeIcon_tree_mid     { background: transparent url( 'img/tree_mid.png'     ); }
+.TreeIcon_tree_mid_add { background: transparent url( 'img/tree_mid_add.png' ); }
+.TreeIcon_tree_mid_sub { background: transparent url( 'img/tree_mid_sub.png' ); }
+.TreeIcon_tree_end     { background: transparent url( 'img/tree_end.png'     ); }
+.TreeIcon_tree_end_add { background: transparent url( 'img/tree_end_add.png' ); }
+.TreeIcon_tree_end_sub { background: transparent url( 'img/tree_end_sub.png' ); }

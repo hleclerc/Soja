@@ -1,0 +1,25 @@
+.PanelInstanceTreeView {
+    background: lightGrey; /*lightGrey ?*/
+    overflow  : auto;
+}
+
+.PanelInstanceEditView {
+    background: lightGrey;
+    overflow  : auto;
+}
+
+.LayoutManager_Border {
+    /* opacity   : 0.25; */
+    background: #666;
+}
+
+.SelectedCanvas {
+    border: red solid;
+}
+
+.SelectedViewItem {
+    font-weight: bold;
+}
+.UnselectedViewItem {
+    opacity: 0.5;
+}

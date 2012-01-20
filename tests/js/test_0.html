@@ -1,0 +1,18 @@
+<html> 
+  <head> 
+    <title>__gen/test_0__</title>
+    
+    <script type="text/javascript" src="../../gen/Soja.js"></script>
+
+    <script type="text/javascript">
+        test_0 = function() {
+            var m = new Model({ a: 10, b: [ "yop", "yap" ] });
+            bind( m, function() { document.body.innerHTML = "<H1>"+ m.a.get() + " " + m.b[ 0 ].get() + "</H1>"; } );
+
+            setTimeout( function() { m.a.set( 13 ); }, 1000 );
+        }
+    </script>
+    
+  <body onload="test_0()"> 
+  </body> 
+</html>

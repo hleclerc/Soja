@@ -1,0 +1,124 @@
+fieldset {
+    background: #ddd;
+    background-image: -webkit-linear-gradient( bottom, #ddd, #fff );
+    background-image: -moz-linear-gradient( bottom, #ddd, #fff );
+    background-image: -o-linear-gradient( bottom, #ddd, #fff );
+    background-image: linear-gradient( bottom, #ddd, #fff );
+
+    border               : 1px solid #bbb;
+    -moz-border-radius   : 4px;
+    -webkit-border-radius: 4px;
+    -o-border-radius     : 4px;
+    border-radius        : 4px;
+    margin-bottom        : 4px;
+}
+
+fieldset.ModelEditor_closed {
+    background: #eee;
+}
+
+legend {
+    background-color     : #fff;
+    -moz-border-radius   : 4px;
+    -webkit-border-radius: 4px;
+    -o-border-radius     : 4px;
+    border-radius        : 4px;
+    padding-left         : 1em;
+    padding-right        : 1em;
+}
+
+input {
+    margin: 0;
+    /*    padding: 0;*/
+}
+
+/* --------------------------- slider --------------------------- */
+
+.ModelEditorSlider {
+    background-image     : url('img/slider-bg.png');
+    background-position  : center;
+    background-repeat    : repeat-x;
+
+    -moz-border-radius   : 8px;
+    -webkit-border-radius: 8px;
+    -o-border-radius     : 8px;
+    border-radius        : 8px;
+    vertical-align       : middle;
+    height               : 8px;
+}
+
+.ModelEditorSliderItem {
+    background-image     : url('img/slider-th.png');
+    width                : 11px;
+    height               : 17px;
+    top                  : -5px;
+}
+
+/* --------------------------- check img --------------------------- */
+.ModelEditorItem_CheckImg_0 {
+    background: url('img/cross.png') left top no-repeat;
+    height    : 14;
+}
+
+.ModelEditorItem_CheckImg_1 {
+    background: url('img/tick.png') left top no-repeat;
+    height    : 14;
+}
+
+
+
+/* --------------------------- choiceRoll --------------------------- */
+.ModelEditorChoiceRoll {
+    background: #ddd;
+    background-image: -webkit-linear-gradient( bottom, #DEDEDE, #F3F3F3 );
+    background-image: -moz-linear-gradient( bottom, #DEDEDE, #F3F3F3 );
+    background-image: -o-linear-gradient( bottom, #DEDEDE, #F3F3F3 );
+    background-image: linear-gradient( bottom, #DEDEDE, #F3F3F3 );
+
+    margin               : -1;
+    margin-top           : 1;
+    margin-bottom        : 1;
+    -moz-border-radius   : 4px;
+    -webkit-border-radius: 4px;
+    -o-border-radius     : 4px;
+    border-radius        : 4px;
+    border               : 1px solid #898989;
+
+    overflow             : hidden;
+
+}
+
+.ModelEditorChoiceRollWindow {
+    text-align        : center;
+    cursor            : pointer;
+    -moz-transition   : top 0.5s ease;
+    -webkit-transition: top 0.5s ease;
+    -o-transition     : top 0.5s ease;
+    transition        : top 0.5s ease;
+    color             : black;
+    position          : relative;
+}
+
+/* ---------------- Popup ---------------- */
+.Popup {
+    border:thin solid black;
+}
+.PopupWindow {
+    background: #fff;
+    padding   : 3;
+}
+
+.PopupTitle {
+    background: #fa0;
+    padding: 3 10 3 10;
+    border-bottom:thin solid black;
+    cursor:pointer;
+}
+
+.ModelEditorDragAndDrop {
+    -moz-border-radius   : 4px;
+    -webkit-border-radius: 4px;
+    -o-border-radius     : 4px;
+    border-radius        : 4px;
+/*     border               : 1px dotted #898989; */
+}

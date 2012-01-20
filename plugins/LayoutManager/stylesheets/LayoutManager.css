@@ -1,0 +1,12 @@
+.LayoutManager_Border {
+    /* opacity   : 0.25; */
+    /* background: #2B3658; */
+}
+
+.LayoutManager_Message {
+    position  : absolute;
+    top       : 0; 
+    left      : 0;
+    background: black;
+    color     : white;
+}
