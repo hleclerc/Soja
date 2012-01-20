@@ -548,25 +548,25 @@ class Mesh extends Drawable
                 info.re_2_sc.proj p.pos.get()
             for li in @lines 
                 if li.length > 2
-# TODO P0 and P1 should be indices and not value
-#                     res = for i in [ 0 ... li.length - 2 ]
-#                         @_get_center_radius proj[ li[ i ] ], proj[ li[ i + 1 ] ], proj[ li[ i + 2 ] ]
-#                             
-#                     p = info.re_2_sc.proj li[ 0 ]
-# #                     console.log p
-# #                     info.ctx.moveTo p[ 0 ], p[ 1 ]
-#                     
-#                     for n in [ 1 .. 30 ]
-#                         alpha = n / 30.0
-#                         ar = res[ 0 ].a[ 0 ] + ( res[ 0 ].a[ 1 ] - res[ 0 ].a[ 0 ] ) * alpha
-#                         pr = @_get_proj_arc info, res[ 0 ], ar
-#                         P0 =  pr[ 0 ]
-#                         P1 =  pr[ 1 ]
-#                         
-#                         console.log "----"
-#                         console.log ar
-#                         console.log pr
-#                         console.log res
+                    # TODO P0 and P1 should be indices and not value
+                    #                     res = for i in [ 0 ... li.length - 2 ]
+                    #                         @_get_center_radius proj[ li[ i ] ], proj[ li[ i + 1 ] ], proj[ li[ i + 2 ] ]
+                    #                             
+                    #                     p = info.re_2_sc.proj li[ 0 ]
+                    # #                     console.log p
+                    # #                     info.ctx.moveTo p[ 0 ], p[ 1 ]
+                    #                     
+                    #                     for n in [ 1 .. 30 ]
+                    #                         alpha = n / 30.0
+                    #                         ar = res[ 0 ].a[ 0 ] + ( res[ 0 ].a[ 1 ] - res[ 0 ].a[ 0 ] ) * alpha
+                    #                         pr = @_get_proj_arc info, res[ 0 ], ar
+                    #                         P0 =  pr[ 0 ]
+                    #                         P1 =  pr[ 1 ]
+                    #                         
+                    #                         console.log "----"
+                    #                         console.log ar
+                    #                         console.log pr
+                    #                         console.log res
 
                 
                     for l,i in li[ 0 ...li.length - 1]
@@ -607,10 +607,6 @@ class Mesh extends Drawable
         
         a = proj[ lg_0 ]
         b = proj[ lg_1 ]
-#         console.log "--------------------------------------------------------------------------------------------------------------------------"
-#         console.log P0
-#         console.log a
-#         console.log b
         
         if a[ 0 ] != b[ 0 ] or a[ 1 ] != b[ 1 ]
             dx = b[ 0 ] - a[ 0 ]
