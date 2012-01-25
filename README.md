@@ -32,8 +32,8 @@ It was designed with the following principles:
 
 * Models can de defined **recursively**, and are typed (e.g. Val, Vec, Lst, Color, Layout, ConstrainedVal, ...) meaning for example that
   * you can use models to define another models (a very very basic need for Object Oriented Programming)
-  * if you write `myModel.myProperty.mySubProperty.set(10)` views on `myModel` will be updated automatically in the next update round (unless if you choose to update a view only if the corresponding model(s) has *direct* modifications).
-  * tests are done on values, not on references, and with the pertinent kind of comparison
+  * if you write `myModel.myProperty.mySubProperty.set(10)`, views on `myModel` will be updated automatically in the next update round (unless if you choose to update a view only if the corresponding model(s) has *direct* modifications).
+  * comparisons are done on values, not on references
 * Views are changed **by rounds** (in a lazy fashion). It means for example that
   * **views are updated only once** if it's not necessary to update them several times.
   * you dont have to write things like "make_silent_modification()" because you want to change several models that may cause several updates of the same view (would be a real headache for real applications)
@@ -273,7 +273,7 @@ Symmetrically, the string obtained by `get_state` can be used to update or const
 
 This procedure is used for example in the `Synchronizer` or the `UndoManager` plugins.
 
-## Usual methods
+## Some usual methods on models
 
 `equals` permits to compare models with other models or objects.
 
@@ -281,7 +281,7 @@ This procedure is used for example in the `Synchronizer` or the `UndoManager` pl
 
 `size` permits to get an array representing tensorial size. For a scalar, it returns []. For an array, it returns [length], etc...
 
-## Basic model objects
+## Some basic model objects
 
 From Soja.js :
 
@@ -308,6 +308,7 @@ From Soja.js :
 * Vec -> a list of number
 * Choice -> a choice of a value inside a list
 * ConstrainedVal -> a value with potentially a miniminum, a maximum, ticks, ...
+* ...
 
 From plugins :
 
