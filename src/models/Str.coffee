@@ -29,6 +29,7 @@ class Str extends Obj
     equals: ( str ) ->
         return @_data == str.toString()
 
+    #
     _set: ( value ) ->
         if not value?
             return @_set ""
@@ -39,7 +40,12 @@ class Str extends Obj
             return true
         return false
 
-    # surdefined because _get_state must return a copy, not a ref
+    #
     _get_state: ->
-        @_data.toString()
+        encodeURI @_data
+
+    _set_state: ( str, map ) ->
+        @set decodeURI str
+
+    
     

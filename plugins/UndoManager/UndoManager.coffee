@@ -18,8 +18,6 @@ class UndoManager
             @patch_undo.push
                 date: Model._counter
                 data: @model.get_state date
-
-            # console.log @model.get_state date
                 
     #
     undo: ( num = 1 ) ->
@@ -63,12 +61,6 @@ class UndoManager
                     type: s[ 1 ]
                     data: s[ 2 ]
                     buff: undefined
-                    # unch: true
-
-        #         r = "r= "
-        #         for k, i of map
-        #             r += "\n" + k + " " + i.type + " " + i.data
-        #         console.log r
 
         # change the model
         @model._set_state map[ @model.model_id ].data, map
