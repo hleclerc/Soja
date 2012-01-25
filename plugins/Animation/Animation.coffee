@@ -11,7 +11,7 @@ class Animation
     # easing curve (return a ratio)
     @easing: ( rat )-> Math.pow rat, 0.33
     
-    @add: ( model, value, delay = 500, curve = Animation.linear ) ->
+    @set: ( model, value, delay = 500, curve = Animation.linear ) ->
         dt = (new Date).getTime()
         Animation._curan[ model.model_id ] = 
             mod: model
