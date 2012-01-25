@@ -24,7 +24,7 @@ There is also a "basic" application framework, based on the preceding tools:
 
 * [`TreeApp`](Soja/tree/master/frameworks/TreeApp) permits to define modular applications based with one or several canvas, a construction tree and an icon bar. 
 
-SOJA is released under the LGPL 2.1 license.
+SOJA is released under the LGPL v3 license.
 
 # How SOJA works ?
 
