@@ -4,7 +4,7 @@ SOJA stands for *Synchronized Objects in JAvascript*.
 
 The goal is to ease and make natural the development of **model-driven** Javascript applications.
 
-It helps in particular to create (truly) **object oriented** structures for their applications, with headache-free automatic synchronization between data and their multiple representations.
+It helps in particular to create (truly) **object oriented** structures, with headache-free automatic synchronization between data and their multiple representations.
 
 SOJA is associated with several fundamental plugins:
 
