@@ -4,18 +4,19 @@ SOJA stands for *Synchronized Objects in JAvascript*.
 
 The goal is to ease and make natural the development of **model-driven** Javascript applications.
 
-It helps in particular to create (trully) **object oriented** structures for their applications, with headache-free automatic synchronization between data and their multiple representations.
+It helps in particular to create (truly) **object oriented** structures for their applications, with headache-free automatic synchronization between data and their multiple representations.
 
 SOJA is associated with several fundamental plugins:
 
-* [`UndoManager`](Soja/tree/master/plugins/UndoManager), to make **snapshots of your application** and to navigate through them (e.g. with Ctrl-Z)
+* [`UndoManager`](Soja/tree/master/plugins/UndoManager), to make **snapshots of your application** and to navigate between them (e.g. with Ctrl-Z)
 * [`BrowserState`](Soja/tree/master/plugins/BrowserState), to get a model of the browser, including window size, current url parameters (e.g. to ease navigation), ...
 * [`Synchronizer`](Soja/tree/master/plugins/Synchronizer) allows several clients or servers to ease (RESTful) **patches and bidirectionnal communications**. It permits e.g. to **share models** between several distant users, to communicate with databases, etc...
+* [`Animation`](Soja/tree/master/plugins/Animation) permits to ease model animations.
 
-The repository contains also plugin to help building GUIs:
+The repository contains also some optional plugin to help building GUIs:
 
-* [`ModelEditor`](Soja/tree/master/plugins/ModelEditor), to **automatically** create a form view / controler of a Model
-* [`CanvasManager`](Soja/tree/master/plugins/CanvasManager) to describe 2D or a 3D objects (`Cam`, `Mesh`, `Image`, `Point`...), and draw or edit them in a 2D or WebGl canvas .
+* [`ModelEditor`](Soja/tree/master/plugins/ModelEditor), to **automatically** create a form view / controler of models
+* [`CanvasManager`](Soja/tree/master/plugins/CanvasManager) to describe 2D or a 3D objects (`Cam`, `Mesh`, `Image`, `Point`...), and draw or edit them in a 2D or WebGl canvas.
 * [`LayoutManager`](Soja/tree/master/plugins/LayoutManager) to split / resize / join div elements in a dynamic way (think of a standard desktop application where a panel can be splitted, resized, ... and the proportions are maintained if the window is resized).
 * [`TreeView`](Soja/tree/master/plugins/TreeView) to draw / control a hierarchical tree representation.
 
@@ -23,18 +24,20 @@ There is also a "basic" application framework, based on the preceding tools:
 
 * [`TreeApp`](Soja/tree/master/frameworks/TreeApp) permits to define modular applications based with one or several canvas, a construction tree and an icon bar. 
 
+SOJA is released under the LGPL 2.1 license.
+
 # How SOJA works ?
 
 It was designed with the following principles:
 
-* Models can de defined **recursively**, and are typed (e.g. Val, Vec, Color, Layout, ConstrainedVal, ...) meaning for example that
+* Models can de defined **recursively**, and are typed (e.g. Val, Vec, Lst, Color, Layout, ConstrainedVal, ...) meaning for example that
   * you can use models to define another models (a very very basic need for Object Oriented Programming)
   * if you write `myModel.myProperty.mySubProperty.set(10)` views on `myModel` will be updated automatically in the next update round (unless if you choose to update a view only if the corresponding model(s) has *direct* modifications).
   * tests are done on values, not on references, and with the pertinent kind of comparison
 * Views are changed **by rounds** (in a lazy fashion). It means for example that
   * **views are updated only once** if it's not necessary to update them several times.
   * you dont have to write things like "make_silent_modification()" because you want to change several models that may cause several updates of the same view (would be a real headache for real applications)
-  * you can make **atomic model changes** (if e.g. you don't want an update until all your data are changed)
+  * you can easily make **atomic model changes** (if e.g. you don't want an update until all your data are changed)
 * prototypes of basic javascript or dom objects are unmodified (meaning that you can associate Soja with any kind of other javascript library)
 
 
