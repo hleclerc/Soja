@@ -87,10 +87,16 @@ class LayoutManagerData extends Model
             
         return true
 
-    # get a list with panel_id
+    # get a list with panel_id of visible panels
     panel_id_of_term_panels: ->
         res = []
         @_get_panel_id_of_term_panels res, @root
+        return res
+
+    # get a list with panel_id
+    panel_ids: ->
+        res = []
+        @_get_panel_ids res, @root
         return res
 
     # make a graph
@@ -260,4 +266,10 @@ class LayoutManagerData extends Model
                 @_get_panel_id_of_term_panels res, c
         else
             res.push data.panel_id.get()
+    
+    _get_panel_ids: ( res, data ) ->
+        res.push data.panel_id.get()
+        if data.children?.length
+            for c in data.children
+                @_get_panel_ids res, c
             

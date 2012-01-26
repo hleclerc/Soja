@@ -1,6 +1,6 @@
 #
 class Img extends Drawable
-    constructor: ( src, app, need_fit = true ) ->
+    constructor: ( src, app = undefined, need_fit = true ) ->
         super()
         
         @add_attr
