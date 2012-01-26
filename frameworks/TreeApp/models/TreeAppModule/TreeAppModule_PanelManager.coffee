@@ -11,29 +11,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
             txt: "Vertical Split"
             fun: ( evt, app ) => @split_view evt, app, 0
             key: [ "Shift+V" ]
-                        
-        @add_action
-            ico: "img/horizontal_split.png"
-            siz: 1
-            txt: "Horizontal Split"
-            fun: ( evt, app ) => @split_view evt, app, 1
-            key: [ "Shift+H" ]
-            
-        @add_action
-            ico: "img/close_panel.png" 
-            siz: 1
-            txt: "Close current view"
-            fun: ( evt, app ) ->
-                d = app.data.selected_display_settings()
-                for panel_id in app.data.selected_canvas_pan
-                    if d._layout.rm_panel panel_id
-                        app.data.visible_tree_items.rem_attr panel_id
-                # new selection
-                t = d._layout.panel_id_of_term_panels()
-                app.data.selected_canvas_pan.clear()
-                app.data.selected_canvas_pan.push t[ 0 ]
-            key: [ "Shift+X" ]
-                    
+             
         @add_action
             ico: "img/fit.png"
             siz: 1
@@ -42,6 +20,14 @@ class TreeAppModule_PanelManager extends TreeAppModule
                 for inst in app.selected_canvas_inst()
                     inst.cm.fit()
             key: [ "F" ]
+            
+        @add_action
+            ico: "img/horizontal_split.png"
+            siz: 1
+            txt: "Horizontal Split"
+            fun: ( evt, app ) => @split_view evt, app, 1
+            key: [ "Shift+H" ]
+            
             
         cube = @add_action
             ico: "img/cube.png"
@@ -76,7 +62,23 @@ class TreeAppModule_PanelManager extends TreeAppModule
                     inst.cm.right()
             key: [ "R" ]
             
-
+            
+                       
+        @add_action
+            ico: "img/close_panel.png" 
+            siz: 1
+            txt: "Close current view"
+            fun: ( evt, app ) ->
+                d = app.data.selected_display_settings()
+                for panel_id in app.data.selected_canvas_pan
+                    if d._layout.rm_panel panel_id
+                        app.data.visible_tree_items.rem_attr panel_id
+                # new selection
+                t = d._layout.panel_id_of_term_panels()
+                app.data.selected_canvas_pan.clear()
+                app.data.selected_canvas_pan.push t[ 0 ]
+            key: [ "Shift+X" ]
+                    
     split_view: ( evt, app, n ) ->
         d = app.data.selected_display_settings()
         for panel_id in app.data.selected_canvas_pan

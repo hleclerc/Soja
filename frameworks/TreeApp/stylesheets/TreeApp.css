@@ -1,10 +1,10 @@
 .PanelInstanceTreeView {
-    background: lightGrey; /*lightGrey ?*/
+    background: #eee;
     overflow  : auto;
 }
 
 .PanelInstanceEditView {
-    background: lightGrey;
+    background: #eee;
     overflow  : auto;
 }
 
@@ -23,3 +23,146 @@
 .UnselectedViewItem {
     opacity: 0.5;
 }
+
+
+
+/* IcoBar */
+
+/*.IcoBar div {
+    display: inline-block;
+    width: 4px;
+    height: 35px;
+}
+
+.IcoBarSepModules {
+    width:1px;
+    height:24px;
+    border-right:thin solid lightGrey;
+    margin-right:4px;
+}*/
+
+.IcoBar {
+    height: auto;
+    background: #eee;
+}
+
+.module {
+    background: -moz-linear-gradient(270deg, #eee, #eee, #eee, #c6c6c6);
+    background: -webkit-linear-gradient(top, darkGrey, darkGrey, darkGrey, grey);
+    background: -o-linear-gradient(top, darkGrey, darkGrey, darkGrey, grey);
+    background: -ms-linear-gradient(top, darkGrey, darkGrey, darkGrey, grey);
+    background: linear-gradient(top, dimGrey, dimGrey, dimGrey, darkGrey);
+    border-right:thin solid grey;
+    color: DarkSlateGrey;
+    display: inline-block;
+    padding: 1em 1em 0.2em 1em;
+    text-align: center;
+}
+
+.container_icon {
+    float:left;
+    margin-bottom:5px;
+    height: 3.4em;
+}
+
+.icon_top_span {
+}
+
+.icon_bot_span {
+}
+
+.big_icon_span {
+}
+
+.module_title{
+    margin-top: 2.7em;
+    clear:both;
+    text-align: center;
+}
+
+
+.IcoBar img {
+    margin-right:2px;
+    padding: 0.1em;
+    border:thin solid #eee;
+}
+
+.IcoBar img:hover {
+    border:thin solid grey;
+    background           : #fff;
+    -moz-border-radius   : 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius     : 3px;
+    border-radius        : 3px;
+}
+
+.click_container {
+    height               : 29px;
+    display              : inline-block;
+    border               : dashed thin grey;
+    -moz-border-radius   : 3px 3px 0px 3px;
+    -webkit-border-radius: 3px 3px 0px 3px;
+    -o-border-radius     : 3px 3px 0px 3px;
+    border-radius        : 3px 3px 0px 3px;
+}
+
+.click_container:hover {
+    border: solid thin grey;
+/*     background-color: #ccc; */
+}
+
+.container_hidden_icon {
+    position   : absolute;
+    z-index    : 1001;
+    background : #eee;
+    padding    : 0.4em;
+    
+    border               : thin solid grey;
+    -moz-border-radius   : 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius     : 3px;
+    border-radius        : 3px;
+}
+
+.container_hidden_icon img {
+    padding: 0.1em;
+    border:thin solid #eee;
+    margin-top: 0.4em;
+}
+
+.container_hidden_icon img:hover {
+    background-color     : #fff;
+    -moz-border-radius   : 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius     : 3px;
+    border-radius        : 3px;
+}
+
+
+.arrow{
+    margin-bottom: 6px;
+}
+.arrow_container{
+    height               : 29px;
+    display              : inline-block;
+}
+
+.arrow_container:hover{
+/*     background: white !important; */
+}
+
+#contextMenu {
+    background: white;
+    border: thin solid black;
+    box-shadow: 3px 3px 3px black;
+}
+
+.contextMenuElement {
+    cursor: pointer;
+    padding: 6px;
+}
+
+.contextMenuElement:hover {
+    background: grey;
+}
+

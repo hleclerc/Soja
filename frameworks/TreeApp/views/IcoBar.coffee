@@ -29,33 +29,77 @@ class IcoBar extends View
         for c in [ 0 ... @modules.length ]
             m = @modules[ c ]
             
-            if m instanceof TreeAppModule_TreeView
+            if m instanceof TreeAppModule_TreeView or m instanceof TreeAppModule_ImageSet
                 continue
             
-            do ( m ) =>
-    #             if c
-    #                 new_dom_element
-    #                     parentNode : @div
-    #                     #nodeName   : "span"
-    #                     className  : "IcoBarSepModules"
-                        
+            do ( m ) =>                
+#                 number_of_small_icon = []
+#                 number_of_icon = 0
+#                 for act in m.actions when act.ico?
+#                     if act.siz == undefined or act.siz == 1
+#                         number_of_icon++
+#                     else
+#                         if number_of_icon > 0
+#                             number_of_small_icon.push number_of_icon
+#                             number_of_icon = 0
+#                         
+#                 number_of_small_icon.push number_of_icon
+#                     
+#                 console.log number_of_small_icon
+                
                 block = new_dom_element
-                        parentNode : @div
-                        nodeName   : "span"
-                        className  : "module"
-                        
-                icon = new_dom_element
-                        parentNode : block
-                        nodeName   : "span"
-                        
-                i = 0
-                for act in m.actions when act.ico? and act.siz == 1
-                    i++
+                    parentNode : @div
+                    nodeName   : "span"
+                    className  : "module"
+                
+                
+                parent = icon_top = icon_bot = big_icon = undefined
                 
                 for act, j in m.actions when act.ico?
                     do ( act ) =>
                         siz = act.siz or 1
-    #                     siz = 1
+                        
+                        
+                        if act.siz == 1 and act.ord == undefined or act.ord == true
+                            if parent == undefined or parent == big_icon
+                                container_icon = new_dom_element
+                                    parentNode : block
+                                    nodeName   : "span"
+                                    className  : "container_icon"
+                                    
+                                icon_top = new_dom_element
+                                    parentNode : container_icon
+                                    nodeName   : "span"
+                                    className  : "icon_top_span"
+                            
+                                new_dom_element
+                                    parentNode : container_icon
+                                    nodeName   : "br"
+                                        
+                                icon_bot = new_dom_element
+                                    parentNode : container_icon
+                                    nodeName   : "span"
+                                    className  : "icon_bot_span"
+                                    
+                                parent = icon_top
+                            
+                        else
+                            if parent == undefined
+                                parent = big_icon
+                            
+                            if parent == icon_top or parent == icon_bot
+                        
+                                container_icon = new_dom_element
+                                    parentNode : block
+                                    nodeName   : "span"
+                                    className  : "container_icon"
+                                    
+                                big_icon = new_dom_element
+                                    parentNode : container_icon
+                                    nodeName   : "span"
+                                    className  : "big_icon_span"
+                                parent = big_icon
+                        
                         
                         key = ''
                         if act.key?
@@ -68,15 +112,30 @@ class IcoBar extends View
                         
                         # for icon who have children
                         if act.sub? and act.sub.length > 0
-                            new_dom_element
-                                parentNode : icon
+                        
+                            click_container = new_dom_element
+                                parentNode : parent
+                                nodeName   : "span"
+                                className  : "click_container"
+                                
+                            parent_hidden_icon = new_dom_element
+                                parentNode : click_container
                                 nodeName   : "img"
                                 alt        : act.txt
                                 title      : act.txt + key
                                 src        : act.ico
                                 className  : "parent_hidden_icon"
                                 style      :
-                                    height     : @height_ico * (siz + 1 ) / 2
+                                    height     : @height_ico * siz
+                                    
+                                onmousedown: ( evt ) =>
+                                    # assing first hidden action to icon
+                                    act.sub[ 0 ].fun evt, @tree_app
+                                    
+                            arrow_container = new_dom_element
+                                parentNode : click_container
+                                nodeName   : "span"
+                                className  : "arrow_container"
                                 # children are created on mousedown event
                                 onmousedown: ( evt ) =>
                                     if not @container?
@@ -95,9 +154,11 @@ class IcoBar extends View
                                                     title      : c.txt + key
                                                     src        : c.ico
                                                     style      :
-                                                        height     : @height_ico * (siz + 1 ) / 2
+                                                        height     : @height_ico *siz
                                                     onmousedown: ( evt ) =>
-                                                       c.fun evt, @tree_app
+                                                        c.fun evt, @tree_app
+                                                        @container.parentNode.removeChild @container
+                                                        @container = undefined
                                                         
                                                 new_dom_element
                                                     parentNode : @container
@@ -105,31 +166,45 @@ class IcoBar extends View
                                     else
                                         @container.parentNode.removeChild @container
                                         @container = undefined
-                            
+                                        
+                            arrow = new_dom_element
+                                parentNode : arrow_container
+                                nodeName   : "img"
+                                src        : "img/down_arrow.png"
+                                alt        : ""
+                                className  : "arrow"
+                                
+                                
                             #span that will contain hidden icon
                             child_container = new_dom_element
-                                parentNode : icon
+                                parentNode : parent
                                 nodeName   : "span"
                                 
                         else
                             s = new_dom_element
-                                parentNode : icon
+                                parentNode : parent
                                 nodeName   : "img"
                                 alt        : act.txt
                                 title      : act.txt + key
                                 src        : act.ico
                                 style      :
-                                    height     : @height_ico * (siz + 1 ) / 2
+                                    height     : @height_ico * siz
                                 onmousedown: ( evt ) =>
                                     act.fun evt, @tree_app
-            
+                        
+                        if act.siz == 1 and parent != big_icon
+                            if parent == icon_top
+                                parent = icon_bot
+                            else
+                                parent = icon_top
+                
                 new_dom_element
                     parentNode : block
-#                     nodeName   : "br"
-                        
+                    nodeName   : "br"
+                
                 module_title = new_dom_element
                         parentNode : block
-                        nodeName   : "span"
+                        nodeName   : "div"
                         className  : "module_title"
                         txt        : m.name
                         

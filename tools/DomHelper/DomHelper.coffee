@@ -69,6 +69,7 @@ _index_current_popup = 100
 new_popup = ( title, params = {} ) ->
     b = new_dom_element
         parentNode : document.body
+        id         : "popup_closer"
         onmousedown: ->
             document.body.removeChild b
             document.body.removeChild w
