@@ -9,7 +9,7 @@ from concat_js import *
 concat_js( "src", "gen/Soja.js" )
 
 # ext tools
-for plugins_dir in [ "plugins", "tools" ]:
+for plugins_dir in [ "plugins", "tools", "frameworks" ]:
     for p in os.listdir( plugins_dir ):
         concat_js( plugins_dir + "/" + p, "gen/" + p + ".js", "gen/" + p + ".css" )
         
