@@ -48,10 +48,10 @@
 
 .module {
     background: -moz-linear-gradient(270deg, #eee, #eee, #eee, #c6c6c6);
-    background: -webkit-linear-gradient(top, darkGrey, darkGrey, darkGrey, grey);
-    background: -o-linear-gradient(top, darkGrey, darkGrey, darkGrey, grey);
-    background: -ms-linear-gradient(top, darkGrey, darkGrey, darkGrey, grey);
-    background: linear-gradient(top, dimGrey, dimGrey, dimGrey, darkGrey);
+    background: -webkit-linear-gradient(top, #eee, #eee, #eee, #c6c6c6);
+    background: -o-linear-gradient(top, #eee, #eee, #eee, #c6c6c6);
+    background: -ms-linear-gradient(top, #eee, #eee, #eee, #c6c6c6);
+    background: linear-gradient(top, #eee, #eee, #eee, #c6c6c6);
     border-right:thin solid grey;
     color: DarkSlateGrey;
     display: inline-block;
@@ -62,7 +62,6 @@
 .container_icon {
     float:left;
     margin-bottom:5px;
-    height: 3.4em;
 }
 
 .icon_top_span {
