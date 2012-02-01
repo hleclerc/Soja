@@ -89,15 +89,20 @@ class Mesh extends Drawable
             
             # call adapted draw function for color and using gradient
             if @nodal_fields[ @displayed_field.get() ]?
-                field = @nodal_fields[ @displayed_field.get() ]
+                values = @nodal_fields[ @displayed_field.get() ].get()
+                @actualise_value_legend values
+                
                 for tri in @triangles
-                    @_draw_nodal_triangle info, tri.get(), proj, field
+                    @_draw_nodal_triangle info, tri.get(), proj, values
+                    
             else if @elementary_fields[ @displayed_field.get() ]?
                 values = @elementary_fields[ @displayed_field.get() ].get()
                 @actualise_value_legend values
                 
                 for tri, i in @triangles
                     @_draw_elementary_triangle info, tri.get(), proj, values[ i ]
+                    
+                
 
 
     get_max: ( l ) ->
@@ -162,8 +167,11 @@ class Mesh extends Drawable
                 proj[ tri[ i ] ]
                 
         value = for i in [ 0 ... 3 ]
-                field[ tri[ i ] ].get()
+                field[ tri[ i ] ]
                 
+#         pos = ( @_legend._max_val.get() - value ) / ( @_legend._max_val.get() - @_legend._min_val.get() )
+#         col = @_legend.gradient.get_color_from_pos pos
+#                 
         #position of every point
         x0 = posit[ 0 ][ 0 ]
         y0 = posit[ 0 ][ 1 ]
