@@ -6,8 +6,8 @@ class Legend extends Drawable
         @add_attr
             gradient: new Gradient
             title   : title
-            _min_val: 0
-            _max_val: 0
+            min_val: 0
+            max_val: 0
             _width  : 30
             _height : 300
             
@@ -25,7 +25,7 @@ class Legend extends Drawable
         info.ctx.textAlign = "right"
         for c_s in @gradient.color_stop
             pos = c_s.position.get()
-            val = ( @_max_val.get() - @_min_val.get() ) * ( 1 - c_s.position.get() ) + @_min_val.get()
+            val = ( @max_val.get() - @min_val.get() ) * ( 1 - c_s.position.get() ) + @min_val.get()
             info.ctx.fillText( val.toFixed( 1 ), pos_x - 8, pos_y + 7 + pos * @_height.get() )
     
     draw: ( info ) ->

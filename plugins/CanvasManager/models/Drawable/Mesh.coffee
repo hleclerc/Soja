@@ -123,17 +123,17 @@ class Mesh extends Drawable
         
     actualise_value_legend: ( values ) ->
         max = @get_max values
-        @_legend._max_val.set max
+        @_legend.max_val.set max
         
         min = @get_min values
-        @_legend._min_val.set min
+        @_legend.min_val.set min
 
 
     _draw_elementary_triangle: ( info, tri, proj, value ) ->
         position = for i in [ 0 ... 3 ]
                 proj[ tri[ i ] ]
         
-        pos = ( @_legend._max_val.get() - value ) / ( @_legend._max_val.get() - @_legend._min_val.get() )
+        pos = ( @_legend.max_val.get() - value ) / ( @_legend.max_val.get() - @_legend.min_val.get() )
         col = @_legend.gradient.get_color_from_pos pos
         
         if @fields.get() == "wireframe"

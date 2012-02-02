@@ -6,7 +6,10 @@ class ImgItem extends TreeItem
         
         # attributes
         @add_attr
-            img: new Img file, app
+            legend: new Legend "Displacement X"
+            
+        @add_attr
+            img: new Img file, app, @legend
 
         # default values
         @_name.set file.replace( /// ^.*/ ///, "" )
@@ -17,10 +20,10 @@ class ImgItem extends TreeItem
         #
         
     sub_canvas_items: ->
-        [ @img ]
+        [ @img, @legend ]
         
-    disp_only_in_model_editor: ->
-        @img
+#     disp_only_in_model_editor: ->
+#         [ @img, @legend ]
 
     z_index: =>
         return @img.z_index()
