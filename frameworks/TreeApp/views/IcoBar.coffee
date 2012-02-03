@@ -55,12 +55,12 @@ class IcoBar extends View
                 
                 parent = icon_top = icon_bot = big_icon = undefined
                 
-                for act, j in m.actions when act.ico?
+                for act, j in m.actions when act.ico? or act.mod?
                     do ( act ) =>
                         siz = act.siz or 1
                         
                         
-                        if act.siz == 1 and act.ord == undefined or act.ord == true
+                        if act.siz == 1
                             if parent == undefined or parent == big_icon
                                 container_icon = new_dom_element
                                     parentNode : block
@@ -180,7 +180,7 @@ class IcoBar extends View
                                 parentNode : parent
                                 nodeName   : "span"
                                 
-                        else
+                        else if act.ico?
                             s = new_dom_element
                                 parentNode : parent
                                 nodeName   : "img"
@@ -191,8 +191,10 @@ class IcoBar extends View
                                     height     : @height_ico * siz
                                 onmousedown: ( evt ) =>
                                     act.fun evt, @tree_app
-                        
-                        if act.siz == 1 and parent != big_icon
+                        else if act.mod?
+                            editor = new_model_editor el: parent, model: act.mod.anim_time, item_width: 85
+                       
+                        if act.siz == 1 and parent != big_icon and act.ord == undefined or act.ord == true
                             if parent == icon_top
                                 parent = icon_bot
                             else
