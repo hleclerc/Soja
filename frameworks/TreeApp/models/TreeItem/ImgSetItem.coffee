@@ -18,8 +18,8 @@ class ImgSetItem extends TreeItem
         ch instanceof ImgItem
 
     draw: ( info ) ->
-        @_name.set "Image collection (" + @_children[ info.time.get() ]._name.get() + ")"
-        @_children[ info.time.get() ].draw info
+        @_name.set "Image collection (" + @_children[ info.time ]._name.get() + ")"
+        @_children[ info.time ].draw info
     
     z_index: ->
         return @_children[ 0 ].z_index()
