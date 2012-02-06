@@ -5,11 +5,11 @@ class DisplaySettingsItem extends TreeItem
 
         # new attributes
         @add_attr
-            anim_time: new ConstrainedVal( 0,
-                min: 0
-                max: -1
-                div: 0
-            ) 
+#             anim_time: new ConstrainedVal( 0,
+#                 min: 0
+#                 max: -1
+#                 div: 0
+#             ) 
             
             _layout: new LayoutManagerData layout_manager_data
             

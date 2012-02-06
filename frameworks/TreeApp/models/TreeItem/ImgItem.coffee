@@ -6,6 +6,7 @@ class ImgItem extends TreeItem
         
         # attributes
         @add_attr
+            show_legend: new Bool true
             legend: new Legend "Displacement X"
             
         @add_attr
@@ -16,11 +17,16 @@ class ImgItem extends TreeItem
         @_ico.set "img/krita_16.png"
         @_viewable.set true
         
+    
+    
     accept_child: ( ch ) ->
         #
         
     sub_canvas_items: ->
-        [ @img, @legend ]
+        if @show_legend.get()
+            [ @img, @legend ]
+        else
+            [ @img ]
         
 #     disp_only_in_model_editor: ->
 #         [ @img, @legend ]

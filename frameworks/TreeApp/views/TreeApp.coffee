@@ -6,6 +6,8 @@ class TreeApp extends View
         @layouts = {}
         @cur_session_model_id = -1
         
+        @active_key = new Bool true
+        
         @undo_manager = new UndoManager @data.tree_items
         header = document.getElementById('correli_header')
         @icobar = new IcoBar header, this
@@ -88,35 +90,36 @@ class TreeApp extends View
         
     # De la part de Noel. Vendredi 23 septembre.
     _on_key_down: ( evt ) ->
-        if 16 <= evt.keyCode <= 18
-            return
-        cur_key = ""
-        cur_key += "Ctrl+"  if evt.ctrlKey
-        cur_key += "Shift+" if evt.shiftKey
-        cur_key += "Alt+"   if evt.altKey
-        
-        cur_key += String.fromCharCode( evt.keyCode ).toUpperCase()
-        
-        cur_key = "Del"        if evt.keyCode == 46
-        cur_key = "Space"      if evt.keyCode == 32
-        cur_key = "LeftArrow"  if evt.keyCode == 37
-        cur_key = "UpArrow"    if evt.keyCode == 38
-        cur_key = "RightArrow" if evt.keyCode == 39
-        cur_key = "DownArrow"  if evt.keyCode == 40
-        cur_key = "Enter"      if evt.keyCode == 13
-        
-        for m in @data.modules
-            for a in m.actions
-                if a.key?
-                    for k in a.key
-                        if k == cur_key
-                            a.fun evt, this
-                            break
-                
-                if a.sub? and a.sub.length > 0
-                    for a in a.sub
-                        if a.key?
-                            for k in a.key
-                                if k == cur_key
-                                    a.fun evt, this
-                                    break
+        if @active_key.get()
+            if 16 <= evt.keyCode <= 18
+                return
+            cur_key = ""
+            cur_key += "Ctrl+"  if evt.ctrlKey
+            cur_key += "Shift+" if evt.shiftKey
+            cur_key += "Alt+"   if evt.altKey
+            
+            cur_key += String.fromCharCode( evt.keyCode ).toUpperCase()
+            
+            cur_key = "Del"        if evt.keyCode == 46
+            cur_key = "Space"      if evt.keyCode == 32
+            cur_key = "LeftArrow"  if evt.keyCode == 37
+            cur_key = "UpArrow"    if evt.keyCode == 38
+            cur_key = "RightArrow" if evt.keyCode == 39
+            cur_key = "DownArrow"  if evt.keyCode == 40
+            cur_key = "Enter"      if evt.keyCode == 13
+            
+            for m in @data.modules
+                for a in m.actions
+                    if a.key?
+                        for k in a.key
+                            if k == cur_key
+                                a.fun evt, this
+                                break
+                    
+                    if a.sub? and a.sub.length > 0
+                        for a in a.sub
+                            if a.key?
+                                for k in a.key
+                                    if k == cur_key
+                                        a.fun evt, this
+                                        break

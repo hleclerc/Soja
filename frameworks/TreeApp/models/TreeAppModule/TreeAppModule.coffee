@@ -21,7 +21,11 @@ class TreeAppModule extends Model
     watch_item: ( app, item ) ->
         for p in app.data.panel_id_list()
             app.data.visible_tree_items[ p ].push item
-
+            
+    get_animation_module: ( app ) ->
+        for child in app.data.modules
+            if child instanceof TreeAppModule_Animation
+                return child
         
     get_display_settings_item: ( app ) ->
         for child in app.data.tree_items[ 0 ]._children

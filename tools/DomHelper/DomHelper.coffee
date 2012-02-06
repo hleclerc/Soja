@@ -73,6 +73,7 @@ new_popup = ( title, params = {} ) ->
         onmousedown: ->
             document.body.removeChild b
             document.body.removeChild w
+#             app.active_key.set true
         style      :
             position  : "fixed"
             top       : 0

@@ -31,14 +31,19 @@ class TreeAppModule_ImageSet extends TreeAppModule
                     img = new ImgItem "composite0"+ @numpic++ +".png", app
                 @collection.add_child img
 #                 @collection._children.push img
+                anim_module = @get_animation_module app
+                anim_time = anim_module.get_anim_time()
+                anim_time._max.set anim_time._max.get() + 1
+                anim_time._div.set anim_time._max.get()
                 
-                ds = @get_display_settings_item app
-                ds.anim_time._max.set ds.anim_time._max.get() + 1
-                ds.anim_time._div.set ds.anim_time._max.get()
+#                 ds = @get_display_settings_item app
+#                 ds.anim_time._max.set ds.anim_time._max.get() + 1
+#                 ds.anim_time._div.set ds.anim_time._max.get()
 
                 #by default, show only the first
                 if @collection._children.length == 1
-                    ds.anim_time.set 0
+#                     ds.anim_time.set 0
+                    anim_time.set 0
                 app.undo_manager.snapshot()
                 
             key: [ "Shift+A" ]
