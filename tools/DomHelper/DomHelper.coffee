@@ -65,12 +65,14 @@ get_top = ( l ) ->
 #  - width
 #  - height
 #  - event
+#  - child -> child of the main div
 _index_current_popup = 100
 new_popup = ( title, params = {} ) ->
     b = new_dom_element
         parentNode : document.body
         id         : "popup_closer"
         onmousedown: ->
+            params.onclose?()
             document.body.removeChild b
             document.body.removeChild w
 #             app.active_key.set true
@@ -164,8 +166,14 @@ new_popup = ( title, params = {} ) ->
                 document.addEventListener "mouseup"  , _drag_end_func, true
                 evt.preventDefault?()
     
-    new_dom_element
+    res = new_dom_element
         parentNode : w
         className  : "PopupWindow"
         style      :
             padding  : "6px"
+
+    if params.child?
+        res.appendChild params.child
+    
+    res
+    
