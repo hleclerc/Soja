@@ -13,7 +13,7 @@ class SessionItem extends TreeItem
                 if m > max
                     max = m
             # TODO get access to app data from constructor or something else
-            if app.data?
+            if app?
                 app.data.time.max.set max - 1
                 app.data.time.div.set max - 1
             
