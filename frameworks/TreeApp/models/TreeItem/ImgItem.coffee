@@ -27,8 +27,12 @@ class ImgItem extends TreeItem
 #     disp_only_in_model_editor: ->
 #         [ @img, @legend ]
 
-    z_index: =>
+    z_index: ->
         return @img.z_index()
         
-    update_min_max: ( x_min, x_max ) =>
+    update_min_max: ( x_min, x_max ) ->
         @img.update_min_max( x_min, x_max )
+        
+    information: ( div ) ->
+        div.innerHTML = "Size = #{@img.data.rgba.width} x #{@img.data.rgba.height}"
+        
