@@ -110,4 +110,22 @@ class Img extends Drawable
             x_max[ 0 ] = Math.max x_max[ 0 ], @data.rgba.width
             x_max[ 1 ] = Math.max x_max[ 1 ], @data.rgba.height
             x_max[ 2 ] = Math.max x_max[ 2 ], 0
-    
+            
+    get_histogram: () ->
+#         canvas = document.createElement('canvas')
+#         document.getElementById('correli_header').appendChild canvas
+#         ctx = canvas.getContext '2d'
+#         ctx.drawImage @data.rgba, 0, 0, @data.rgba.width, @data.rgba.height
+#         canvasData = ctx.getImageData 0, 0, @data.rgba.width, @data.rgba.height
+#         data = canvasData.data
+#         
+#         histogram = new Array(255)
+#         for el, i in histogram
+#             histogram[ i ] = 0
+#             
+# #         console.log canvasData
+#         for rgba, i in data by 4
+#             if rgba[ i + 3 ] != 0
+#                 index = Math.round( ( rgba[ i ] + rgba[ i + 1 ] + rgba[ i + 2 ] ) / 3 )
+#                 histogram[ index ]++
+        ""

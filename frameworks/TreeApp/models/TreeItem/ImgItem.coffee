@@ -2,8 +2,6 @@
 class ImgItem extends TreeItem
     constructor: ( file, app ) ->
         super()
-
-        
         # attributes
         @add_attr
             legend: new Legend "Displacement X"
@@ -34,5 +32,11 @@ class ImgItem extends TreeItem
         @img.update_min_max( x_min, x_max )
         
     information: ( div ) ->
-        div.innerHTML = "Size = #{@img.data.rgba.width} x #{@img.data.rgba.height}"
-        
+        histo = @img.get_histogram()
+        txt = "
+            #{@img.src} <br>
+            Height : #{@img.data.rgba.height} px <br>
+            Width  : #{@img.data.rgba.width} px <br>
+            #{histo}
+            "
+        div.innerHTML = txt

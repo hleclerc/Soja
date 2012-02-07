@@ -43,7 +43,9 @@ class ModelEditorItem_ConstrainedVal extends ModelEditorItem
 
                 m = 10 * ( 1 + 9 * evt.shiftKey ) * ( 1 + 9 * evt.ctrlKey ) * ( 1 + 9 * evt.altKey )
                 
-                @model.set @model.get() + delta * @model.delta() / m
+#                 console.log delta, " " , @model.delta()
+#                 console.log m, " " , @model.get()
+#                 @model.set @model.get() + delta * @model.delta() / m
                 evt.stopPropagation?()
                 evt.preventDefault?()
                 return false

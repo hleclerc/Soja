@@ -73,7 +73,7 @@ new_popup = ( title, params = {} ) ->
         parentNode : document.body
         id         : "popup_closer"
         onmousedown: ->
-            params.onclose?
+            params.onclose?()
             document.body.removeChild b
             document.body.removeChild w
             

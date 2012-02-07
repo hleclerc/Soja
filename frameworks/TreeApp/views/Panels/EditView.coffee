@@ -26,8 +26,16 @@ class EditView extends View
 
                     # information div
                     if s.information?
-                        new_dom_element nodeName: "hr", parentNode: e
-                        d = new_dom_element parentNode: e
+                        f = new_dom_element
+                            nodeName  : "fieldset"
+                            parentNode: e
+                                
+                        legend = new_dom_element
+                            nodeName  : "legend"
+                            parentNode: f
+                            txt       : "Informations"
+                            
+                        d = new_dom_element parentNode: f
                         s.bind ->
                             s.information d
                         
