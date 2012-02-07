@@ -6,7 +6,6 @@ class ImgItem extends TreeItem
         
         # attributes
         @add_attr
-            show_legend: new Bool true
             legend: new Legend "Displacement X"
             
         @add_attr
@@ -23,10 +22,7 @@ class ImgItem extends TreeItem
         #
         
     sub_canvas_items: ->
-        if @show_legend.get()
-            [ @img, @legend ]
-        else
-            [ @img ]
+        [ @img, @legend ]
         
 #     disp_only_in_model_editor: ->
 #         [ @img, @legend ]

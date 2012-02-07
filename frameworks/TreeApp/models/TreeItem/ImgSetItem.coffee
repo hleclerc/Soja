@@ -18,11 +18,22 @@ class ImgSetItem extends TreeItem
         ch instanceof ImgItem
 
     draw: ( info ) ->
-        @_name.set "Image collection (" + @_children[ info.time ]._name.get() + ")"
-        @_children[ info.time ].draw info
+        if @_children[ info.time ]?
+            @_name.set "Image collection (" + @_children[ info.time ]._name.get() + ")"
+            @_children[ info.time ].draw info
+            
+        else if @_children[ 0 ]?
+            @_name.set "Image collection (" + @_children[ 0 ]._name.get() + ")"
+            @_children[ 0 ].draw info
+            
+        else
+            @_name.set "Image collection (empty)"
     
     z_index: ->
-        return @_children[ 0 ].z_index()
+        if @_children.length > 0
+            return @_children[ 0 ].z_index()
+        else
+            return 0
     
     update_min_max: ( x_min, x_max ) =>
         if @_children[ 0 ]?

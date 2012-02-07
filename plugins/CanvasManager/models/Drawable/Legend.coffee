@@ -1,15 +1,16 @@
 #
 class Legend extends Drawable
-    constructor: ( title = "" )->
+    constructor: ( title = "", show_legend = true )->
         super()
         
         @add_attr
-            gradient: new Gradient
-            title   : title
-            min_val: 0
-            max_val: 0
-            _width  : 30
-            _height : 300
+            show_legend: show_legend
+            gradient   : new Gradient
+            title      : title
+            min_val    : 0
+            max_val    : 0
+            _width     : 30
+            _height    : 300
             
         @gradient.add_color [ 255,255,255, 255 ], 0
         @gradient.add_color [   0,  0,  0, 255 ], 1
@@ -29,18 +30,19 @@ class Legend extends Drawable
             info.ctx.fillText( val.toFixed( 1 ), pos_x - 8, pos_y + 7 + pos * @_height.get() )
     
     draw: ( info ) ->
-        pos_y = info.h * 0.5 - @_height.get() * 0.5
-        pos_x = info.w - @_width.get() - @_width.get() * 3
-        lineargradient = info.ctx.createLinearGradient( 0, pos_y, 0, pos_y + @_height.get() )
-        for col in @gradient.color_stop
-            lineargradient.addColorStop( col.position.get(), "rgba(#{col.color.r.get()}, #{col.color.g.get()}, #{col.color.b.get()}, #{col.color.a.get()})" )
-        info.ctx.fillStyle = lineargradient
-        info.ctx.fillRect( pos_x, pos_y, @_width.get(), @_height.get() )
-        
-        @draw_text_legend info
-        
-        info.ctx.font = "20pt Arial"
-        info.ctx.textAlign = "center"
-        info.ctx.fillText( @title, pos_x + @_width.get() * 0.5, pos_y + @_height.get() + @_height.get() * 0.2 )
+        if @show_legend.get() == true
+            pos_y = info.h * 0.5 - @_height.get() * 0.5
+            pos_x = info.w - @_width.get() - @_width.get() * 3
+            lineargradient = info.ctx.createLinearGradient( 0, pos_y, 0, pos_y + @_height.get() )
+            for col in @gradient.color_stop
+                lineargradient.addColorStop( col.position.get(), "rgba(#{col.color.r.get()}, #{col.color.g.get()}, #{col.color.b.get()}, #{col.color.a.get()})" )
+            info.ctx.fillStyle = lineargradient
+            info.ctx.fillRect( pos_x, pos_y, @_width.get(), @_height.get() )
+            
+            @draw_text_legend info
+            
+            info.ctx.font = "20pt Arial"
+            info.ctx.textAlign = "center"
+            info.ctx.fillText( @title, pos_x + @_width.get() * 0.5, pos_y + @_height.get() + @_height.get() * 0.2 )
 
     
