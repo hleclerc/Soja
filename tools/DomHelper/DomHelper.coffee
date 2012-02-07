@@ -66,16 +66,18 @@ get_top = ( l ) ->
 #  - height
 #  - event
 #  - child -> child of the main div
+#  - onclose -> callback function
+#  - onclose_parameter -> parameter for onclose function
 _index_current_popup = 100
 new_popup = ( title, params = {} ) ->
     b = new_dom_element
         parentNode : document.body
         id         : "popup_closer"
         onmousedown: ->
-            params.onclose?()
+            params.onclose?( params.onclose_parameter )
             document.body.removeChild b
             document.body.removeChild w
-#             app.active_key.set true
+            
         style      :
             position  : "fixed"
             top       : 0

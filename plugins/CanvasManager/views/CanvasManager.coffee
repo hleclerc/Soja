@@ -26,9 +26,13 @@ class CanvasManager extends View
         if not @allow_gl?
             @allow_gl = false
         if not @time?
-            @time = 0
+            @time = new ConstrainedVal( 0,
+                                    min: 0
+                                    max: -1
+                                    div: 0
+                                )
             
-        super [ @items, @cam, @selected_entities, @pre_selected_entities, @selected_items ]
+        super [ @items, @cam, @selected_entities, @pre_selected_entities, @selected_items, @time ]
 
         @canvas = new_dom_element
             nodeName  : "canvas"
@@ -327,7 +331,7 @@ class CanvasManager extends View
             sel_item: i
             selected: s
             pre_sele: pre_s
-            time    : @time
+            time    : @time.get()
                     
     # get leaves in item list (i.e. object with a draw method)
     @_get_flat_list: ( flat, item ) ->

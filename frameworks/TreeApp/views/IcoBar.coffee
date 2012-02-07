@@ -192,7 +192,7 @@ class IcoBar extends View
                                 onmousedown: ( evt ) =>
                                     act.fun evt, @tree_app
                         else if act.mod?
-                            editor = new_model_editor el: parent, model: act.mod.anim_time, item_width: 85
+                            editor = new_model_editor el: parent, model: act.mod, item_width: 85
                        
                         if act.siz == 1 and parent != big_icon and act.ord == undefined or act.ord == true
                             if parent == icon_top

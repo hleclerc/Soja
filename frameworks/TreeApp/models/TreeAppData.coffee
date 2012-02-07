@@ -20,7 +20,7 @@ class TreeAppData extends Model
                                     min: 0
                                     max: -1
                                     div: 0
-                                 )
+                                )
             
     
     new_session: ( name ) ->

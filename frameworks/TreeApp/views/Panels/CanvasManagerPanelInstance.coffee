@@ -157,17 +157,4 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
                         style     :
                             position: "relative"
                             top     : "-5px"
-                            
-    #     get_anim_time: =>
-    #         for child in @app_data.modules
-    #             if child instanceof TreeAppModule_Animation
-    #                 anim_module = child
-    #         if anim_module?
-    #             return anim_module.get_anim_time()
-                
-    #     get_display_settings_time: =>
-    #         for child in @app_data.tree_items[0]._children
-    #             if child instanceof DisplaySettingsItem
-    #                 ds = child
-    #         if ds?
-    #             return ds.anim_time
+
