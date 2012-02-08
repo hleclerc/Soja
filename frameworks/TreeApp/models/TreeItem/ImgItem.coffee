@@ -32,37 +32,36 @@ class ImgItem extends TreeItem
         @img.update_min_max( x_min, x_max )
         
     information: ( div ) ->
+        txt = "
+        #{@img.src} <br>
+        Height : #{@img.data.rgba.height}px <br>
+        Width  : #{@img.data.rgba.width}px <br>
+        
+        "
+        div.innerHTML = txt
         if not @cm?
             d = new_dom_element
                 parentNode: div
                 #                 style     : { position: "absolute", top: 0, left: 0, width: "70%", bottom: 0 }
 
             bg = new Background
-            bg.gradient.remove_color 0
+            bg.gradient.remove_color 1
 
             m = new Mesh
-            m.points.push [ 0, 0, 0 ]
-            m.points.push [ 1, 0, 0 ]
-            m.points.push [ 0, 1, 0 ]
-            m.lines.push [ 0, 1, 2 ]
+            for p, i in @img._histo
+                m.points.push [ i * 500, p, 0 ]
+                
+            for i in [ 0 ... @img._histo.length - 1 ]
+                m.lines.push [ i, i + 1]
             
             @cm = new CanvasManager el: d
             @cm.items.push bg
             @cm.items.push m
-            @cm.items.push new Axes
             @cm.selected_items.push [ m ]
             
             @cm.fit()
-            @cm.draw()
+        @cm.draw()
 
-            #  - items:
-        
-            #             txt = "
-            #                 #{@img.src} <br>
-            #                 Height : #{@img.data.rgba.height} px <br>
-            #                 Width  : #{@img.data.rgba.width} px <br>
-            #                 #{@img.histo}
-            #                 "
-            #             div.innerHTML = txt
+
             
             
