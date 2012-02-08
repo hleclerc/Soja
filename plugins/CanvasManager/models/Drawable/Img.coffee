@@ -116,18 +116,18 @@ class Img extends Drawable
             x_max[ 2 ] = Math.max x_max[ 2 ], 0
             
     fill_histogram: () ->
-        canvas = document.createElement('canvas')
-        canvas.width = @data.rgba.width
-        canvas.height = @data.rgba.height
-        ctx = canvas.getContext '2d'
-        ctx.drawImage @data.rgba, 0, 0, @data.rgba.width, @data.rgba.height
-        canvasData = ctx.getImageData 0, 0, @data.rgba.width, @data.rgba.height
-        data = canvasData.data
-        
-        for i in [ 0 .. 255 ]
-            @histo.push 0
-            
-        for el, i in data by 4
-            if data[ i + 3 ] != 0
-                index = Math.round( ( data[ i ] + data[ i + 1 ] + data[ i + 2 ] ) / 3 )
-                @histo[ index ]++
+        #         canvas = document.createElement('canvas')
+        #         canvas.width = @data.rgba.width
+        #         canvas.height = @data.rgba.height
+        #         ctx = canvas.getContext '2d'
+        #         ctx.drawImage @data.rgba, 0, 0, @data.rgba.width, @data.rgba.height
+        #         canvasData = ctx.getImageData 0, 0, @data.rgba.width, @data.rgba.height
+        #         data = canvasData.data
+        #         
+        #         for i in [ 0 .. 255 ]
+        #             @histo.push 0
+        #             
+        #         for el, i in data by 4
+        #             if data[ i + 3 ] != 0
+        #                 index = Math.round( ( data[ i ] + data[ i + 1 ] + data[ i + 2 ] ) / 3 )
+        #                 @histo[ index ]++
