@@ -32,11 +32,10 @@ class ImgItem extends TreeItem
         @img.update_min_max( x_min, x_max )
         
     information: ( div ) ->
-        histo = @img.get_histogram()
         txt = "
             #{@img.src} <br>
             Height : #{@img.data.rgba.height} px <br>
             Width  : #{@img.data.rgba.width} px <br>
-            #{histo}
+            #{@img.histo}
             "
         div.innerHTML = txt

@@ -29,7 +29,8 @@ class IcoBar extends View
         for c in [ 0 ... @modules.length ]
             m = @modules[ c ]
             
-            if m instanceof TreeAppModule_TreeView or m instanceof TreeAppModule_ImageSet
+#             if m instanceof TreeAppModule_TreeView or m instanceof TreeAppModule_ImageSet
+            if m instanceof TreeAppModule_TreeView
                 continue
             
             do ( m ) =>                
