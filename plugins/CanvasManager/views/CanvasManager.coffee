@@ -9,6 +9,7 @@ class CanvasManager extends View
     #  - pre_selected_entities
     #  - undo_manager
     #  - allow_gl
+    #  - want_aspect_ratio
     constructor: ( params ) ->
         for key, val of params
             @[ key ] = val
@@ -16,7 +17,7 @@ class CanvasManager extends View
         if not @items?
             @items = new Lst
         if not @cam?
-            @cam = new Cam
+            @cam = new Cam @want_aspect_ratio
         if not @selected_items?
             @selected_items = new Lst
         if not @selected_entities?
@@ -31,6 +32,8 @@ class CanvasManager extends View
                                     max: -1
                                     div: 0
                                 )
+        if not @padding_ratio
+            @padding_ratio = 1.5
             
         super [ @items, @cam, @selected_entities, @pre_selected_entities, @selected_items, @time ]
 
@@ -84,15 +87,21 @@ class CanvasManager extends View
     fit: ->
         b = @bounding_box()
         
+        if @cam.r?
+            w = @canvas.width
+            h = @canvas.height
+            @cam.r.set ( b[ 1 ][ 0 ] - b[ 0 ][ 0 ] ) /
+                       ( b[ 1 ][ 1 ] - b[ 0 ][ 1 ] ) * h / w
+            
         @cam.O.set [
             0.5 * ( b[ 1 ][ 0 ] + b[ 0 ][ 0 ] ),
             0.5 * ( b[ 1 ][ 1 ] + b[ 0 ][ 1 ] ), 
             0.5 * ( b[ 1 ][ 2 ] + b[ 0 ][ 2 ] )
         ]
-        @cam.d.set Math.max(
-            1.5 * ( b[ 1 ][ 0 ] - b[ 0 ][ 0 ] ),
-            1.5 * ( b[ 1 ][ 1 ] - b[ 0 ][ 1 ] ), 
-            1.5 * ( b[ 1 ][ 2 ] - b[ 0 ][ 2 ] )
+        @cam.d.set @padding_ratio * Math.max(
+            ( b[ 1 ][ 0 ] - b[ 0 ][ 0 ] ),
+            ( b[ 1 ][ 1 ] - b[ 0 ][ 1 ] ), 
+            ( b[ 1 ][ 2 ] - b[ 0 ][ 2 ] )
         )
         @cam.C.set @cam.O.get()
         
@@ -306,7 +315,7 @@ class CanvasManager extends View
 
     # compute and store camera info in @cam_info
     _mk_cam_info: ->
-        w = @canvas.width 
+        w = @canvas.width
         h = @canvas.height
         
         i = {}

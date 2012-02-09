@@ -17,32 +17,48 @@ class Legend extends Drawable
         
     z_index: () ->
         return 1000
+    
+    get_ratio: ( info ) ->
+        info.h / ( @_height.get() * 1.7 )
+    
+    draw_text_legend: ( info ) ->
         
-    draw_text_legend: ( info ) ->  
-        pos_y = info.h * 0.5 - @_height.get() * 0.5
-        pos_x = info.w - @_width.get() - @_width.get() * 3
-        info.ctx.font = "14pt Arial"
+        ratio = @get_ratio info
+        height = @_height.get() * ratio
+        width = @_width.get() * ratio
+        
+        pos_y = info.h * 0.5 - height * 0.5
+        pos_x = info.w - width - width * 2.5
+        font_size = 13 * ratio 
+        info.ctx.font = font_size + "pt Arial"
         info.ctx.fillStyle = "White"
         info.ctx.textAlign = "right"
         for c_s in @gradient.color_stop
             pos = c_s.position.get()
             val = ( @max_val.get() - @min_val.get() ) * ( 1 - c_s.position.get() ) + @min_val.get()
-            info.ctx.fillText( val.toFixed( 1 ), pos_x - 8, pos_y + 7 + pos * @_height.get() )
+            info.ctx.fillText( val.toFixed( 1 ), pos_x - 8, pos_y + 7 + pos * height )
     
     draw: ( info ) ->
         if @show_legend.get() == true
-            pos_y = info.h * 0.5 - @_height.get() * 0.5
-            pos_x = info.w - @_width.get() - @_width.get() * 3
-            lineargradient = info.ctx.createLinearGradient( 0, pos_y, 0, pos_y + @_height.get() )
+            
+            ratio = @get_ratio info
+            height = @_height.get() * ratio
+            width = @_width.get() * ratio
+            
+            pos_y = info.h * 0.5 - height * 0.5
+            pos_x = info.w - width - width * 2.5
+            lineargradient = info.ctx.createLinearGradient( 0, pos_y, 0, pos_y + height )
             for col in @gradient.color_stop
                 lineargradient.addColorStop( col.position.get(), "rgba(#{col.color.r.get()}, #{col.color.g.get()}, #{col.color.b.get()}, #{col.color.a.get()})" )
             info.ctx.fillStyle = lineargradient
-            info.ctx.fillRect( pos_x, pos_y, @_width.get(), @_height.get() )
+            info.ctx.fillRect( pos_x, pos_y, width, height )
             
             @draw_text_legend info
             
-            info.ctx.font = "20pt Arial"
+            font_size = 18 * ratio 
+            
+            info.ctx.font = font_size + "pt Arial"
             info.ctx.textAlign = "center"
-            info.ctx.fillText( @title, pos_x + @_width.get() * 0.5, pos_y + @_height.get() + @_height.get() * 0.2 )
+            info.ctx.fillText( @title, pos_x + width * 0.5, pos_y + height + height * 0.2 )
 
     

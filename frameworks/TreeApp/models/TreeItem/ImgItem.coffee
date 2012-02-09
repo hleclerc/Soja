@@ -36,7 +36,6 @@ class ImgItem extends TreeItem
         #{@img.src} <br>
         Height : #{@img.data.rgba.height}px <br>
         Width  : #{@img.data.rgba.width}px <br>
-        
         "
         div.innerHTML = txt
         if not @cm?
@@ -47,14 +46,11 @@ class ImgItem extends TreeItem
             bg = new Background
             bg.gradient.remove_color 1
 
-            m = new Mesh
+            m = new Bar_Chart
             for p, i in @img._histo
-                m.points.push [ i * 500, p, 0 ]
-                
-            for i in [ 0 ... @img._histo.length - 1 ]
-                m.lines.push [ i, i + 1]
+                m.points.push [ i , p, 0 ]
             
-            @cm = new CanvasManager el: d
+            @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.2
             @cm.items.push bg
             @cm.items.push m
             @cm.selected_items.push [ m ]

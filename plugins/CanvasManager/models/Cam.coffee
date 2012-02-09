@@ -1,6 +1,6 @@
 # camera
 class Cam extends Model 
-    constructor: ->
+    constructor: ( want_aspect_ratio = false ) ->
         super()
 
         # default values
@@ -15,7 +15,10 @@ class Cam extends Model
                 min: 0
                 max: 80
             ) # perspective angle
-
+        if want_aspect_ratio
+            @add_attr
+               r: 1
+               
     # translate screen
     pan: ( x, y, w, h ) ->
         c = @d.get() / Math.min( w, h )
@@ -56,7 +59,10 @@ class Cam extends Model
 
     equal: ( l ) ->
         ap_3 = ( a, b, e = 1e-3 ) -> 
-            Math.abs( a[ 0 ] - b[ 0 ] ) < e and Math.abs( a[ 1 ] - b[ 1 ] ) < e and Math.abs( a[ 2 ] - b[ 2 ] ) < e 
+            Math.abs( a[ 0 ] - b[ 0 ] ) < e and Math.abs( a[ 1 ] - b[ 1 ] ) < e and Math.abs( a[ 2 ] - b[ 2 ] ) < e
+            
+        if @r? and l.r? and l.r.get() != @r.get()
+            return false
         return l.w == @w and l.h == @h and ap_3( l.O, @O ) and ap_3( l.X, @X ) and ap_3( l.Y, @Y ) and Math.abs( l.a - @a ) < 1e-3 and Math.abs( l.d - @d ) / @d < 1e-3
 
     s_to_w_vec: ( V ) -> # screen orientation to real world.
@@ -85,9 +91,10 @@ class Cam extends Model
     
     class TransEye # screen -> eye dir and pos
         constructor: ( d, w, h ) ->
+            r = d.r or 1
             mwh = Math.min w, h
             c = d.d / mwh
-            @X = Vec_3.sm Vec_3.nor( d.X ), c
+            @X = Vec_3.sm Vec_3.nor( d.X ), c * r
             @Y = Vec_3.sm Vec_3.nor( d.Y ), - c
             @Z = Vec_3.sm Vec_3.nor( Vec_3.cro( d.X, d.Y ) ), c
             @p = Math.tan( d.a / 2 * 3.14159265358979323846 / 180 ) / ( mwh / 2 )
@@ -111,9 +118,10 @@ class Cam extends Model
 
     class TransBuf # real pos -> screen
         constructor: ( d, w, h ) ->
+            r = d.r or 1
             mwh = Math.min w, h
             c = mwh / d.d
-            @X = Vec_3.sm Vec_3.nor( d.X ), c
+            @X = Vec_3.sm Vec_3.nor( d.X ), c / r
             @Y = Vec_3.sm Vec_3.nor( d.Y ), - c
             @Z = Vec_3.sm Vec_3.nor( Vec_3.cro( d.X, d.Y ) ), c
             @p = Math.tan( d.a / 2 * 3.14159265358979323846 / 180 ) / ( mwh / 2 )
