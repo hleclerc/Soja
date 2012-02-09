@@ -220,8 +220,11 @@ class CanvasManager extends View
         c = Math.pow 1.2, delta
         x = evt.clientX - get_left( @canvas )
         y = evt.clientY - get_top ( @canvas )
+        
+        cx = if evt.shiftKey then 1 else c
+        cy = if evt.altKey   then 1 else c
 
-        @cam.zoom x, y, c, @canvas.width, @canvas.height
+        @cam.zoom x, y, [ cx, cy ], @canvas.width, @canvas.height
 
         evt.preventDefault?()
         evt.returnValue = false
@@ -266,7 +269,7 @@ class CanvasManager extends View
                 a = Math.atan2( new_y - h / 2.0, new_x - w / 2.0 ) - Math.atan2( @old_y - h / 2.0, @old_x - w / 2.0 )
                 @cam.rotate 0.0, 0.0, a
             else if @old_button == "MIDDLE" or @old_button == "LEFT" and evt.ctrlKey # pan
-                @cam.pan new_x - @old_x, @old_y - new_y, w, h
+                @cam.pan new_x - @old_x, new_y - @old_y, w, h
             else if @old_button == "LEFT" # rotate / C
                 x = 2.0 * ( new_x - @old_x ) / mwh
                 y = 2.0 * ( new_y - @old_y ) / mwh

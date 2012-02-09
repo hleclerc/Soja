@@ -1,4 +1,4 @@
-class Bar_Chart extends Drawable
+class BarChart extends Drawable
     constructor: ( bar ) ->
         super()
         

@@ -22,26 +22,28 @@ class Cam extends Model
     # translate screen
     pan: ( x, y, w, h ) ->
         c = @d.get() / Math.min( w, h )
-        x *= c
+        r = @r or 1
+        x *= c * r
         y *= c
         for d in [ 0 .. 2 ]
-            @O[ d ].set @O[ d ].get() - x * @X[ d ].get() - y * @Y[ d ].get()
+            @O[ d ].set @O[ d ].get() - x * @X[ d ].get() + y * @Y[ d ].get()
 
-    #
+    # c must be a vector of size 2
     zoom: ( x, y, c, w, h ) ->
-        # get position of the click in the real world
-        mwh = Math.min w, h
-        x = ( x - w / 2 ) * @d.get() / mwh
-        y = ( h / 2 - y ) * @d.get() / mwh
-        O = @O.get()
-        X = @X.get()
-        Y = @Y.get()
-        P = [ O[ 0 ] + x * X[ 0 ] + y * Y[ 0 ], O[ 1 ] + x * X[ 1 ] + y * Y[ 1 ], O[ 2 ] + x * X[ 2 ] + y * Y[ 2 ] ]
+        if typeof( c ) == "number"
+            zoom x, y, [ c, c ], w, h
+        else
+            o_sc_2_rw = @sc_2_rw w, h
+            o = o_sc_2_rw.pos x, y
+            
+            @d.set @d.get() / c[ 1 ]
+            if @r?
+                @r.set @r.get() * c[ 1 ] / c[ 0 ]
 
-        # update cam_data
-        @d.set @d.get() / c
-        for d in [ 0 ... 3 ]
-            @O[ d ].set P[ d ] + ( O[ d ] - P[ d ] ) / c
+            n_re_2_sc = @re_2_sc w, h
+            p = n_re_2_sc.proj o
+            
+            @pan x - p[ 0 ], y - p[ 1 ], w, h
 
     # 
     rotate: ( x, y, z ) ->
@@ -66,7 +68,6 @@ class Cam extends Model
         return l.w == @w and l.h == @h and ap_3( l.O, @O ) and ap_3( l.X, @X ) and ap_3( l.Y, @Y ) and Math.abs( l.a - @a ) < 1e-3 and Math.abs( l.d - @d ) / @d < 1e-3
 
     s_to_w_vec: ( V ) -> # screen orientation to real world.
-        
         X = Vec_3.nor @X.get()
         Y = Vec_3.nor @Y.get()
         Z = Vec_3.nor Vec_3.cro X, Y
