@@ -17,14 +17,14 @@ class TreeAppData extends Model
             # loaded modules
             modules            : new Lst
             time               : new ConstrainedVal( 0,
-                                    min: 0
-                                    max: -1
-                                    div: 0
+                                    _min: 0
+                                    _max: -1
+                                    _div: 0
                                 )
             
     
     new_session: ( name ) ->
-        s = new SessionItem name
+        s = new SessionItem name, this
         @tree_items.push s
         
         d = new DisplaySettingsItem
