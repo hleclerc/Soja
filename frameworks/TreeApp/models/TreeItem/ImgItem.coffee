@@ -41,7 +41,8 @@ class ImgItem extends TreeItem
                 # style     : { position: "absolute", top: 0, left: 0, width: "70%", bottom: 0 }
 
             bg = new Background
-            bg.gradient.remove_color 1
+#             bg.gradient.remove_color 1
+            bg.gradient.remove_color 0
 
             m = new BarChart
             for p, i in @img._histo
