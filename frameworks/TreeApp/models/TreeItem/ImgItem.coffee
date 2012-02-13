@@ -47,6 +47,7 @@ class ImgItem extends TreeItem
             m = new BarChart
             for p, i in @img._histo
                 m.points.push [ i , p, 0 ]
+                m.build_w2b_legend()
             
             @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.2
             @cm.items.push bg
