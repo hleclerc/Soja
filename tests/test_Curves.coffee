@@ -7,14 +7,15 @@
 # lib gen/BrowserState.js
 # lib gen/CanvasManager.js
 test_Curves = ->
+    w = 200
     d = new_dom_element
         parentNode: document.body
-        style     : { position: "fixed", top: 0, left: 0, width: 800, height: 600 }
+        style     : { position: "fixed", top: 0, left: 0, width: w, height: 600 }
 
     
     c = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.2
     c.cam.threeD.set false
-    c.resize 800, 600
+    c.resize w, 600
 
     # Background
     bg = new Background

@@ -28,7 +28,7 @@ class Cam extends Model
         for d in [ 0 .. 2 ]
             @O[ d ].set @O[ d ].get() - x * @X[ d ].get() + y * @Y[ d ].get()
 
-    # c must be a vector of size 2
+    # c may be a number or a vector of size 2
     zoom: ( x, y, c, w, h ) ->
         if typeof( c ) == "number"
             zoom x, y, [ c, c ], w, h
@@ -45,7 +45,7 @@ class Cam extends Model
             
             @pan x - p[ 0 ], y - p[ 1 ], w, h
 
-    # 
+    # around @C
     rotate: ( x, y, z ) ->
         if @threeD.get()
             R = @s_to_w_vec [ x, y, z ]

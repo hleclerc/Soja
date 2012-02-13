@@ -86,37 +86,53 @@ class CanvasManager extends View
     # 
     fit: ->
         b = @bounding_box()
-        
-        if @cam.r?
-            w = @canvas.width
-            h = @canvas.height
-            @cam.r.set ( b[ 1 ][ 0 ] - b[ 0 ][ 0 ] ) /
-                       ( b[ 1 ][ 1 ] - b[ 0 ][ 1 ] ) * h / w
-            
-        @cam.O.set [
+
+        O = [
             0.5 * ( b[ 1 ][ 0 ] + b[ 0 ][ 0 ] ),
             0.5 * ( b[ 1 ][ 1 ] + b[ 0 ][ 1 ] ), 
             0.5 * ( b[ 1 ][ 2 ] + b[ 0 ][ 2 ] )
         ]
-        @cam.d.set @padding_ratio * Math.max(
+        
+        d = @padding_ratio * Math.max(
             ( b[ 1 ][ 0 ] - b[ 0 ][ 0 ] ),
-            ( b[ 1 ][ 1 ] - b[ 0 ][ 1 ] ), 
+            ( b[ 1 ][ 1 ] - b[ 0 ][ 1 ] ),
             ( b[ 1 ][ 2 ] - b[ 0 ][ 2 ] )
         )
+        
+        if @cam.r?
+            w = @canvas.width
+            h = @canvas.height
+            
+            # assuming a 2D cam
+            dx = ( b[ 1 ][ 0 ] - b[ 0 ][ 0 ] )
+            dy = ( b[ 1 ][ 1 ] - b[ 0 ][ 1 ] )
+            ip = 1 / @padding_ratio
+            
+            if w > h
+                rx = ( ip * w ) / ( w - h * ( 1 - ip ) )
+                @cam.r.set rx * ( h * dy ) / ( w * dx )
+                d = dy * @padding_ratio
+            else
+                ry = ( h - w * ( 1 - ip ) ) / ( ip * h )
+                @cam.r.set ry * ( h * dy ) / ( w * dx )
+                d = dx / @cam.r.get() * @padding_ratio
+            
+        @cam.O.set O
+        @cam.d.set d
         @cam.C.set @cam.O.get()
         
     # 
     top: ->
-        @cam.X.set [ 1, 0, 0]
-        @cam.Y.set [ 0, 0, 1]
+        @cam.X.set [ 1, 0, 0 ]
+        @cam.Y.set [ 0, 0, 1 ]
     # 
     right: ->
-        @cam.X.set [ 0, 0, 1]
-        @cam.Y.set [ 0, 1, 0]
+        @cam.X.set [ 0, 0, 1 ]
+        @cam.Y.set [ 0, 1, 0 ]
     # 
     origin: ->
-        @cam.X.set [ 1, 0, 0]
-        @cam.Y.set [ 0, 1, 0]
+        @cam.X.set [ 1, 0, 0 ]
+        @cam.Y.set [ 0, 1, 0 ]
     
     # redraw all the scene
     draw: ->
@@ -125,7 +141,7 @@ class CanvasManager extends View
             CanvasManager._get_flat_list flat, item
         @_mk_cam_info()
         #sort object depending z_index (a greater z index is in front of an element with a lower z index)
-        flat.sort( ( a, b ) -> return a.z_index() - b.z_index() )
+        flat.sort ( a, b ) -> a.z_index() - b.z_index()
         
         for item in flat
             item.draw @cam_info
