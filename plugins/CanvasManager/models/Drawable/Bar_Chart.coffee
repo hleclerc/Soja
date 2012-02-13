@@ -19,14 +19,11 @@ class BarChart extends Drawable
             @legend[ i ] = "#" + color + color + color
 
     draw: ( info ) ->
-        orig = info.re_2_sc.proj [0, 0, 0]
-        
-        @drawAxis info, orig
         
         #draw points
         if @points.length
         
-            
+            orig = info.re_2_sc.proj [ 0, 0, 0]
             proj = for p in @points
                 info.re_2_sc.proj p.pos.get()
                 
@@ -39,42 +36,77 @@ class BarChart extends Drawable
                 info.ctx.fillStyle = @legend[ i ]
                 info.ctx.fillRect p[ 0 ], p[ 1 ], @bar_width, height
                 info.ctx.closePath()
+        
+        @drawAxis info
+        
+        @drawLegend info
 
-    get_width_axis : ( info ) ->
-        info.re_2_sc.proj [ @points.length, 0, 0 ]
-      
-    get_max_point: ( info ) ->
-        max = @points[ 0 ]
-        max_val = max.pos[ 1 ].get()
-        for p in @points
-            if p.pos[ 1 ].get() > max_val
-                max = p
-                max_val = p.pos[ 1 ].get()
+#     get_width_axis : ( info ) ->
+#         info.re_2_sc.proj [ @points.length, 0, 0 ]
+#       
+#     get_max_point: ( info ) ->
+#         max = @points[ 0 ]
+#         max_val = max.pos[ 1 ].get()
+#         for p in @points
+#             if p.pos[ 1 ].get() > max_val
+#                 max = p
+#                 max_val = p.pos[ 1 ].get()
+#         
+#         return max
+#     
+#     get_height_axis : ( info ) ->
+#         max = @get_max_point info
+#         info.re_2_sc.proj max.pos.get()
         
-        return max
+    drawAxis: ( info ) ->
     
-    get_height_axis : ( info ) ->
-        max = @get_max_point info
-        info.re_2_sc.proj max.pos.get()
-        
-    drawAxis: ( info, orig ) ->
-        width_axis = @get_width_axis info
-        height_axis = @get_height_axis info
+        orig = [ info.padding/2, info.h - info.padding/2, 0]
+        width_axis = info.w - info.padding/2
+        height_axis = -info.h + orig[ 1 ] + info.padding
         
         info.ctx.beginPath()
         info.ctx.lineWidth = 2
-        info.ctx.strokeStyle = "#FFFFFF"
+        info.ctx.strokeStyle = "white"
+        
+        info.ctx.lineCap = "round"
+        
+        decal_txt = 10
         
         # x axis
+#         info.ctx.strokeText "X",  width_axis + decal_txt, orig[ 1 ] + 2
         info.ctx.moveTo orig[ 0 ], orig[ 1 ]
-        info.ctx.lineTo width_axis[ 0 ], orig[ 1 ]
+        info.ctx.lineTo width_axis, orig[ 1 ]
         
-        console.log orig
-        console.log width_axis, height_axis
         # y axis
+#         info.ctx.strokeText "Y",  orig[ 0 ] - 2, - height_axis - decal_txt
         info.ctx.moveTo orig[ 0 ], orig[ 1 ]
-        info.ctx.lineTo orig[ 0 ], height_axis[ 1 ]
+        info.ctx.lineTo orig[ 0 ], height_axis
         info.ctx.stroke()
+        info.ctx.closePath()
+        
+    drawLegend: ( info ) ->
+    
+        orig = [ 0 + info.padding / 2, info.h - info.padding / 2, 0]
+        width_axis = info.w - info.padding/2
+        height_axis = -info.h + orig[ 1 ] + info.padding
+        
+        info.ctx.beginPath()
+        info.ctx.lineWidth = 2
+        info.ctx.fillStyle = "white"
+        
+        info.ctx.font = '6pt Arial'
+        
+        padding_txt = 10
+        decal_txt   = 3
+        
+        # y legend
+        info.ctx.fillText "0",  orig[ 0 ] - padding_txt, orig[ 1 ] + decal_txt
+        info.ctx.fillText "val_max",  orig[ 0 ] - padding_txt, height_axis + decal_txt
+        
+        # x legend
+        info.ctx.fillText "0",  orig[ 0 ] - decal_txt , orig[ 1 ] + padding_txt
+        info.ctx.fillText "255",  width_axis - decal_txt , orig[ 1 ] + padding_txt
+        info.ctx.fill()
         info.ctx.closePath()
     
     update_min_max: ( x_min, x_max ) ->
