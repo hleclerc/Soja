@@ -110,11 +110,11 @@ class CanvasManager extends View
             
             if w > h
                 rx = ( ip * w ) / ( w - h * ( 1 - ip ) )
-                @cam.r.set rx * ( h * dy ) / ( w * dx )
+                @cam.r.set rx * ( h * dx ) / ( w * dy )
                 d = dy * @padding_ratio
             else
                 ry = ( h - w * ( 1 - ip ) ) / ( ip * h )
-                @cam.r.set ry * ( h * dy ) / ( w * dx )
+                @cam.r.set ry * ( h * dx ) / ( w * dy )
                 d = dx / @cam.r.get() * @padding_ratio
             
         @cam.O.set O
