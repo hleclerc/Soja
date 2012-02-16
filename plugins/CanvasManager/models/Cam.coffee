@@ -92,14 +92,19 @@ class Cam extends Model
     
     class TransEye # screen -> eye dir and pos
         constructor: ( d, w, h ) ->
-            r = d.r or 1
             mwh = Math.min w, h
             c = d.d / mwh
-            @X = Vec_3.sm Vec_3.nor( d.X ), c * r
-            @Y = Vec_3.sm Vec_3.nor( d.Y ), - c
-            @Z = Vec_3.sm Vec_3.nor( Vec_3.cro( d.X, d.Y ) ), c
+            r = d.r or 1
+            
+            @X = Vec_3.nor d.X
+            @Y = Vec_3.nor Vec_3.sub( d.Y, Vec_3.mus( Vec_3.dot( @X, d.Y ), @X ) )
+            @Z = Vec_3.cro( @X, @Y )
+
+            @X = Vec_3.sm @X, c * r
+            @Y = Vec_3.sm @Y, - c
+            @Z = Vec_3.sm @Z, c
+            
             @p = Math.tan( d.a / 2 * 3.14159265358979323846 / 180 ) / ( mwh / 2 )
-            # center
             @O = d.O
             @o_x = - w / 2
             @o_y = - h / 2
@@ -122,9 +127,15 @@ class Cam extends Model
             r = d.r or 1
             mwh = Math.min w, h
             c = mwh / d.d
-            @X = Vec_3.sm Vec_3.nor( d.X ), c / r
-            @Y = Vec_3.sm Vec_3.nor( d.Y ), - c
-            @Z = Vec_3.sm Vec_3.nor( Vec_3.cro( d.X, d.Y ) ), c
+
+            @X = Vec_3.nor d.X
+            @Y = Vec_3.nor Vec_3.sub( d.Y, Vec_3.mus( Vec_3.dot( @X, d.Y ), @X ) )
+            @Z = Vec_3.cro( @X, @Y )
+            
+            @X = Vec_3.sm @X, c / r
+            @Y = Vec_3.sm @Y, - c
+            @Z = Vec_3.sm @Z, c
+            
             @p = Math.tan( d.a / 2 * 3.14159265358979323846 / 180 ) / ( mwh / 2 )
             # center
             @O = d.O

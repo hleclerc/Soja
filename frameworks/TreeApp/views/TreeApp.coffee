@@ -113,7 +113,7 @@ class TreeApp extends View
                     if a.key?
                         for k in a.key
                             if k == cur_key
-                                a.fun evt, this
+                                a.fun? evt, this
                                 break
                     
                     if a.sub? and a.sub.length > 0
