@@ -1,14 +1,15 @@
 class BarChart extends Drawable
-    constructor: ( bar ) ->
+    constructor: ( x_axis = '', y_axis = '' ) ->
         super()
         
         @add_attr
             points    : new Lst_Point
             legend    : new Lst
-            axe_x     : ""
-            axe_y     : ""
+            x_axis    : x_axis
+            y_axis    : y_axis
         
         @bar_width = 2
+        @axis_width = 1
 
     z_index: ->
         100
@@ -41,23 +42,6 @@ class BarChart extends Drawable
         
         @drawLegend info
 
-#     get_width_axis : ( info ) ->
-#         info.re_2_sc.proj [ @points.length, 0, 0 ]
-#       
-#     get_max_point: ( info ) ->
-#         max = @points[ 0 ]
-#         max_val = max.pos[ 1 ].get()
-#         for p in @points
-#             if p.pos[ 1 ].get() > max_val
-#                 max = p
-#                 max_val = p.pos[ 1 ].get()
-#         
-#         return max
-#     
-#     get_height_axis : ( info ) ->
-#         max = @get_max_point info
-#         info.re_2_sc.proj max.pos.get()
-        
     drawAxis: ( info ) ->
     
         orig = [ info.padding/2, info.h - info.padding/2, 0]
@@ -65,7 +49,7 @@ class BarChart extends Drawable
         height_axis = -info.h + orig[ 1 ] + info.padding
         
         info.ctx.beginPath()
-        info.ctx.lineWidth = 2
+        info.ctx.lineWidth = @axis_width
         info.ctx.strokeStyle = "white"
         
         info.ctx.lineCap = "round"
@@ -73,12 +57,14 @@ class BarChart extends Drawable
         decal_txt = 10
         
         # x axis
-#         info.ctx.strokeText "X",  width_axis + decal_txt, orig[ 1 ] + 2
+        if @x_axis.get() != ""
+            info.ctx.strokeText @x_axis.get(),  width_axis + decal_txt, orig[ 1 ] + 2
         info.ctx.moveTo orig[ 0 ], orig[ 1 ]
         info.ctx.lineTo width_axis, orig[ 1 ]
         
         # y axis
-#         info.ctx.strokeText "Y",  orig[ 0 ] - 2, - height_axis - decal_txt
+        if @y_axis.get() != ""
+            info.ctx.strokeText @y_axis.get(),  orig[ 0 ] - 2, height_axis - decal_txt
         info.ctx.moveTo orig[ 0 ], orig[ 1 ]
         info.ctx.lineTo orig[ 0 ], height_axis
         info.ctx.stroke()
@@ -91,24 +77,77 @@ class BarChart extends Drawable
         height_axis = -info.h + orig[ 1 ] + info.padding
         
         info.ctx.beginPath()
-        info.ctx.lineWidth = 2
         info.ctx.fillStyle = "white"
-        
         info.ctx.font = '6pt Arial'
         
         padding_txt = 10
         decal_txt   = 3
         
+        # number of division including start and begining
+        x_division = 5
+        y_division = 3
+        
+        y_min = @get_y_min_point info
+        y_max = @get_y_max_point info
+        
+        x_min = @get_x_min_point info
+        x_max = @get_x_max_point info
+        
+        
         # y legend
-        info.ctx.fillText "0",  orig[ 0 ] - padding_txt, orig[ 1 ] + decal_txt
-        info.ctx.fillText "val_max",  orig[ 0 ] - padding_txt, height_axis + decal_txt
+#         info.ctx.fillText y_min,  orig[ 0 ] - padding_txt, orig[ 1 ] + decal_txt
+#         info.ctx.fillText y_max,  orig[ 0 ] - padding_txt, height_axis + decal_txt
+        for i in [ 0 .. y_division ]
+            val = ( ( y_max - y_min ) / ( y_division - 1 ) ) * i + y_min
+            pos = ( ( height_axis + decal_txt - ( orig[ 1 ] + decal_txt ) ) / ( y_division - 1 ) ) * i + orig[ 1 ] + decal_txt
+            info.ctx.fillText val.toFixed(1),  orig[ 0 ] - padding_txt, pos
         
         # x legend
-        info.ctx.fillText "0",  orig[ 0 ] - decal_txt , orig[ 1 ] + padding_txt
-        info.ctx.fillText "255",  width_axis - decal_txt , orig[ 1 ] + padding_txt
+        for i in [ 0 .. x_division ]
+            val = ( ( x_max - x_min ) / ( x_division - 1 ) ) * i + x_min
+            pos = ( ( width_axis - decal_txt - ( orig[ 0 ] - decal_txt ) ) / ( x_division - 1 ) ) * i + orig[ 0 ] - decal_txt
+            info.ctx.fillText val.toFixed(2),  pos, orig[ 1 ] + padding_txt
+        
+#         info.ctx.fillText x_min,  orig[ 0 ] - decal_txt , orig[ 1 ] + padding_txt
+#         info.ctx.fillText x_max,  width_axis - decal_txt , orig[ 1 ] + padding_txt
         info.ctx.fill()
         info.ctx.closePath()
+
+#     get_width_axis : ( info ) ->
+#         info.re_2_sc.proj [ @points.length, 0, 0 ]
+#       
+    get_y_max_point: ( info ) ->
+        max_val = @points[ 0 ].pos[ 1 ].get()
+        for p in @points
+            if p.pos[ 1 ].get() > max_val
+                max_val = p.pos[ 1 ].get()
+        return max_val
+        
+    get_x_max_point: ( info ) ->
+        max_val = @points[ 0 ].pos[ 0 ].get()
+        for p in @points
+            if p.pos[ 0 ].get() > max_val
+                max_val = p.pos[ 0 ].get()
+        return max_val
+        
+    get_y_min_point: ( info ) ->
+        min_val = @points[ 0 ].pos[ 1 ].get()
+        for p in @points
+            if p.pos[ 1 ].get() < min_val
+                min_val = p.pos[ 1 ].get()
+        return min_val
+        
+    get_x_min_point: ( info ) ->
+        min_val = @points[ 0 ].pos[ 0 ].get()
+        for p in @points
+            if p.pos[ 0 ].get() < min_val
+                min_val = p.pos[ 0 ].get()
+        return min_val
     
+    get_height_axis : ( info ) ->
+        max = @get_max_point info
+        info.re_2_sc.proj max.pos.get()
+
     update_min_max: ( x_min, x_max ) ->
         for m in @points
             p = m.pos.get()

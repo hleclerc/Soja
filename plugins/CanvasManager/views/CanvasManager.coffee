@@ -131,8 +131,14 @@ class CanvasManager extends View
         @cam.Y.set [ 0, 1, 0 ]
     # 
     origin: ->
-        @cam.X.set [ 1, 0, 0 ]
-        @cam.Y.set [ 0, 1, 0 ]
+        
+        Animation.set @cam.X[ 0 ], 1
+        Animation.set @cam.X[ 1 ], 0
+        Animation.set @cam.X[ 2 ], 0
+        Animation.set @cam.Y[ 0 ], 0
+        Animation.set @cam.Y[ 1 ], 1
+        Animation.set @cam.Y[ 2 ], 0
+#         @cam.Y.set [ 0, 1, 0 ]
     
     # redraw all the scene
     draw: ->
