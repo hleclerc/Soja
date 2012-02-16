@@ -27,7 +27,7 @@ class Img extends Drawable
             
             if need_fit and app?
                 need_fit = false
-                app.fit()
+                app.fit 0
             
         @data.buff = new Image
         @data.buff.onload = onload

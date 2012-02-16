@@ -33,7 +33,7 @@ class Animation
 
             if not Animation._timer?
                 Animation._timer = setTimeout Animation._timeout_func, Animation.period_ms
-            
+        
     @_timeout_func: ->
         dt = (new Date).getTime()
         rm = []

@@ -36,9 +36,9 @@ class TreeApp extends View
         for panel_id in @data.selected_canvas_pan when layout._pan_vs_id[ panel_id ]?
             layout._pan_vs_id[ panel_id ]
 
-    fit: ->
+    fit: ( anim = 1 ) ->
         for inst in @selected_canvas_inst()
-            inst.cm.fit()
+            inst.cm.fit anim
 
     # 
     _new_LayoutManager: ( session ) ->

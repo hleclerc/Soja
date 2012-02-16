@@ -10,8 +10,9 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             items: @app_data.visible_tree_items[ @view_item.panel_id ]
             time : @app_data.time
             selected_items: @app_data.selected_tree_items
-            context_menu: ( evt, show ) => @_launch_context_menu( evt, show )
-            add_transform: ( evt, show ) => @_add_transform_node( evt )
+            context_menu  : ( evt, show ) => @_launch_context_menu( evt, show )
+            add_transform : ( evt, show ) => @_add_transform_node( evt )
+            theme         : @app_data.selected_display_settings().theme
 
         @cm.click_fun.push ( cm, evt ) =>
             for view in @app_data._views

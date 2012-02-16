@@ -26,6 +26,8 @@ class CanvasManager extends View
             @pre_selected_entities = new Lst
         if not @allow_gl?
             @allow_gl = false
+        if not @theme?
+            @theme = new Theme 'original'
         if not @time?
             @time = new ConstrainedVal( 0,
                                     min: 0
@@ -84,7 +86,7 @@ class CanvasManager extends View
         return [ x_min, x_max ]
         
     # 
-    fit: ->
+    fit: ( anim = 1 ) ->
         b = @bounding_box()
 
         O = [
@@ -116,23 +118,27 @@ class CanvasManager extends View
                 ry = ( h - w * ( 1 - ip ) ) / ( ip * h )
                 @cam.r.set ry * ( h * dx ) / ( w * dy )
                 d = dx / @cam.r.get() * @padding_ratio
-            
-        @cam.O.set O
-        @cam.d.set d
-        @cam.C.set @cam.O.get()
+    
+        @aset @cam.O, O, anim
+        @aset @cam.d, d, anim
+        @aset @cam.C, @cam.O, anim
+    
+    # animed set 
+    aset: ( model, value, anim = 1 ) ->
+        Animation.set model, value, anim * @theme.anim_delay.get()
         
     # 
     top: ->
-        @cam.X.set [ 1, 0, 0 ]
-        @cam.Y.set [ 0, 0, 1 ]
+        @aset @cam.X, [ 1, 0, 0 ]
+        @aset @cam.Y, [ 0, 0, 1 ]
     # 
     right: ->
-        @cam.X.set [ 0, 0, 1 ]
-        @cam.Y.set [ 0, 1, 0 ]
+        @aset @cam.X, [ 0, 0, 1 ]
+        @aset @cam.Y, [ 0, 1, 0 ]
     # 
     origin: ->
-        Animation.set @cam.X, [ 1, 0, 0 ]
-        Animation.set @cam.Y, [ 0, 1, 0 ]
+        @aset @cam.X, [ 1, 0, 0 ]
+        @aset @cam.Y, [ 0, 1, 0 ]
     
     # redraw all the scene
     draw: ->

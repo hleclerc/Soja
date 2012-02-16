@@ -9,5 +9,6 @@ class Theme extends Model
             line          : new Color 255, 255, 255, 255
             dot           : new Color   0, 255,   0, 255
             selected_dot  : new Color 255,   0,   0, 255
+            anim_delay    : 300
             
             
