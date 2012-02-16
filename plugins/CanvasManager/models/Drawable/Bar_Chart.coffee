@@ -21,11 +21,10 @@ class BarChart extends Drawable
             @legend[ i ] = "#" + color + color + color
 
     draw: ( info ) ->
-        
         #draw points
+        console.log @points.length
         if @points.length
-        
-            orig = info.re_2_sc.proj [ 0, 0, 0]
+            orig = info.re_2_sc.proj [ 0, 0, 0 ]
             proj = for p in @points
                 info.re_2_sc.proj p.pos.get()
                 
@@ -35,7 +34,7 @@ class BarChart extends Drawable
                 height = orig[ 1 ] - p[ 1 ]
                 
                 info.ctx.beginPath()
-                info.ctx.fillStyle = @legend[ i ]
+                # info.ctx.fillStyle = @legend[ i ]
                 info.ctx.fillRect p[ 0 ] + @padding, p[ 1 ] - @padding, @bar_width, height
                 info.ctx.closePath()
         
@@ -91,15 +90,16 @@ class BarChart extends Drawable
         info.ctx.fillStyle = "white"
         info.ctx.font = '6pt Arial'
         
-        x_min = @get_x_min_point info
-        x_max = @get_x_max_point info
+        #x_min = @get_x_min_point info
+        #x_max = @get_x_max_point info
         
         info.ctx.textAlign = 'center'
         # x legend
         for i in [ 0 .. x_division ]
-            val = ( ( x_max - x_min ) / ( x_division - 1 ) ) * i + x_min
             pos = ( ( width_axis - decal_txt - ( orig[ 0 ] - decal_txt ) ) / ( x_division - 1 ) ) * i + orig[ 0 ] - decal_txt
-            info.ctx.fillText val.toFixed(2),  pos, orig[ 1 ] + x_padding_txt
+            vve = info.sc_2_rw.pos pos, 0
+            val = vve[ 0 ]
+            info.ctx.fillText val.toFixed( 2 ), pos, orig[ 1 ] + x_padding_txt
         
 #         info.ctx.fillText x_min,  orig[ 0 ] - decal_txt , orig[ 1 ] + padding_txt
 #         info.ctx.fillText x_max,  width_axis - decal_txt , orig[ 1 ] + padding_txt

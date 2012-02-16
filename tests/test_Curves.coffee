@@ -6,6 +6,8 @@
 # lib gen/Geometry.js
 # lib gen/BrowserState.js
 # lib gen/CanvasManager.js
+# lib gen/Animation.js
+# lib gen/Theme.js
 add_cm = ( w, o ) ->
     d = new_dom_element
         parentNode: document.body
@@ -21,21 +23,25 @@ add_cm = ( w, o ) ->
     c.items.push bg
     
     # BarChart
-    #     m = new BarChart
-    #     for p, i in @img._histo
-    #         m.points.push [ i , p, 0 ]
-    m = new Mesh
-    s = 800
-    t = 200
-    m.add_point [ 0, 0, 0 ]
-    m.add_point [ t, 0, 0 ]
-    m.add_point [ t, s, 0 ]
-    m.add_point [ 0, s, 0 ]
-    m.lines.push [ 0, 1 ]
-    m.lines.push [ 1, 2 ]
-    m.lines.push [ 2, 3 ]
-    m.lines.push [ 3, 0 ]
+    m = new BarChart
+    m.points.push [   0, 0, 0 ]
+    m.points.push [ 100, 1, 0 ]
+    m.points.push [ 200, 2, 0 ]
+    m.points.push [ 255, 1, 0 ]
     c.items.push m
+    
+    #     m = new Mesh
+    #     s = 800
+    #     t = 200
+    #     m.add_point [ 0, 0, 0 ]
+    #     m.add_point [ t, 0, 0 ]
+    #     m.add_point [ t, s, 0 ]
+    #     m.add_point [ 0, s, 0 ]
+    #     m.lines.push [ 0, 1 ]
+    #     m.lines.push [ 1, 2 ]
+    #     m.lines.push [ 2, 3 ]
+    #     m.lines.push [ 3, 0 ]
+    #     c.items.push m
     
     c.fit()
     c.draw()
