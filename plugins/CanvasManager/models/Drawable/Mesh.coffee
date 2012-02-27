@@ -34,23 +34,27 @@ class Mesh extends Drawable
                 info.re_2_sc.proj p.pos.get()            
             
             info.ctx.lineWidth   = 1
-            info.ctx.strokeStyle = "#FFFFFF"
             info.ctx.fillStyle = "#FFFFFF"
+            
+            color_line = info.theme.line.to_hex()
+            info.ctx.strokeStyle = color_line
+            
             if draw_point
                 # draw points
+                color_selected_dot = info.theme.selected_dot.to_hex()
+                color_dot = info.theme.dot.to_hex()
                 for n in [ 0 ... proj.length ]
                     p = proj[ n ]
                     if info.selected[ @points[ n ].model_id ]?
-                        info.ctx.fillStyle = "#FF0000"
+                        info.ctx.fillStyle = color_selected_dot
                     else
-                        info.ctx.fillStyle = "#00FF00"
+                        info.ctx.fillStyle = color_dot
                     
                     info.ctx.beginPath()
                     info.ctx.arc p[ 0 ], p[ 1 ], 4, 0, Math.PI * 2, true
 #                     info.ctx.closePath()
                     info.ctx.fill()
                     info.ctx.stroke()
-                    info.ctx.fillStyle = "#FFFFFF"
                     
                     if info.pre_sele[ @points[ n ].model_id ]?
                         info.ctx.strokeStyle = "#FFFF22"
@@ -60,7 +64,7 @@ class Mesh extends Drawable
                         info.ctx.stroke()
 #                         info.ctx.closePath()
                         
-                        info.ctx.strokeStyle = "#FFFFFF"
+                        info.ctx.strokeStyle = color_line
                         info.ctx.lineWidth   = 1
                         
                 

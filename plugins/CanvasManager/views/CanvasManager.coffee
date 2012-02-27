@@ -367,6 +367,7 @@ class CanvasManager extends View
             selected: s
             pre_sele: pre_s
             time    : @time.get()
+            theme   : @theme
             padding : ( 1 - 1 / @padding_ratio ) * Math.min( w, h ) # padding size in pixels
                     
     # get leaves in item list (i.e. object with a draw method)
