@@ -173,9 +173,12 @@ class Mesh extends Drawable
         value = for i in [ 0 ... 3 ]
                 field[ tri[ i ] ]
                 
-#         pos = ( @_legend._max_val.get() - value ) / ( @_legend._max_val.get() - @_legend._min_val.get() )
-#         col = @_legend.gradient.get_color_from_pos pos
-#                 
+        max_legend = @_legend.max_val.get()
+        min_legend = @_legend.min_val.get()
+        
+        for val, i in value
+            value[ i ] = ( max_legend - val ) / ( max_legend - min_legend )
+            
         #position of every point
         x0 = posit[ 0 ][ 0 ]
         y0 = posit[ 0 ][ 1 ]
