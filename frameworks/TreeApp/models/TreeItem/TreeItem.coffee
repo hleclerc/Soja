@@ -34,3 +34,9 @@ class TreeItem extends Model
     # should be redefine in some child
     anim_min_max: ->
         # do nothing
+        
+    sub_canvas_items: ->
+        [  ]
+        
+    z_index: ->
+        # do nothing
