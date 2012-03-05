@@ -49,6 +49,6 @@ add_cm = ( w, o, style, marker_color, size_marker, line, line_color, axe_x, axe_
     
 test_Curves = ->    
    add_cm 500, 0, 'bar', "#ff0000", 2, false, "", "X", "Y"
-   add_cm 300, 510, 'dot', "#0000ff", 3, true, "yellow", "day", "value"
-   add_cm 300, 820, 'cross', "green", 3, true, "magenta"
+   add_cm 300, 510, 'square', "#0000ff", 8, true, "yellow", "day", "value"
+   add_cm 300, 820, 'cross', "green", 4, true, "magenta"
    

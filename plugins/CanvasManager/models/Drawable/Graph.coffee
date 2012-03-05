@@ -43,7 +43,6 @@ class Graph extends Drawable
                 
             info.ctx.lineWidth = 1           
             
-            console.log @line.get()
             if @line.get() == true
                 @draw_line info, orig, proj
             
@@ -94,9 +93,8 @@ class Graph extends Drawable
     draw_marker_square: ( info, orig, proj ) ->
         for p, i in proj
             info.ctx.beginPath()
-            info.ctx.strokeStyle = @legend[ i ] or @marker_color.get()
-            info.ctx.fillRect p[ 0 ] + @padding, p[ 1 ] - @padding, @size_marker.get(), @size_marker.get()
-            info.ctx.stroke()
+            info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
+            info.ctx.fillRect p[ 0 ] + @padding - @size_marker.get() * 0.5 , p[ 1 ] - @padding - @size_marker.get() * 0.5 , @size_marker.get(), @size_marker.get()
         info.ctx.closePath()
         
     #bar chart
