@@ -1,3 +1,13 @@
+# This class is use to draw line/dot graph or bar chart
+# params available :
+# line        : true draw a line linking all points
+# line_color  : choose the color of linking line_color (in html way (hexa or string))
+# marker      : shape that mark all value : dot, cross, square or bar ( for bar chart )
+# size_marker : indicate size in pixels of marker
+# marker_color: choose the color of marker (in html way (hexa or string))
+# x_axis      : label for x axis
+# y_axis      : label for y axis
+
 class Graph extends Drawable
     constructor: ( params = {} ) ->
         super()
@@ -9,7 +19,7 @@ class Graph extends Drawable
             line_color  : params.line_color or '#FFFFFF'
             marker      : params.marker or 'dot'
             size_marker : params.size_marker or 2
-            color       : params.marker_color or '#FFFFFF'
+            marker_color: params.marker_color or '#FFFFFF'
             x_axis      : params.x_axis or ''
             y_axis      : params.y_axis or ''
             
@@ -33,6 +43,7 @@ class Graph extends Drawable
                 
             info.ctx.lineWidth = 1           
             
+            console.log @line.get()
             if @line.get() == true
                 @draw_line info, orig, proj
             
@@ -64,7 +75,7 @@ class Graph extends Drawable
     draw_marker_dot: ( info, orig, proj ) ->
         for p, i in proj
             info.ctx.beginPath()
-            info.ctx.fillStyle = @legend[ i ] or @color.get()
+            info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
             info.ctx.arc p[ 0 ] + @padding, p[ 1 ] - @padding, @size_marker.get(), 0, Math.PI * 2, true
             info.ctx.fill()
         info.ctx.closePath()
@@ -72,7 +83,7 @@ class Graph extends Drawable
     draw_marker_cross: ( info, orig, proj ) ->
         for p, i in proj
             info.ctx.beginPath()
-            info.ctx.strokeStyle = @legend[ i ] or @color.get()
+            info.ctx.strokeStyle = @legend[ i ] or @marker_color.get()
             info.ctx.moveTo p[ 0 ] + @padding - @size_marker.get(), p[ 1 ] - @padding + @size_marker.get()
             info.ctx.lineTo p[ 0 ] + @padding + @size_marker.get(), p[ 1 ] - @padding - @size_marker.get()
             info.ctx.moveTo p[ 0 ] + @padding + @size_marker.get(), p[ 1 ] - @padding + @size_marker.get()
@@ -83,7 +94,7 @@ class Graph extends Drawable
     draw_marker_square: ( info, orig, proj ) ->
         for p, i in proj
             info.ctx.beginPath()
-            info.ctx.strokeStyle = @legend[ i ] or @color.get()
+            info.ctx.strokeStyle = @legend[ i ] or @marker_color.get()
             info.ctx.fillRect p[ 0 ] + @padding, p[ 1 ] - @padding, @size_marker.get(), @size_marker.get()
             info.ctx.stroke()
         info.ctx.closePath()
@@ -95,7 +106,7 @@ class Graph extends Drawable
             height = orig[ 1 ] - p[ 1 ]
             
             info.ctx.beginPath()
-            info.ctx.fillStyle = @legend[ i ] or @color.get()
+            info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
             info.ctx.fillRect p[ 0 ] + @padding, p[ 1 ] - @padding, @size_marker.get(), height
         info.ctx.closePath()
             
