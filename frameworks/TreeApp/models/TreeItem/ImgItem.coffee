@@ -44,10 +44,10 @@ class ImgItem extends TreeItem
 #             bg.gradient.remove_color 1
             bg.gradient.remove_color 0
 
-            m = new BarChart
+            m = new Graph 'bar'
             for p, i in @img._histo
                 m.points.push [ i , p, 0 ]
-                m.build_w2b_legend()
+            m.build_w2b_legend()
             
             @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.2
             @cm.items.push bg

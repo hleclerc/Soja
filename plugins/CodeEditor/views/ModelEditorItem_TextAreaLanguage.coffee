@@ -22,20 +22,6 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
 #                 p.appendChild @d
 
 
-#         .CodeMirror-fullscreen {
-#             display: block;
-#             position: absolute;
-#             top: 0;
-#             left: 0;
-#             width: 100%;
-#             height: 100%;
-#             z-index: 9999;
-#             margin: 0;
-#             padding: 0;
-#             border: 0px solid #BBBBBB;
-#             opacity: 1;
-#         }
-
         code_mirror = CodeMirror.fromTextArea @textarea, {
             lineNumbers : true,
             mode: "javascript",

@@ -8,7 +8,7 @@
 # lib gen/CanvasManager.js
 # lib gen/Animation.js
 # lib gen/Theme.js
-add_cm = ( w, o ) ->
+add_cm = ( w, o, style, color, axe_x, axe_y ) ->
     d = new_dom_element
         parentNode: document.body
         style     : { position: "fixed", top: 0, left: o, width: w, height: 600 }
@@ -23,12 +23,13 @@ add_cm = ( w, o ) ->
     c.items.push bg
     
     # BarChart
-    m = new BarChart
+    m = new Graph style, color, axe_x, axe_y
     m.points.push [   0, 0, 0 ]
     m.points.push [ 100, 1, 0 ]
     m.points.push [ 200, 2, 0 ]
     m.points.push [ 255, 1, 0 ]
     c.items.push m
+#     m.build_w2b_legend()
     
     #     m = new Mesh
     #     s = 800
@@ -47,6 +48,7 @@ add_cm = ( w, o ) ->
     c.draw()
     
 test_Curves = ->    
-   add_cm 800, 0
-   add_cm 200, 810
+   add_cm 500, 0, 'bar', "#ff0000", 2, "X", "Y"
+   add_cm 300, 510, 'dot', "#0000ff", 3, "day", "value"
+   add_cm 300, 820, 'cross', "green", 3
    

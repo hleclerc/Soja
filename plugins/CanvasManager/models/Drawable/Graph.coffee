@@ -1,14 +1,16 @@
-class BarChart extends Drawable
-    constructor: ( x_axis = '', y_axis = '' ) ->
+class Graph extends Drawable
+    constructor: ( marker = 'dot', color = '#FFFFFF', size_marker = 2,  x_axis = '', y_axis = '' ) ->
         super()
         
         @add_attr
-            points    : new Lst_Point
-            legend    : new Lst
-            x_axis    : x_axis
-            y_axis    : y_axis
+            points      : new Lst_Point
+            legend      : new Lst
+            marker      : marker
+            size_marker : size_marker
+            color       : color
+            x_axis      : x_axis
+            y_axis      : y_axis
         
-        @bar_width = 2
         @axis_width = 1
         @padding = 10 # in px
 
@@ -28,22 +30,60 @@ class BarChart extends Drawable
                 info.re_2_sc.proj p.pos.get()
                 
             info.ctx.lineWidth = 1
-            info.ctx.fillStyle = "#FFFFFF"
-            for p, i in proj
-                height = orig[ 1 ] - p[ 1 ]
-                
-                info.ctx.beginPath()
-                info.ctx.fillStyle = @legend[ i ]
-                info.ctx.fillRect p[ 0 ] + @padding, p[ 1 ] - @padding, @bar_width, height
-                info.ctx.closePath()
+            info.ctx.fillStyle = @color.get()
+            if @marker.get() == 'bar'
+                @draw_marker_bar info, orig, proj
+            else if @marker.get() == 'cross'
+                @draw_marker_cross info, orig, proj
+            else if @marker.get() == 'square'
+                @draw_marker_square info, orig, proj
+            else if @marker.get() == 'dot'
+                @draw_marker_dot info, orig, proj
         
-        @drawAxis info
+        @draw_axis info
         
-        @drawLegend info
+        @draw_legend info
 
-    drawAxis: ( info ) ->
+    draw_marker_dot: ( info, orig, proj ) ->
+        for p, i in proj
+            info.ctx.beginPath()
+            info.ctx.fillStyle = @legend[ i ] or @color.get()
+            info.ctx.arc p[ 0 ] + @padding, p[ 1 ] - @padding, @size_marker.get(), 0, Math.PI * 2, true
+            info.ctx.fill()
+        info.ctx.closePath()
         
-        orig = [ info.padding * 0.5 + @padding, info.h - info.padding / 2 - @padding, 0]
+    draw_marker_cross: ( info, orig, proj ) ->
+        for p, i in proj
+            info.ctx.beginPath()
+            info.ctx.strokeStyle = @legend[ i ] or @color.get()
+            info.ctx.moveTo p[ 0 ] + @padding - @size_marker.get(), p[ 1 ] - @padding + @size_marker.get()
+            info.ctx.lineTo p[ 0 ] + @padding + @size_marker.get(), p[ 1 ] - @padding - @size_marker.get()
+            info.ctx.moveTo p[ 0 ] + @padding + @size_marker.get(), p[ 1 ] - @padding + @size_marker.get()
+            info.ctx.lineTo p[ 0 ] + @padding - @size_marker.get(), p[ 1 ] - @padding - @size_marker.get()
+            info.ctx.stroke()
+        info.ctx.closePath()
+        
+    draw_marker_square: ( info, orig, proj ) ->
+        for p, i in proj
+            info.ctx.beginPath()
+            info.ctx.strokeStyle = @legend[ i ] or @color.get()
+            info.ctx.fillRect p[ 0 ] + @padding, p[ 1 ] - @padding, @size_marker.get(), @size_marker.get()
+            info.ctx.stroke()
+        info.ctx.closePath()
+        
+    #bar chart
+    draw_marker_bar: ( info, orig, proj ) ->
+        size_bar = 2
+        for p, i in proj
+            height = orig[ 1 ] - p[ 1 ]
+            
+            info.ctx.beginPath()
+            info.ctx.fillStyle = @legend[ i ] or @color.get()
+            info.ctx.fillRect p[ 0 ] + @padding, p[ 1 ] - @padding, @size_marker.get(), height
+        info.ctx.closePath()
+            
+    draw_axis: ( info ) ->        
+        orig = [ info.padding * 0.5 + @padding, info.h - info.padding / 2 - @padding, 0 ]
         width_axis = info.w - info.padding/2
         height_axis = -info.h + orig[ 1 ] + info.padding
         
@@ -57,19 +97,21 @@ class BarChart extends Drawable
         
         # x axis
         if @x_axis.get() != ""
+            info.ctx.textAlign = "left"
             info.ctx.strokeText @x_axis.get(),  width_axis + decal_txt, orig[ 1 ] + 2
         info.ctx.moveTo orig[ 0 ], orig[ 1 ]
         info.ctx.lineTo width_axis, orig[ 1 ]
         
         # y axis
         if @y_axis.get() != ""
+            info.ctx.textAlign = "center"
             info.ctx.strokeText @y_axis.get(),  orig[ 0 ] - 2, height_axis - decal_txt
         info.ctx.moveTo orig[ 0 ], orig[ 1 ]
         info.ctx.lineTo orig[ 0 ], height_axis
         info.ctx.stroke()
         info.ctx.closePath()
         
-    drawLegend: ( info ) ->
+    draw_legend: ( info ) ->
     
         # number of division including start and begining
         x_division = 5
