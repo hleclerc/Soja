@@ -1,16 +1,18 @@
 class Graph extends Drawable
-    constructor: ( marker = 'dot', color = '#FFFFFF', size_marker = 2,  x_axis = '', y_axis = '' ) ->
+    constructor: ( params = {} ) ->
         super()
         
         @add_attr
             points      : new Lst_Point
             legend      : new Lst
-            marker      : marker
-            size_marker : size_marker
-            color       : color
-            x_axis      : x_axis
-            y_axis      : y_axis
-        
+            line        : if params.line? then params.line else true
+            line_color  : params.line_color or '#FFFFFF'
+            marker      : params.marker or 'dot'
+            size_marker : params.size_marker or 2
+            color       : params.marker_color or '#FFFFFF'
+            x_axis      : params.x_axis or ''
+            y_axis      : params.y_axis or ''
+            
         @axis_width = 1
         @padding = 10 # in px
 
@@ -29,8 +31,11 @@ class Graph extends Drawable
             proj = for p in @points
                 info.re_2_sc.proj p.pos.get()
                 
-            info.ctx.lineWidth = 1
-            info.ctx.fillStyle = @color.get()
+            info.ctx.lineWidth = 1           
+            
+            if @line.get() == true
+                @draw_line info, orig, proj
+            
             if @marker.get() == 'bar'
                 @draw_marker_bar info, orig, proj
             else if @marker.get() == 'cross'
@@ -39,11 +44,23 @@ class Graph extends Drawable
                 @draw_marker_square info, orig, proj
             else if @marker.get() == 'dot'
                 @draw_marker_dot info, orig, proj
+                
         
         @draw_axis info
         
         @draw_legend info
 
+    draw_line: ( info, orig, proj ) ->
+        info.ctx.strokeStyle = @line_color.get()
+        info.ctx.beginPath()
+        info.ctx.moveTo orig[ 0 ] + @padding, orig[ 1 ] - @padding
+        for p, i in proj
+            info.ctx.lineTo p[ 0 ] + @padding, p[ 1 ] - @padding
+        info.ctx.stroke()
+        info.ctx.closePath()
+    
+    
+    
     draw_marker_dot: ( info, orig, proj ) ->
         for p, i in proj
             info.ctx.beginPath()
