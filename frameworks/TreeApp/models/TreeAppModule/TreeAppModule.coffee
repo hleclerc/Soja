@@ -80,6 +80,14 @@ class TreeAppModule extends Model
 #                         console.log '3'
                         find_object = true
 
+        #search if typeItem can be a child of the parent of selected item in tree        
+        if find_object == false
+            for items in app.data.selected_tree_items
+                parent = items[ items.length - 2 ]
+                item = new typeItem
+                if parent instanceof typeItem
+                    object = parent
+                    find_object = true
         
         #If selection didn't help to find a typeItem child
         if find_object == false
