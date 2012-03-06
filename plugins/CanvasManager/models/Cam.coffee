@@ -20,7 +20,10 @@ class Cam extends Model
                r: 1
                
     # translate screen
-    pan: ( x, y, w, h ) ->
+    pan: ( x, y, w, h, ctrl_key = false ) ->
+        if ctrl_key
+            x /= 10
+            y /= 10
         c = @d.get() / Math.min( w, h )
         r = @r or 1
         x *= c * r

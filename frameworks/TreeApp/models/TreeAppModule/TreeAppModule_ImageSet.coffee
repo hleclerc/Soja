@@ -6,6 +6,19 @@ class TreeAppModule_ImageSet extends TreeAppModule
         @numpic = 1
         
         @actions.push
+            ico: "img/shooting_32.png"
+            siz: 1
+            txt: "New Shooting"
+            fun: ( evt, app ) =>
+                #
+                @collection = new ShootingItem
+                
+                session = app.data.selected_session()
+                session._children.push @collection
+                
+                app.undo_manager.snapshot()
+                
+        @actions.push
             ico: "img/krita_24.png"
             siz: 1
             txt: "New Collection"

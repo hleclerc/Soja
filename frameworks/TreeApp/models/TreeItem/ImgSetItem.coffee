@@ -13,7 +13,7 @@ class ImgSetItem extends TreeItem
 #         @add_attr
 #             img_collection: new Lst
 #             import_picture: new Browse
-                
+        
     accept_child: ( ch ) ->
         ch instanceof ImgItem
 
