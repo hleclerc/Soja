@@ -13,7 +13,7 @@ add_cm = ( w, o, style, marker_color, size_marker, line, line_color, axe_x, axe_
         parentNode: document.body
         style     : { position: "fixed", top: 0, left: o, width: w, height: 600 }
     
-    c = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.2
+    c = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.2, constrain_zoom: 'x'
     c.cam.threeD.set false
     c.resize w, 600
     

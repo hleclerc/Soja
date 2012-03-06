@@ -23,6 +23,8 @@ class Graph extends Drawable
             x_axis      : params.x_axis or ''
             y_axis      : params.y_axis or ''
             
+            sel_item    : new Lst
+            
         @axis_width = 1
         @padding = 10 # in px
 
@@ -41,7 +43,7 @@ class Graph extends Drawable
             proj = for p in @points
                 info.re_2_sc.proj p.pos.get()
                 
-            info.ctx.lineWidth = 1           
+            info.ctx.lineWidth = 1
             
             if @line.get() == true
                 @draw_line info, orig, proj
@@ -55,11 +57,25 @@ class Graph extends Drawable
             else if @marker.get() == 'dot'
                 @draw_marker_dot info, orig, proj
                 
+            # show value when mouse is over a point
+            if @sel_item.length > 0
+                @draw_highlight_values info
         
         @draw_axis info
         
         @draw_legend info
-
+        
+            
+    draw_highlight_values: ( info ) ->
+        highlighted_point = @points[ @sel_item[ 0 ] ].pos.get()
+        info.ctx.beginPath()
+        
+        info.ctx.fillStyle = '#FFFFFF'
+        info.ctx.textAlign = "right"
+        info.ctx.font = "20px Arial"
+        info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] ,  info.w - @padding, 20
+    
+    
     draw_line: ( info, orig, proj ) ->
         info.ctx.strokeStyle = @line_color.get()
         info.ctx.beginPath()
@@ -68,7 +84,6 @@ class Graph extends Drawable
             info.ctx.lineTo p[ 0 ] + @padding, p[ 1 ] - @padding
         info.ctx.stroke()
         info.ctx.closePath()
-    
     
     
     draw_marker_dot: ( info, orig, proj ) ->
@@ -116,6 +131,8 @@ class Graph extends Drawable
         info.ctx.beginPath()
         info.ctx.lineWidth = @axis_width
         info.ctx.strokeStyle = "white"
+        info.ctx.fillStyle = "white"
+        info.ctx.font = "12px Arial"
         
         info.ctx.lineCap = "round"
         
@@ -124,14 +141,14 @@ class Graph extends Drawable
         # x axis
         if @x_axis.get() != ""
             info.ctx.textAlign = "left"
-            info.ctx.strokeText @x_axis.get(),  width_axis + decal_txt, orig[ 1 ] + 2
+            info.ctx.fillText @x_axis.get(),  width_axis + decal_txt, orig[ 1 ] + 2
         info.ctx.moveTo orig[ 0 ], orig[ 1 ]
         info.ctx.lineTo width_axis, orig[ 1 ]
         
         # y axis
         if @y_axis.get() != ""
             info.ctx.textAlign = "center"
-            info.ctx.strokeText @y_axis.get(),  orig[ 0 ] - 2, height_axis - decal_txt
+            info.ctx.fillText @y_axis.get(),  orig[ 0 ] - 2, height_axis - decal_txt
         info.ctx.moveTo orig[ 0 ], orig[ 1 ]
         info.ctx.lineTo orig[ 0 ], height_axis
         info.ctx.stroke()
@@ -163,14 +180,6 @@ class Graph extends Drawable
             vve = info.sc_2_rw.pos pos, 0
             val = vve[ 0 ]
             info.ctx.fillText val.toFixed( 2 ), pos, orig[ 1 ] + x_padding_txt
-        
-        
-#         info.ctx.fillText x_min,  orig[ 0 ] - decal_txt , orig[ 1 ] + padding_txt
-#         info.ctx.fillText x_max,  width_axis - decal_txt , orig[ 1 ] + padding_txt
-#         info.ctx.fillText y_min,  orig[ 0 ] - padding_txt, orig[ 1 ] + decal_txt
-#         info.ctx.fillText y_max,  orig[ 0 ] - padding_txt, height_axis + decal_txt
-
-
 
         # y legend
         info.ctx.textAlign = 'right'
@@ -194,3 +203,18 @@ class Graph extends Drawable
             for d in [ 0 ... 3 ]
                 x_min[ d ] = Math.min x_min[ d ], p[ d ]
                 x_max[ d ] = Math.max x_max[ d ], p[ d ]
+                
+    get_movable_entities: ( res, info, pos, phase ) ->
+        x = pos[ 0 ]
+        y = pos[ 1 ]
+        
+        @sel_item.clear()
+        if @points.length and phase == 0
+            for p, i in @points
+                proj = info.re_2_sc.proj p.pos.get()
+                dx = x - proj[ 0 ]
+                dy = y - proj[ 1 ]
+                d = Math.sqrt dx * dx + dy * dy
+                if d <= 10
+                    @sel_item.push i
+            

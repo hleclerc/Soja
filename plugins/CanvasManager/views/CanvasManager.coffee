@@ -10,6 +10,7 @@ class CanvasManager extends View
     #  - undo_manager
     #  - allow_gl
     #  - want_aspect_ratio
+    #  - constrain_zoom
     constructor: ( params ) ->
         for key, val of params
             @[ key ] = val
@@ -36,6 +37,9 @@ class CanvasManager extends View
                                 )
         if not @padding_ratio
             @padding_ratio = 1.5
+        if not @constrain_zoom?
+            @constrain_zoom = false
+            
             
         super [ @items, @cam, @selected_entities, @pre_selected_entities, @selected_items, @time ]
 
@@ -243,8 +247,8 @@ class CanvasManager extends View
         x = evt.clientX - get_left( @canvas )
         y = evt.clientY - get_top ( @canvas )
         
-        cx = if evt.shiftKey then 1 else c
-        cy = if evt.altKey   then 1 else c
+        cx = if evt.shiftKey or @constrain_zoom == "y" then 1 else c
+        cy = if evt.altKey   or @constrain_zoom == "x" then 1 else c
 
         @cam.zoom x, y, [ cx, cy ], @canvas.width, @canvas.height
 
