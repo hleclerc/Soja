@@ -16,6 +16,7 @@ class TreeAppData extends Model
             browser_state      : new BrowserState
             # loaded modules
             modules            : new Lst
+            focus              : -1
             time               : new ConstrainedVal( 0,
                                     _min: 0
                                     _max: -1

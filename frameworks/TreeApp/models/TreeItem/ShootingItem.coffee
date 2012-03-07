@@ -5,11 +5,13 @@ class ShootingItem extends TreeItem
         
         # attributes
         @add_attr
+            cam : new Cam
             #
         
         # default values
         @_name.set "Shooting informations"
         @_ico.set "img/shooting_16.png"
+        @_viewable.set true
         
 #         @add_child new ViewItem app_data, panel_id
         @add_child new ImgSetItem
@@ -17,7 +19,6 @@ class ShootingItem extends TreeItem
     accept_child: ( ch ) ->
         ch instanceof ImgItem or
         ch instanceof ImgSetItem or
-        ch instanceof ViewItem or
         ch instanceof TransformItem
         
 

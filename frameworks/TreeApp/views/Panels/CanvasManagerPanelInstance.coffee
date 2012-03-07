@@ -18,7 +18,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             for view in @app_data._views
                 if view instanceof TreeApp
                     tree_app = view
-            tree_app.selected_view = @view_item.panel_id
+#             tree_app.data.focus = @view_item.panel_id
                     
             if evt.ctrlKey
                 @app_data.selected_canvas_pan.toggle @view_item.panel_id

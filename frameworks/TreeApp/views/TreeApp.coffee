@@ -14,7 +14,7 @@ class TreeApp extends View
         
         document.addEventListener "keydown", ( ( evt ) => @_on_key_down evt ), true
         
-        @selected_view = ""
+#         @selected_view = ""
         
 
     onchange: ->

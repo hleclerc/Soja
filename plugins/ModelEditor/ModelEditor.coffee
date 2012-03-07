@@ -50,6 +50,7 @@ class ModelEditor # extends View
 #  - undo_manager
 #  - closed_models (new Lst)
 #  - item_type
+
 new_model_editor = ( params ) ->
     # if we only want to display a sub item
     sub_model = params.model.disp_only_in_model_editor?()

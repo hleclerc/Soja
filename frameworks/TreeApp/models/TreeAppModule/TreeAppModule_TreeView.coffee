@@ -9,7 +9,7 @@ class TreeAppModule_TreeView extends TreeAppModule
             txt: "Delete current tree item"
             key: [ "Del" ]
             fun: ( evt, app ) =>
-                if app.selected_view == "TreeView"
+                if app.data.focus == "TreeView"
                     for path in app.data.selected_tree_items
                         #prevent deleting root item (session)
                         if path.length > 1
@@ -122,10 +122,6 @@ class TreeAppModule_TreeView extends TreeAppModule
             app.data.visible_tree_items[ p ].remove item
         app.data.selected_tree_items.clear()
         
-        # TODO
-#         if item instanceof ImgItem
-        # if item is using animation module, display settings anim_time._max should loose 1 or do something according to time
-    
     is_close: ( app, item ) ->
         for closed_item_path in app.data.closed_tree_items
             if item.equals closed_item_path
