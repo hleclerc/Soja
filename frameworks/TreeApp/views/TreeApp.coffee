@@ -53,14 +53,17 @@ class TreeApp extends View
         if data.panel_id == "TreeView"
             res = new LayoutManagerPanelInstance @el
             res.div.className = "PanelInstanceTreeView"        
-            res.div.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
-            res.treeview = new TreeView res.div, @data.tree_items, @data.selected_tree_items, @data.visible_tree_items, @data.closed_tree_items, @data.last_canvas_pan            
+            #res.div.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
+            @treeview = new TreeView res.div, @data.tree_items, @data.selected_tree_items, @data.visible_tree_items, @data.closed_tree_items, @data.last_canvas_pan
+            res.treeview = @treeview
+            res.div.onmousedown = =>
+                @data.focus.set @treeview.view_id
             return res
             
         if data.panel_id == "EditView"
             res = new LayoutManagerPanelInstance @el
             res.div.className = "PanelInstanceEditView"
-            res.div.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
+            #res.div.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
             new EditView res.div, @data, @undo_manager            
             return res
     
@@ -110,7 +113,7 @@ class TreeApp extends View
             
             for m in @data.modules
                 for a in m.actions
-                    if a.key?
+                    if a.key? and ( not a.ina? or not a.ina( this ) )
                         for k in a.key
                             if k == cur_key
                                 a.fun? evt, this
@@ -118,7 +121,7 @@ class TreeApp extends View
                     
                     if a.sub? and a.sub.length > 0
                         for a in a.sub
-                            if a.key?
+                            if a.key? and ( not a.ina? or not a.ina( this ) )
                                 for k in a.key
                                     if k == cur_key
                                         a.fun evt, this

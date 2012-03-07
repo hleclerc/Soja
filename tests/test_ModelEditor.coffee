@@ -18,6 +18,8 @@ test_ModelEditor = ->
     #     e.default_types.push ( model ) -> ModelEditorItem_Choice_Roll if model instanceof Choice
     #     e.default_types.push ( model ) -> ModelEditorItem_Bool_Img    if model instanceof Bool
 
+    focus = new Val -1
+    
     docbod = new_dom_element
         parentNode: document.body, style: { width: 500 }
     
@@ -43,16 +45,18 @@ test_ModelEditor = ->
     model.simple_aggregate.gradient.add_color [   0,  0,  0, 255 ], 1
     
     # view with
-    editor = new_model_editor el: docbod, model: model
+    editor = new_model_editor el: docbod, model: model, focus: focus
     editor.label_ratio = 0.2
     spacing()
-    
+
+    new_model_editor el: docbod, model: focus
+
     # view with item which take 50%
-    editor = new_model_editor el: docbod, model: model.simple_aggregate, label: "Simple aggregate model with item_width at 48", item_width: 48
+    editor = new_model_editor el: docbod, model: model.simple_aggregate, label: "Simple aggregate model with item_width at 48", item_width: 48, focus: focus
     spacing()
 
     # with choice roll
-    editor = new_model_editor el: docbod, model: model.simple_aggregate, label: "Some sample alternate editors"
+    editor = new_model_editor el: docbod, model: model.simple_aggregate, label: "Some sample alternate editors", focus: focus
     editor.label_ratio = 0.2
     editor.default_types.push ( model ) -> ModelEditorItem_Choice_Roll    if model instanceof Choice
     editor.default_types.push ( model ) -> ModelEditorItem_Bool_Img       if model instanceof Bool

@@ -47,6 +47,7 @@ class ModelEditor # extends View
 #  - call_onchange
 #  - item_width
 #  - label_ratio
+#  - focus -> a Val representing to the view_id of the focused view
 #  - undo_manager
 #  - closed_models (new Lst)
 #  - item_type

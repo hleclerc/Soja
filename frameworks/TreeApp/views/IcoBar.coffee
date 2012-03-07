@@ -4,6 +4,8 @@ class IcoBar extends View
         @modules = @tree_app.data.modules
         super @modules
         
+        @tree_app.data.focus.bind this
+        
         @disp_top  = 0
         @disp_left = 0
         @height    = 0
@@ -189,7 +191,7 @@ class IcoBar extends View
                                 title      : act.txt + key
                                 src        : act.ico
                                 style      :
-                                    height     : @height_ico * siz
+                                    height     : @height_ico * siz * ( if act.ina?( @tree_app ) then 0.5 else 1.0 )
                                 onmousedown: ( evt ) =>
                                     act.fun evt, @tree_app
                         else if act.mod?

@@ -4,7 +4,8 @@ class TreeAppModule_PanelManager extends TreeAppModule
         super()
         
         @name = 'Windows'
-        
+
+
         @add_action
             ico: "img/vertical_split.png"
             siz: 1

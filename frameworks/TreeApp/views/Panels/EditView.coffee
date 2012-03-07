@@ -23,6 +23,7 @@ class EditView extends View
                         el          : e
                         model       : s
                         undo_manager: @undo_manager
+                        focus       : @app_data.focus
 
                     # information div
                     if s.information?

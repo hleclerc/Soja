@@ -8,9 +8,14 @@ class ModelEditorItem extends View
         for key, val of params
             this[ key ] = val
 
+        if not @focus? and not @parent?
+            @focus = new Val -1
+            
         if not @closed_models and not @parent?
             @closed_models = new Lst
-            
+
+        @get_focus()?.bind this
+
         @make_ed()
 
     destructor: ->
@@ -25,6 +30,10 @@ class ModelEditorItem extends View
         if @parent?
             return @parent.get_property name, default_value
         return default_value
+        
+    # in percent
+    get_focus: ->
+        @get_property "focus"
         
     # in percent
     get_item_width: ->
@@ -81,18 +90,33 @@ class ModelEditorItem extends View
         if @label?
             # inline label ?
             if @ok_for_label()
+                #                 @ce = new_dom_element
+                #                     parentNode : @el
+                #                     nodeName   : "label"
+                # 
+                #                 new_dom_element
+                #                     parentNode : @ce
+                #                     nodeName   : "span"
+                #                     innerHTML  : @label
+                #                     style      :
+                #                         display : "inline-block"
+                #                         width   : @get_item_width() * @get_label_ratio() + "%"
+                #  
+                #                 @ew = @get_item_width() * ( 1.0 - @get_label_ratio() )
+                #                 @ed = @ce
+
                 @ce = new_dom_element
                     parentNode : @el
-                    nodeName   : "label"
+                    nodeName   : "span"
 
-                new_dom_element
+                @ev = new_dom_element
                     parentNode : @ce
                     nodeName   : "span"
                     innerHTML  : @label
                     style      :
                         display : "inline-block"
                         width   : @get_item_width() * @get_label_ratio() + "%"
- 
+    
                 @ew = @get_item_width() * ( 1.0 - @get_label_ratio() )
                 @ed = @ce
                 

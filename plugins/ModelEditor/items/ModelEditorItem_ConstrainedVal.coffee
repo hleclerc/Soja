@@ -10,6 +10,9 @@ class ModelEditorItem_ConstrainedVal extends ModelEditorItem
             item_width: 0.3 * @ew
             item_type : ModelEditorItem_Input
 
+        @ev?.onmousedown = =>
+            @get_focus()?.set @inp.view_id
+
         # slider
         @div = new_dom_element
             parentNode: @ed

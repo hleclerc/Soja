@@ -19,6 +19,11 @@ class ModelEditorItem_List extends ModelEditorItem
                         model     : i
                         parent    : this
                         item_width: w
+                        
+                if @lst.length and @ev?
+                    @ev.onmousedown = =>
+                        @get_focus()?.set @lst[ 0 ].view_id
+
 
         @fd = true
  
