@@ -144,8 +144,23 @@ class CanvasManager extends View
         @aset @cam.X, [ 1, 0, 0 ]
         @aset @cam.Y, [ 0, 1, 0 ]
     
+    draw_item_have_background: ->
+        flat = []
+        for item in @items
+            CanvasManager._get_flat_list flat, item
+        
+        for drawable in flat
+            if drawable instanceof Background
+                return true
+            else
+                return false
+    
     # redraw all the scene
     draw: ->
+        if @draw_item_have_background() == false
+            @ctx.clearRect 0, 0, @canvas.width, @canvas.height
+
+            
         flat = []
         for item in @items
             CanvasManager._get_flat_list flat, item

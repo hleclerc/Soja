@@ -24,7 +24,7 @@ class ModelEditorItem_Input extends ModelEditorItem
             
         if @get_focus()?.has_been_modified()
             if @get_focus().get() == @view_id
-                @input.focus()
+                setTimeout ( => @input.focus() ), 1
             else
                 @input.blur()
             

@@ -12,7 +12,9 @@ class Background extends Drawable
         
     z_index: () ->
         return 0
-        
+    
+    
+    
     draw: ( info ) ->
         lineargradient = info.ctx.createLinearGradient( 0, 0, 0, info.h )
         for col in @gradient.color_stop

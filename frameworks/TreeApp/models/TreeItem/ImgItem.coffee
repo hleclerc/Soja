@@ -40,9 +40,9 @@ class ImgItem extends TreeItem
                 parentNode: div
                 # style     : { position: "absolute", top: 0, left: 0, width: "70%", bottom: 0 }
 
-            bg = new Background
-#             bg.gradient.remove_color 1
-            bg.gradient.remove_color 0
+#             bg = new Background
+# #             bg.gradient.remove_color 1
+#             bg.gradient.remove_color 0
 
             m = new Graph marker: 'bar', line: false
             for p, i in @img._histo
@@ -50,7 +50,7 @@ class ImgItem extends TreeItem
             m.build_w2b_legend()
             
             @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.2, constrain_zoom: 'x'
-            @cm.items.push bg
+#             @cm.items.push bg
             @cm.items.push m
             @cm.selected_items.push [ m ]
             

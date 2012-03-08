@@ -2,31 +2,38 @@
 # params available :
 # line        : true draw a line linking all points
 # line_color  : choose the color of linking line_color (in html way (hexa or string))
+# line_width  : width in pixels of line
 # marker      : shape that mark all value : dot, cross, square or bar ( for bar chart )
 # size_marker : indicate size in pixels of marker
 # marker_color: choose the color of marker (in html way (hexa or string))
+# font_color  : color of font in axis and legend
 # x_axis      : label for x axis
 # y_axis      : label for y axis
+# legend_x_division : number of division on X legend including start and begining
+# legend_y_division : number of division on y legend including start and begining
 
 class Graph extends Drawable
     constructor: ( params = {} ) ->
         super()
         
         @add_attr
-            points      : new Lst_Point
-            legend      : new Lst
-            line        : if params.line? then params.line else true
-            line_color  : params.line_color or '#FFFFFF'
-            marker      : params.marker or 'dot'
-            size_marker : params.size_marker or 2
-            marker_color: params.marker_color or '#FFFFFF'
-            x_axis      : params.x_axis or ''
-            y_axis      : params.y_axis or ''
-            
+            points           : new Lst_Point
+            legend           : new Lst
+            line             : if params.line? then params.line else true
+            line_color       : params.line_color or '#FFFFFF'
+            line_width       : params.line_width or 1
+            marker           : params.marker or 'dot'
+            size_marker      : params.size_marker or 2
+            marker_color     : params.marker_color or '#FFFFFF'
+            font_color       : params.font_color or '#000000'
+            x_axis           : params.x_axis or ''
+            y_axis           : params.y_axis or ''
+            legend_x_division: params.legend_x_division or 5
+            legend_y_division: params.legend_y_division or 3
             sel_item    : new Lst
             
         @axis_width = 1
-        @padding = 10 # in px
+        @padding = 0 # in px
 
     z_index: ->
         100
@@ -43,7 +50,7 @@ class Graph extends Drawable
             proj = for p in @points
                 info.re_2_sc.proj p.pos.get()
                 
-            info.ctx.lineWidth = 1
+            info.ctx.lineWidth = @line_width
             
             if @line.get() == true
                 @draw_line info, orig, proj
@@ -69,8 +76,7 @@ class Graph extends Drawable
     draw_highlight_values: ( info ) ->
         highlighted_point = @points[ @sel_item[ 0 ] ].pos.get()
         info.ctx.beginPath()
-        
-        info.ctx.fillStyle = '#FFFFFF'
+        info.ctx.fillStyle = @font_color.get()
         info.ctx.textAlign = "right"
         info.ctx.font = "20px Arial"
         info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] ,  info.w - @padding, 20
@@ -125,13 +131,13 @@ class Graph extends Drawable
             
     draw_axis: ( info ) ->        
         orig = [ info.padding * 0.5 + @padding, info.h - info.padding / 2 - @padding, 0 ]
-        width_axis = info.w - info.padding/2
+        width_axis = info.w - info.padding
         height_axis = -info.h + orig[ 1 ] + info.padding
         
         info.ctx.beginPath()
         info.ctx.lineWidth = @axis_width
-        info.ctx.strokeStyle = "white"
-        info.ctx.fillStyle = "white"
+        info.ctx.strokeStyle = @font_color.get()
+        info.ctx.fillStyle = @font_color.get()
         info.ctx.font = "12px Arial"
         
         info.ctx.lineCap = "round"
@@ -141,9 +147,9 @@ class Graph extends Drawable
         # x axis
         if @x_axis.get() != ""
             info.ctx.textAlign = "left"
-            info.ctx.fillText @x_axis.get(),  width_axis + decal_txt, orig[ 1 ] + 2
+            info.ctx.fillText @x_axis.get(), orig[ 0 ] + width_axis + decal_txt, orig[ 1 ] + 2
         info.ctx.moveTo orig[ 0 ], orig[ 1 ]
-        info.ctx.lineTo width_axis, orig[ 1 ]
+        info.ctx.lineTo orig[ 0 ] + width_axis, orig[ 1 ]
         
         # y axis
         if @y_axis.get() != ""
@@ -155,36 +161,31 @@ class Graph extends Drawable
         info.ctx.closePath()
         
     draw_legend: ( info ) ->
-    
-        # number of division including start and begining
-        x_division = 5
-        y_division = 3
-        
+            
         x_padding_txt = 10
         y_padding_txt = 2
         decal_txt   = 3
-        
-        
+                
         orig = [ 0 + info.padding * 0.5 + @padding, info.h - info.padding / 2 - @padding, 0]
         width_axis = info.w - info.padding/2
         height_axis = -info.h + orig[ 1 ] + info.padding
         
         info.ctx.beginPath()
-        info.ctx.fillStyle = "white"
+        info.ctx.fillStyle = @font_color.get()
         info.ctx.font = '6pt Arial'
         
         info.ctx.textAlign = 'center'
         # x legend
-        for i in [ 0 .. x_division ]
-            pos = ( ( width_axis - decal_txt - ( orig[ 0 ] - decal_txt ) ) / ( x_division - 1 ) ) * i + orig[ 0 ] - decal_txt
+        for i in [ 0 .. @legend_x_division ]
+            pos = ( ( width_axis - decal_txt - ( orig[ 0 ] - decal_txt ) ) / ( @legend_x_division - 1 ) ) * i + orig[ 0 ]
             vve = info.sc_2_rw.pos pos, 0
             val = vve[ 0 ]
             info.ctx.fillText val.toFixed( 2 ), pos, orig[ 1 ] + x_padding_txt
 
         # y legend
         info.ctx.textAlign = 'right'
-        for i in [ 0 .. y_division ]
-            pos = ( ( height_axis + decal_txt - ( orig[ 1 ] + decal_txt ) ) / ( y_division - 1 ) ) * i + orig[ 1 ] + decal_txt
+        for i in [ 0 .. @legend_y_division ]
+            pos = ( ( height_axis + decal_txt - ( orig[ 1 ] + decal_txt ) ) / ( @legend_y_division - 1 ) ) * i + orig[ 1 ] + decal_txt
 
             val_from_screen = info.sc_2_rw.pos 0, pos
             val = val_from_screen[ 1 ]
