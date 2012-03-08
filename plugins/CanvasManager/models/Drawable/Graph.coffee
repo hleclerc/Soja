@@ -45,6 +45,9 @@ class Graph extends Drawable
 
     draw: ( info ) ->
         #draw points
+        @draw_axis info
+        
+        @draw_legend info
         if @points.length
             orig = info.re_2_sc.proj [ 0, 0, 0 ]
             proj = for p in @points
@@ -68,9 +71,6 @@ class Graph extends Drawable
             if @sel_item.length > 0
                 @draw_highlight_values info
         
-        @draw_axis info
-        
-        @draw_legend info
         
             
     draw_highlight_values: ( info ) ->
@@ -83,6 +83,16 @@ class Graph extends Drawable
     
     
     draw_line: ( info, orig, proj ) ->
+        #draw shadow
+        info.ctx.strokeStyle = "#3a3a3a"
+        info.ctx.beginPath()
+        info.ctx.moveTo orig[ 0 ] + @padding + @line_width.get(), orig[ 1 ] - @padding + @line_width.get()
+        for p, i in proj
+            info.ctx.lineTo p[ 0 ] + @padding + @line_width.get(), p[ 1 ] - @padding + @line_width.get()
+        info.ctx.stroke()
+        info.ctx.closePath()
+        
+        #draw real line
         info.ctx.strokeStyle = @line_color.get()
         info.ctx.beginPath()
         info.ctx.moveTo orig[ 0 ] + @padding, orig[ 1 ] - @padding
@@ -90,7 +100,7 @@ class Graph extends Drawable
             info.ctx.lineTo p[ 0 ] + @padding, p[ 1 ] - @padding
         info.ctx.stroke()
         info.ctx.closePath()
-    
+
     
     draw_marker_dot: ( info, orig, proj ) ->
         for p, i in proj
@@ -120,13 +130,14 @@ class Graph extends Drawable
         
     #bar chart
     draw_marker_bar: ( info, orig, proj ) ->
-        size_bar = 2
         for p, i in proj
-            height = orig[ 1 ] - p[ 1 ]
-            
-            info.ctx.beginPath()
-            info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
-            info.ctx.fillRect p[ 0 ] + @padding, p[ 1 ] - @padding, @size_marker.get(), height
+            #TODO clean this line and apply to all kind of draw
+            if p[ 0 ] + @padding >= info.padding * 0.5 + @padding and p[ 0 ] + @padding <= (info.padding * 0.5 + @padding + info.w - info.padding + @size_marker.get() )
+                height = orig[ 1 ] - p[ 1 ]
+                
+                info.ctx.beginPath()
+                info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
+                info.ctx.fillRect p[ 0 ] + @padding, p[ 1 ] - @padding, @size_marker.get(), height
         info.ctx.closePath()
             
     draw_axis: ( info ) ->        
@@ -185,11 +196,11 @@ class Graph extends Drawable
         # y legend
         info.ctx.textAlign = 'right'
         for i in [ 0 .. @legend_y_division ]
-            pos = ( ( height_axis + decal_txt - ( orig[ 1 ] + decal_txt ) ) / ( @legend_y_division - 1 ) ) * i + orig[ 1 ] + decal_txt
+            pos = ( ( height_axis + decal_txt - ( orig[ 1 ] + decal_txt ) ) / ( @legend_y_division - 1 ) ) * i + orig[ 1 ]
 
             val_from_screen = info.sc_2_rw.pos 0, pos
             val = val_from_screen[ 1 ]
-            info.ctx.fillText val.toFixed(1),  orig[ 0 ] - y_padding_txt, pos
+            info.ctx.fillText val.toFixed(1),  orig[ 0 ] - y_padding_txt, pos + decal_txt
         
         info.ctx.fill()
         info.ctx.closePath()

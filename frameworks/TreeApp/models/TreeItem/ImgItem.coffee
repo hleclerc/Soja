@@ -50,10 +50,11 @@ class ImgItem extends TreeItem
             m.build_w2b_legend()
             
             @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.2, constrain_zoom: 'x'
+            @cm.cam.threeD.set false
+            
 #             @cm.items.push bg
             @cm.items.push m
             @cm.selected_items.push [ m ]
-            
             @cm.fit()
 
         @txt.innerHTML = "
