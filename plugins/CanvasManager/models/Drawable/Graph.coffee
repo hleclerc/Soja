@@ -3,6 +3,7 @@
 # line        : true draw a line linking all points
 # line_color  : choose the color of linking line_color (in html way (hexa or string))
 # line_width  : width in pixels of line
+# shadow      : boolean which represent if shadow on line must be drawn or not
 # marker      : shape that mark all value : dot, cross, square or bar ( for bar chart )
 # size_marker : indicate size in pixels of marker
 # marker_color: choose the color of marker (in html way (hexa or string))
@@ -19,22 +20,30 @@ class Graph extends Drawable
         @add_attr
             points           : new Lst_Point
             legend           : new Lst
+            sel_item         : new Lst
             line             : if params.line? then params.line else true
-            line_color       : params.line_color or '#FFFFFF'
+            line_color       : params.line_color or new Color 255, 255, 255 
             line_width       : params.line_width or 1
+            shadow           : if params.shadow? then params.shadow else true
             marker           : params.marker or 'dot'
             size_marker      : params.size_marker or 2
-            marker_color     : params.marker_color or '#FFFFFF'
-            font_color       : params.font_color or '#000000'
+            marker_color     : params.marker_color or new Color 255, 255, 255
+            font_color       : params.font_color or new Color 0, 0, 0
             x_axis           : params.x_axis or ''
             y_axis           : params.y_axis or ''
             legend_x_division: params.legend_x_division or 5
             legend_y_division: params.legend_y_division or 3
-            sel_item    : new Lst
+            sel_item_color   : params.sel_item_color or  new Color 255, 255, 0
+            movable_hl_infos : if params.movable_hl_infos? then params.movable_hl_infos else true
             
         @axis_width = 1
-        @padding = 0 # in px
-
+#         @width_graph = 0
+#         @height_graph = 0
+        @origin = [ 0, 0 ]
+        @O_point = [ 0, 0 ]
+        @X_point = [ 0, 0 ]
+        @Y_point = [ 0, 0 ]
+        
     z_index: ->
         100
 
@@ -44,16 +53,42 @@ class Graph extends Drawable
             @legend[ i ] = "#" + color + color + color
 
     draw: ( info ) ->
-        #draw points
+#         @width_graph  = info.w - info.padding * 2
+#         @height_graph = info.h - info.padding * 2
+#         @origin       = [ info.padding, info.h - info.padding ]
+        @O_point  = [ info.padding / 2, info.h - info.padding ]
+        @X_point  = [ info.w - info.padding / 2, info.h - info.padding ]
+        @Y_point  = [ info.padding / 2, - info.h + info.padding ]
+        
+        info.ctx.lineCap = "round"
+        info.ctx.lineJoin = "round"
+        
+        info.ctx.shadowOffsetX = 0
+        info.ctx.shadowOffsetY = 0
+        info.ctx.shadowBlur    = 0
+        info.ctx.shadowColor   = "transparent black"
+        
         @draw_axis info
         
         @draw_legend info
+        
+        #draw points
         if @points.length
             orig = info.re_2_sc.proj [ 0, 0, 0 ]
             proj = for p in @points
                 info.re_2_sc.proj p.pos.get()
                 
-            info.ctx.lineWidth = @line_width
+            if @shadow.get() == true
+                #draw shadow
+                info.ctx.shadowOffsetX = @line_width.get()
+                info.ctx.shadowOffsetY = @line_width.get()
+                info.ctx.shadowBlur    = @line_width.get()
+                info.ctx.shadowColor   =  "#3a3a3a"
+            else
+                info.ctx.shadowOffsetX = 0
+                info.ctx.shadowOffsetY = 0
+                info.ctx.shadowBlur    = 0
+                info.ctx.shadowColor   = "transparent black"
             
             if @line.get() == true
                 @draw_line info, orig, proj
@@ -69,79 +104,108 @@ class Graph extends Drawable
                 
             # show value when mouse is over a point
             if @sel_item.length > 0
-                @draw_highlight_values info
+                if @movable_hl_infos.get() == true
+                    @draw_movable_highlight_values info
+                else
+                    @draw_highlight_values info
         
         
             
+    draw_movable_highlight_values: ( info ) ->
+        padding_left = 10
+        padding_top = -5
+        #TODO should check if values don't go outside the canvas size
+        info.ctx.textAlign = "left"
+        
+        
+        highlighted_point = @points[ @sel_item[ 0 ] ].pos.get()
+        info.ctx.beginPath()
+        info.ctx.fillStyle = @font_color.get()
+        
+        info.ctx.font = "20px Arial"
+#             proj = for p in @points
+#                 info.re_2_sc.proj p.pos.get()
+        pos = info.re_2_sc.proj highlighted_point
+        info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] , pos[ 0 ] + padding_left, pos[ 1 ] + padding_top
+        
     draw_highlight_values: ( info ) ->
         highlighted_point = @points[ @sel_item[ 0 ] ].pos.get()
         info.ctx.beginPath()
         info.ctx.fillStyle = @font_color.get()
         info.ctx.textAlign = "right"
         info.ctx.font = "20px Arial"
-        info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] ,  info.w - @padding, 20
+        info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] ,  info.w, 20
     
     
     draw_line: ( info, orig, proj ) ->
-        #draw shadow
-        info.ctx.strokeStyle = "#3a3a3a"
-        info.ctx.beginPath()
-        info.ctx.moveTo orig[ 0 ] + @padding + @line_width.get(), orig[ 1 ] - @padding + @line_width.get()
-        for p, i in proj
-            info.ctx.lineTo p[ 0 ] + @padding + @line_width.get(), p[ 1 ] - @padding + @line_width.get()
-        info.ctx.stroke()
-        info.ctx.closePath()
+        info.ctx.lineWidth = @line_width
         
         #draw real line
         info.ctx.strokeStyle = @line_color.get()
         info.ctx.beginPath()
-        info.ctx.moveTo orig[ 0 ] + @padding, orig[ 1 ] - @padding
+        info.ctx.moveTo orig[ 0 ], orig[ 1 ]
         for p, i in proj
-            info.ctx.lineTo p[ 0 ] + @padding, p[ 1 ] - @padding
+            info.ctx.lineTo p[ 0 ], p[ 1 ]
         info.ctx.stroke()
         info.ctx.closePath()
 
     
     draw_marker_dot: ( info, orig, proj ) ->
         for p, i in proj
-            info.ctx.beginPath()
-            info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
-            info.ctx.arc p[ 0 ] + @padding, p[ 1 ] - @padding, @size_marker.get(), 0, Math.PI * 2, true
-            info.ctx.fill()
+            if p[ 0 ] >= @O_point[ 0 ] - @size_marker.get() and p[ 0 ] <= @X_point[ 0 ] + @size_marker.get()
+                if @sel_item.length > 0 and @sel_item[ 0 ].get() == i
+                    info.ctx.fillStyle = @sel_item_color.get()
+                else
+                    info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
+                info.ctx.beginPath()
+                info.ctx.arc p[ 0 ], p[ 1 ], @size_marker.get(), 0, Math.PI * 2, true
+                info.ctx.fill()
         info.ctx.closePath()
         
     draw_marker_cross: ( info, orig, proj ) ->
         for p, i in proj
-            info.ctx.beginPath()
-            info.ctx.strokeStyle = @legend[ i ] or @marker_color.get()
-            info.ctx.moveTo p[ 0 ] + @padding - @size_marker.get(), p[ 1 ] - @padding + @size_marker.get()
-            info.ctx.lineTo p[ 0 ] + @padding + @size_marker.get(), p[ 1 ] - @padding - @size_marker.get()
-            info.ctx.moveTo p[ 0 ] + @padding + @size_marker.get(), p[ 1 ] - @padding + @size_marker.get()
-            info.ctx.lineTo p[ 0 ] + @padding - @size_marker.get(), p[ 1 ] - @padding - @size_marker.get()
-            info.ctx.stroke()
+            if p[ 0 ] >= @O_point[ 0 ] - @size_marker.get() and p[ 0 ] <= @X_point[ 0 ] + @size_marker.get()
+                if @sel_item.length > 0 and @sel_item[ 0 ].get() == i
+                    info.ctx.strokeStyle = @sel_item_color.get()
+                else
+                    info.ctx.strokeStyle = @legend[ i ] or @marker_color.get()
+                    
+                info.ctx.beginPath()
+                info.ctx.moveTo p[ 0 ] - @size_marker.get(), p[ 1 ] + @size_marker.get()
+                info.ctx.lineTo p[ 0 ] + @size_marker.get(), p[ 1 ] - @size_marker.get()
+                info.ctx.moveTo p[ 0 ] + @size_marker.get(), p[ 1 ] + @size_marker.get()
+                info.ctx.lineTo p[ 0 ] - @size_marker.get(), p[ 1 ] - @size_marker.get()
+                info.ctx.stroke()
         info.ctx.closePath()
         
     draw_marker_square: ( info, orig, proj ) ->
         for p, i in proj
-            info.ctx.beginPath()
-            info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
-            info.ctx.fillRect p[ 0 ] + @padding - @size_marker.get() * 0.5 , p[ 1 ] - @padding - @size_marker.get() * 0.5 , @size_marker.get(), @size_marker.get()
+            if p[ 0 ] >= @O_point[ 0 ] - @size_marker.get() and p[ 0 ] <= @X_point[ 0 ] + @size_marker.get()
+                if @sel_item.length > 0 and @sel_item[ 0 ].get() == i
+                    info.ctx.fillStyle = @sel_item_color.get()
+                else
+                    info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
+                info.ctx.beginPath()
+                info.ctx.fillRect p[ 0 ] - @size_marker.get() * 0.5 , p[ 1 ] - @size_marker.get() * 0.5 , @size_marker.get(), @size_marker.get()
         info.ctx.closePath()
         
     #bar chart
     draw_marker_bar: ( info, orig, proj ) ->
         for p, i in proj
-            #TODO clean this line and apply to all kind of draw
-            if p[ 0 ] + @padding >= info.padding * 0.5 + @padding and p[ 0 ] + @padding <= (info.padding * 0.5 + @padding + info.w - info.padding + @size_marker.get() )
+            if p[ 0 ] >= @O_point[ 0 ] - @size_marker.get() and p[ 0 ] <= @X_point[ 0 ] + @size_marker.get()
+                if @sel_item.length > 0 and @sel_item[ 0 ].get() == i
+                    info.ctx.fillStyle = @sel_item_color.get()
+                else
+                    info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
+                    
                 height = orig[ 1 ] - p[ 1 ]
                 
                 info.ctx.beginPath()
-                info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
-                info.ctx.fillRect p[ 0 ] + @padding, p[ 1 ] - @padding, @size_marker.get(), height
+                info.ctx.fillRect p[ 0 ], p[ 1 ], @size_marker.get(), height
         info.ctx.closePath()
             
     draw_axis: ( info ) ->        
-        orig = [ info.padding * 0.5 + @padding, info.h - info.padding / 2 - @padding, 0 ]
+        orig = [ info.padding * 0.5, info.h - info.padding / 2, 0 ]
         width_axis = info.w - info.padding
         height_axis = -info.h + orig[ 1 ] + info.padding
         
@@ -151,7 +215,6 @@ class Graph extends Drawable
         info.ctx.fillStyle = @font_color.get()
         info.ctx.font = "12px Arial"
         
-        info.ctx.lineCap = "round"
         
         decal_txt = 10
         
@@ -177,7 +240,7 @@ class Graph extends Drawable
         y_padding_txt = 2
         decal_txt   = 3
                 
-        orig = [ 0 + info.padding * 0.5 + @padding, info.h - info.padding / 2 - @padding, 0]
+        orig = [ 0 + info.padding * 0.5, info.h - info.padding / 2, 0]
         width_axis = info.w - info.padding/2
         height_axis = -info.h + orig[ 1 ] + info.padding
         
@@ -188,7 +251,7 @@ class Graph extends Drawable
         info.ctx.textAlign = 'center'
         # x legend
         for i in [ 0 .. @legend_x_division ]
-            pos = ( ( width_axis - decal_txt - ( orig[ 0 ] - decal_txt ) ) / ( @legend_x_division - 1 ) ) * i + orig[ 0 ]
+            pos = orig[ 0 ] + ( ( width_axis - decal_txt - ( orig[ 0 ] - decal_txt ) ) / @legend_x_division ) * i
             vve = info.sc_2_rw.pos pos, 0
             val = vve[ 0 ]
             info.ctx.fillText val.toFixed( 2 ), pos, orig[ 1 ] + x_padding_txt
@@ -196,7 +259,7 @@ class Graph extends Drawable
         # y legend
         info.ctx.textAlign = 'right'
         for i in [ 0 .. @legend_y_division ]
-            pos = ( ( height_axis + decal_txt - ( orig[ 1 ] + decal_txt ) ) / ( @legend_y_division - 1 ) ) * i + orig[ 1 ]
+            pos =  orig[ 1 ] + ( ( height_axis + decal_txt - ( orig[ 1 ] + decal_txt ) ) / @legend_y_division ) * i
 
             val_from_screen = info.sc_2_rw.pos 0, pos
             val = val_from_screen[ 1 ]

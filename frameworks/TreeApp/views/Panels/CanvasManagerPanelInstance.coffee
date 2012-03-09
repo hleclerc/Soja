@@ -148,6 +148,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
                         src       : c.ico
                         alt       : ""
                         title     : c.txt
+                        height    : 24
                         style     :
                             paddingRight: "2px"
                             

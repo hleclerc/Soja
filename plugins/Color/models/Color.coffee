@@ -18,6 +18,9 @@ class Color extends Model
     to_hsv: ->
         Color.rgb_to_hsv @r.get(), @g.get(), @b.get()
 
+    get: ->
+        @to_rgba()
+
     # rbg between 0 and 255. hsv between 0 and 1
     @rgb_to_hsv: ( r, g, b ) ->
         r /= 255.0
