@@ -274,8 +274,8 @@ class Graph extends Drawable
         info.ctx.textAlign = 'center'
         info.ctx.textBaseline = 'top'
         # x legend
-        for i in [ 0 .. @legend_x_division ]
-            pos = orig[ 0 ] + ( ( width_axis - decal_txt - ( orig[ 0 ] - decal_txt ) ) / @legend_x_division ) * i
+        for i in [ 0 .. @legend_x_division.get() ]
+            pos = orig[ 0 ] + ( ( width_axis - decal_txt - ( orig[ 0 ] - decal_txt ) ) / @legend_x_division.get() ) * i
             vve = info.sc_2_rw.pos pos, 0
             val = vve[ 0 ]
             info.ctx.fillText val.toFixed( 2 ), pos, orig[ 1 ] + x_padding_txt
@@ -283,8 +283,8 @@ class Graph extends Drawable
         # y legend
         info.ctx.textBaseline = 'middle'
         info.ctx.textAlign = 'right'
-        for i in [ 0 .. @legend_y_division ]
-            pos =  orig[ 1 ] + ( ( height_axis + decal_txt - ( orig[ 1 ] + decal_txt ) ) / @legend_y_division ) * i
+        for i in [ 0 .. @legend_y_division.get() ]
+            pos =  orig[ 1 ] + ( ( height_axis + decal_txt - ( orig[ 1 ] + decal_txt ) ) / @legend_y_division.get() ) * i
 
             val_from_screen = info.sc_2_rw.pos 0, pos
             val = val_from_screen[ 1 ]
