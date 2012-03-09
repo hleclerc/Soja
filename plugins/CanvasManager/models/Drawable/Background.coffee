@@ -13,7 +13,8 @@ class Background extends Drawable
     z_index: () ->
         return 0
     
-    
+    draws_a_background: ->
+        true
     
     draw: ( info ) ->
         lineargradient = info.ctx.createLinearGradient( 0, 0, 0, info.h )

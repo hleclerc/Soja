@@ -20,6 +20,10 @@ class Val extends Obj
     _set: ( value ) ->
         if typeof value == "string"
             n = parseFloat value
+            if isNaN n
+                n = parseInt value
+            if isNaN n
+                console.log "Don't know how to transform #{value} to a Val"
         else if typeof value == "boolean"
             n = 1 * value
         else if value instanceof Val

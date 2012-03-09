@@ -55,9 +55,52 @@
 #    add_cm 300, 820, 'cross', "green", 4, true, "magenta", 3, "white"
 
 test_Curves = ->
+        
     d = new_dom_element
         parentNode: document.body
-        style     : { float: "left", width: 700, height: 300 }
+        style     : { position: "fixed", top: 0, left: 0 }
+        
+    c = new CanvasManager
+        el: d
+        want_aspect_ratio: true
+        padding_ratio: 1.4
+        constrain_zoom: 'x'
+        auto_fit: new Bool true
+        
+    c.cam.threeD.set false
+    c.resize 700, 400
+
+    m = new Graph 
+        marker: 'dot',
+        marker_color: new Color 255, 0, 0
+        line_width  : 3,
+        size_marker: 5,
+        x_axis: 'label X',
+        y_axis: 'label Y'
+        
+    m.points.push [   0, 0, 0 ]
+    m.points.push [ 100, 1, 0 ]
+    m.points.push [ 200, 3, 0 ]
+    m.points.push [ 255, 2, 0 ]
+    
+    c.items.push m
+    c.fit 0
+    c.draw()
+    
+    g = new_dom_element
+        parentNode: document.body
+        style     : { position: "fixed", top: 0, left: 800 }
+    editor = new_model_editor el: g, model: m, label: "Simple Graph", item_width: 48
+    editor.default_types.push ( model ) -> ModelEditorItem_Bool_Img       if model instanceof Bool
+    
+    new_model_editor el: g, model: c.cam, label: "cam", item_width: 48
+    new_model_editor el: g, model: c.theme, label: "theme", item_width: 48
+    
+    #-------------------
+    
+    d = new_dom_element
+        parentNode: document.body
+        style     : { position: "fixed", top: 400, left: 0, width: 700, height: 300 }
         
     c = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.4, constrain_zoom: 'x'
     c.cam.threeD.set false
@@ -72,48 +115,13 @@ test_Curves = ->
         line: false,
         x_axis: 'label X',
         y_axis: 'label Y'
-        
-    m.points.push [   0, 0, 0 ]
-    m.points.push [ 100, 1, 0 ]
-    m.points.push [ 200, 3, 0 ]
-    m.points.push [ 255, 2, 0 ]
-    
-    c.items.push m
-    c.fit()
-    c.draw()
-    
-    #-------------------
-    space = new_dom_element
-        parentNode: document.body
-        style     : { clear:"both" }
-        
-    d = new_dom_element
-        parentNode: document.body
-        style     : {  width: 700, height: 300, float:"left" }
-        
-    c = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.4, constrain_zoom: 'x'
-    c.cam.threeD.set false
-    c.resize 700, 400
 
-    m = new Graph 
-        marker: 'dot',
-        marker_color: new Color 255, 0, 0
-        line_color: "black",
-        size_marker: 5,
-        x_axis: 'label X',
-        y_axis: 'label Y'
-        
     m.points.push [   0, 0, 0 ]
     m.points.push [ 100, 1, 0 ]
     m.points.push [ 200, 3, 0 ]
     m.points.push [ 255, 2, 0 ]
     
     c.items.push m
-    c.fit()
+    c.fit 0
     c.draw()
     
-    g = new_dom_element
-        parentNode: document.body
-        style     : { width: 700, height: 300, "float":'left' }
-    editor = new_model_editor el: g, model: m, label: "Simple Graph", item_width: 48
-    editor.default_types.push ( model ) -> ModelEditorItem_Bool_Img       if model instanceof Bool

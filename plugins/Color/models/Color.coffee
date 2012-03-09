@@ -21,6 +21,29 @@ class Color extends Model
     get: ->
         @to_rgba()
 
+    _set: ( val )->
+        if val instanceof Color
+            @r.set val.r
+            @g.set val.g
+            @b.set val.b
+            @a.set val.a
+        else if typeof( val ) == 'string' and val[ 0 ] == "#"
+            if val.length == 4
+                @r.set "0x" + val.slice( 1, 2 )
+                @g.set "0x" + val.slice( 2, 3 )
+                @b.set "0x" + val.slice( 3, 4 )
+                @a.set 255
+            else if val.length == 7
+                @r.set "0x" + val.slice( 1, 3 )
+                @g.set "0x" + val.slice( 3, 5 )
+                @b.set "0x" + val.slice( 5, 7 )
+                @a.set 255
+            else
+                console.error "get color #{val}" 
+        else
+            console.error "get color #{val}" 
+        
+
     # rbg between 0 and 255. hsv between 0 and 1
     @rgb_to_hsv: ( r, g, b ) ->
         r /= 255.0

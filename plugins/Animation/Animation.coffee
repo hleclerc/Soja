@@ -31,8 +31,11 @@ class Animation
                 end: dt + delay
                 crv: curve
 
-            if not Animation._timer?
+            if delay <= 0
+                Animation._timeout_func()
+            else if not Animation._timer?
                 Animation._timer = setTimeout Animation._timeout_func, Animation.period_ms
+            
         
     @_timeout_func: ->
         dt = (new Date).getTime()

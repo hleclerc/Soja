@@ -8,6 +8,7 @@
 # size_marker : indicate size in pixels of marker
 # marker_color: choose the color of marker (in html way (hexa or string))
 # font_color  : color of font in axis and legend
+# font_size   : font size in pixels
 # x_axis      : label for x axis
 # y_axis      : label for y axis
 # legend_x_division : number of division on X legend including start and begining
@@ -18,23 +19,46 @@ class Graph extends Drawable
         super()
         
         @add_attr
+            _sel_item        : new Lst
+            line             : true
+            line_color       : new Color 0, 0, 0 
+            line_width       : new ConstrainedVal( 1, { min: 0, max: 20 } )
+            shadow           : true
+            marker           : new Choice( 0, [ "dot", "square", "cross", "bar" ] )
+            size_marker      : new ConstrainedVal( 2, { min: 0, max: 20 } )
+            marker_color     : new Color 0, 0, 0
+            font_color       : new Color 0, 0, 0
+            font_size        : new ConstrainedVal( 12, { min: 2, max: 72 } )
+            x_axis           : ''
+            y_axis           : ''
+            legend_x_division: 5
+            legend_y_division: 3
+            sel_item_color   : new Color 255, 255, 0
+            movable_hl_infos : true
             points           : new Lst_Point
             legend           : new Lst
-            sel_item         : new Lst
-            line             : if params.line? then params.line else true
-            line_color       : params.line_color or new Color 255, 255, 255 
-            line_width       : params.line_width or 1
-            shadow           : if params.shadow? then params.shadow else true
-            marker           : params.marker or 'dot'
-            size_marker      : params.size_marker or 2
-            marker_color     : params.marker_color or new Color 255, 255, 255
-            font_color       : params.font_color or new Color 0, 0, 0
-            x_axis           : params.x_axis or ''
-            y_axis           : params.y_axis or ''
-            legend_x_division: params.legend_x_division or 5
-            legend_y_division: params.legend_y_division or 3
-            sel_item_color   : params.sel_item_color or  new Color 255, 255, 0
-            movable_hl_infos : if params.movable_hl_infos? then params.movable_hl_infos else true
+
+        for key, val of params
+            this[ key ]?.set? val
+        
+        #        @add_attr
+        #             _sel_item         : new Lst
+        #             line             : if params.line? then params.line else true
+        #             line_color       : params.line_color or new Color 0, 0, 0 
+        #             line_width       : params.line_width or 1
+        #             shadow           : if params.shadow? then params.shadow else true
+        #             marker           : params.marker or 'dot'
+        #             size_marker      : params.size_marker or 2
+        #             marker_color     : params.marker_color or new Color 0, 0, 0
+        #             font_color       : params.font_color or new Color 0, 0, 0
+        #             x_axis           : params.x_axis or ''
+        #             y_axis           : params.y_axis or ''
+        #             legend_x_division: params.legend_x_division or 5
+        #             legend_y_division: params.legend_y_division or 3
+        #             sel_item_color   : params.sel_item_color or  new Color 255, 255, 0
+        #             movable_hl_infos : if params.movable_hl_infos? then params.movable_hl_infos else true
+        #             points           : new Lst_Point
+        #             legend           : new Lst
             
         @axis_width = 1
 #         @width_graph = 0
@@ -103,7 +127,7 @@ class Graph extends Drawable
                 @draw_marker_dot info, orig, proj
                 
             # show value when mouse is over a point
-            if @sel_item.length > 0
+            if @_sel_item.length > 0
                 if @movable_hl_infos.get() == true
                     @draw_movable_highlight_values info
                 else
@@ -118,32 +142,31 @@ class Graph extends Drawable
         info.ctx.textAlign = "left"
         
         
-        highlighted_point = @points[ @sel_item[ 0 ] ].pos.get()
+        highlighted_point = @points[ @_sel_item[ 0 ] ].pos.get()
         info.ctx.beginPath()
         info.ctx.fillStyle = @font_color.get()
         
-        info.ctx.font = "20px Arial"
+        info.ctx.font = @font_size.get() * 2 + "px Arial"
 #             proj = for p in @points
 #                 info.re_2_sc.proj p.pos.get()
         pos = info.re_2_sc.proj highlighted_point
         info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] , pos[ 0 ] + padding_left, pos[ 1 ] + padding_top
         
     draw_highlight_values: ( info ) ->
-        highlighted_point = @points[ @sel_item[ 0 ] ].pos.get()
+        highlighted_point = @points[ @_sel_item[ 0 ] ].pos.get()
         info.ctx.beginPath()
         info.ctx.fillStyle = @font_color.get()
         info.ctx.textAlign = "right"
-        info.ctx.font = "20px Arial"
+        info.ctx.font = @font_size.get() * 2 + "px Arial"
         info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] ,  info.w, 20
     
     
     draw_line: ( info, orig, proj ) ->
-        info.ctx.lineWidth = @line_width
+        info.ctx.lineWidth = @line_width.get()
         
         #draw real line
         info.ctx.strokeStyle = @line_color.get()
         info.ctx.beginPath()
-        info.ctx.moveTo orig[ 0 ], orig[ 1 ]
         for p, i in proj
             info.ctx.lineTo p[ 0 ], p[ 1 ]
         info.ctx.stroke()
@@ -153,7 +176,7 @@ class Graph extends Drawable
     draw_marker_dot: ( info, orig, proj ) ->
         for p, i in proj
             if p[ 0 ] >= @O_point[ 0 ] - @size_marker.get() and p[ 0 ] <= @X_point[ 0 ] + @size_marker.get()
-                if @sel_item.length > 0 and @sel_item[ 0 ].get() == i
+                if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
                     info.ctx.fillStyle = @sel_item_color.get()
                 else
                     info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
@@ -165,7 +188,7 @@ class Graph extends Drawable
     draw_marker_cross: ( info, orig, proj ) ->
         for p, i in proj
             if p[ 0 ] >= @O_point[ 0 ] - @size_marker.get() and p[ 0 ] <= @X_point[ 0 ] + @size_marker.get()
-                if @sel_item.length > 0 and @sel_item[ 0 ].get() == i
+                if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
                     info.ctx.strokeStyle = @sel_item_color.get()
                 else
                     info.ctx.strokeStyle = @legend[ i ] or @marker_color.get()
@@ -181,7 +204,7 @@ class Graph extends Drawable
     draw_marker_square: ( info, orig, proj ) ->
         for p, i in proj
             if p[ 0 ] >= @O_point[ 0 ] - @size_marker.get() and p[ 0 ] <= @X_point[ 0 ] + @size_marker.get()
-                if @sel_item.length > 0 and @sel_item[ 0 ].get() == i
+                if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
                     info.ctx.fillStyle = @sel_item_color.get()
                 else
                     info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
@@ -193,7 +216,7 @@ class Graph extends Drawable
     draw_marker_bar: ( info, orig, proj ) ->
         for p, i in proj
             if p[ 0 ] >= @O_point[ 0 ] - @size_marker.get() and p[ 0 ] <= @X_point[ 0 ] + @size_marker.get()
-                if @sel_item.length > 0 and @sel_item[ 0 ].get() == i
+                if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
                     info.ctx.fillStyle = @sel_item_color.get()
                 else
                     info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
@@ -213,7 +236,7 @@ class Graph extends Drawable
         info.ctx.lineWidth = @axis_width
         info.ctx.strokeStyle = @font_color.get()
         info.ctx.fillStyle = @font_color.get()
-        info.ctx.font = "12px Arial"
+        info.ctx.font = @font_size.get() + "px Arial"
         
         
         decal_txt = 10
@@ -246,9 +269,10 @@ class Graph extends Drawable
         
         info.ctx.beginPath()
         info.ctx.fillStyle = @font_color.get()
-        info.ctx.font = '6pt Arial'
+        info.ctx.font = @font_size.get() * 0.8 + "px Arial"
         
         info.ctx.textAlign = 'center'
+        info.ctx.textBaseline = 'top'
         # x legend
         for i in [ 0 .. @legend_x_division ]
             pos = orig[ 0 ] + ( ( width_axis - decal_txt - ( orig[ 0 ] - decal_txt ) ) / @legend_x_division ) * i
@@ -257,6 +281,7 @@ class Graph extends Drawable
             info.ctx.fillText val.toFixed( 2 ), pos, orig[ 1 ] + x_padding_txt
 
         # y legend
+        info.ctx.textBaseline = 'middle'
         info.ctx.textAlign = 'right'
         for i in [ 0 .. @legend_y_division ]
             pos =  orig[ 1 ] + ( ( height_axis + decal_txt - ( orig[ 1 ] + decal_txt ) ) / @legend_y_division ) * i
@@ -283,13 +308,13 @@ class Graph extends Drawable
         x = pos[ 0 ]
         y = pos[ 1 ]
         
-        @sel_item.clear()
+        @_sel_item.clear()
         if @points.length and phase == 0
             for p, i in @points
                 proj = info.re_2_sc.proj p.pos.get()
                 dx = x - proj[ 0 ]
                 dy = y - proj[ 1 ]
                 d = Math.sqrt dx * dx + dy * dy
-                if d <= 10
-                    @sel_item.push i
+                if d <= @size_marker.get() * 2
+                    @_sel_item.push i
             

@@ -39,6 +39,8 @@ class CanvasManager extends View
             @padding_ratio = 1.5
         if not @constrain_zoom?
             @constrain_zoom = false
+        if not @auto_fit?
+            @auto_fit = new Bool false
             
             
         super [ @items, @cam, @selected_entities, @pre_selected_entities, @selected_items, @time ]
@@ -116,12 +118,13 @@ class CanvasManager extends View
             
             if w > h
                 rx = ( ip * w ) / ( w - h * ( 1 - ip ) )
-                @cam.r.set rx * ( h * dx ) / ( w * dy )
+                @aset @cam.r, rx * ( h * dx ) / ( w * dy ), anim
                 d = dy * @padding_ratio
             else
                 ry = ( h - w * ( 1 - ip ) ) / ( ip * h )
-                @cam.r.set ry * ( h * dx ) / ( w * dy )
-                d = dx / @cam.r.get() * @padding_ratio
+                res = ry * ( h * dx ) / ( w * dy )
+                @aset @cam.r, res, anim
+                d = dx / res * @padding_ratio
     
         @aset @cam.O, O, anim
         @aset @cam.d, d, anim
@@ -144,26 +147,31 @@ class CanvasManager extends View
         @aset @cam.X, [ 1, 0, 0 ]
         @aset @cam.Y, [ 0, 1, 0 ]
     
-    draw_item_have_background: ->
-        flat = []
-        for item in @items
-            CanvasManager._get_flat_list flat, item
-        
-        for drawable in flat
-            if drawable instanceof Background
-                return true
-            else
-                return false
-    
     # redraw all the scene
     draw: ->
-        if @draw_item_have_background() == false
-            @ctx.clearRect 0, 0, @canvas.width, @canvas.height
-
-            
         flat = []
         for item in @items
             CanvasManager._get_flat_list flat, item
+            
+        #
+        has_a_background = false
+        has_a_changed_drawable = false
+        for f in flat
+            has_a_background |= f.draws_a_background?()
+            has_a_changed_drawable |= f.has_been_modified?()
+            
+        #
+        if not has_a_background
+            @ctx.clearRect 0, 0, @canvas.width, @canvas.height
+        
+        if @auto_fit.get() and has_a_changed_drawable
+            @fit if @first_fit?
+                1
+            else
+                @first_fit = true
+                0
+        
+        #
         @_mk_cam_info()
         #sort object depending z_index (a greater z index is in front of an element with a lower z index)
         flat.sort ( a, b ) -> a.z_index() - b.z_index()
