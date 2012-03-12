@@ -81,8 +81,15 @@ class TreeAppModule_PanelManager extends TreeAppModule
             key: [ "Shift+X" ]
                     
     split_view: ( evt, app, n ) ->
+        cam = undefined
+        for p in app.data.selected_tree_items
+            s = p[ p.length - 1 ]
+            if s instanceof ShootingItem
+                cam = s.cam
+                
         d = app.data.selected_display_settings()
         for panel_id in app.data.selected_canvas_pan
+            app._next_cam = cam
             d._layout.mk_split n, 0, panel_id, 0.5
         
         

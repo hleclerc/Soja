@@ -20,7 +20,8 @@ class ImgItem extends TreeItem
         false
         
     sub_canvas_items: ->
-        [ @img, @legend ]
+#         [ @img, @legend ]
+        [ @img ]
         
     # disp_only_in_model_editor: ->
     #     [ @img, @legend ]
@@ -44,12 +45,12 @@ class ImgItem extends TreeItem
 # #             bg.gradient.remove_color 1
 #             bg.gradient.remove_color 0
 
-            m = new Graph marker: 'bar', line: false, shadow: false
+            m = new Graph marker: 'bar', line: false, shadow: false, size_marker: 2, font_size: 10
             for p, i in @img._histo
                 m.points.push [ i , p, 0 ]
             m.build_w2b_legend()
             
-            @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.2, constrain_zoom: 'x'
+            @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.4, constrain_zoom: 'x'
             @cm.cam.threeD.set false
             
 #             @cm.items.push bg

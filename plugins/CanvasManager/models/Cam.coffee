@@ -119,7 +119,7 @@ class Cam extends Model
                 ( ( x + @o_x ) * @X[ 2 ] + ( y + @o_y ) * @Y[ 2 ] ) * @p + @Z[ 2 ]
             ]
             
-        pos: ( x, y ) -> [
+        pos: ( x, y, z = 0 ) -> [
             @O[ 0 ] + ( x + @o_x ) * @X[ 0 ] + ( y + @o_y ) * @Y[ 0 ],
             @O[ 1 ] + ( x + @o_x ) * @X[ 1 ] + ( y + @o_y ) * @Y[ 1 ],
             @O[ 2 ] + ( x + @o_x ) * @X[ 2 ] + ( y + @o_y ) * @Y[ 2 ]

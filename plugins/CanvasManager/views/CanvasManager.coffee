@@ -68,6 +68,9 @@ class CanvasManager extends View
         # drawing context
         @_init_ctx @allow_gl
 
+        @x_min = [ 0, 0, 0 ]
+        @x_max = [ 1, 1, 1 ]
+
         #
         @click_fun = [] # called if mouse down and up without move
 
@@ -76,6 +79,8 @@ class CanvasManager extends View
 
     #
     bounding_box: ->
+        if @_bounding_box?
+            return @_bounding_box
         get_min_max = ( item, x_min, x_max ) ->
             if item.update_min_max?
                 item.update_min_max x_min, x_max
@@ -89,7 +94,8 @@ class CanvasManager extends View
             get_min_max item, x_min, x_max
         if x_min[ 0 ] == +1e40
             return [ [ -1, -1, -1 ], [ 1, 1, 1 ] ]
-        return [ x_min, x_max ]
+        @_bounding_box = [ x_min, x_max ]
+        return @_bounding_box
         
     # 
     fit: ( anim = 1 ) ->
@@ -159,7 +165,10 @@ class CanvasManager extends View
         for f in flat
             has_a_background |= f.draws_a_background?()
             has_a_changed_drawable |= f.has_been_modified?()
-            
+
+        if has_a_changed_drawable
+            delete @_bounding_box
+
         #
         if not has_a_background
             @ctx.clearRect 0, 0, @canvas.width, @canvas.height
@@ -365,6 +374,13 @@ class CanvasManager extends View
             for n in item.sub_canvas_items()
                 @_fill_selected_items_rec i, n
 
+    _get_x_min: ->
+        @bounding_box()[ 0 ]
+
+    _get_x_max: ->
+        @bounding_box()[ 1 ]
+        
+
     # compute and store camera info in @cam_info
     _mk_cam_info: ->
         w = @canvas.width
@@ -383,19 +399,21 @@ class CanvasManager extends View
             pre_s[ item.model_id ] = true
             
         @cam_info =
-            w       : w
-            h       : h
-            mwh     : Math.min w, h
-            ctx     : @ctx
-            cam     : @cam
-            re_2_sc : @cam.re_2_sc w, h
-            sc_2_rw : @cam.sc_2_rw w, h
-            sel_item: i
-            selected: s
-            pre_sele: pre_s
-            time    : @time.get()
-            theme   : @theme
-            padding : ( 1 - 1 / @padding_ratio ) * Math.min( w, h ) # padding size in pixels
+            w        : w
+            h        : h
+            mwh      : Math.min w, h
+            ctx      : @ctx
+            cam      : @cam
+            get_x_min: => @_get_x_min()
+            get_x_max: => @_get_x_max()
+            re_2_sc  : @cam.re_2_sc w, h
+            sc_2_rw  : @cam.sc_2_rw w, h
+            sel_item : i
+            selected : s
+            pre_sele : pre_s
+            time     : @time.get()
+            theme    : @theme
+            padding  : ( 1 - 1 / @padding_ratio ) * Math.min( w, h ) # padding size in pixels
                     
     # get leaves in item list (i.e. object with a draw method)
     @_get_flat_list: ( flat, item ) ->

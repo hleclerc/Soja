@@ -39,8 +39,14 @@ class TreeAppModule_ImageSet extends TreeAppModule
             txt: "Add Image"
             fun: ( evt, app, img ) =>
                 @collection = @add_item_depending_selected_tree app, ImgSetItem
+                
                 if not img?
-                    img = new ImgItem "composite0"+ @numpic++ +".png", app
+                    if @numpic%2 == 1
+                        img = new ImgItem "left.png", app
+                    else
+                        img = new ImgItem "right.png", app
+                @numpic++
+#                     img = new ImgItem "composite0"+ @numpic++ +".png", app
                 @collection.add_child img
                 
                 app.data.time._max.set app.data.time._max.get() + 1

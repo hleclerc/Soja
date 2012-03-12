@@ -21,6 +21,15 @@ class ShootingItem extends TreeItem
         ch instanceof ImgSetItem or
         ch instanceof TransformItem
         
+#     sub_canvas_items: ->
+#         [  ]
 
     z_index: ->
-        #
+        0.1
+        
+    draw: ( info ) ->
+        info.shoot_cam = @cam
+        for c in @_children
+            c.draw info
+        delete info.shoot_cam
+            
