@@ -140,18 +140,22 @@ class Graph extends Drawable
     draw_movable_highlight_values: ( info ) ->
         padding_left = 10
         padding_top = -5
-        #TODO should check if values don't go outside the canvas size
-        info.ctx.textAlign = "left"
         
+        #TODO should check if values don't go outside the canvas size
         
         highlighted_point = @points[ @_sel_item[ 0 ] ].pos.get()
-        info.ctx.beginPath()
-        info.ctx.fillStyle = @font_color.get()
         
-        info.ctx.font = @font_size.get() * 2 + "px Arial"
-#             proj = for p in @points
-#                 info.re_2_sc.proj p.pos.get()
+        info.ctx.beginPath()
         pos = info.re_2_sc.proj highlighted_point
+        width_box = @font_size.get() * 7
+        height_box = @font_size.get() * 3
+#         
+        info.ctx.fillStyle = "rgba(255, 255, 255, 0.1)"
+        info.ctx.fillRect pos[ 0 ], pos[ 1 ] - height_box * 0.8, width_box, height_box
+        
+        info.ctx.fillStyle = @font_color.get()
+        info.ctx.textAlign = "left"
+        info.ctx.font = @font_size.get() * 2 + "px Arial"
         info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] , pos[ 0 ] + padding_left, pos[ 1 ] + padding_top
         
     draw_highlight_values: ( info ) ->
