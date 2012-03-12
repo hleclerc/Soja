@@ -29,9 +29,9 @@ class Color extends Model
             @a.set val.a
         else if typeof( val ) == 'string' and val[ 0 ] == "#"
             if val.length == 4
-                @r.set "0x" + val.slice( 1, 2 )
-                @g.set "0x" + val.slice( 2, 3 )
-                @b.set "0x" + val.slice( 3, 4 )
+                @r.set "0x" + val.slice( 1, 2 ) + val.slice( 1, 2 )
+                @g.set "0x" + val.slice( 2, 3 ) + val.slice( 2, 3 )
+                @b.set "0x" + val.slice( 3, 4 ) + val.slice( 3, 4 )
                 @a.set 255
             else if val.length == 7
                 @r.set "0x" + val.slice( 1, 3 )

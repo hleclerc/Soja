@@ -72,7 +72,7 @@ test_Curves = ->
 
     m = new Graph 
         marker: 'dot',
-        marker_color: new Color 255, 0, 0
+        marker_color: "#f00"
         line_width  : 3,
         line_color: new Color 75, 150, 175
         size_marker: 10,
