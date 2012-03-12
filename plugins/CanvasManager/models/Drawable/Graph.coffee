@@ -24,8 +24,8 @@ class Graph extends Drawable
             line_color       : new Color 0, 0, 0 
             line_width       : new ConstrainedVal( 1, { min: 0, max: 20 } )
             shadow           : true
-            marker           : new Choice( 0, [ "dot", "square", "cross", "bar" ] )
-            size_marker      : new ConstrainedVal( 2, { min: 0, max: 20 } )
+            marker           : new Choice( 0, [ "dot", "square", "cross", "diamond", "bar" ] )
+            size_marker      : new ConstrainedVal( 5, { min: 0, max: 40 } )
             marker_color     : new Color 0, 0, 0
             font_color       : new Color 0, 0, 0
             font_size        : new ConstrainedVal( 12, { min: 2, max: 72 } )
@@ -123,6 +123,8 @@ class Graph extends Drawable
                 @draw_marker_cross info, orig, proj
             else if @marker.get() == 'square'
                 @draw_marker_square info, orig, proj
+            else if @marker.get() == 'diamond'
+                @draw_marker_diamond info, orig, proj
             else if @marker.get() == 'dot'
                 @draw_marker_dot info, orig, proj
                 
@@ -181,7 +183,7 @@ class Graph extends Drawable
                 else
                     info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
                 info.ctx.beginPath()
-                info.ctx.arc p[ 0 ], p[ 1 ], @size_marker.get(), 0, Math.PI * 2, true
+                info.ctx.arc p[ 0 ], p[ 1 ], @size_marker.get() * 0.5, 0, Math.PI * 2, true
                 info.ctx.fill()
         info.ctx.closePath()
         
@@ -194,10 +196,10 @@ class Graph extends Drawable
                     info.ctx.strokeStyle = @legend[ i ] or @marker_color.get()
                     
                 info.ctx.beginPath()
-                info.ctx.moveTo p[ 0 ] - @size_marker.get(), p[ 1 ] + @size_marker.get()
-                info.ctx.lineTo p[ 0 ] + @size_marker.get(), p[ 1 ] - @size_marker.get()
-                info.ctx.moveTo p[ 0 ] + @size_marker.get(), p[ 1 ] + @size_marker.get()
-                info.ctx.lineTo p[ 0 ] - @size_marker.get(), p[ 1 ] - @size_marker.get()
+                info.ctx.moveTo p[ 0 ] - @size_marker.get() * 0.5, p[ 1 ] + @size_marker.get() * 0.5
+                info.ctx.lineTo p[ 0 ] + @size_marker.get() * 0.5, p[ 1 ] - @size_marker.get() * 0.5
+                info.ctx.moveTo p[ 0 ] + @size_marker.get() * 0.5, p[ 1 ] + @size_marker.get() * 0.5
+                info.ctx.lineTo p[ 0 ] - @size_marker.get() * 0.5, p[ 1 ] - @size_marker.get() * 0.5
                 info.ctx.stroke()
         info.ctx.closePath()
         
@@ -210,6 +212,21 @@ class Graph extends Drawable
                     info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
                 info.ctx.beginPath()
                 info.ctx.fillRect p[ 0 ] - @size_marker.get() * 0.5 , p[ 1 ] - @size_marker.get() * 0.5 , @size_marker.get(), @size_marker.get()
+        info.ctx.closePath()
+        
+    draw_marker_diamond: ( info, orig, proj ) ->
+        for p, i in proj
+            if p[ 0 ] >= @O_point[ 0 ] - @size_marker.get() and p[ 0 ] <= @X_point[ 0 ] + @size_marker.get()
+                if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
+                    info.ctx.fillStyle = @sel_item_color.get()
+                else
+                    info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
+                info.ctx.beginPath()
+                info.ctx.moveTo p[ 0 ], p[ 1 ] - @size_marker.get()
+                info.ctx.lineTo p[ 0 ] + @size_marker.get() * 0.5, p[ 1 ]
+                info.ctx.lineTo p[ 0 ], p[ 1 ] + @size_marker.get()
+                info.ctx.lineTo p[ 0 ] - + @size_marker.get() * 0.5, p[ 1 ]
+                info.ctx.fill()
         info.ctx.closePath()
         
     #bar chart
@@ -250,12 +267,15 @@ class Graph extends Drawable
         
         # y axis
         if @y_axis.get() != ""
+            
+            info.ctx.textBaseline = "bottom"
             info.ctx.textAlign = "center"
             info.ctx.fillText @y_axis.get(),  orig[ 0 ] - 2, height_axis - decal_txt
         info.ctx.moveTo orig[ 0 ], orig[ 1 ]
         info.ctx.lineTo orig[ 0 ], height_axis
         info.ctx.stroke()
         info.ctx.closePath()
+        info.ctx.textBaseline = "middle"
         
     draw_legend: ( info ) ->
             

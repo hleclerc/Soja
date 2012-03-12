@@ -75,7 +75,7 @@ test_Curves = ->
         marker_color: new Color 255, 0, 0
         line_width  : 3,
         line_color: new Color 75, 150, 175
-        size_marker: 5,
+        size_marker: 10,
         x_axis: 'label X',
         y_axis: 'label Y'
         
