@@ -45,6 +45,7 @@ class Img extends Drawable
             w = @data.rgba.width
             h = @data.rgba.height
             sc_2_rw = info.shoot_cam.sc_2_rw w, h
+            Z = sc_2_rw.dir 0.5 * w, 0.5 * h
             x_min = info.get_x_min()
             x_max = info.get_x_max()
             
@@ -60,9 +61,9 @@ class Img extends Drawable
                 ( x_max[ 2 ] - x_min[ 2 ] )
             )
             P = [
-                Xc[ 0 ] + dc * @Z[ 0 ],
-                Xc[ 1 ] + dc * @Z[ 1 ],
-                Xc[ 2 ] + dc * @Z[ 2 ],
+                Xc[ 0 ] + dc * Z[ 0 ],
+                Xc[ 1 ] + dc * Z[ 1 ],
+                Xc[ 2 ] + dc * Z[ 2 ],
             ]
             
             #
@@ -75,10 +76,9 @@ class Img extends Drawable
                     pos[ 2 ] + dir[ 2 ] * pq,
                 ]
             
-            Z = sc_2_rw.dir 0.5 * w, 0.5 * h
-            @O = ajusted sc_2_rw.pos( 0, 0 ), sc_2_rw.dir( 0, 0 ), Z, P
-            dX = ajusted sc_2_rw.pos( w, 0 ), sc_2_rw.dir( w, 0 ), Z, P
-            dY = ajusted sc_2_rw.pos( 0, h ), sc_2_rw.dir( 0, h ), Z, P
+            @O = ajusted sc_2_rw.pos( 0, h ), sc_2_rw.dir( 0, h ), Z, P
+            dX = ajusted sc_2_rw.pos( w, h ), sc_2_rw.dir( w, h ), Z, P
+            dY = ajusted sc_2_rw.pos( 0, 0 ), sc_2_rw.dir( 0, 0 ), Z, P
             
             
             #

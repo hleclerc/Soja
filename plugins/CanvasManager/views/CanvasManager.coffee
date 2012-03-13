@@ -174,11 +174,11 @@ class CanvasManager extends View
             @ctx.clearRect 0, 0, @canvas.width, @canvas.height
         
         if @auto_fit.get() and has_a_changed_drawable
-            @fit if @first_fit?
-                1
+            if @first_fit?
+                @fit 1
             else
                 @first_fit = true
-                0
+                @fit 0
         
         #
         @_mk_cam_info()
