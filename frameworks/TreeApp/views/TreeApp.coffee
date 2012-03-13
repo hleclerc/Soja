@@ -101,9 +101,7 @@ class TreeApp extends View
             cur_key += "Ctrl+"  if evt.ctrlKey
             cur_key += "Shift+" if evt.shiftKey
             cur_key += "Alt+"   if evt.altKey
-            
-            cur_key += String.fromCharCode( evt.keyCode ).toUpperCase()
-            
+
             cur_key = "Del"        if evt.keyCode == 46
             cur_key = "Space"      if evt.keyCode == 32
             cur_key = "LeftArrow"  if evt.keyCode == 37
@@ -111,6 +109,65 @@ class TreeApp extends View
             cur_key = "RightArrow" if evt.keyCode == 39
             cur_key = "DownArrow"  if evt.keyCode == 40
             cur_key = "Enter"      if evt.keyCode == 13
+            cur_key = "F5"         if evt.keyCode == 116
+            # TODO prevent f5 overlapping with 't' (or f4 with 's', etc.)
+#             special_keys =
+#                 'esc':27,
+#                 'escape':27,
+#                 'tab':9,
+#                 'space':32,
+#                 'return':13,
+#                 'enter':13,
+#                 'backspace':8,
+# 
+#                 'scrolllock':145,
+#                 'scroll_lock':145,
+#                 'scroll':145,
+#                 'capslock':20,
+#                 'caps_lock':20,
+#                 'caps':20,
+#                 'numlock':144,
+#                 'num_lock':144,
+#                 'num':144,
+# 
+#                 'pause':19,
+#                 'break':19,
+# 
+#                 'insert':45,
+#                 'home':36,
+#                 'delete':46,
+#                 'end':35,
+# 
+#                 'pageup':33,
+#                 'page_up':33,
+#                 'pu':33,
+# 
+#                 'pagedown':34,
+#                 'page_down':34,
+#                 'pd':34,
+# 
+#                 'left':37,
+#                 'up':38,
+#                 'right':39,
+#                 'down':40,
+# 
+#                 'f1':112,
+#                 'f2':113,
+#                 'f3':114,
+#                 'f4':115,
+#                 'f5':116,
+#                 'f6':117,
+#                 'f7':118,
+#                 'f8':119,
+#                 'f9':120,
+#                 'f10':121,
+#                 'f11':122,
+#                 'f12':123
+                
+#             console.log evt.keyCode
+            cur_key += String.fromCharCode( evt.keyCode ).toUpperCase()
+#             cur_key += special_keys[ evt.keyCode ] || String.fromCharCode( evt.keyCode ).toLowerCase()
+#             console.log cur_key
             
             for m in @data.modules
                 for a in m.actions
@@ -118,6 +175,7 @@ class TreeApp extends View
                         for k in a.key
                             if k == cur_key
                                 a.fun? evt, this
+                                @cancel_natural_hotkeys evt
                                 break
                     
                     if a.sub? and a.sub.length > 0
@@ -126,4 +184,24 @@ class TreeApp extends View
                                 for k in a.key
                                     if k == cur_key
                                         a.fun evt, this
+                                        @cancel_natural_hotkeys evt
                                         break
+                                        
+                    if a.menu? and a.menu.length > 0
+                        for a in a.menu
+                            if a.key? and ( not a.ina? or not a.ina( this ) )
+                                for k in a.key
+                                    if k == cur_key
+                                        a.fun evt, this
+                                        @cancel_natural_hotkeys evt
+                                        break
+
+    cancel_natural_hotkeys: ( evt ) ->
+        if (!evt)
+            evt = window.event
+        evt.cancelBubble = true
+        if (evt.stopPropagation)
+            evt.stopPropagation()
+        evt.preventDefault()
+
+        return false

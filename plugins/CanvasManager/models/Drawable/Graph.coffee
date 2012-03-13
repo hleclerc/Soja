@@ -104,15 +104,9 @@ class Graph extends Drawable
                 
             if @shadow.get() == true
                 #draw shadow
-                info.ctx.shadowOffsetX = @line_width.get()
-                info.ctx.shadowOffsetY = @line_width.get()
-                info.ctx.shadowBlur    = @line_width.get()
-                info.ctx.shadowColor   =  "#3a3a3a"
+                @add_shadow info
             else
-                info.ctx.shadowOffsetX = 0
-                info.ctx.shadowOffsetY = 0
-                info.ctx.shadowBlur    = 0
-                info.ctx.shadowColor   = "transparent black"
+                @remove_shadow info
                 
             if @line.get() == true
                 @draw_line info, orig, proj
@@ -128,13 +122,27 @@ class Graph extends Drawable
             else if @marker.get() == 'dot'
                 @draw_marker_dot info, orig, proj
                 
+            @remove_shadow info
+            
             # show value when mouse is over a point
             if @_sel_item.length > 0
                 if @movable_hl_infos.get() == true
                     @draw_movable_highlight_values info
                 else
                     @draw_highlight_values info
+    
+    add_shadow: ( info ) ->
+        info.ctx.shadowOffsetX = @line_width.get()
+        info.ctx.shadowOffsetY = @line_width.get()
+        info.ctx.shadowBlur    = @line_width.get()
+        info.ctx.shadowColor   =  "#3a3a3a"
         
+        
+    remove_shadow: ( info ) ->
+        info.ctx.shadowOffsetX = 0
+        info.ctx.shadowOffsetY = 0
+        info.ctx.shadowBlur    = 0
+        info.ctx.shadowColor   = "transparent black"
         
             
     draw_movable_highlight_values: ( info ) ->
@@ -147,24 +155,32 @@ class Graph extends Drawable
         
         info.ctx.beginPath()
         pos = info.re_2_sc.proj highlighted_point
-        width_box = @font_size.get() * 7
+        
+        text = highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ]
+        
+        
+        info.ctx.font = @font_size.get() * 2 + "px Arial"
+        width_box = info.ctx.measureText( text ).width + padding_left * 2
         height_box = @font_size.get() * 3
 #         
-        info.ctx.fillStyle = "rgba(255, 255, 255, 0.1)"
+        info.ctx.fillStyle = "rgba(255, 255, 255, 0.8)"
         info.ctx.fillRect pos[ 0 ], pos[ 1 ] - height_box * 0.8, width_box, height_box
+        info.ctx.lineWidth = 1
+        info.ctx.strokeStyle = "rgba(0, 0, 0, 0.8)"
+        info.ctx.strokeRect pos[ 0 ], pos[ 1 ] - height_box * 0.8, width_box, height_box
         
-        info.ctx.fillStyle = @font_color.get()
         info.ctx.textAlign = "left"
-        info.ctx.font = @font_size.get() * 2 + "px Arial"
-        info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] , pos[ 0 ] + padding_left, pos[ 1 ] + padding_top
+        info.ctx.fillStyle = @font_color.get()
+        info.ctx.fillText text , pos[ 0 ] + padding_left, pos[ 1 ] + padding_top
         
     draw_highlight_values: ( info ) ->
+        padding = 10
         highlighted_point = @points[ @_sel_item[ 0 ] ].pos.get()
         info.ctx.beginPath()
         info.ctx.fillStyle = @font_color.get()
         info.ctx.textAlign = "right"
         info.ctx.font = @font_size.get() * 2 + "px Arial"
-        info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] ,  info.w, 20
+        info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] ,  info.w - padding , 20
     
     
     draw_line: ( info, orig, proj ) ->
