@@ -113,7 +113,7 @@ class Graph extends Drawable
                 info.ctx.shadowOffsetY = 0
                 info.ctx.shadowBlur    = 0
                 info.ctx.shadowColor   = "transparent black"
-            
+                
             if @line.get() == true
                 @draw_line info, orig, proj
             
@@ -168,11 +168,14 @@ class Graph extends Drawable
     
     
     draw_line: ( info, orig, proj ) ->
-        info.ctx.lineWidth = @line_width.get()
         
         #draw real line
-        info.ctx.strokeStyle = @line_color.get()
         info.ctx.beginPath()
+        info.ctx.strokeStyle = @line_color.get()
+        if @line_width.get() <= 1
+            info.ctx.lineWidth = 1.000001 #fix a chromium bug
+        else
+            info.ctx.lineWidth = @line_width.get()
         for p, i in proj
             info.ctx.lineTo p[ 0 ], p[ 1 ]
         info.ctx.stroke()

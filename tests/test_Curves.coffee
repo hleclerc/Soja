@@ -79,6 +79,7 @@ test_Curves = ->
         x_axis: 'label X',
         y_axis: 'label Y'
         
+        
     m.points.push [   0, 0, 0 ]
     m.points.push [ 100, 1, 0 ]
     m.points.push [ 200, 3, 0 ]

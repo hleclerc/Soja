@@ -165,3 +165,29 @@
     background: grey;
 }
 
+
+.menu_container {
+    position   : absolute;
+    z-index    : 1001;
+    width      : 10em;
+    background : white;
+    box-shadow : 3px 3px 3px black;
+    text-align : left;
+    display    : none;
+    border               : thin solid grey;
+    -moz-border-radius   : 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius     : 3px;
+    border-radius        : 3px;
+}
+.block {
+    display:block;
+}
+.elem_container {
+    cursor: pointer;
+    padding: 6px;
+}
+.elem_container:hover {
+    background: lightGrey;
+    
+}

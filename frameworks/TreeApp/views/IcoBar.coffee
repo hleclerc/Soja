@@ -35,21 +35,7 @@ class IcoBar extends View
             if m instanceof TreeAppModule_TreeView
                 continue
             
-            do ( m ) =>                
-#                 number_of_small_icon = []
-#                 number_of_icon = 0
-#                 for act in m.actions when act.ico?
-#                     if act.siz == undefined or act.siz == 1
-#                         number_of_icon++
-#                     else
-#                         if number_of_icon > 0
-#                             number_of_small_icon.push number_of_icon
-#                             number_of_icon = 0
-#                         
-#                 number_of_small_icon.push number_of_icon
-#                     
-#                 console.log number_of_small_icon
-                
+            do ( m ) =>
                 block = new_dom_element
                     parentNode : @div
                     nodeName   : "span"
@@ -112,6 +98,8 @@ class IcoBar extends View
                                     key += ' or '
                                 key += k
                             key += ')'
+                        
+                        
                         
                         # for icon who have children
                         if act.sub? and act.sub.length > 0
@@ -194,6 +182,8 @@ class IcoBar extends View
                                     height     : @height_ico * siz * ( if act.ina?( @tree_app ) then 0.5 else 1.0 )
                                 onmousedown: ( evt ) =>
                                     act.fun evt, @tree_app
+                                    
+                        #icon who need a model_editor item
                         else if act.mod?
                             editor = new_model_editor el: parent, model: act.mod, item_width: 85
                        
@@ -203,6 +193,23 @@ class IcoBar extends View
                             else
                                 parent = icon_top
                 
+                        if act.menu? and act.menu.length > 0
+                            @menu_container = new_dom_element
+                                parentNode : parent
+                                nodeName   : "div"
+                                className  : "menu_container"
+                            for elem in act.menu
+                                do ( elem ) =>
+                                    @elem_container = new_dom_element
+                                        parentNode : @menu_container
+                                        nodeName   : "div"
+                                        className  : "elem_container"
+                                        txt        : elem.txt
+                                        onmousedown: ( evt ) =>
+                                            elem.fun evt, @tree_app
+#                                             @menu_container.parentNode.removeChild @elem_container
+#                                             @elem_container = undefined
+                                                        
                 new_dom_element
                     parentNode : block
                     nodeName   : "br"
