@@ -321,7 +321,8 @@ class Graph extends Drawable
             pos = orig[ 0 ] + ( ( width_axis - decal_txt - ( orig[ 0 ] - decal_txt ) ) / @legend_x_division.get() ) * i
             vve = info.sc_2_rw.pos pos, 0
             val = vve[ 0 ]
-            info.ctx.fillText val.toFixed( 2 ), pos, orig[ 1 ] + x_padding_txt
+            size = Math.round(val).toString().length
+            info.ctx.fillText val.toPrecision( size ), pos, orig[ 1 ] + x_padding_txt
 
         # y legend
         info.ctx.textBaseline = 'middle'
@@ -331,7 +332,8 @@ class Graph extends Drawable
 
             val_from_screen = info.sc_2_rw.pos 0, pos
             val = val_from_screen[ 1 ]
-            info.ctx.fillText val.toFixed(1),  orig[ 0 ] - y_padding_txt, pos + decal_txt
+            size = Math.round(val).toString().length
+            info.ctx.fillText val.toPrecision( size ),  orig[ 0 ] - y_padding_txt, pos + decal_txt
         
         info.ctx.fill()
         info.ctx.closePath()
