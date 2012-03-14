@@ -3,6 +3,7 @@
 # lib gen/ModelEditor.css
 # lib gen/DomHelper.js
 # lib gen/Color.js
+# lib gen/Color.css
 # lib gen/Geometry.js
 # lib gen/BrowserState.js
 # lib gen/CanvasManager.js

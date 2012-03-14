@@ -14,7 +14,7 @@
 }
 
 /* --------------------------- Color Picker --------------------------- */
-.colorSelector {
+/*.colorSelector {
     cursor    :pointer;
     position  : relative;
     width     : 36px;
@@ -31,7 +31,7 @@
 }
 .colorPicker {
     z-index: 101;
-}
+}*/
 
 /* --------------------------- Gradient Picker --------------------------- */
 .rightContainer {
