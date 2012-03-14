@@ -13,15 +13,14 @@ class TreeAppModule_TreeView extends TreeAppModule
             key: [ "Del" ]
             ina: _ina
             fun: ( evt, app ) =>
-                if app.data.focus == "TreeView"
-                    for path in app.data.selected_tree_items
-                        #prevent deleting root item (session)
-                        if path.length > 1
-                            m = path[ path.length - 1 ]
-                            path[ path.length - 2 ].rem_child m
-                            
-                            @delete_from_tree app, m
-                    
+                for path in app.data.selected_tree_items
+                    #prevent deleting root item (session)
+                    if path.length > 1
+                        m = path[ path.length - 1 ]
+                        path[ path.length - 2 ].rem_child m
+                        
+                        @delete_from_tree app, m
+                
         @actions.push
             txt: ""
             key: [ "UpArrow" ]
@@ -108,13 +107,12 @@ class TreeAppModule_TreeView extends TreeAppModule
             key: [ "Enter" ]
             ina: _ina
             fun: ( evt, app ) =>
-                if app.selected_view == "TreeView"
-                    # Show/hide items
-                    path_items = app.data.selected_tree_items
-                    for path_item in path_items
-                        item = path_item[ path_item.length - 1]
-                        for p in app.data.panel_id_list()
-                            app.data.visible_tree_items[ p ].toggle item
+                # Show/hide items
+                path_items = app.data.selected_tree_items
+                for path_item in path_items
+                    item = path_item[ path_item.length - 1]
+                    for p in app.data.panel_id_list()
+                        app.data.visible_tree_items[ p ].toggle item
                         
     delete_from_tree: ( app,  item ) =>
         #delete children

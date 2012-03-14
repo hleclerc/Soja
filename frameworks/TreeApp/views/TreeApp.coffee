@@ -133,7 +133,7 @@ class TreeApp extends View
                 123  : "F12"
                 144  : "NumLock"
                 145  : "ScrollLock"
-            
+                
             cur_key += special_keys[ evt.keyCode ] or String.fromCharCode( evt.keyCode ).toUpperCase()
                         
             for m in @data.modules

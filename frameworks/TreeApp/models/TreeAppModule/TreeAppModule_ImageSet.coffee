@@ -15,6 +15,9 @@ class TreeAppModule_ImageSet extends TreeAppModule
                 
                 session = app.data.selected_session()
                 session._children.push @collection
+                @unselect_all_item app
+                @select_item app, @collection
+                @watch_item app, @collection
                 
                 app.undo_manager.snapshot()
                 
