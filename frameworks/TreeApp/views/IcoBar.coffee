@@ -209,7 +209,7 @@ class IcoBar extends View
                                             elem.fun evt, @tree_app
 #                                             @menu_container.parentNode.removeChild @elem_container
 #                                             @elem_container = undefined
-                                                        
+
                 new_dom_element
                     parentNode : block
                     nodeName   : "br"

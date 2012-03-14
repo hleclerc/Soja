@@ -92,7 +92,6 @@ class TreeApp extends View
         
         return new CanvasManagerPanelInstance @el, @data, view_item, @undo_manager
         
-    # De la part de Noel. Vendredi 23 septembre.
     _on_key_down: ( evt ) ->
         if @active_key.get()
             if 16 <= evt.keyCode <= 18
@@ -101,74 +100,42 @@ class TreeApp extends View
             cur_key += "Ctrl+"  if evt.ctrlKey
             cur_key += "Shift+" if evt.shiftKey
             cur_key += "Alt+"   if evt.altKey
-
-            cur_key = "Del"        if evt.keyCode == 46
-            cur_key = "Space"      if evt.keyCode == 32
-            cur_key = "LeftArrow"  if evt.keyCode == 37
-            cur_key = "UpArrow"    if evt.keyCode == 38
-            cur_key = "RightArrow" if evt.keyCode == 39
-            cur_key = "DownArrow"  if evt.keyCode == 40
-            cur_key = "Enter"      if evt.keyCode == 13
-            cur_key = "F5"         if evt.keyCode == 116
-            # TODO prevent f5 overlapping with 't' (or f4 with 's', etc.)
-#             special_keys =
-#                 'esc':27,
-#                 'escape':27,
-#                 'tab':9,
-#                 'space':32,
-#                 'return':13,
-#                 'enter':13,
-#                 'backspace':8,
-# 
-#                 'scrolllock':145,
-#                 'scroll_lock':145,
-#                 'scroll':145,
-#                 'capslock':20,
-#                 'caps_lock':20,
-#                 'caps':20,
-#                 'numlock':144,
-#                 'num_lock':144,
-#                 'num':144,
-# 
-#                 'pause':19,
-#                 'break':19,
-# 
-#                 'insert':45,
-#                 'home':36,
-#                 'delete':46,
-#                 'end':35,
-# 
-#                 'pageup':33,
-#                 'page_up':33,
-#                 'pu':33,
-# 
-#                 'pagedown':34,
-#                 'page_down':34,
-#                 'pd':34,
-# 
-#                 'left':37,
-#                 'up':38,
-#                 'right':39,
-#                 'down':40,
-# 
-#                 'f1':112,
-#                 'f2':113,
-#                 'f3':114,
-#                 'f4':115,
-#                 'f5':116,
-#                 'f6':117,
-#                 'f7':118,
-#                 'f8':119,
-#                 'f9':120,
-#                 'f10':121,
-#                 'f11':122,
-#                 'f12':123
-                
-#             console.log evt.keyCode
-            cur_key += String.fromCharCode( evt.keyCode ).toUpperCase()
-#             cur_key += special_keys[ evt.keyCode ] || String.fromCharCode( evt.keyCode ).toLowerCase()
-#             console.log cur_key
             
+            special_keys = 
+                8    : "BackSpace"
+                9    : "Tab"
+                13   : "Enter"
+                19   : "Pause"
+                20   : "CapsLock"
+                27   : "Esc"
+                32   : "Space"
+                33   : "PageUp"
+                34   : "PageDown"
+                35   : "End"
+                36   : "Home"
+                37   : "LeftArrow"
+                38   : "UpArrow"
+                39   : "RightArrow"
+                40   : "DownArrow"
+                45   : "Insert"
+                46   : "Del"
+                112  : "F1"
+                113  : "F2"
+                114  : "F3"
+                115  : "F4"
+                116  : "F5"
+                117  : "F6"
+                118  : "F7"
+                119  : "F8"
+                120  : "F9"
+                121  : "F10"
+                122  : "F11"
+                123  : "F12"
+                144  : "NumLock"
+                145  : "ScrollLock"
+            
+            cur_key += special_keys[ evt.keyCode ] || String.fromCharCode( evt.keyCode ).toUpperCase()
+                        
             for m in @data.modules
                 for a in m.actions
                     if a.key? and ( not a.ina? or not a.ina( this ) )
@@ -195,7 +162,8 @@ class TreeApp extends View
                                         a.fun evt, this
                                         @cancel_natural_hotkeys evt
                                         break
-
+    
+    # prevent default browser action being launch by hotkey
     cancel_natural_hotkeys: ( evt ) ->
         if (!evt)
             evt = window.event
