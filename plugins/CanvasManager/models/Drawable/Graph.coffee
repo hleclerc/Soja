@@ -19,7 +19,6 @@ class Graph extends Drawable
         super()
         
         @add_attr
-            _sel_item        : new Lst
             line             : true
             line_color       : new Color 0, 0, 0 
             line_width       : new ConstrainedVal( 1, { min: 0, max: 20 } )
@@ -42,7 +41,6 @@ class Graph extends Drawable
             this[ key ]?.set? val
         
         #        @add_attr
-        #             _sel_item         : new Lst
         #             line             : if params.line? then params.line else true
         #             line_color       : params.line_color or new Color 0, 0, 0 
         #             line_width       : params.line_width or 1
@@ -121,11 +119,10 @@ class Graph extends Drawable
             @remove_shadow info
             
             # show value when mouse is over a point
-            if @_sel_item.length > 0
-                if @movable_hl_infos.get() == true
-                    @draw_movable_highlight_values info
-                else
-                    @draw_highlight_values info
+            if @movable_hl_infos.get() == true
+                @draw_movable_highlight_values info
+            else
+                @draw_highlight_values info
         
         @hide_outside_values info
         
@@ -158,41 +155,42 @@ class Graph extends Drawable
         padding_top = -5
         
         #TODO should check if values don't go outside the canvas size
-        
-        highlighted_point = @points[ @_sel_item[ 0 ] ].pos.get()
-        
-        info.ctx.beginPath()
-        pos = info.re_2_sc.proj highlighted_point
-        
-        text = highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ]
-        
-        
-        info.ctx.font = @font_size.get() * 2 + "px Arial"
-        width_box = info.ctx.measureText( text ).width + padding_left * 2
-        height_box = @font_size.get() * 3
-#         
-        info.ctx.fillStyle = "rgba(255, 255, 255, 0.8)"
-        info.ctx.fillRect pos[ 0 ], pos[ 1 ] - height_box * 0.8, width_box, height_box
-        info.ctx.lineWidth = 1
-        info.ctx.strokeStyle = "rgba(0, 0, 0, 0.8)"
-        info.ctx.strokeRect pos[ 0 ], pos[ 1 ] - height_box * 0.8, width_box, height_box
-        
-        info.ctx.textAlign = "left"
-        info.ctx.fillStyle = @font_color.to_rgba()
-        info.ctx.fillText text , pos[ 0 ] + padding_left, pos[ 1 ] + padding_top
+        for p, i in @points
+            if info.pre_sele[ @points[ i ].model_id ]?
+                highlighted_point = p.pos.get()
+                info.ctx.beginPath()
+                pos = info.re_2_sc.proj highlighted_point
+                
+                text = highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ]
+                
+                
+                info.ctx.font = @font_size.get() * 2 + "px Arial"
+                width_box = info.ctx.measureText( text ).width + padding_left * 2
+                height_box = @font_size.get() * 3
+        #         
+                info.ctx.fillStyle = "rgba(255, 255, 255, 0.8)"
+                info.ctx.fillRect pos[ 0 ], pos[ 1 ] - height_box * 0.8, width_box, height_box
+                info.ctx.lineWidth = 1
+                info.ctx.strokeStyle = "rgba(0, 0, 0, 0.8)"
+                info.ctx.strokeRect pos[ 0 ], pos[ 1 ] - height_box * 0.8, width_box, height_box
+                
+                info.ctx.textAlign = "left"
+                info.ctx.fillStyle = @font_color.to_rgba()
+                info.ctx.fillText text , pos[ 0 ] + padding_left, pos[ 1 ] + padding_top
         
     draw_highlight_values: ( info ) ->
         padding = 10
-        highlighted_point = @points[ @_sel_item[ 0 ] ].pos.get()
-        info.ctx.beginPath()
-        info.ctx.fillStyle = @font_color.to_rgba()
-        info.ctx.textAlign = "right"
-        info.ctx.font = @font_size.get() * 2 + "px Arial"
-        info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] ,  info.w - padding , 20
+        for p, i in @points
+            if info.pre_sele[ @points[ i ].model_id ]?
+                highlighted_point = p.pos.get()
+                info.ctx.beginPath()
+                info.ctx.fillStyle = @font_color.to_rgba()
+                info.ctx.textAlign = "right"
+                info.ctx.font = @font_size.get() * 2 + "px Arial"
+                info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] ,  info.w - padding , 20
     
     
     draw_line: ( info, orig, proj ) ->
-        
         #draw real line
         info.ctx.beginPath()
         info.ctx.strokeStyle = @line_color.to_rgba()
@@ -207,9 +205,10 @@ class Graph extends Drawable
 
     
     draw_marker_dot: ( info, orig, proj ) ->
+        
         for p, i in proj
 #             if p[ 0 ] >= @O_point[ 0 ] - @size_marker.get() and p[ 0 ] <= @X_point[ 0 ] + @size_marker.get()
-            if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
+            if info.pre_sele[ @points[ i ].model_id ]?
                 info.ctx.fillStyle = @sel_item_color.to_rgba()
             else
                 info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
@@ -220,7 +219,7 @@ class Graph extends Drawable
         
     draw_marker_cross: ( info, orig, proj ) ->
         for p, i in proj
-            if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
+            if info.pre_sele[ @points[ i ].model_id ]?
                 info.ctx.strokeStyle = @sel_item_color.to_rgba()
             else
                 info.ctx.strokeStyle = @legend[ i ] or @marker_color.to_rgba()
@@ -235,7 +234,7 @@ class Graph extends Drawable
         
     draw_marker_square: ( info, orig, proj ) ->
         for p, i in proj
-            if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
+            if info.pre_sele[ @points[ i ].model_id ]?
                 info.ctx.fillStyle = @sel_item_color.to_rgba()
             else
                 info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
@@ -245,7 +244,7 @@ class Graph extends Drawable
         
     draw_marker_diamond: ( info, orig, proj ) ->
         for p, i in proj
-            if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
+            if info.pre_sele[ @points[ i ].model_id ]?
                 info.ctx.fillStyle = @sel_item_color.to_rgba()
             else
                 info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
@@ -260,7 +259,7 @@ class Graph extends Drawable
     #bar chart
     draw_marker_bar: ( info, orig, proj ) ->
         for p, i in proj
-            if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
+            if info.pre_sele[ @points[ i ].model_id ]?
                 info.ctx.fillStyle = @sel_item_color.to_rgba()
             else
                 info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
@@ -356,7 +355,6 @@ class Graph extends Drawable
         x = pos[ 0 ]
         y = pos[ 1 ]
         
-        @_sel_item.clear()
         if @points.length and phase == 0
             for p, i in @points
                 proj = info.re_2_sc.proj p.pos.get()
@@ -364,5 +362,6 @@ class Graph extends Drawable
                 dy = y - proj[ 1 ]
                 d = Math.sqrt dx * dx + dy * dy
                 if d <= @size_marker.get() * 2
-                    @_sel_item.push i
-            
+                    res.push
+                        item: p
+                        dist: d

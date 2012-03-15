@@ -52,12 +52,13 @@ class TreeApp extends View
     _new_panel_instance: ( display_settings, data ) ->
         if data.panel_id == "TreeView"
             res = new LayoutManagerPanelInstance @el
-            res.div.className = "PanelInstanceTreeView"        
+            res.div.className = "PanelInstanceTreeView"
             #res.div.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
             @treeview = new TreeView res.div, @data.tree_items, @data.selected_tree_items, @data.visible_tree_items, @data.closed_tree_items, @data.last_canvas_pan
             res.treeview = @treeview
             res.div.onmousedown = =>
                 @data.focus.set @treeview.view_id
+                return true
             return res
             
         if data.panel_id == "EditView"
