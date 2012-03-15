@@ -178,14 +178,14 @@ class Graph extends Drawable
         info.ctx.strokeRect pos[ 0 ], pos[ 1 ] - height_box * 0.8, width_box, height_box
         
         info.ctx.textAlign = "left"
-        info.ctx.fillStyle = @font_color.get()
+        info.ctx.fillStyle = @font_color.to_rgba()
         info.ctx.fillText text , pos[ 0 ] + padding_left, pos[ 1 ] + padding_top
         
     draw_highlight_values: ( info ) ->
         padding = 10
         highlighted_point = @points[ @_sel_item[ 0 ] ].pos.get()
         info.ctx.beginPath()
-        info.ctx.fillStyle = @font_color.get()
+        info.ctx.fillStyle = @font_color.to_rgba()
         info.ctx.textAlign = "right"
         info.ctx.font = @font_size.get() * 2 + "px Arial"
         info.ctx.fillText highlighted_point[ 0 ] + ", " + highlighted_point[ 1 ] ,  info.w - padding , 20
@@ -195,7 +195,7 @@ class Graph extends Drawable
         
         #draw real line
         info.ctx.beginPath()
-        info.ctx.strokeStyle = @line_color.get()
+        info.ctx.strokeStyle = @line_color.to_rgba()
         if @line_width.get() <= 1
             info.ctx.lineWidth = 1.000001 #fix a chromium bug
         else
@@ -210,9 +210,9 @@ class Graph extends Drawable
         for p, i in proj
 #             if p[ 0 ] >= @O_point[ 0 ] - @size_marker.get() and p[ 0 ] <= @X_point[ 0 ] + @size_marker.get()
             if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
-                info.ctx.fillStyle = @sel_item_color.get()
+                info.ctx.fillStyle = @sel_item_color.to_rgba()
             else
-                info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
+                info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
             info.ctx.beginPath()
             info.ctx.arc p[ 0 ], p[ 1 ], @size_marker.get() * 0.5, 0, Math.PI * 2, true
             info.ctx.fill()
@@ -221,9 +221,9 @@ class Graph extends Drawable
     draw_marker_cross: ( info, orig, proj ) ->
         for p, i in proj
             if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
-                info.ctx.strokeStyle = @sel_item_color.get()
+                info.ctx.strokeStyle = @sel_item_color.to_rgba()
             else
-                info.ctx.strokeStyle = @legend[ i ] or @marker_color.get()
+                info.ctx.strokeStyle = @legend[ i ] or @marker_color.to_rgba()
                 
             info.ctx.beginPath()
             info.ctx.moveTo p[ 0 ] - @size_marker.get() * 0.5, p[ 1 ] + @size_marker.get() * 0.5
@@ -236,9 +236,9 @@ class Graph extends Drawable
     draw_marker_square: ( info, orig, proj ) ->
         for p, i in proj
             if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
-                info.ctx.fillStyle = @sel_item_color.get()
+                info.ctx.fillStyle = @sel_item_color.to_rgba()
             else
-                info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
+                info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
             info.ctx.beginPath()
             info.ctx.fillRect p[ 0 ] - @size_marker.get() * 0.5 , p[ 1 ] - @size_marker.get() * 0.5 , @size_marker.get(), @size_marker.get()
         info.ctx.closePath()
@@ -246,9 +246,9 @@ class Graph extends Drawable
     draw_marker_diamond: ( info, orig, proj ) ->
         for p, i in proj
             if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
-                info.ctx.fillStyle = @sel_item_color.get()
+                info.ctx.fillStyle = @sel_item_color.to_rgba()
             else
-                info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
+                info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
             info.ctx.beginPath()
             info.ctx.moveTo p[ 0 ], p[ 1 ] - @size_marker.get()
             info.ctx.lineTo p[ 0 ] + @size_marker.get() * 0.5, p[ 1 ]
@@ -261,9 +261,9 @@ class Graph extends Drawable
     draw_marker_bar: ( info, orig, proj ) ->
         for p, i in proj
             if @_sel_item.length > 0 and @_sel_item[ 0 ].get() == i
-                info.ctx.fillStyle = @sel_item_color.get()
+                info.ctx.fillStyle = @sel_item_color.to_rgba()
             else
-                info.ctx.fillStyle = @legend[ i ] or @marker_color.get()
+                info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
                 
             height = orig[ 1 ] - p[ 1 ]
             
@@ -278,8 +278,8 @@ class Graph extends Drawable
         
         info.ctx.beginPath()
         info.ctx.lineWidth = @axis_width
-        info.ctx.strokeStyle = @font_color.get()
-        info.ctx.fillStyle = @font_color.get()
+        info.ctx.strokeStyle = @font_color.to_rgba()
+        info.ctx.fillStyle = @font_color.to_rgba()
         info.ctx.font = @font_size.get() + "px Arial"
         
         
@@ -314,7 +314,7 @@ class Graph extends Drawable
         height_axis = -info.h + orig[ 1 ] + info.padding
         
         info.ctx.beginPath()
-        info.ctx.fillStyle = @font_color.get()
+        info.ctx.fillStyle = @font_color.to_rgba()
         info.ctx.font = @font_size.get() * 0.8 + "px Arial"
         
         info.ctx.textAlign = 'center'

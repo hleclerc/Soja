@@ -73,6 +73,7 @@ class CanvasManager extends View
 
         #
         @click_fun = [] # called if mouse down and up without move
+        @dblclick_fun = []
 
     onchange: ->
         @draw()
@@ -193,7 +194,8 @@ class CanvasManager extends View
         @canvas.height = h
 
     _dbl_click: ( evt ) ->
-        @add_transform( evt )
+        for fun in @dblclick_fun
+            fun( this, evt )
 
     _img_mouse_down: ( evt ) ->
         evt = window.event if not evt?

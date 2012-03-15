@@ -18,8 +18,6 @@ class Color extends Model
     to_hsv: ->
         Color.rgb_to_hsv @r.get(), @g.get(), @b.get()
 
-    get: ->
-        @to_rgba()
 
     _set: ( val )->
         if val instanceof Color

@@ -27,7 +27,9 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
                 
             if @app_data.selected_canvas_pan.contains @view_item.panel_id
                 @app_data.last_canvas_pan.set @view_item.panel_id
-            
+                
+        @cm.dblclick_fun.push ( cm, evt ) =>
+            @_add_transform_node( evt )
         #
         bind @app_data.selected_canvas_pan, =>
             @_update_borders()
