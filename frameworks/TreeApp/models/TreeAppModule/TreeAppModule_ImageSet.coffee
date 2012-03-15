@@ -11,7 +11,7 @@ class TreeAppModule_ImageSet extends TreeAppModule
             txt: "New Shooting"
             fun: ( evt, app ) =>
                 #
-                @collection = new ShootingItem
+                @collection = new ShootingItem app
                 
                 session = app.data.selected_session()
                 session._children.push @collection

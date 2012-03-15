@@ -1,11 +1,18 @@
 # link cam and picture
 class ShootingItem extends TreeItem
-    constructor: ( @app_data, @panel_id ) ->
+    constructor: ( @app, @panel_id ) ->
         super()
         
         # attributes
+        
+        lst_view = [ ]
+        for el in @app.treeview.flat
+            if el.item instanceof ViewItem
+                lst_view.push lst_view.length
+            
         @add_attr
-            cam : new Cam
+            view : new Choice( 0, lst_view )
+            cam  : new Cam
             #
         
         # default values
