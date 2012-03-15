@@ -14,6 +14,16 @@
 }
 
 /* --------------------------- Color Picker --------------------------- */
+
+
+.ModelEditorColorSelector:hover {
+    border-radius: 15px;
+}
+
+.ModelEditorColorSelectorBackground:hover {
+    background: #333;
+}
+
 /*.colorSelector {
     cursor    :pointer;
     position  : relative;

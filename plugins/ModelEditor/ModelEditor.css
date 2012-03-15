@@ -87,6 +87,9 @@ input {
     overflow             : hidden;
 
 }
+/*.ModelEditorChoiceRoll:hover {
+    overflow             : visible;
+}*/
 
 .ModelEditorChoiceRollWindow {
     text-align        : center;

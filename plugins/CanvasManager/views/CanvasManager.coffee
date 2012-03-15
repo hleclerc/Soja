@@ -290,9 +290,6 @@ class CanvasManager extends View
         evt.returnValue = false
         return false
         
-    follow: ()->
-        console.log 'cm follow'
-        
     _mouse_move: ( evt ) ->
         evt = window.event if not evt?
         @old_x = evt.clientX - get_left( @canvas )

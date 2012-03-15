@@ -113,7 +113,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
                     zoom_cm.items.push it
                 
                 zoom_cm.resize 100, 100
-                old_cm.el.addEventListener('onmousemove', @funmousemove(evt, @zoom_cm_container))
+#                 old_cm.el.addEventListener('onmousemove', @funmousemove(evt, @zoom_cm_container))
                             
             funmousemove: ( evt, zoom_cm_container ) ->
                 console.log evt, zoom_cm_container

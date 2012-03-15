@@ -7,6 +7,10 @@ class ModelEditorItem_Color extends ModelEditorItem
         @container = new_dom_element
             parentNode: @ed
             nodeName  : "span"
+            className : "ModelEditorColorSelectorBackground"
+        @color_selector = new_dom_element
+            parentNode: @container
+            nodeName  : "span"
             className : "ModelEditorColorSelector"
             txt       : "."
             style     :
@@ -26,7 +30,7 @@ class ModelEditorItem_Color extends ModelEditorItem
                 #@item_cp._init_edt() need base
             
     onchange: ->
-        @container.style.background = @model.to_hex()
+        @color_selector.style.background = @model.to_hex()
 
 # 
 ModelEditor.default_types.push ( model ) -> ModelEditorItem_Color if model instanceof Color
