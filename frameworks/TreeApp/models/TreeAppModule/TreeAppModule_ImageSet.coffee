@@ -3,6 +3,7 @@ class TreeAppModule_ImageSet extends TreeAppModule
         super()
         
         @name = 'Image'
+        @visible = true # must be set to false after test
         @numpic = 1
         
         @actions.push

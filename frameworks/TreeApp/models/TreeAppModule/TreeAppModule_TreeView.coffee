@@ -4,6 +4,7 @@ class TreeAppModule_TreeView extends TreeAppModule
         super()
         
         @name = 'Tree View'
+        @visible = false
         
         _ina = ( app ) =>
             app.data.focus.get() != app.treeview.view_id

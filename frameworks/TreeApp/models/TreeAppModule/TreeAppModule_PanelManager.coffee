@@ -81,48 +81,65 @@ class TreeAppModule_PanelManager extends TreeAppModule
             key: [ "Shift+X" ]
         
         @add_action
-            ico: "" 
             txt: "Zoom"
             fun: ( evt, app ) ->
-                width_cm  = 100
-                height_cm = 100
-                zoom_factor = [ 1,1.1 ]
-                old_cm = app.selected_canvas_inst()?[ 0 ]?.cm
-                clientX = evt.clientX or old_cm.old_x
-                clientY = evt.clientY or old_cm.old_y
-                
-                @zoom_cm_container = new_dom_element
-                    parentNode: document.body
-                    style     : { position: "fixed", top: clientY - height_cm * 0.5, left: clientX - width_cm * 0.5 }
+                if not @zoom_cm_container
+                    width_cm  = 100
+                    height_cm = 100
+                    zoom_factor = 1.5
+                    @old_cm = app.selected_canvas_inst()?[ 0 ]?.cm
+                    clientX = evt.clientX or @old_cm.old_x + get_left( @old_cm.el )
+                    clientY = evt.clientY or @old_cm.old_y + get_top( @old_cm.el )
                     
-                zoom_cm = new CanvasManager
-                    el: @zoom_cm_container
-                    time : app.data.time
-                    selected_items: app.data.selected_tree_items
-                    theme         : app.data.selected_display_settings().theme
+                    @zoom_cm_container = new_dom_element
+                        parentNode: document.body
+                        style     : { position: "fixed", top: clientY - height_cm * 0.5, left: clientX - width_cm * 0.5 }
+                        
+                    @zoom_cm = new CanvasManager
+                        el: @zoom_cm_container
+                        time : app.data.time
+                        selected_items: app.data.selected_tree_items
+                        theme         : app.data.selected_display_settings().theme
+                        
+                    @zoom_cm.cam.set @old_cm.cam.get()
                     
-                zoom_cm.cam.set old_cm.cam.get()
-#                 x = evt.clientX - get_left( @canvas )
-#                 y = evt.clientY - get_top ( @canvas )
-                x = clientX
-                y = clientY
-                zoom_cm.cam.zoom x, y, zoom_factor, width_cm, height_cm
+                    @zoom_cm.cam.d.set @zoom_cm.cam.d.get() / zoom_factor
+                    
+                    for it, i in @old_cm.items
+                        @zoom_cm.items.push it
+                    
+                    @zoom_cm.draw()
+                    @zoom_cm.resize width_cm, height_cm
+                    @old_cm.el.addEventListener('mousemove', (evt ) => @funmousemove( evt, @zoom_cm_container, @zoom_cm, @old_cm) )
                 
-                #TODO check if new items appear
-                for it, i in old_cm.items
-                    zoom_cm.items.push it
-                
-                zoom_cm.resize 100, 100
-#                 old_cm.el.addEventListener('onmousemove', @funmousemove(evt, @zoom_cm_container))
-                            
-            funmousemove: ( evt, zoom_cm_container ) ->
-                console.log evt, zoom_cm_container
+                else
+                    document.body.removeChild @zoom_cm_container
+                    delete @zoom_cm_container
+#                     app.selected_canvas_inst()?[ 0 ]?.cm.el.removeEventListener('mousemove',  (evt ) => @funmousemove( evt, @zoom_cm_container, @zoom_cm, @old_cm) )
+                    delete @zoom_cm
+            
+            funmousemove: ( evt, zoom_cm_container, zoom_cm, old_cm ) ->
                 clientX = evt.clientX
                 clientY = evt.clientY
                 width_cm  = 100
                 height_cm = 100
+                zoom_factor = 1.5
                 zoom_cm_container.style.left = clientX - width_cm * 0.5
                 zoom_cm_container.style.top  = clientY - height_cm * 0.5
+                
+                #check if new items appeared
+                for it, i in old_cm.items
+                    zoom_cm.items.push it
+                
+#                 console.log old_cm.width
+#                 o = zoom_cm.cam.O.get()
+#                 c = zoom_cm.cam.sc_2_rw 100, 100
+#                 p = c.pos clientX, clientY
+#                 zoom_cm.cam.O[ 0 ].set o[ 0 ] + p[ 0 ]
+#                 zoom_cm.cam.O[ 1 ].set o[ 1 ] + p[ 1 ]
+#                 zoom_cm.cam.d.set zoom_cm.cam.d.get() / zoom_factor
+
+                zoom_cm.cam.zoom clientX, clientY, zoom_factor, width_cm, height_c
                 
             key: [ "Ctrl+Alt+F" ]
                 

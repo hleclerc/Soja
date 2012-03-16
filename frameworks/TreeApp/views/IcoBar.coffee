@@ -31,8 +31,7 @@ class IcoBar extends View
         for c in [ 0 ... @modules.length ]
             m = @modules[ c ]
             
-#           or m instanceof TreeAppModule_ImageSet
-            if m instanceof TreeAppModule_TreeView
+            if m.visible? and m.visible == false
                 continue
             
             do ( m ) =>
@@ -43,7 +42,7 @@ class IcoBar extends View
                 
                 parent = icon_top = icon_bot = big_icon = undefined
                 
-                for act, j in m.actions when act.ico? or act.mod?
+                for act, j in m.actions when act.vis != false
                     do ( act ) =>
                         siz = act.siz or 1
                         
@@ -94,7 +93,7 @@ class IcoBar extends View
                             @create_side_menu act, parent, key, siz
                         
                         #classic icon using image
-                        else if act.ico?
+                        else if act.ico? and act.ico.length > 0
                             s = new_dom_element
                                 parentNode : parent
                                 nodeName   : "img"
@@ -118,6 +117,7 @@ class IcoBar extends View
                 
                         if act.menu? and act.menu.length > 0
                             @create_hierarchical_menu act, parent, key, siz
+                            
                 new_dom_element
                     parentNode : block
                     nodeName   : "br"
