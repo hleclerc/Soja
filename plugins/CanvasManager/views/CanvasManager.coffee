@@ -186,6 +186,8 @@ class CanvasManager extends View
         #sort object depending z_index (a greater z index is in front of an element with a lower z index)
         flat.sort ( a, b ) -> a.z_index() - b.z_index()
         
+        @_flat = flat
+        
         for item in flat
             item.draw @cam_info
 
