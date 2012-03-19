@@ -231,6 +231,7 @@ class TreeView extends View
                 parentNode : div
                 nodeName   : 'img'
                 src        : ico
+                alt        : ""
                 style      :
                     position : "absolute"
                     top      : 0
