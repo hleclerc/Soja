@@ -160,12 +160,17 @@ class CanvasManager extends View
         for item in @items
             CanvasManager._get_flat_list flat, item
             
+            
         #
-        has_a_background = false
+        @on_mouse_move_items   = []
+        has_a_background       = false
         has_a_changed_drawable = false
         for f in flat
             has_a_background |= f.draws_a_background?()
             has_a_changed_drawable |= f.has_been_modified?()
+            if f.on_mouse_move?
+                @on_mouse_move_items.push f
+
 
         if has_a_changed_drawable
             delete @_bounding_box
@@ -292,25 +297,47 @@ class CanvasManager extends View
         evt.returnValue = false
         return false
         
-    _mouse_move: ( evt ) ->
+    _get_new_xy: ( evt ) ->
         evt = window.event if not evt?
-        @old_x = evt.clientX - get_left( @canvas )
-        @old_y = evt.clientY - get_top ( @canvas )
+        new_x = evt.clientX - get_left( @canvas )
+        new_y = evt.clientY - get_top ( @canvas )
+        
+        # refined displacement
+        if evt.ctrlKey
+            if not @clk_x?
+                @clk_x = new_x
+                @clk_y = new_y
+            new_x = @clk_x + ( new_x - @clk_x ) / 10
+            new_y = @clk_y + ( new_y - @clk_y ) / 10
+        else
+            delete @clk_x
+            delete @clk_y
+            
+        return [ new_x, new_y ]
+        
+    _mouse_move: ( evt ) ->
+        [ @old_x, @old_y ] = @_get_new_xy evt
+        
         movable_entities = @_get_movable_entities 0
         @movable_point = movable_entities[ 0 ]?.item
         @pre_selected_entities.clear()
         if @movable_point?
             @pre_selected_entities.push @movable_point
             
+        for f in @on_mouse_move_items
+            f.on_mouse_move @old_x, @old_y
+            
     _img_mouse_move: ( evt ) ->
         evt = window.event if not evt?
-        new_x = evt.clientX - get_left( @canvas )
-        new_y = evt.clientY - get_top ( @canvas )
+        [ new_x, new_y ] = @_get_new_xy evt
         if new_x == @old_x and new_y == @old_y
             return false
             
         if @movable_point? and not @mouse_has_moved_since_mouse_down
             @undo_manager?.snapshot()
+            
+        for f in @on_mouse_move_items
+            f.on_mouse_move new_x, new_y
 
         @mouse_has_moved_since_mouse_down = true
 
@@ -331,12 +358,12 @@ class CanvasManager extends View
                 a = Math.atan2( new_y - h / 2.0, new_x - w / 2.0 ) - Math.atan2( @old_y - h / 2.0, @old_x - w / 2.0 )
                 @cam.rotate 0.0, 0.0, a
             else if @old_button == "MIDDLE" or @old_button == "LEFT" and evt.ctrlKey # pan
-                @cam.pan new_x - @old_x, new_y - @old_y, w, h, evt.ctrlKey
+                @cam.pan new_x - @old_x, new_y - @old_y, w, h # , evt.ctrlKey
             else if @old_button == "LEFT" # rotate / C
                 x = 2.0 * ( new_x - @old_x ) / mwh
                 y = 2.0 * ( new_y - @old_y ) / mwh
                 @cam.rotate y, x, 0.0
-
+    
         @old_x = new_x
         @old_y = new_y
     
