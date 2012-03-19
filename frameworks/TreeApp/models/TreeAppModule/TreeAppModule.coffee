@@ -6,16 +6,18 @@ class TreeAppModule extends Model
         @visible = true # all module can be hidden from menu by setting this to false
         @actions = []   # list of actions depending of the module
 
-    # actions is supposed to be format like this :
+    # actions is assumed to be formatted like this :
         # ico: path to a picture
         # siz: a number that indicates the icon size
         # txt: contain a string with the text of the action
         # key: [ "Ctrl+Z" ] # example of how to assign hotkeys to an action
-        # ina: boolean to true if actions is inactive, false if active
+        # ina: function that returns true if actions is inactive, false if active
         # vis: boolean that indicates if action is shown in menu or not
         # fun: function that is executed when icon is pressed or hotkey detected ( except if action is inactive )
-        # type: represent the type of icon, it can be a menu, a choice, a model editor or a simple icon (write icon or nothing), menu and choice type need act array to be filled
-        # act: act is an array that can contain another actions
+        # mod: a model
+        # sub:
+        #    prf: prefered views (e.g. "menu")
+        #    act: an array that can contain another actions
 
 
     select_item: ( app, item, parent ) ->
