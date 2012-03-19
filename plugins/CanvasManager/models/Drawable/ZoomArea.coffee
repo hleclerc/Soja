@@ -3,7 +3,7 @@ class ZoomArea extends Drawable
         super()
         
         @add_attr
-            zoom_factor: [ 10, 10, 1 ]
+            zoom_factor: [  5,  5, 1 ]
             zoom_pos   : [ -1, -1, 0 ]
         
         for key, val of params
@@ -46,10 +46,15 @@ class ZoomArea extends Drawable
         info.ctx.save()
         info.ctx.beginPath()
         
-        info.ctx.strokeStyle = 'yellow'
-        info.ctx.lineWidth = 2
+        info.ctx.strokeStyle = 'rgba(170,170,200,0.8)'
+        info.ctx.shadowBlur  = 5
+        info.ctx.shadowColor = "lightBlue"
+        info.ctx.lineWidth   = 4
         info.ctx.arc clientX, clientY, 100, 0, Math.PI*2, true
         info.ctx.stroke()
+        
+        info.ctx.shadowBlur    = 0
+        info.ctx.shadowColor   = "transparent black"
         
         info.ctx.clip()
         

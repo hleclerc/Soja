@@ -157,9 +157,9 @@ class IcoBar extends View
             style      :
                 height     : @height_ico * siz
                 
-            onmousedown: ( evt ) =>
-                # assing first hidden action to icon
-                act.sub[ 0 ].fun evt, @tree_app
+#             onmousedown: ( evt ) =>
+#                 # assing first hidden action to icon
+#                 act.sub[ 0 ].fun evt, @tree_app
                 
         arrow_container = new_dom_element
             parentNode : click_container
@@ -210,18 +210,23 @@ class IcoBar extends View
             nodeName   : "span"
     
     create_hierarchical_menu: ( act, parent, key, siz ) ->
-        @menu_container = new_dom_element
-            parentNode : parent
-            nodeName   : "div"
-            className  : "menu_container"
-        for elem in act.menu
-            do ( elem ) =>
-                @elem_container = new_dom_element
-                    parentNode : @menu_container
-                    nodeName   : "div"
-                    className  : "elem_container"
-                    txt        : elem.txt
-                    onmousedown: ( evt ) =>
-                        elem.fun evt, @tree_app
-#                                             @menu_container.parentNode.removeChild @elem_container
-#                                             @elem_container = undefined
+        if not @menu_container?
+            @menu_container = new_dom_element
+                parentNode : parent
+                nodeName   : "div"
+                className  : "menu_container"
+            for elem in act.menu
+                do ( elem ) =>
+                    @elem_container = new_dom_element
+                        parentNode : @menu_container
+                        nodeName   : "div"
+                        className  : "elem_container"
+                        txt        : elem.txt
+                        onmousedown: ( evt ) =>
+                            elem.fun evt, @tree_app
+                            @menu_container.parentNode.removeChild @menu_container
+                            @menu_container = undefined
+        else
+            @menu_container.parentNode.removeChild @menu_container
+            @menu_container = undefined
+            
