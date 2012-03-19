@@ -86,7 +86,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
                 if not @zoom_cm_container
                     width_cm  = 100
                     height_cm = 100
-                    zoom_factor = 1.5
+                    zoom_factor = 1.1
                     @old_cm = app.selected_canvas_inst()?[ 0 ]?.cm
                     clientX = evt.clientX or @old_cm.old_x + get_left( @old_cm.el )
                     clientY = evt.clientY or @old_cm.old_y + get_top( @old_cm.el )
@@ -123,7 +123,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
                 clientY = evt.clientY
                 width_cm  = 100
                 height_cm = 100
-                zoom_factor = 1.5
+                zoom_factor = [ 1, 1 ]
                 zoom_cm_container.style.left = clientX - width_cm * 0.5
                 zoom_cm_container.style.top  = clientY - height_cm * 0.5
                 
@@ -139,7 +139,8 @@ class TreeAppModule_PanelManager extends TreeAppModule
 #                 zoom_cm.cam.O[ 1 ].set o[ 1 ] + p[ 1 ]
 #                 zoom_cm.cam.d.set zoom_cm.cam.d.get() / zoom_factor
 
-                zoom_cm.cam.zoom clientX, clientY, zoom_factor, width_cm, height_c
+                zoom_cm.cam.zoom clientX, clientY, zoom_factor, width_cm, height_cm
+                zoom_cm.draw()
                 
             key: [ "Ctrl+Alt+F" ]
                 
