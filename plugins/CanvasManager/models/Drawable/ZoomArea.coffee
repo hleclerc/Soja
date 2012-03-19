@@ -35,13 +35,6 @@ class ZoomArea extends Drawable
                     p[ 2 ]
                 ]
         
-        #         n_info.re_2_sc = ( info, pos ) ->
-        #             res = info.re_2_sc.proj pos
-        #             res[ 0 ] *= @zoom_factor[ 0 ]
-        #             res[ 1 ] *= @zoom_factor[ 1 ]
-        #             res[ 2 ] *= @zoom_factor[ 2 ]
-        #             return res
-        
         # Create a circular clipping path
         info.ctx.save()
         info.ctx.beginPath()
@@ -58,7 +51,7 @@ class ZoomArea extends Drawable
         
         info.ctx.clip()
         
-        for it in @canvas_manager._flat when it != this
+        for it in @canvas_manager._flat when it != this and it not instanceof Axes
             it.draw n_info
             
         info.ctx.restore()

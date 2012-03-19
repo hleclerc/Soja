@@ -2,7 +2,7 @@ class TreeAppModule extends Model
     constructor: ->
         super()
         
-        @name = ''      # indicate the module name
+        @name    = ''      # indicate the module name
         @visible = true # all module can be hidden from menu by setting this to false
         @actions = []   # list of actions depending of the module
 

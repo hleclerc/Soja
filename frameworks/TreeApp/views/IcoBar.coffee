@@ -157,9 +157,9 @@ class IcoBar extends View
             style      :
                 height     : @height_ico * siz
                 
-#             onmousedown: ( evt ) =>
-#                 # assing first hidden action to icon
-#                 act.sub[ 0 ].fun evt, @tree_app
+            onmousedown: ( evt ) =>
+                # assing first hidden action to icon
+                act.sub[ 0 ]?.fun evt, @tree_app
                 
         arrow_container = new_dom_element
             parentNode : click_container
@@ -226,7 +226,4 @@ class IcoBar extends View
                             elem.fun evt, @tree_app
                             @menu_container.parentNode.removeChild @menu_container
                             @menu_container = undefined
-        else
-            @menu_container.parentNode.removeChild @menu_container
-            @menu_container = undefined
             
