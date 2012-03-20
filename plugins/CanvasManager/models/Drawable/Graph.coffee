@@ -143,12 +143,10 @@ class Graph extends Drawable
         info.ctx.shadowBlur    = 0
         info.ctx.shadowColor   = "transparent black"
         
-    
-    hide_outside_values: ( info ) ->        
-        info.ctx.fillStyle = "rgba(255, 255, 255, 0.9)"
-        info.ctx.fillRect 0, 0, info.padding * 0.5, info.h
-        info.ctx.fillRect info.padding * 0.5, info.h - info.padding / 2,info.w, info.padding * 0.5
-
+    hide_outside_values: ( info ) ->     
+        info.ctx.fillStyle = "rgba( 255, 255, 255, 0.9 )"
+        info.ctx.clearRect 0, 0, info.padding * 0.5, info.h
+        info.ctx.clearRect info.padding * 0.5, info.h - info.padding / 2,info.w, info.padding * 0.5
     
     draw_movable_highlight_values: ( info ) ->
         padding_left = 10

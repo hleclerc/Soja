@@ -179,7 +179,7 @@ class IcoBar extends View
                         className  : "container_hidden_icon"
                         id         : "id_hidden_icon"
                     
-                    for c in act.sub.act
+                    for c in act.sub.act when c.vis != false
                         do ( c ) =>
                             key = @key_as_string c
                             s = new_dom_element
@@ -214,12 +214,12 @@ class IcoBar extends View
             parentNode : parent
             nodeName   : "span"
     
-    create_hierarchical_menu: ( sub, parent, key, siz ) ->
+    create_hierarchical_menu: ( sub, parent, key ) ->
         @menu_container = new_dom_element
             parentNode : parent
             nodeName   : "div"
             className  : "menu_container"
-        for elem in sub.act
+        for elem in sub.act when elem.vis != false
             do ( elem ) =>
                 @elem_container = new_dom_element
                     parentNode : @menu_container
@@ -230,3 +230,8 @@ class IcoBar extends View
                         elem.fun evt, @tree_app
                         @menu_container.parentNode.removeChild @menu_container
                         @menu_container = undefined
+                
+                if elem.sub?.act?
+                    console.log elem.txt
+                    for a in elem.sub?.act?
+                        @create_hierarchical_menu a, elem, key

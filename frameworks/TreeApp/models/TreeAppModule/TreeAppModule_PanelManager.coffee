@@ -77,9 +77,9 @@ class TreeAppModule_PanelManager extends TreeAppModule
             key: [ "R" ]
             
         cube.sub.act.push 
-            ico: ""
             txt: "Watch left"
             ina: _ina
+            vis: false
             siz: 1
             fun: ( evt, app ) ->
                 for inst in app.selected_canvas_inst()
@@ -105,6 +105,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
         
         @actions.push
             txt: "Zoom"
+            ina: _ina
             fun: ( evt, app ) ->
                 if not @zoom_area
                     @old_cm = app.selected_canvas_inst()?[ 0 ]?.cm
@@ -115,7 +116,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
                     @old_cm.items.remove_ref @zoom_area
                     delete @zoom_area
                     
-            key: [ "Ctrl+Alt+F" ]
+            key: [ "Z" ]
                 
     
 
