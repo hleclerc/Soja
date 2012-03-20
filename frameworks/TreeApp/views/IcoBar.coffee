@@ -94,6 +94,7 @@ class IcoBar extends View
                             @create_list_menu act, parent, key, siz
                         
                         #classic icon using image
+                         #* ( if act.ina?( @tree_app ) then 0.5 else 1.0 )
                         else if act.ico? and act.ico.length > 0
                             s = new_dom_element
                                 parentNode : parent
@@ -102,7 +103,7 @@ class IcoBar extends View
                                 title      : act.txt + key
                                 src        : act.ico
                                 style      :
-                                    height     : @height_ico * siz * ( if act.ina?( @tree_app ) then 0.5 else 1.0 )
+                                    height     : @height_ico * siz
                                 onmousedown: ( evt ) =>
                                     act.fun evt, @tree_app
                                     

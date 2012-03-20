@@ -165,7 +165,7 @@ class TreeApp extends View
                                         ac.fun? evt, this
                                         @cancel_natural_hotkeys evt
                                         break
-                            a = ac
+                        a = ac
 
     
     # prevent default browser action being launch by hotkey
