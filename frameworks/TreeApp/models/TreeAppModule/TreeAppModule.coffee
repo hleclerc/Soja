@@ -13,10 +13,11 @@ class TreeAppModule extends Model
         # key: [ "Ctrl+Z" ] # example of how to assign hotkeys to an action
         # ina: function that returns true if actions is inactive, false if active
         # vis: boolean that indicates if action is shown in menu or not
-        # fun: function that is executed when icon is pressed or hotkey detected ( except if action is inactive )
+        # fun: function that is executed when icon is pressed or hotkey detected ( except if action is inactive or got sub actions (function is reassigned ) )
         # mod: a model
+        # ord: boolean true by default that indicates if icon must be alternated on top and bottom
         # sub:
-        #    prf: prefered views (e.g. "menu")
+        #    prf: prefered views ( 'menu' or 'list' )
         #    act: an array that can contain another actions
 
 
@@ -133,14 +134,4 @@ class TreeAppModule extends Model
                             app.data.visible_tree_items[ p ].splice i, 1
                             break
 
-    add_action: ( act ) ->
-        @actions.push act
-        act.sub = []
-        
-        act.add_sub_action = ( n_act ) ->
-            act.sub.push n_act
-            n_act
-            
-        return act
-        
         

@@ -6,14 +6,14 @@ class TreeAppModule_PanelManager extends TreeAppModule
         @name = 'Windows'
 
 
-        @add_action
+        @actions.push
             ico: "img/vertical_split.png"
             siz: 1
             txt: "Vertical Split"
             fun: ( evt, app ) => @split_view evt, app, 0
             key: [ "Shift+V" ]
              
-        @add_action
+        @actions.push
             ico: "img/fit.png"
             siz: 1
             txt: "Fit object to the view"
@@ -22,7 +22,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
                     inst.cm.fit()
             key: [ "F" ]
             
-        @add_action
+        @actions.push
             ico: "img/horizontal_split.png"
             siz: 1
             txt: "Horizontal Split"
@@ -30,15 +30,17 @@ class TreeAppModule_PanelManager extends TreeAppModule
             key: [ "Shift+H" ]
             
             
-        cube = @add_action
+        cube =
             ico: "img/cube.png"
             siz: 1
             txt: "View"
-            fun: ( evt, app ) ->
-                @sub[ 0 ].fun evt, app
+            sub:
+                prf: "list"
+                act: [ ]
             key: [ "V" ]
+        @actions.push cube
         
-        cube.add_sub_action
+        cube.sub.act.push 
             ico: "img/origin.png"
             txt: "Origin Camera"
             siz: 1
@@ -47,7 +49,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
                     inst.cm.origin()
             key: [ "O" ]
             
-        cube.add_sub_action
+        cube.sub.act.push 
             ico: "img/top.png"
             txt: "Watch top"
             siz: 1
@@ -56,7 +58,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
                     inst.cm.top()
             key: [ "T" ]
             
-        cube.add_sub_action
+        cube.sub.act.push 
             ico: "img/right.png"
             txt: "Watch right"
             siz: 1
@@ -65,9 +67,17 @@ class TreeAppModule_PanelManager extends TreeAppModule
                     inst.cm.right()
             key: [ "R" ]
             
+        cube.sub.act.push 
+            ico: ""
+            txt: "Watch left"
+            siz: 1
+            fun: ( evt, app ) ->
+                for inst in app.selected_canvas_inst()
+                    inst.cm.left()
+            key: [ "L" ]
             
-                       
-        @add_action
+            
+        @actions.push
             ico: "img/close_panel.png" 
             siz: 1
             txt: "Close current view"
@@ -82,7 +92,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
                 app.data.selected_canvas_pan.push t[ 0 ]
             key: [ "Shift+X" ]
         
-        @add_action
+        @actions.push
             txt: "Zoom"
             fun: ( evt, app ) ->
                 if not @zoom_area

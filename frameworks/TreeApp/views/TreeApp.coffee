@@ -136,7 +136,9 @@ class TreeApp extends View
                 145  : "ScrollLock"
                 
             cur_key += special_keys[ evt.keyCode ] or String.fromCharCode( evt.keyCode ).toUpperCase()
-                        
+
+            
+            
             for m in @data.modules
                 for a in m.actions
                     if a.key? and ( not a.ina? or not a.ina( this ) )
@@ -145,24 +147,26 @@ class TreeApp extends View
                                 a.fun? evt, this
                                 @cancel_natural_hotkeys evt
                                 break
-                    
-                    if a.sub? and a.sub.length > 0
-                        for a in a.sub
-                            if a.key? and ( not a.ina? or not a.ina( this ) )
-                                for k in a.key
+#                     
+#                     if a.sub? and a.sub.act? and a.sub.act.length > 0
+#                         for a in a.sub.act
+#                             if a.key? and ( not a.ina? or not a.ina( this ) )
+#                                 for k in a.key
+#                                     if k == cur_key
+#                                         a.fun? evt, this
+#                                         @cancel_natural_hotkeys evt
+#                                         break
+                
+                    while (a.sub? and a.sub.act? and a.sub.act.length > 0)
+                        for ac in a.sub.act
+                            if ac.key? and ( not ac.ina? or not ac.ina( this ) )
+                                for k in ac.key
                                     if k == cur_key
-                                        a.fun evt, this
+                                        ac.fun? evt, this
                                         @cancel_natural_hotkeys evt
                                         break
-                                        
-                    if a.menu? and a.menu.length > 0
-                        for a in a.menu
-                            if a.key? and ( not a.ina? or not a.ina( this ) )
-                                for k in a.key
-                                    if k == cur_key
-                                        a.fun evt, this
-                                        @cancel_natural_hotkeys evt
-                                        break
+                            a = ac
+
     
     # prevent default browser action being launch by hotkey
     cancel_natural_hotkeys: ( evt ) ->

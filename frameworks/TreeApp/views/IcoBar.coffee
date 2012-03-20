@@ -88,9 +88,10 @@ class IcoBar extends View
                         
                         key = @key_as_string act
                         
-                        # for icon who have children
-                        if act.sub? and act.sub.length > 0
-                            @create_side_menu act, parent, key, siz
+                        if act.sub? and act.sub.prf? and act.sub.prf == "list" and act.sub.act.length > 0
+                            act.fun = ( evt, app ) ->
+                                act.sub.act[ 0 ].fun evt, app
+                            @create_list_menu act, parent, key, siz
                         
                         #classic icon using image
                         else if act.ico? and act.ico.length > 0
@@ -115,8 +116,11 @@ class IcoBar extends View
                             else
                                 parent = icon_top
                 
-                        if act.menu? and act.menu.length > 0
-                            @create_hierarchical_menu act, parent, key, siz
+                        if act.sub? and act.sub.prf? and act.sub.prf == "menu" and act.sub.act.length > 0
+                            act.fun = ( evt, app ) ->
+                                menu_container = document.getElementsByClassName("menu_container")[ 0 ]
+                                menu_container.classList.toggle "block"
+                            @create_hierarchical_menu act.sub, parent, key, siz
                             
                 new_dom_element
                     parentNode : block
@@ -141,7 +145,7 @@ class IcoBar extends View
         return key
         
     # side menu is an icon who have icon as children
-    create_side_menu: ( act, parent, key, siz ) =>
+    create_list_menu: ( act, parent, key, siz ) =>
         click_container = new_dom_element
             parentNode : parent
             nodeName   : "span"
@@ -159,7 +163,7 @@ class IcoBar extends View
                 
             onmousedown: ( evt ) =>
                 # assing first hidden action to icon
-                act.sub[ 0 ]?.fun evt, @tree_app
+                act.sub.act[ 0 ]?.fun evt, @tree_app
                 
         arrow_container = new_dom_element
             parentNode : click_container
@@ -174,7 +178,7 @@ class IcoBar extends View
                         className  : "container_hidden_icon"
                         id         : "id_hidden_icon"
                     
-                    for c in act.sub
+                    for c in act.sub.act
                         do ( c ) =>
                             key = @key_as_string c
                             s = new_dom_element
@@ -209,21 +213,19 @@ class IcoBar extends View
             parentNode : parent
             nodeName   : "span"
     
-    create_hierarchical_menu: ( act, parent, key, siz ) ->
-        if not @menu_container?
-            @menu_container = new_dom_element
-                parentNode : parent
-                nodeName   : "div"
-                className  : "menu_container"
-            for elem in act.menu
-                do ( elem ) =>
-                    @elem_container = new_dom_element
-                        parentNode : @menu_container
-                        nodeName   : "div"
-                        className  : "elem_container"
-                        txt        : elem.txt
-                        onmousedown: ( evt ) =>
-                            elem.fun evt, @tree_app
-                            @menu_container.parentNode.removeChild @menu_container
-                            @menu_container = undefined
-            
+    create_hierarchical_menu: ( sub, parent, key, siz ) ->
+        @menu_container = new_dom_element
+            parentNode : parent
+            nodeName   : "div"
+            className  : "menu_container"
+        for elem in sub.act
+            do ( elem ) =>
+                @elem_container = new_dom_element
+                    parentNode : @menu_container
+                    nodeName   : "div"
+                    className  : "elem_container"
+                    txt        : elem.txt
+                    onmousedown: ( evt ) =>
+                        elem.fun evt, @tree_app
+                        @menu_container.parentNode.removeChild @menu_container
+                        @menu_container = undefined
