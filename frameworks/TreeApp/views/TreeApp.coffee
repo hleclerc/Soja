@@ -140,41 +140,28 @@ class TreeApp extends View
             
             
             for m in @data.modules
-                for a in m.actions
-                    if a.key? and ( not a.ina? or not a.ina( this ) )
-                        for k in a.key
-                            if k == cur_key
-                                a.fun? evt, this
-                                @cancel_natural_hotkeys evt
-                                break
-#                     
-#                     if a.sub? and a.sub.act? and a.sub.act.length > 0
-#                         for a in a.sub.act
-#                             if a.key? and ( not a.ina? or not a.ina( this ) )
-#                                 for k in a.key
-#                                     if k == cur_key
-#                                         a.fun? evt, this
-#                                         @cancel_natural_hotkeys evt
-#                                         break
+                @_on_key_down_rec m.actions, cur_key, evt
                 
-                    while (a.sub? and a.sub.act? and a.sub.act.length > 0)
-                        for ac in a.sub.act
-                            if ac.key? and ( not ac.ina? or not ac.ina( this ) )
-                                for k in ac.key
-                                    if k == cur_key
-                                        ac.fun? evt, this
-                                        @cancel_natural_hotkeys evt
-                                        break
-                        a = ac
+                
+    _on_key_down_rec: ( actions, cur_key, evt ) ->
+        for a in actions
+            if a.key? and ( not a.ina? or not a.ina( this ) ) # if not inactive
+                for k in a.key
+                    if k == cur_key
+                        a.fun? evt, this
+                        @cancel_natural_hotkeys evt
+                        return true
+            if a.sub?.act?
+                @_on_key_down_rec a.sub.act, cur_key, evt
+        return false
 
     
     # prevent default browser action being launch by hotkey
     cancel_natural_hotkeys: ( evt ) ->
-        if (!evt)
+        if not evt
             evt = window.event
         evt.cancelBubble = true
-        if (evt.stopPropagation)
-            evt.stopPropagation()
-        evt.preventDefault()
-
+        evt.stopPropagation?()
+        evt.preventDefault?()
         return false
+        
