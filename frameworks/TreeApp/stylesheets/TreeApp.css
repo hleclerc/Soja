@@ -111,6 +111,7 @@
 }
 
 .container_hidden_icon {
+    display    : none;
     position   : absolute;
     z-index    : 1001;
     background : #eee;
@@ -181,13 +182,31 @@
     border-radius        : 3px;
 }
 .block {
-    display:block;
+    display: block;
 }
-.elem_container {
+.inline {
+    display: inline;
+}
+.elem_container, .elem_container_parent {
     cursor: pointer;
     padding: 6px;
 }
-.elem_container:hover {
+.elem_container:hover, .elem_container_parent:hover {
     background: lightGrey;
     
+}
+
+
+.menu_img_arrow{
+    border           : none !important;
+    padding          : 0px !important;
+    margin           : 0px !important;
+    margin-top       : 4px !important;
+    position         : absolute;
+    right            : 0px;
+    -webkit-transform: rotate(-90deg);
+       -moz-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+         -o-transform: rotate(-90deg);
+            transform: rotate(-90deg);
 }
