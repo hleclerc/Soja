@@ -63,6 +63,10 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             @div.style.borderWidth = 0
             rem_class @div, "SelectedCanvas"
             
+    _add_transform_node: ( evt ) =>
+        for m in @app_data.modules when m instanceof TreeAppModule_Transform
+            m.actions[ 1 ].fun evt, @app_data._views[ 0 ]
+    
     _launch_context_menu: ( evt, show ) =>
         if show == true
             @_show_context_menu( evt )
@@ -74,10 +78,6 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             menu = document.getElementById( "contextMenu" )
             parent = document.getElementById( "main_window" )
             parent.removeChild menu
-    
-    _add_transform_node: ( evt ) =>
-        for m in @app_data.modules when m instanceof TreeAppModule_Transform
-            m.actions[ 1 ].fun evt, @app_data._views[ 0 ]
     
     _show_context_menu: ( evt ) =>
         @_delete_context_menu()
@@ -96,21 +96,21 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             else
                 point_under = "Mesh"
         
-        menu_item = []
+#         menu_item = []
         
-        #firstly list all tree items
-        for it in @cm.items
-            menu_item.push it._name
-            
-        #secondly list all actions for the selected items
-        for si in @cm.selected_items
-            cur = si[ si.length-1 ]
-            menu_item.push cur._name
+#         #firstly list all tree items
+#         for it in @cm.items
+#             menu_item.push it._name
+#             
+#         #secondly list all actions for the selected items
+#         for si in @cm.selected_items
+#             cur = si[ si.length-1 ]
+#             menu_item.push cur._name
             
         @modules = @app_data.modules
-        for m in @modules
-            for c in m.actions
-                menu_item.push c.txt, c.fun
+#         for m in @modules
+#             for c in m.actions
+#                 menu_item.push c.txt, c.fun
 
         parent = document.getElementById( "main_window" )
         @menu = new_dom_element
@@ -118,9 +118,8 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             id        : "contextMenu"
             style     :
                 position: "absolute"
-                left    : evt.clientX - 1
-                top     : evt.clientY - 65
-                
+                left    : evt.clientX - get_left ( @div )
+                top     : evt.clientY - get_top ( @div )
                 
         if point_under == "Transform"
             @_show_actions TreeAppModule_Transform
@@ -134,31 +133,37 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
         @_show_actions TreeAppModule_UndoManager
         
     _show_actions: ( module ) ->
-        for m in @modules
-            for c in m.actions when m instanceof module and c.ico?
-                do ( c ) =>
-                    elem = new_dom_element
-                        parentNode: @menu
-                        className : "contextMenuElement"
-                        onclick   : ( evt ) => 
-                            c.fun evt, @app_data._views[0]
-                            @_delete_context_menu( evt )
-                            
-                    new_dom_element
-                        parentNode: elem
-                        nodeName  : "img"
-                        src       : c.ico
-                        alt       : ""
-                        title     : c.txt
-                        height    : 24
-                        style     :
-                            paddingRight: "2px"
-                            
-                    new_dom_element
-                        parentNode: elem
-                        nodeName  : "span"
-                        txt       : c.txt
-                        style     :
-                            position: "relative"
-                            top     : "-5px"
-
+        for m in @modules when m instanceof module 
+            @_show_actions_module_rec m.actions, module
+        
+    _show_actions_module_rec: ( actions, module ) ->
+        for c in actions when c.ico?
+            do ( c ) =>
+                elem = new_dom_element
+                    parentNode: @menu
+                    className : "contextMenuElement"
+                    onclick   : ( evt ) => 
+                        c.fun evt, @app_data._views[0]
+                        @_delete_context_menu( evt )
+                        
+                new_dom_element
+                    parentNode: elem
+                    nodeName  : "img"
+                    src       : c.ico
+                    alt       : ""
+                    title     : c.txt
+                    height    : 24
+                    style     :
+                        paddingRight: "2px"
+                        
+                new_dom_element
+                    parentNode: elem
+                    nodeName  : "span"
+                    txt       : c.txt
+                    style     :
+                        position: "relative"
+                        top     : "-5px"
+                        
+                if c.sub?.act?
+                    @_show_actions_module_rec c.sub.act, module
+                    return true

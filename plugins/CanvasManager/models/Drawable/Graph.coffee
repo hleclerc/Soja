@@ -338,6 +338,30 @@ class Graph extends Drawable
         info.ctx.fill()
         info.ctx.closePath()
     
+    
+    get_significative_number: ( val, [ min, max ] ) ->
+        console.log val, min, max
+        size = Math.abs( max - min )
+        console.log size
+        
+        if size > 1
+            res = Math.round(val)
+            if res.toString().length > 4
+                res = res.toExponential()
+        else 
+            for c, i in size.toString()
+                if c != "0" and c != "."
+                    number = i
+                    break;
+        
+            if number == 0
+                res = val.toPrecision()
+            else
+                res = val.toPrecision( number + 2 )
+        console.log res
+        return res
+    
+    
     get_height_axis : ( info ) ->
         max = @get_max_point info
         info.re_2_sc.proj max.pos.get()

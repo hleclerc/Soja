@@ -23,21 +23,6 @@ class TreeAppModule_ImageSet extends TreeAppModule
                 app.undo_manager.snapshot()
                 
         @actions.push
-            ico: "img/krita_24.png"
-            siz: 1
-            txt: "New Collection"
-            fun: ( evt, app ) =>
-                #
-                @collection = new ImgSetItem
-                
-                session = app.data.selected_session()
-                session._children.push @collection
-                
-                @unselect_all_item app
-                @select_item app, @collection
-                app.undo_manager.snapshot()
-
-        @actions.push
             ico: "img/add_pic_24.png"
             siz: 1
             txt: "Add Image"
@@ -45,12 +30,12 @@ class TreeAppModule_ImageSet extends TreeAppModule
                 @collection = @add_item_depending_selected_tree app, ImgSetItem
                 
                 if not img?
-                    if @numpic%2 == 1
-                        img = new ImgItem "left.png", app
-                    else
-                        img = new ImgItem "right.png", app
-                @numpic++
-#                     img = new ImgItem "composite0"+ @numpic++ +".png", app
+#                     if @numpic%2 == 1
+#                         img = new ImgItem "left.png", app
+#                     else
+#                         img = new ImgItem "right.png", app
+                    @numpic++
+                    img = new ImgItem "composite0"+ @numpic++ +".png", app
                 @collection.add_child img
                 
                 app.data.time._max.set app.data.time._max.get() + 1
@@ -64,3 +49,18 @@ class TreeAppModule_ImageSet extends TreeAppModule
                 app.undo_manager.snapshot()
                 
             key: [ "Shift+A" ]
+
+        @actions.push
+            ico: "img/krita_24.png"
+            siz: 1
+            txt: "New Collection"
+            fun: ( evt, app ) =>
+                #
+                @collection = new ImgSetItem
+                
+                session = app.data.selected_session()
+                session._children.push @collection
+                
+                @unselect_all_item app
+                @select_item app, @collection
+                app.undo_manager.snapshot()

@@ -187,7 +187,7 @@ class IcoBar extends View
                             parentNode : parent
                             nodeName   : "div"
                             className  : "elem_container"
-                            txt        : act.txt
+                            txt        : act.txt + key
                             title      : act.txt + key
                             onmousedown: ( evt ) =>
                                 act.fun evt, @tree_app
