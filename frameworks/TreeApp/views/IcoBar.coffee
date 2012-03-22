@@ -86,42 +86,14 @@ class IcoBar extends View
                                     className  : "big_icon_span"
                                 parent = big_icon
                         
-                        key = @key_as_string act
-                        
-                        if act.sub? and act.sub.prf? and act.sub.prf == "list" and act.sub.act.length > 0
-                            act.fun = ( evt, app ) ->
-                                act.sub.act[ 0 ].fun evt, app
-                            @create_list_menu act, parent, key, siz
-                        
-                        #classic icon using image
-                         #* ( if act.ina?( @tree_app ) then 0.5 else 1.0 )
-                        else if act.ico? and act.ico.length > 0
-                            s = new_dom_element
-                                parentNode : parent
-                                nodeName   : "img"
-                                alt        : act.txt
-                                title      : act.txt + key
-                                src        : act.ico
-                                style      :
-                                    height     : @height_ico * siz
-                                onmousedown: ( evt ) =>
-                                    act.fun evt, @tree_app
-                                    
-                        #icon who need a model_editor item
-                        else if act.mod?
-                            editor = new_model_editor el: parent, model: act.mod, item_width: 85
-                       
+                        #create all icon recursively
+                        @_select_icon_type_rec act, parent, siz
+
                         if act.siz == 1 and parent != big_icon and act.ord == undefined or act.ord == true
                             if parent == icon_top
                                 parent = icon_bot
                             else
                                 parent = icon_top
-                
-                        if act.sub? and act.sub.prf? and act.sub.prf == "menu" and act.sub.act.length > 0
-                            act.fun = ( evt, app ) ->
-                                menu_container = document.getElementsByClassName("menu_container")[ 0 ]
-                                menu_container.classList.toggle "block"
-                            @create_hierarchical_menu act.sub, parent, key, siz
                             
                 new_dom_element
                     parentNode : block
@@ -144,64 +116,172 @@ class IcoBar extends View
             key += ')'
 #             
         return key
+    
+    
+    _select_icon_type_rec: ( act, parent, size, prf = '' ) ->
+        key = @key_as_string act
+#         console.log act.txt, parent
+        if act.sub? and act.sub.prf? and act.sub.act?
+            if act.sub.prf == "list" 
+                must_draw_item = false
+                act.fun = ( evt, app ) ->
+                    act.sub.act[ 0 ].fun evt, app
+                container = @create_list_menu act, parent, key, size
+            else if act.sub.prf == "menu" 
+                container = @create_hierarchical_menu act.sub, parent, key
+                must_draw_item = false
+                @draw_item act, parent, key, size, prf
+                act.fun = ( evt, app ) ->
+                    container.classList.toggle "block"
         
+        else if act.vis != false and must_draw_item != false
+            container = @draw_item act, parent, key, size, prf
+            
+        if act.sub?.act?
+            for ac, i in act.sub.act
+                @_select_icon_type_rec ac, container, size, act.sub.prf
+
+            return true
+        return false
+    
+    # create classic icon using image
+    draw_item: ( act, parent, key, size, prf ) ->
+        if act.vis != false
+            if prf? and prf == "menu"
+                if act.mod?
+                    editor = new_model_editor el: parent, model: act.mod, item_width: 85
+                    s = parent
+                else
+                    # element who have child
+                    if act.sub?.act?
+                        c = new_dom_element
+                            parentNode : parent
+                            nodeName   : "div"
+                            className  : "elem_container_parent"
+                            txt        : act.txt
+                            title      : act.txt + key
+                            onmouseover: ( evt ) =>
+                                #TODO this must be recursif
+                                menu_container = document.getElementsByClassName("menu_container")[ 1 ]
+                                menu_container.classList.add "block"
+                            onmouseout: ( evt ) =>
+                                menu_container = document.getElementsByClassName("menu_container")[ 1 ]
+                                menu_container.classList.remove "block"
+                                
+                        arr = new_dom_element
+                            parentNode : c
+                            nodeName   : "img"
+                            className  : "menu_img_arrow"
+                            src        : "img/down_arrow.png"
+                            alt        : ""
+                    # normal element
+                    else
+                        s = new_dom_element
+                            parentNode : parent
+                            nodeName   : "div"
+                            className  : "elem_container"
+                            txt        : act.txt
+                            title      : act.txt + key
+                            onmousedown: ( evt ) =>
+                                act.fun evt, @tree_app
+                                parent.classList.toggle "block"
+            
+            else if prf? and prf == "list"
+                    s = new_dom_element
+                        parentNode : parent
+                        nodeName   : "img"
+                        alt        : act.txt
+                        title      : act.txt + key
+                        src        : act.ico
+                        style      :
+                            height     : @height_ico * size
+                        onmousedown: ( evt ) =>
+                            act.fun evt, @tree_app
+                            parent.classList.toggle "inline"
+                            
+                    new_dom_element
+                        parentNode : parent
+                        nodeName   : "br"
+                        
+                        
+            #* ( if act.ina?( @tree_app ) then 0.5 else 1.0 )
+            else if act.ico? and act.ico.length > 0
+                s = new_dom_element
+                    parentNode : parent
+                    nodeName   : "img"
+                    alt        : act.txt
+                    title      : act.txt + key
+                    src        : act.ico
+                    style      :
+                        height     : @height_ico * size
+                    onmousedown: ( evt ) =>
+                        act.fun evt, @tree_app
+            
+            #icon who need a model_editor item
+            else if act.mod?
+                editor = new_model_editor el: parent, model: act.mod, item_width: 85
+                s = parent
+                
+            else if act.txt?
+                s = new_dom_element
+                    parentNode : parent
+                    nodeName   : "span"
+                    txt        : act.txt
+                    title      : act.txt + key
+                    style      :
+                        height     : @height_ico * size
+                    onmousedown: ( evt ) =>
+                        act.fun evt, @tree_app
+        return s
+
+    # hierarchical menu is a classical menu that create a block containing icon
+    create_hierarchical_menu: ( sub, parent, key ) ->
+        if parent.className == "menu_container"
+            menu_container = new_dom_element
+                parentNode : parent
+                nodeName   : "div"
+                className  : "menu_container"
+                style      :
+                    left: "100%"
+        else
+            menu_container = new_dom_element
+                parentNode : parent
+                nodeName   : "div"
+                className  : "menu_container"
+                style      :
+                    top: "70%"
+                # @menu_container.parentNode.removeChild @menu_container
+
+        return menu_container
+
     # side menu is an icon who have icon as children
-    create_list_menu: ( act, parent, key, siz ) =>
+    create_list_menu: ( act, parent, key, size ) =>
         click_container = new_dom_element
             parentNode : parent
             nodeName   : "span"
             className  : "click_container"
             
-        parent_hidden_icon = new_dom_element
+        new_dom_element
             parentNode : click_container
             nodeName   : "img"
             alt        : act.txt
             title      : act.txt + key
             src        : act.ico
-            className  : "parent_hidden_icon"
+            className  : "parent_list_icon"
             style      :
-                height     : @height_ico * siz
+                height     : @height_ico * size
                 
             onmousedown: ( evt ) =>
-                # assing first hidden action to icon
+                # assing first action to visible icon
                 act.sub.act[ 0 ]?.fun evt, @tree_app
-                
+                            
         arrow_container = new_dom_element
             parentNode : click_container
             nodeName   : "span"
             className  : "arrow_container"
-            # children are created on mousedown event
             onmousedown: ( evt ) =>
-                if not @container?
-                    @container = new_dom_element
-                        parentNode : child_container
-                        nodeName   : "span"
-                        className  : "container_hidden_icon"
-                        id         : "id_hidden_icon"
-                    
-                    for c in act.sub.act
-                        do ( c ) =>
-                            key = @key_as_string c
-                            s = new_dom_element
-                                parentNode : @container
-                                nodeName   : "img"
-                                alt        : c.txt
-                                title      : c.txt + key
-                                src        : c.ico
-                                style      :
-                                    height     : @height_ico *siz
-                                onmousedown: ( evt ) =>
-                                    c.fun evt, @tree_app
-                                    @container.parentNode.removeChild @container
-                                    @container = undefined
-                                    
-                            new_dom_element
-                                parentNode : @container
-                                nodeName   : "br"
-                else
-                    @container.parentNode.removeChild @container
-                    @container = undefined
-                    
+                child_container.classList.toggle "inline"
+                     
         arrow = new_dom_element
             parentNode : arrow_container
             nodeName   : "img"
@@ -213,20 +293,8 @@ class IcoBar extends View
         child_container = new_dom_element
             parentNode : parent
             nodeName   : "span"
+            className  : "container_hidden_icon"
+            id         : "id_hidden_icon"
+            
+        return child_container
     
-    create_hierarchical_menu: ( sub, parent, key, siz ) ->
-        @menu_container = new_dom_element
-            parentNode : parent
-            nodeName   : "div"
-            className  : "menu_container"
-        for elem in sub.act
-            do ( elem ) =>
-                @elem_container = new_dom_element
-                    parentNode : @menu_container
-                    nodeName   : "div"
-                    className  : "elem_container"
-                    txt        : elem.txt
-                    onmousedown: ( evt ) =>
-                        elem.fun evt, @tree_app
-                        @menu_container.parentNode.removeChild @menu_container
-                        @menu_container = undefined

@@ -146,14 +146,21 @@ class CanvasManager extends View
         @aset @cam.X, [ 1, 0, 0 ]
         @aset @cam.Y, [ 0, 0, 1 ]
     # 
+    bottom: ->
+        @aset @cam.X, [ 1, 0, 0 ]
+        @aset @cam.Y, [ 0, 0,-1 ]
+    
+    # 
     right: ->
         @aset @cam.X, [ 0, 0, 1 ]
         @aset @cam.Y, [ 0, 1, 0 ]
+    
     #
     left: ->
         @aset @cam.X, [ 0, 0,-1 ]
         @aset @cam.Y, [ 0, 1, 0 ]
-    # 
+    
+    #
     origin: ->
         @aset @cam.X, [ 1, 0, 0 ]
         @aset @cam.Y, [ 0, 1, 0 ]
