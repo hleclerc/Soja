@@ -82,9 +82,9 @@ test_Curves = ->
         
         
     m.points.push [   0, 0, 0 ]
-    m.points.push [ 100, 1, 0 ]
-    m.points.push [ 200, 3, 0 ]
-    m.points.push [ 255, 2, 0 ]
+    m.points.push [ 100, 0, 0 ]
+    m.points.push [ 200, 0, 0 ]
+    m.points.push [ 255, 0, 0 ]
     
     c.items.push m
     c.fit 0
