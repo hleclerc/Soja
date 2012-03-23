@@ -13,40 +13,44 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
             value     : "FullScreen"
             onclick   : ( evt )  =>
                 # popup construction
-                p = new_popup @label or "Code Editor", event : evt, width: "50"
+                p = new_popup @label or "Code Editor", event : evt, width: "50", onclose: =>
+                    @onPopupClose( )
+                
+
                 p.appendChild @textarea
-                code_mirror = CodeMirror.fromTextArea @textarea, {
+                @code_mirror.save() # Copy the content of the editor into the textarea
+                @fullscreen_code_mirror = CodeMirror.fromTextArea @textarea, {
                     lineNumbers : true,
                     mode: "javascript",
                     lineWrapping: true,
                     onCursorActivity: =>
-                        code_mirror.setLineClass(@hlLine, null)
-                        @hlLine = code_mirror.setLineClass(code_mirror.getCursor().line, "activeline")
-                        code_mirror.matchHighlight("CodeMirror-matchhighlight")
-                    extraKeys: {
-                        "F11": ->
-                            scroller = code_mirror.getScrollerElement()
-                            if (scroller.className.search(/\bCodeMirror-fullscreen\b/) == -1)
-                                scroller.className += " CodeMirror-fullscreen";
-                                scroller.style.height = "100%";
-                                scroller.style.width = "100%";
-                                code_mirror.refresh();
-                            else
-                                scroller.className = scroller.className.replace(" CodeMirror-fullscreen", "")
-                                scroller.style.height = ''
-                                scroller.style.width = ''
-                                code_mirror.refresh()
-                        ,
-                        "Esc": -> 
-                            scroller = code_mirror.getScrollerElement()
-                            if (scroller.className.search(/\bCodeMirror-fullscreen\b/) != -1)
-                                scroller.className = scroller.className.replace(" CodeMirror-fullscreen", "")
-                                scroller.style.height = ''
-                                scroller.style.width = ''
-                                code_mirror.refresh()
-                    }
+                        @fullscreen_code_mirror.setLineClass(@hlLine, null)
+                        @hlLine = @fullscreen_code_mirror.setLineClass(@fullscreen_code_mirror.getCursor().line, "activeline")
+                        @fullscreen_code_mirror.matchHighlight("CodeMirror-matchhighlight")
+#                     extraKeys: {
+#                         "F11": ->
+#                             scroller = @fullscreen_code_mirror.getScrollerElement()
+#                             if (scroller.className.search(/\bCodeMirror-fullscreen\b/) == -1)
+#                                 scroller.className += " CodeMirror-fullscreen";
+#                                 scroller.style.height = "100%";
+#                                 scroller.style.width = "100%";
+#                                 @fullscreen_code_mirror.refresh();
+#                             else
+#                                 scroller.className = scroller.className.replace(" CodeMirror-fullscreen", "")
+#                                 scroller.style.height = ''
+#                                 scroller.style.width = ''
+#                                 @fullscreen_code_mirror.refresh()
+#                         ,
+#                         "Esc": -> 
+#                             scroller = @fullscreen_code_mirror.getScrollerElement()
+#                             if (scroller.className.search(/\bCodeMirror-fullscreen\b/) != -1)
+#                                 scroller.className = scroller.className.replace(" CodeMirror-fullscreen", "")
+#                                 scroller.style.height = ''
+#                                 scroller.style.width = ''
+#                                 @fullscreen_code_mirror.refresh()
+#                     }
                 }
-                @hlLine = code_mirror.setLineClass(0, "activeline")
+                @hlLine = @fullscreen_code_mirror.setLineClass(0, "activeline")
 
 
         @textarea = new_dom_element
@@ -63,41 +67,22 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
             mode: "javascript",
             lineWrapping: true,
             onCursorActivity: =>
-                @code_mirror.setLineClass(@hlLine, null)
-                @hlLine = @code_mirror.setLineClass(@code_mirror.getCursor().line, "activeline")
+                @code_mirror.setLineClass(@hlLine2, null)
+                @hlLine2 = @code_mirror.setLineClass(@code_mirror.getCursor().line, "activeline")
                 @code_mirror.matchHighlight("CodeMirror-matchhighlight")
-            extraKeys: {
-                "F11": ->
-                    scroller = @code_mirror.getScrollerElement()
-                    if (scroller.className.search(/\bCodeMirror-fullscreen\b/) == -1)
-                        scroller.className += " CodeMirror-fullscreen";
-                        scroller.style.height = "100%";
-                        scroller.style.width = "100%";
-                        @code_mirror.refresh();
-                    else
-                        scroller.className = scroller.className.replace(" CodeMirror-fullscreen", "")
-                        scroller.style.height = ''
-                        scroller.style.width = ''
-                        @code_mirror.refresh()
-                ,
-                "Esc": -> 
-                    scroller = @code_mirror.getScrollerElement()
-                    if (scroller.className.search(/\bCodeMirror-fullscreen\b/) != -1)
-                        scroller.className = scroller.className.replace(" CodeMirror-fullscreen", "")
-                        scroller.style.height = ''
-                        scroller.style.width = ''
-                        @code_mirror.refresh()
-            }
         }
         @code_mirror.getWrapperElement().onmousedown= =>
             @get_focus()?.set @view_id
             
-        @hlLine = @code_mirror.setLineClass(0, "activeline")
+        @hlLine2 = @code_mirror.setLineClass(0, "activeline")
         
     onchange: ->
         if @get_focus()?.has_been_modified()
             if @get_focus().get() == @view_id
                 setTimeout ( => @code_mirror.focus() ), 1
 
+    onPopupClose: ( ) ->
+        @fullscreen_code_mirror.save()
+        #TODO must keep modification made in popup
 # 
 ModelEditor.default_types.push ( model ) -> ModelEditorItem_TextAreaLanguage if model instanceof StrLanguage

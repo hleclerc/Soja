@@ -86,8 +86,6 @@ test_Curves = ->
     m.points.push [ 200, 12.1, 0 ]
     m.points.push [ 255, 12.09, 0 ]
     
-    m.get_significative_number 19000.0046454655, [ 19.000001, 190000.08454564 ]
-    
     c.items.push m
     c.fit 0
     c.draw()
