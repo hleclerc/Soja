@@ -317,32 +317,60 @@ class Graph extends Drawable
         info.ctx.textAlign = 'center'
         info.ctx.textBaseline = 'top'
         # x legend
+        value = []
+        posit = []
         for i in [ 0 .. @legend_x_division.get() ]
             pos = orig[ 0 ] + ( ( width_axis - decal_txt - ( orig[ 0 ] - decal_txt ) ) / @legend_x_division.get() ) * i
             vve = info.sc_2_rw.pos pos, 0
             val = vve[ 0 ]
-            size = Math.round(val).toString().length
-            info.ctx.fillText val.toPrecision( size ), pos, orig[ 1 ] + x_padding_txt
+            value.push val
+            posit.push pos
+#             size = Math.round(val).toString().length
+#             info.ctx.fillText val.toPrecision( size ), pos, orig[ 1 ] + x_padding_txt
 
+        [ min, max ] = @get_min_max_of_array value
+        
+        for i in [ 0 .. @legend_x_division.get() ]
+            nice_val = @get_significative_number value[ i ], [ min, max ]
+            info.ctx.fillText nice_val, posit[ i ], orig[ 1 ] + x_padding_txt
+            
+            
         # y legend
         info.ctx.textBaseline = 'middle'
         info.ctx.textAlign = 'right'
+        value = []
+        posit = []
         for i in [ 0 .. @legend_y_division.get() ]
             pos =  orig[ 1 ] + ( ( height_axis + decal_txt - ( orig[ 1 ] + decal_txt ) ) / @legend_y_division.get() ) * i
-
             val_from_screen = info.sc_2_rw.pos 0, pos
             val = val_from_screen[ 1 ]
-            size = Math.round(val).toString().length
-            info.ctx.fillText val.toPrecision( size ),  orig[ 0 ] - y_padding_txt, pos + decal_txt
+            value.push val
+            posit.push pos
+        [ min, max ] = @get_min_max_of_array value
+        
+        for i in [ 0 .. @legend_y_division.get() ]
+            nice_val = @get_significative_number value[ i ], [ min, max ]
+            info.ctx.fillText nice_val,  orig[ 0 ] - y_padding_txt, posit[ i ] + decal_txt
         
         info.ctx.fill()
         info.ctx.closePath()
     
     
+    get_min_max_of_array: ( array ) ->        
+        min = array[ 0 ]
+        for el in array
+            if el < min
+                min = el
+        max = array[ 0 ]
+        for el in array
+            if el > max
+                max = el
+        return [ min, max ]
+        
+    
     get_significative_number: ( val, [ min, max ] ) ->
-        console.log val, min, max
+#         console.log val, min, max
         size = Math.abs( max - min )
-        console.log size
         
         if size > 1
             res = Math.round(val)
@@ -354,11 +382,11 @@ class Graph extends Drawable
                     number = i
                     break;
         
-            if number == 0
+            if number == -2
                 res = val.toPrecision()
             else
                 res = val.toPrecision( number + 2 )
-        console.log res
+#         console.log res
         return res
     
     
