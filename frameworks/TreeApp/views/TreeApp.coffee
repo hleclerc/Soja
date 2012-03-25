@@ -70,6 +70,7 @@ class TreeApp extends View
     
         # else, -> canvas manager
         # add a ViewItem to display_settings
+        console.log "->", @_next_cam
         view_item = new ViewItem @data, data.panel_id, @_next_cam
         display_settings._children.push view_item
         delete @_next_cam

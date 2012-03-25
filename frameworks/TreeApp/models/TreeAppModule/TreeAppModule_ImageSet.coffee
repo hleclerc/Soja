@@ -44,13 +44,15 @@ class TreeAppModule_ImageSet extends TreeAppModule
             fun: ( evt, app, img ) =>
                 @collection = @add_item_depending_selected_tree app, ImgSetItem
                 
-                if not img?
-                    if @numpic%2 == 1
-                        img = new ImgItem "left.png", app
-                    else
-                        img = new ImgItem "right.png", app
+                #                 if not img?
+                #                     if @numpic%2 == 1
+                #                         img = new ImgItem "Dref.png", app
+                #                     else
+                #                         img = new ImgItem "Gdef6.png", app
+                f = [ "r.png", "r2.png", "composite_dep.png", "composite06.png" ]
+                img = new ImgItem f[ @numpic ], app
                 @numpic++
-#                     img = new ImgItem "composite0"+ @numpic++ +".png", app
+                # img = new ImgItem "composite0"+ @numpic++ +".png", app
                 @collection.add_child img
                 
                 app.data.time._max.set app.data.time._max.get() + 1

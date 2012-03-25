@@ -137,6 +137,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
             s = p[ p.length - 1 ]
             if s instanceof ShootingItem
                 cam = s.cam
+        console.log cam
                 
         d = app.data.selected_display_settings()
         for panel_id in app.data.selected_canvas_pan
