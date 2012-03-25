@@ -39,4 +39,3 @@ class ShootingItem extends TreeItem
         for c in @_children
             c.draw info
         delete info.shoot_cam
-            

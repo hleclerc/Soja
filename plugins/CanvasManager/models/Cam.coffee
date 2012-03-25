@@ -111,7 +111,6 @@ class Cam extends Model
             @O = d.O
             @o_x = - w / 2
             @o_y = - h / 2
-            
         dir: ( x, y ) ->
             Vec_3.nor [
                 ( ( x + @o_x ) * @X[ 0 ] + ( y + @o_y ) * @Y[ 0 ] ) * @p + @Z[ 0 ],

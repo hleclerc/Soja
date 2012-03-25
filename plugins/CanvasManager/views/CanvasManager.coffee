@@ -113,6 +113,7 @@ class CanvasManager extends View
             ( b[ 1 ][ 1 ] - b[ 0 ][ 1 ] ),
             ( b[ 1 ][ 2 ] - b[ 0 ][ 2 ] )
         )
+        d = 1 if d == 0
         
         if @cam.r?
             w = @canvas.width
@@ -121,6 +122,7 @@ class CanvasManager extends View
             # assuming a 2D cam
             dx = ( b[ 1 ][ 0 ] - b[ 0 ][ 0 ] )
             dy = ( b[ 1 ][ 1 ] - b[ 0 ][ 1 ] )
+            dy = 1 if dy == 0
             ip = 1 / @padding_ratio
             
             if w > h

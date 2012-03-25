@@ -9,6 +9,10 @@ class TreeAppModule_TreeView extends TreeAppModule
         _ina = ( app ) =>
             app.data.focus.get() != app.treeview.view_id
         
+        _ina_cm = ( app ) =>
+            app.data.focus.get() != app.selected_canvas_inst()?[ 0 ]?.cm.view_id and 
+            app.data.focus.get() != app.treeview.view_id
+            
         @actions.push
             txt: "Delete current tree item"
             key: [ "Del" ]
@@ -48,21 +52,21 @@ class TreeAppModule_TreeView extends TreeAppModule
         @actions.push
             txt: ""
             key: [ "UpArrow" ]
-            ina: _ina
+            ina: _ina_cm
             fun: ( evt, app ) =>
                 up_down_fun evt, app, -1         
 
         @actions.push
             txt: ""
             key: [ "DownArrow" ]
-            ina: _ina
+            ina: _ina_cm
             fun: ( evt, app ) =>
                 up_down_fun evt, app, 1
 
         @actions.push
             txt: ""
             key: [ "LeftArrow" ]
-            ina: _ina
+            ina: _ina_cm
             fun: ( evt, app ) =>
                 # Close selected items
                 items = app.data.selected_tree_items
@@ -74,7 +78,7 @@ class TreeAppModule_TreeView extends TreeAppModule
         @actions.push
             txt: ""
             key: [ "RightArrow" ]
-            ina: _ina
+            ina: _ina_cm
             fun: ( evt, app ) =>
                 # Open selected items
                 items = app.data.selected_tree_items
@@ -86,7 +90,7 @@ class TreeAppModule_TreeView extends TreeAppModule
         @actions.push
             txt: ""
             key: [ "Enter" ]
-            ina: _ina
+            ina: _ina_cm
             fun: ( evt, app ) =>
                 # Show/hide items
                 path_items = app.data.selected_tree_items

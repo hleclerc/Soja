@@ -144,6 +144,16 @@ class IcoBar extends View
             return true
         return false
     
+    display_child_menu_container: ( evt, val ) ->
+        if val == 1
+            containers = document.getElementsByClassName("menu_container")
+            menu_container = containers[ containers.length - 1 ]
+            menu_container.classList.add "block"
+        if val == 0
+            containers = document.getElementsByClassName("menu_container")
+            menu_container = containers[ containers.length - 1 ]
+            menu_container.classList.remove "block"
+        
     # create classic icon using image
     draw_item: ( act, parent, key, size, prf ) ->
         if act.vis != false
@@ -161,12 +171,9 @@ class IcoBar extends View
                             txt        : act.txt
                             title      : act.txt + key
                             onmouseover: ( evt ) =>
-                                #TODO this must be recursif
-                                menu_container = document.getElementsByClassName("menu_container")[ 1 ]
-                                menu_container.classList.add "block"
+                                @display_child_menu_container evt, 1
                             onmouseout: ( evt ) =>
-                                menu_container = document.getElementsByClassName("menu_container")[ 1 ]
-                                menu_container.classList.remove "block"
+                                @display_child_menu_container evt, 0
                                 
                         arr = new_dom_element
                             parentNode : c
@@ -180,7 +187,7 @@ class IcoBar extends View
                             parentNode : parent
                             nodeName   : "div"
                             className  : "elem_container"
-                            txt        : act.txt
+                            txt        : act.txt + key
                             title      : act.txt + key
                             onmousedown: ( evt ) =>
                                 act.fun evt, @tree_app
@@ -243,6 +250,10 @@ class IcoBar extends View
                 className  : "menu_container"
                 style      :
                     left: "100%"
+                onmouseover: ( evt ) =>
+                    @display_child_menu_container evt, 1
+                onmouseout: ( evt ) =>
+                    @display_child_menu_container evt, 0
         else
             menu_container = new_dom_element
                 parentNode : parent
@@ -261,19 +272,35 @@ class IcoBar extends View
             nodeName   : "span"
             className  : "click_container"
             
-        new_dom_element
-            parentNode : click_container
-            nodeName   : "img"
-            alt        : act.txt
-            title      : act.txt + key
-            src        : act.ico
-            className  : "parent_list_icon"
-            style      :
-                height     : @height_ico * size
-                
-            onmousedown: ( evt ) =>
-                # assing first action to visible icon
-                act.sub.act[ 0 ]?.fun evt, @tree_app
+        
+        if act.ico? and act.ico.length > 0
+            new_dom_element
+                parentNode : click_container
+                nodeName   : "img"
+                alt        : act.txt
+                title      : act.txt + key
+                src        : act.ico
+                className  : "parent_list_icon"
+                style      :
+                    height     : @height_ico * size
+                    
+                onmousedown: ( evt ) =>
+                    # assing first action to visible icon
+                    act.sub.act[ 0 ]?.fun evt, @tree_app
+        #icon who need a model_editor item
+        else if act.mod?
+            editor = new_model_editor el: click_container, model: act.mod, item_width: 85
+            
+        else if act.txt?
+            new_dom_element
+                parentNode : click_container
+                nodeName   : "span"
+                txt        : act.txt
+                title      : act.txt + key
+                style      :
+                    height     : @height_ico * size
+                onmousedown: ( evt ) =>
+                    act.fun evt, @tree_app
                             
         arrow_container = new_dom_element
             parentNode : click_container
