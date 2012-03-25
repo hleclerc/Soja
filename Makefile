@@ -13,8 +13,10 @@ test_%: compilation
 # same s test but launched with Soda
 soda_%: compilation Soda
 	make -C Soda
-	Soda/soda -hd gen --start-page /test_$*.html
-
+	mkdir -p compilations
+	Soda/Celo/listener_generator -b gen -e Soda/src/parsers/http_cmp_parser.sipe -a HttpRequest_Public -o compilations/dl_req.so -I Soda/src/Soda
+	Soda/soda -nu -hd gen --start-page /test_$*.html
+	
 Soda:
 	git clone git@sc1.ens-cachan.fr:Sodat Soda
 
