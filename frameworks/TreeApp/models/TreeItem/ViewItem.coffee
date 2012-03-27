@@ -23,6 +23,9 @@ class ViewItem extends TreeItem
                 
     accept_child: ( ch ) ->
         #
+        
     sub_canvas_items: ->
         [ @background, @axes ]
- 
+
+    has_nothing_to_draw: ->
+        true

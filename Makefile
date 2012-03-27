@@ -6,15 +6,17 @@ xdotool = xdotool
 
 all: compilation
 
+srv: Soda
+	make -C Soda
+	mkdir -p compilations
+	Soda/Celo/listener_generator -b gen -e Soda/src/parsers/http_cmp_parser.sipe -a HttpRequest_Public -o compilations/dl_req.so -I Soda/src/Soda
+
 # see tests directory to see possible targets
 test_%: compilation
 	${xdotool} search __gen/${@}__ windowactivate key F5 || ${browser} gen/$@.html
 
 # same s test but launched with Soda
-soda_%: compilation Soda
-	make -C Soda
-	mkdir -p compilations
-	Soda/Celo/listener_generator -b gen -e Soda/src/parsers/http_cmp_parser.sipe -a HttpRequest_Public -o compilations/dl_req.so -I Soda/src/Soda
+soda_%: compilation
 	Soda/soda -nu -hd gen --start-page /test_$*.html
 	
 Soda:

@@ -70,10 +70,12 @@ class TreeApp extends View
     
         # else, -> canvas manager
         # add a ViewItem to display_settings
-        console.log "->", @_next_cam
-        view_item = new ViewItem @data, data.panel_id, @_next_cam
+        console.log "->", @_next_view_item_cam
+        view_item = new ViewItem @data, data.panel_id, @_next_view_item_cam
+        if @_next_view_item_child
+            view_item.add_child @_next_view_item_child
         display_settings._children.push view_item
-        delete @_next_cam
+        delete @_next_view_item_cam
         
         # 
         @data.visible_tree_items.add_attr data.panel_id, new Lst [ view_item ]

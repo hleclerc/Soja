@@ -76,8 +76,33 @@ class CanvasManager extends View
         @dblclick_fun = []
 
     onchange: ->
-        @draw()
+        if @need_to_redraw()
+            @draw()
+            
+    need_to_redraw: ->
+        return true if @cam.has_been_modified?() 
+        return true if @selected_entities.has_been_modified?()
+        return true if @pre_selected_entities.has_been_modified?()
+        return true if @theme.has_been_modified?()
+        return true if @time.has_been_modified?()
+        return true if @padding_ratio.has_been_modified?()
 
+        # selected objects
+        str_sel = ""
+        for s in @selected_items
+            if not s[ s.length - 1 ].has_nothing_to_draw?()
+                str_sel += " " + s[ s.length - 1 ].model_id
+        if @_old_str_sel != str_sel
+            return true
+        @_old_str_sel = str_sel
+            
+        # all objects and sub objects
+        for f in flat
+            if f.has_been_modified?()
+                return true
+                
+        return false
+        
     #
     bounding_box: ->
         if @_bounding_box?
@@ -169,10 +194,11 @@ class CanvasManager extends View
     
     # redraw all the scene
     draw: ->
+        console.log "toto"
+        
         flat = []
         for item in @items
             CanvasManager._get_flat_list flat, item
-            
             
         #
         @on_mouse_move_items   = []
@@ -464,5 +490,6 @@ class CanvasManager extends View
         if item.sub_canvas_items?
             for sub_item in item.sub_canvas_items()
                 CanvasManager._get_flat_list flat, sub_item
-        else
+                
+        if not item.has_nothing_to_draw?()
             flat.push item

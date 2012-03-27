@@ -33,7 +33,13 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
         #
         bind @app_data.selected_canvas_pan, =>
             @_update_borders()
+
             
+    destructor: ->
+        super()
+        @cm.destructor?()
+        delete @cm
+
     # called each time panel is resized (including the first size definition)
     render: ( info ) ->
         @el.appendChild @div
