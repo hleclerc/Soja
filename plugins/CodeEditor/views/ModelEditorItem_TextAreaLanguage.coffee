@@ -19,6 +19,7 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
 
                 p.appendChild @textarea
                 @code_mirror.save() # Copy the content of the editor into the textarea
+                @model.set @code_mirror.getValue()
                 @fullscreen_code_mirror = CodeMirror.fromTextArea @textarea, {
                     lineNumbers : true,
                     mode: "javascript",
@@ -82,7 +83,8 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
                 setTimeout ( => @code_mirror.focus() ), 1
 
     onPopupClose: ( ) ->
-        @fullscreen_code_mirror.save()
-        #TODO must keep modification made in popup
+        changed_string = @fullscreen_code_mirror.getValue()
+        @model.set changed_string
+        @code_mirror.setValue changed_string
 # 
 ModelEditor.default_types.push ( model ) -> ModelEditorItem_TextAreaLanguage if model instanceof StrLanguage
