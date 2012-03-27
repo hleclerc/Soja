@@ -40,6 +40,7 @@ class Legend extends Drawable
     
     draw: ( info ) ->
         if @show_legend.get() == true
+            @gradient = info.theme.gradient_legend
             
             ratio = @get_ratio info
             height = @_height.get() * ratio
@@ -60,5 +61,4 @@ class Legend extends Drawable
             info.ctx.font = font_size + "pt Arial"
             info.ctx.textAlign = "center"
             info.ctx.fillText( @title, pos_x + width * 0.5, pos_y + height + height * 0.2 )
-
     

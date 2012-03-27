@@ -4,7 +4,7 @@ class ImgItem extends TreeItem
         super()
         # attributes
         @add_attr
-            legend: new Legend "Displacement X"
+            legend: new Legend( "Displacement X", false )
             
         @add_attr
             img: new Img file, app, @legend
@@ -20,8 +20,7 @@ class ImgItem extends TreeItem
         false
         
     sub_canvas_items: ->
-#         [ @img, @legend ]
-        [ @img ]
+        [ @img, @legend ]
         
     # disp_only_in_model_editor: ->
     #     [ @img, @legend ]

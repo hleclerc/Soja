@@ -5,10 +5,12 @@ class Theme extends Model
         
         # new attributes
         @add_attr
-            name          : name
-            line          : new Color 255, 255, 255, 255
-            dot           : new Color   0, 255,   0, 255
-            selected_dot  : new Color 255,   0,   0, 255
-            anim_delay    : 300
+            name           : name
+            line           : new Color 255, 255, 255, 255
+            dot            : new Color   0, 255,   0, 255
+            selected_dot   : new Color 255,   0,   0, 255
+            gradient_legend: new Gradient
+            anim_delay     : 300
             
-            
+        @gradient_legend.add_color [ 255,255,255, 255 ], 0
+        @gradient_legend.add_color [   0,  0,  0, 255 ], 1
