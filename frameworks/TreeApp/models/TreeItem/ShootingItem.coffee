@@ -21,6 +21,17 @@ class ShootingItem extends TreeItem
                         if el.item instanceof ViewItem
                             @view.lst.push @view.lst.length
         
+        bind @view, =>
+            i = 0
+            for el in @app.treeview.flat
+                if el.item instanceof ViewItem
+                    console.log @view.get()
+                    if i == @view.get()
+                        new_cam = el.cam
+#                         @mod_attr @cam, new_cam
+                    i++
+            
+        
         # default values
         @_name.set "Shooting informations"
         @_ico.set "img/shooting_16.png"
@@ -28,7 +39,8 @@ class ShootingItem extends TreeItem
         
 #         @add_child new ViewItem app_data, panel_id
         @add_child new ImgSetItem
-                
+
+        
     accept_child: ( ch ) ->
         ch instanceof ImgItem or
         ch instanceof ImgSetItem or
