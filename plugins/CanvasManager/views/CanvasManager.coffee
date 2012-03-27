@@ -80,7 +80,7 @@ class CanvasManager extends View
             @draw()
             
     need_to_redraw: ->
-        return true if @cam.has_been_modified?() 
+        return true if @cam.has_been_modified?()
         return true if @selected_entities.has_been_modified?()
         return true if @pre_selected_entities.has_been_modified?()
         return true if @theme.has_been_modified?()
@@ -93,8 +93,8 @@ class CanvasManager extends View
             if not s[ s.length - 1 ].has_nothing_to_draw?()
                 str_sel += " " + s[ s.length - 1 ].model_id
         if @_old_str_sel != str_sel
+#             @_old_str_sel = str_sel
             return true
-        @_old_str_sel = str_sel
             
         # all objects and sub objects
         for f in flat
@@ -194,7 +194,7 @@ class CanvasManager extends View
     
     # redraw all the scene
     draw: ->
-        console.log "toto"
+#         console.log "count"
         
         flat = []
         for item in @items
@@ -243,7 +243,10 @@ class CanvasManager extends View
         for fun in @dblclick_fun
             fun( this, evt )
 
-    _img_mouse_down: ( evt ) ->
+    _img_mouse_down: ( evt ) ->            
+        for fun in @click_fun
+            fun( this, evt )
+            
         evt = window.event if not evt?
 
         # code from http://unixpapa.com/js/mouse.html
@@ -298,9 +301,9 @@ class CanvasManager extends View
     _img_mouse_up: ( evt ) ->
         @canvas.onmousemove = ( evt ) => @_mouse_move evt # start event for hover
         if @old_button == "LEFT" and not @mouse_has_moved_since_mouse_down
-#             if not @movable_point?
-            for fun in @click_fun
-                fun( this, evt )
+            nothing = undefined#need to be deleted
+            #for fun in @click_fun
+                #fun( this, evt )
         if @old_button == "RIGHT" and not @mouse_has_moved_since_mouse_down
             @context_menu?( evt, true )
         else

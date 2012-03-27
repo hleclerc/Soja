@@ -11,6 +11,9 @@ class ShootingItem extends TreeItem
         @add_attr
             view : new Choice( 0, lst_view )
             cam  : new Cam
+        @add_attr
+            cam_representation: new CamRepresentation @cam
+            
             #
         
         for el in @app.treeview.flat
@@ -20,16 +23,16 @@ class ShootingItem extends TreeItem
                     for el in @app.treeview.flat
                         if el.item instanceof ViewItem
                             @view.lst.push @view.lst.length
-        
-        bind @view, =>
-            i = 0
-            for el in @app.treeview.flat
-                if el.item instanceof ViewItem
-                    console.log @view.get()
-                    if i == @view.get()
-                        new_cam = el.cam
+#         
+#         bind @view, =>
+#             i = 0
+#             for el in @app.treeview.flat
+#                 if el.item instanceof ViewItem
+#                     console.log @view.get()
+#                     if i == @view.get()
+#                         new_cam = el.cam
 #                         @mod_attr @cam, new_cam
-                    i++
+#                     i++
             
         
         # default values
@@ -46,8 +49,8 @@ class ShootingItem extends TreeItem
         ch instanceof ImgSetItem or
         ch instanceof TransformItem
         
-#     sub_canvas_items: ->
-#         [  ]
+    sub_canvas_items: ->
+        [ @cam_representation ]
 
     z_index: ->
         0.1
