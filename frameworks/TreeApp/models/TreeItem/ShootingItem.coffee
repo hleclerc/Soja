@@ -5,15 +5,21 @@ class ShootingItem extends TreeItem
         
         # attributes
         
-        lst_view = [ ]
-        for el in @app.treeview.flat
-            if el.item instanceof ViewItem
-                lst_view.push lst_view.length
+                
+        lst_view = new Lst
             
         @add_attr
             view : new Choice( 0, lst_view )
             cam  : new Cam
             #
+        
+        for el in @app.treeview.flat
+            if el.item instanceof DisplaySettingsItem
+                bind el.item, =>
+                    @view.lst.clear()
+                    for el in @app.treeview.flat
+                        if el.item instanceof ViewItem
+                            @view.lst.push @view.lst.length
         
         # default values
         @_name.set "Shooting informations"
