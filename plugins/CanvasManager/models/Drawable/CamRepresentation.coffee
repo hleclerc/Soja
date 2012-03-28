@@ -18,28 +18,32 @@ class CamRepresentation extends Drawable
         orig = info.re_2_sc.proj [ 0, 0,  0 - @cam.d.get() ]
         dir = info.re_2_sc.proj [ 0, 0,  0 ]
         
-        focal = info.re_2_sc.focal_point()
-        console.log 'focal ' + focal
+        ninfo = 
+            re_2_sc  : @cam.re_2_sc info.w, info.h
+            sc_2_rw  : @cam.sc_2_rw info.w, info.h
+        
+        focal = info.re_2_sc.proj ninfo.sc_2_rw.focal_point()
+        # console.log 'focal ' + focal, focal
         
         info.ctx.lineWidth = 1
         size_elem = 5
         
-        info.ctx.strokeStyle = "white"
-        info.ctx.beginPath()
-        info.ctx.moveTo orig[ 0 ], orig[ 1 ]
-        info.ctx.lineTo dir[ 0 ], dir[ 1 ]
-        info.ctx.stroke()
-        info.ctx.closePath()
-        
-        info.ctx.beginPath()
-        info.ctx.fillStyle = "blue"
-        info.ctx.arc dir[ 0 ], dir[ 1 ], size_elem * 0.5, 0, Math.PI * 2, true
-        info.ctx.fill()
-        info.ctx.closePath()
+        #         info.ctx.strokeStyle = "white"
+        #         info.ctx.beginPath()
+        #         info.ctx.moveTo orig[ 0 ], orig[ 1 ]
+        #         info.ctx.lineTo focal[ 0 ], focal[ 1 ]
+        #         info.ctx.stroke()
+        #         info.ctx.closePath()
         
         info.ctx.beginPath()
         info.ctx.fillStyle = "red"
-        info.ctx.fillRect orig[ 0 ] - size_elem * 0.5, orig[ 1 ] - size_elem * 0.5, size_elem, size_elem
+        info.ctx.arc focal[ 0 ], focal[ 1 ], size_elem * 0.5, 0, Math.PI * 2, true
         info.ctx.fill()
         info.ctx.closePath()
+        
+        #         info.ctx.beginPath()
+        #         info.ctx.fillStyle = "red"
+        #         info.ctx.fillRect orig[ 0 ] - size_elem * 0.5, orig[ 1 ] - size_elem * 0.5, size_elem, size_elem
+        #         info.ctx.fill()
+        #         info.ctx.closePath()
         

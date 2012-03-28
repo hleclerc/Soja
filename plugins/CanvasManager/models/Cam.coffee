@@ -101,16 +101,24 @@ class Cam extends Model
             
             @X = Vec_3.nor d.X
             @Y = Vec_3.nor Vec_3.sub( d.Y, Vec_3.mus( Vec_3.dot( @X, d.Y ), @X ) )
-            @Z = Vec_3.cro( @X, @Y )
+            nZ = Vec_3.cro( @X, @Y )
 
             @X = Vec_3.sm @X, c * r
             @Y = Vec_3.sm @Y, - c
-            @Z = Vec_3.sm @Z, c
+            @Z = Vec_3.sm nZ, c
             
-            @p = Math.tan( d.a / 2 * 3.14159265358979323846 / 180 ) / ( mwh / 2 )
+            ap = Math.tan( d.a / 2 * 3.14159265358979323846 / 180 )
+            @p = 2 * ap / mwh
             @O = d.O
             @o_x = - w / 2
             @o_y = - h / 2
+            
+            @dcam = [
+                @O[ 0 ] - 0.5 * d.d / ap * nZ[ 0 ],
+                @O[ 1 ] - 0.5 * d.d / ap * nZ[ 1 ],
+                @O[ 2 ] - 0.5 * d.d / ap * nZ[ 2 ]
+            ]
+            
         dir: ( x, y ) ->
             Vec_3.nor [
                 ( ( x + @o_x ) * @X[ 0 ] + ( y + @o_y ) * @Y[ 0 ] ) * @p + @Z[ 0 ],
@@ -123,6 +131,9 @@ class Cam extends Model
             @O[ 1 ] + ( x + @o_x ) * @X[ 1 ] + ( y + @o_y ) * @Y[ 1 ],
             @O[ 2 ] + ( x + @o_x ) * @X[ 2 ] + ( y + @o_y ) * @Y[ 2 ]
         ]
+            
+        focal_point: -> 
+            @dcam
 
     class TransBuf # real pos -> screen
         constructor: ( d, w, h ) ->
@@ -151,8 +162,3 @@ class Cam extends Model
             z = Vec_3.dot d, @Z
             d = 1 / ( 1 + @p * z )
             return [ @o_x + d * x, @o_y + d * y, z ]
-            
-        focal_point: () ->
-            d = Vec_3.sub [ 0, 0, 0], @O
-            z = Vec_3.dot d, @Z
-            return 1 - z
