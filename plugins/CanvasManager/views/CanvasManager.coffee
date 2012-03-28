@@ -97,6 +97,9 @@ class CanvasManager extends View
             return true
             
         # all objects and sub objects
+#         flat = []
+#         for item in @items
+#             CanvasManager._get_flat_list flat, item
         for f in flat
             if f.has_been_modified?()
                 return true
@@ -243,7 +246,7 @@ class CanvasManager extends View
         for fun in @dblclick_fun
             fun( this, evt )
 
-    _img_mouse_down: ( evt ) ->            
+    _img_mouse_down: ( evt ) ->
         for fun in @click_fun
             fun( this, evt )
             
