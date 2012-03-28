@@ -17,7 +17,10 @@ class CamRepresentation extends Drawable
 #         dir = info.re_2_sc.dir @cam.C.get()
         orig = info.re_2_sc.proj [ 0, 0,  0 - @cam.d.get() ]
         dir = info.re_2_sc.proj [ 0, 0,  0 ]
-
+        
+        focal = info.re_2_sc.focal_point()
+        console.log 'focal ' + focal
+        
         info.ctx.lineWidth = 1
         size_elem = 5
         

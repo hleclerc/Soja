@@ -20,7 +20,8 @@ class ViewItem extends TreeItem
                 @_name_class.set "SelectedViewItem"
             else
                 @_name_class.set "UnselectedViewItem"
-                
+        
+        
     accept_child: ( ch ) ->
         #
         

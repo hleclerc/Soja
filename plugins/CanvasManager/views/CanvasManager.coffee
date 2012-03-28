@@ -93,13 +93,13 @@ class CanvasManager extends View
             if not s[ s.length - 1 ].has_nothing_to_draw?()
                 str_sel += " " + s[ s.length - 1 ].model_id
         if @_old_str_sel != str_sel
-#             @_old_str_sel = str_sel
+            @_old_str_sel = str_sel
             return true
             
         # all objects and sub objects
-#         flat = []
-#         for item in @items
-#             CanvasManager._get_flat_list flat, item
+        flat = []
+        for item in @items
+            CanvasManager._get_flat_list flat, item
         for f in flat
             if f.has_been_modified?()
                 return true
@@ -197,8 +197,6 @@ class CanvasManager extends View
     
     # redraw all the scene
     draw: ->
-#         console.log "count"
-        
         flat = []
         for item in @items
             CanvasManager._get_flat_list flat, item

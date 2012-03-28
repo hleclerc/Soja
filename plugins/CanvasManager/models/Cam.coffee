@@ -151,3 +151,8 @@ class Cam extends Model
             z = Vec_3.dot d, @Z
             d = 1 / ( 1 + @p * z )
             return [ @o_x + d * x, @o_y + d * y, z ]
+            
+        focal_point: () ->
+            d = Vec_3.sub [ 0, 0, 0], @O
+            z = Vec_3.dot d, @Z
+            return 1 - z

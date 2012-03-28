@@ -14,6 +14,7 @@ class TreeApp extends View
         
         document.addEventListener "keydown", ( ( evt ) => @_on_key_down evt ), true
         
+        
 #         @selected_view = ""
         
 
@@ -28,7 +29,21 @@ class TreeApp extends View
                     @layouts[ @cur_session_model_id ]?.hide()
                     @layouts[ session.model_id ].show()
                     @cur_session_model_id = session.model_id
-
+            
+            
+            #use to add red border on canvas that are selected from the tree (view item)
+            items = @data.get_selected_tree_items()
+            for item in items when item instanceof ViewItem
+                check = true
+                break
+            if check == true
+                @data.selected_canvas_pan.clear()
+                for path in @data.selected_tree_items
+                    for it in path when it instanceof ViewItem
+                        @data.selected_canvas_pan.push it._panel_id
+            
+            
+            
     # return selected CanvasManagerPanelInstance from current session
     selected_canvas_inst: ->
         session = @data.selected_session()
@@ -70,7 +85,6 @@ class TreeApp extends View
     
         # else, -> canvas manager
         # add a ViewItem to display_settings
-        console.log "->", @_next_view_item_cam
         view_item = new ViewItem @data, data.panel_id, @_next_view_item_cam
         if @_next_view_item_child
             view_item.add_child @_next_view_item_child

@@ -19,6 +19,9 @@ class TreeView extends View
         #
         @line_height = 16
         
+        # use when there is multiple instance of the same object in the tree
+        @index_color_for_tree = 0
+        
         # kind of tab space for indentation of tree items
         @sep_x = @line_height * 4 / 4
         
@@ -67,7 +70,29 @@ class TreeView extends View
         if @_need_render()
             @_update_repr()
             @_render()
-
+            
+    #looking for duplication in tree
+    _get_color_element: ( info ) ->
+        col = "black"
+        c = 0
+        for elem, i in @flat
+            if elem.item.equals info.item
+                c++
+            if c >= 2
+                col = @_get_next_color_element()
+                #TODO need to know if color of duplicate item is already choosen or not
+        return col
+        
+        
+    _get_next_color_element: ->
+        tab = [ "lightSeaGreen" ] #, "orange", "lightGreen", "yellow", "lightPink"
+        if @index_color_for_tree == tab.length - 1
+            @index_color_for_tree = 0
+        else
+            @index_color_for_tree++
+        return tab[ @index_color_for_tree ]
+        
+        
     _render: ->
         # remove old elements
         for c in @_created_elements
@@ -88,6 +113,7 @@ class TreeView extends View
                         left    : 0
                         right   : 0
                         overflow: "hidden"
+                        color   : @_get_color_element info
                         
                     onclick: ( evt ) =>
                         if evt.ctrlKey
