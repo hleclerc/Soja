@@ -12,7 +12,7 @@ class ShootingItem extends TreeItem
             view : new Choice( 0, lst_view )
             cam  : new Cam
         @add_attr
-            cam_representation: new CamRepresentation @cam
+            _cam_representation: new CamRepresentation @cam
             
             #
         
@@ -47,10 +47,11 @@ class ShootingItem extends TreeItem
     accept_child: ( ch ) ->
         ch instanceof ImgItem or
         ch instanceof ImgSetItem or
+        ch instanceof SketchItem or
         ch instanceof TransformItem
         
     sub_canvas_items: ->
-        [ @cam_representation ]
+        [ @_cam_representation ]
 
     z_index: ->
         0.1

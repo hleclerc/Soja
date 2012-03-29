@@ -22,9 +22,15 @@ class TreeAppModule_TreeView extends TreeAppModule
                     #prevent deleting root item (session)
                     if path.length > 1
                         m = path[ path.length - 1 ]
-                        path[ path.length - 2 ].rem_child m
+                        if m instanceof ViewItem
+                            modules = app.data.modules
+                            for mod in modules 
+                                if mod instanceof TreeAppModule_PanelManager
+                                    mod.actions[ 4 ].fun evt, app
+                        else
+                            path[ path.length - 2 ].rem_child m
+                            @delete_from_tree app, m
                         
-                        @delete_from_tree app, m
                         
         lst_equals = ( a, b ) ->
             if a.length != b.length
