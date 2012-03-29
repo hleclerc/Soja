@@ -19,6 +19,16 @@ class Cam extends Model
             @add_attr
                r: 1
                
+    #
+    focal_point: ->
+        nZ = Vec_3.nor Vec_3.cro @X.get(), @Y.get()
+        ap = Math.tan( @a.get() / 2 * 3.14159265358979323846 / 180 )
+        [
+            @O[ 0 ].get() - 0.5 * @d.get() / ap * nZ[ 0 ],
+            @O[ 1 ].get() - 0.5 * @d.get() / ap * nZ[ 1 ],
+            @O[ 2 ].get() - 0.5 * @d.get() / ap * nZ[ 2 ]
+        ]
+               
     # translate screen
     pan: ( x, y, w, h, ctrl_key = false ) ->
         if ctrl_key
@@ -80,8 +90,17 @@ class Cam extends Model
             V[ 0 ] * @X[ 2 ] + V[ 1 ] * @Y[ 2 ] + V[ 2 ] * Z[ 2 ]
         ]
 
-    get_Z: () ->
+    get_X: ->
+        Vec_3.nor @X.get()
+
+    get_Y: ->
+        Vec_3.nor @Y.get()
+        
+    get_Z: ->
         Vec_3.nor Vec_3.cro @X.get(), @Y.get()
+        
+    get_a: ->
+        @a.get()
         
     # return coordinates depending the current cam state from real coordinates
     get_screen_coord : ( coord ) ->
@@ -113,12 +132,6 @@ class Cam extends Model
             @o_x = - w / 2
             @o_y = - h / 2
             
-            @dcam = [
-                @O[ 0 ] - 0.5 * d.d / ap * nZ[ 0 ],
-                @O[ 1 ] - 0.5 * d.d / ap * nZ[ 1 ],
-                @O[ 2 ] - 0.5 * d.d / ap * nZ[ 2 ]
-            ]
-            
         dir: ( x, y ) ->
             Vec_3.nor [
                 ( ( x + @o_x ) * @X[ 0 ] + ( y + @o_y ) * @Y[ 0 ] ) * @p + @Z[ 0 ],
@@ -131,9 +144,6 @@ class Cam extends Model
             @O[ 1 ] + ( x + @o_x ) * @X[ 1 ] + ( y + @o_y ) * @Y[ 1 ],
             @O[ 2 ] + ( x + @o_x ) * @X[ 2 ] + ( y + @o_y ) * @Y[ 2 ]
         ]
-            
-        focal_point: -> 
-            @dcam
 
     class TransBuf # real pos -> screen
         constructor: ( d, w, h ) ->
