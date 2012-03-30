@@ -11,6 +11,7 @@ class CanvasManager extends View
     #  - allow_gl
     #  - want_aspect_ratio
     #  - constrain_zoom
+    #  - add_point_on_line
     constructor: ( params ) ->
         for key, val of params
             @[ key ] = val
@@ -35,6 +36,8 @@ class CanvasManager extends View
                                     max: -1
                                     div: 0
                                 )
+        if not @add_point_on_line?
+            @add_point_on_line = new Bool true
         if not @padding_ratio
             @padding_ratio = 1.5
         if not @constrain_zoom?
@@ -86,6 +89,7 @@ class CanvasManager extends View
         return true if @theme.has_been_modified?()
         return true if @time.has_been_modified?()
         return true if @padding_ratio.has_been_modified?()
+        return true if @add_point_on_line.has_been_modified?()
 
         # selected objects
         str_sel = ""
@@ -482,6 +486,7 @@ class CanvasManager extends View
             get_x_max: => @_get_x_max()
             re_2_sc  : @cam.re_2_sc w, h
             sc_2_rw  : @cam.sc_2_rw w, h
+            add_p_lin: @add_point_on_line.get()
             sel_item : i
             selected : s
             pre_sele : pre_s

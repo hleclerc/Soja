@@ -60,4 +60,12 @@ class ShootingItem extends TreeItem
         info.shoot_cam = @cam
         for c in @_children
             c.draw info
+            
+        if @cam == info.cam
+            info.ctx.beginPath()
+            info.ctx.fillStyle = "white"
+            info.ctx.font = "10px Arial"
+            info.ctx.textBaseline = 'top'
+            info.ctx.textAlign = 'right'
+            info.ctx.fillText "Shooting Cam " + @cam.model_id, info.w - 10 , 10
         delete info.shoot_cam

@@ -68,4 +68,8 @@ class CamRepresentation extends Drawable
         info.ctx.fillStyle = "navy"
         info.ctx.arc P[ 0 ], P[ 1 ], size_elem * 0.5, 0, Math.PI * 2, true
         info.ctx.fill()
+        if @cam? and @cam.model_id?
+            info.ctx.fillStyle = "white"
+            info.ctx.font = "10px Arial"
+            info.ctx.fillText("Cam " + @cam.model_id, P[ 0 ] + 10, P[ 1 ] - 10)
         info.ctx.closePath()

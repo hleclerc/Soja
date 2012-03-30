@@ -161,7 +161,9 @@ class Graph extends Drawable
     
     draw_movable_highlight_values: ( info ) ->
         padding_left = 10
-        padding_top = -5
+        padding_top = -8
+        decal_left = 10
+        decal_top = -12
         
         #TODO should check if values don't go outside the canvas size
         for p, i in @points
@@ -178,14 +180,14 @@ class Graph extends Drawable
                 height_box = @font_size.get() * 3
         #         
                 info.ctx.fillStyle = "rgba(255, 255, 255, 0.8)"
-                info.ctx.fillRect pos[ 0 ], pos[ 1 ] - height_box * 0.8, width_box, height_box
+                info.ctx.fillRect pos[ 0 ] + decal_left, pos[ 1 ] + decal_top - height_box * 0.8, width_box, height_box
                 info.ctx.lineWidth = 1
                 info.ctx.strokeStyle = "rgba(0, 0, 0, 0.8)"
-                info.ctx.strokeRect pos[ 0 ], pos[ 1 ] - height_box * 0.8, width_box, height_box
+                info.ctx.strokeRect pos[ 0 ] + decal_left, pos[ 1 ] + decal_top - height_box * 0.8, width_box, height_box
                 
                 info.ctx.textAlign = "left"
                 info.ctx.fillStyle = @font_color.to_rgba()
-                info.ctx.fillText text , pos[ 0 ] + padding_left, pos[ 1 ] + padding_top
+                info.ctx.fillText text , pos[ 0 ] + padding_left + decal_left, pos[ 1 ] + padding_top + decal_top
         
     draw_highlight_values: ( info ) ->
         padding = 10
@@ -314,8 +316,9 @@ class Graph extends Drawable
     draw_legend: ( info ) ->
             
         x_padding_txt = 10
-        y_padding_txt = 2
-        decal_txt   = 3
+        y_padding_txt = 3
+        decal_txt_X   = 3
+        decal_txt_Y   = 1
                 
         orig = [ 0 + info.padding * 0.5, info.h - info.padding / 2, 0]
         width_axis = info.w - info.padding/2
@@ -331,7 +334,7 @@ class Graph extends Drawable
         value = []
         posit = []
         for i in [ 0 .. @legend_x_division.get() ]
-            pos = orig[ 0 ] + ( ( width_axis - decal_txt - ( orig[ 0 ] - decal_txt ) ) / @legend_x_division.get() ) * i
+            pos = orig[ 0 ] + ( ( width_axis - decal_txt_X - ( orig[ 0 ] - decal_txt_X ) ) / @legend_x_division.get() ) * i
             vve = info.sc_2_rw.pos pos, 0
             val = vve[ 0 ]
             value.push val
@@ -352,7 +355,7 @@ class Graph extends Drawable
         value = []
         posit = []
         for i in [ 0 .. @legend_y_division.get() ]
-            pos =  orig[ 1 ] + ( ( height_axis + decal_txt - ( orig[ 1 ] + decal_txt ) ) / @legend_y_division.get() ) * i
+            pos =  orig[ 1 ] + ( ( height_axis + decal_txt_Y - ( orig[ 1 ] + decal_txt_Y ) ) / @legend_y_division.get() ) * i
             val_from_screen = info.sc_2_rw.pos 0, pos
             val = val_from_screen[ 1 ]
             value.push val
@@ -361,7 +364,7 @@ class Graph extends Drawable
         
         for i in [ 0 .. @legend_y_division.get() ]
             nice_val = @get_significative_number value[ i ], [ min, max ]
-            info.ctx.fillText nice_val,  orig[ 0 ] - y_padding_txt, posit[ i ] + decal_txt
+            info.ctx.fillText nice_val,  orig[ 0 ] - y_padding_txt, posit[ i ] + decal_txt_Y
         
         info.ctx.fill()
         info.ctx.closePath()
@@ -380,6 +383,7 @@ class Graph extends Drawable
         
     
     get_significative_number: ( val, [ min, max ] ) ->
+#         console.log "-----------"
 #         console.log val, min, max
         size = Math.abs( max - min )
         
@@ -388,15 +392,15 @@ class Graph extends Drawable
             if res.toString().length > 4
                 res = res.toExponential()
         else 
-            for c, i in size.toString()
-                if c != "0" and c != "."
-                    number = i
-                    break;
-        
-            if number == -2
-                res = val.toPrecision()
-            else
-                res = val.toPrecision( number + 2 )
+#             for c, i in size.toString()
+#                 if c != "0" and c != "."
+#                     number = i
+#                     break;
+#             console.log "num " + number + " size " + size
+#             if number == 0
+#                 res = val.toPrecision()
+#             else
+            res = val.toPrecision( 2 )
 #         console.log res
         return res
     

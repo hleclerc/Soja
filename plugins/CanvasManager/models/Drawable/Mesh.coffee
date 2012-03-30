@@ -11,6 +11,8 @@ class Mesh extends Drawable
             elementary_fields: new Model
             nodal_fields     : new Model
             _mv              : new MoveScheme_3D
+            constrain_lines  : new Lst
+            free_lines       : new Lst
         
         if legend?
             @add_attr
@@ -69,7 +71,14 @@ class Mesh extends Drawable
                         
                 
             # draw lines
-            for l in @lines when l.length == 2
+            for l, j in @lines when l.length == 2
+                if parseInt( @constrain_lines.indexOf( j ) ) >= 0
+                    info.ctx.strokeStyle = info.theme.constrain_line.to_hex()
+                else if parseInt( @free_lines.indexOf( j ) ) >= 0
+                    info.ctx.strokeStyle = info.theme.free_line.to_hex()
+                else
+                    info.ctx.strokeStyle = color_line
+                
                 info.ctx.beginPath()
                 info.ctx.moveTo proj[ l[ 0 ].get() ][ 0 ], proj[ l[ 0 ].get() ][ 1 ]
                 info.ctx.lineTo proj[ l[ 1 ].get() ][ 0 ], proj[ l[ 1 ].get() ][ 1 ]
@@ -532,32 +541,34 @@ class Mesh extends Drawable
             proj = for p in @points
                 info.re_2_sc.proj p.pos.get()
                 
-            for li in @lines when li.length == 2
+            for li, j in @lines when li.length == 2
     
                 P0 = li[ 0 ].get()
                 P1 = li[ 1 ].get()
                 
                 point = @get_movable_entities_lines proj, P0, P1, x, y
                 if point?
-                    os = @points.length
+                    if info.add_p_lin == true
+                        os = @points.length
 
-                    @add_point [@points[ P0 ].pos[ 0 ].get() + point[ 0 ] * point[ 3 ],
-                        @points[ P0 ].pos[ 1 ].get() + point[ 1 ] * point[ 3 ],
-                        @points[ P0 ].pos[ 2 ].get() + point[ 2 ] * point[ 3 ]]
-                        
-                    n = @points[ @points.length-1 ]
-                    
-                    ol = P1
-                    li[ 1 ]._set os
-                    @lines.push [ os, ol ]
-                    
-                    res.push
-                        item: n
-                        dist: 0
-                        type: "Mesh"
-                    
-                    break
+                        @add_point [@points[ P0 ].pos[ 0 ].get() + point[ 0 ] * point[ 3 ],
+                            @points[ P0 ].pos[ 1 ].get() + point[ 1 ] * point[ 3 ],
+                            @points[ P0 ].pos[ 2 ].get() + point[ 2 ] * point[ 3 ]]
                             
+                        n = @points[ @points.length-1 ]
+                        ol = P1
+                        li[ 1 ]._set os
+                        @lines.push [ os, ol ]
+                        
+                        res.push
+                            item: n
+                            dist: 0
+                            type: "Mesh"
+                    else
+                        @constrain_lines.push j
+                        
+                    break
+
         if phase == 2
             proj = for p in @points
                 info.re_2_sc.proj p.pos.get()
