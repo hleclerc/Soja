@@ -1,14 +1,17 @@
 # This class is use to draw line/dot graph or bar chart
 # params available :
-# line        : true draw a line linking all points
+# show_line   : boolean which represent if a line linking all points must be drawn or not
 # line_color  : choose the color of linking line_color (in html way (hexa or string))
 # line_width  : width in pixels of line
 # shadow      : boolean which represent if shadow on line must be drawn or not
+# show_marker : boolean which represent if marker must be drawn or not
 # marker      : shape that mark all value : dot, cross, square or bar ( for bar chart )
 # size_marker : indicate size in pixels of marker
 # marker_color: choose the color of marker (in html way (hexa or string))
 # font_color  : color of font in axis and legend
 # font_size   : font size in pixels
+# show_grid   : boolean which represent if grid must be drawn or not
+# grid_color  : choose the color of grid (in html way (hexa or string))
 # x_axis      : label for x axis
 # y_axis      : label for y axis
 # legend_x_division : number of division on X legend including start and begining
@@ -19,15 +22,18 @@ class Graph extends Drawable
         super()
         
         @add_attr
-            line             : true
+            show_line        : true
             line_color       : new Color 0, 0, 0 
             line_width       : new ConstrainedVal( 1, { min: 0, max: 20 } )
             shadow           : true
+            show_marker      : true
             marker           : new Choice( 0, [ "dot", "square", "cross", "diamond", "bar" ] )
             size_marker      : new ConstrainedVal( 5, { min: 0, max: 40 } )
             marker_color     : new Color 0, 0, 0
             font_color       : new Color 0, 0, 0
             font_size        : new ConstrainedVal( 12, { min: 2, max: 72 } )
+            show_grid        : true
+            grid_color       : new Color 200, 200, 200
             x_axis           : ''
             y_axis           : ''
             legend_x_division: 5
@@ -96,33 +102,38 @@ class Graph extends Drawable
             proj = for p in @points
                 info.re_2_sc.proj p.pos.get()
                 
+            if @show_grid.get() == true
+                @draw_grid info
+                
             if @shadow.get() == true
                 #draw shadow
                 @add_shadow info
             else
                 @remove_shadow info
                 
-            if @line.get() == true
+            if @show_line.get() == true
                 @draw_line info, orig, proj
             
-            if @marker.get() == 'bar'
-                @draw_marker_bar info, orig, proj
-            else if @marker.get() == 'cross'
-                @draw_marker_cross info, orig, proj
-            else if @marker.get() == 'square'
-                @draw_marker_square info, orig, proj
-            else if @marker.get() == 'diamond'
-                @draw_marker_diamond info, orig, proj
-            else if @marker.get() == 'dot'
-                @draw_marker_dot info, orig, proj
+            if @show_marker.get() == true
+                if @marker.get() == 'bar'
+                    @draw_marker_bar info, orig, proj
+                else if @marker.get() == 'cross'
+                    @draw_marker_cross info, orig, proj
+                else if @marker.get() == 'square'
+                    @draw_marker_square info, orig, proj
+                else if @marker.get() == 'diamond'
+                    @draw_marker_diamond info, orig, proj
+                else if @marker.get() == 'dot'
+                    @draw_marker_dot info, orig, proj
                 
             @remove_shadow info
             
-            # show value when mouse is over a point
-            if @movable_hl_infos.get() == true
-                @draw_movable_highlight_values info
-            else
-                @draw_highlight_values info
+            if @show_marker.get() == true
+                # show value when mouse is over a point
+                if @movable_hl_infos.get() == true
+                    @draw_movable_highlight_values info
+                else
+                    @draw_highlight_values info
         
         @hide_outside_values info
         
@@ -389,10 +400,36 @@ class Graph extends Drawable
 #         console.log res
         return res
     
-    
-    get_height_axis : ( info ) ->
-        max = @get_max_point info
-        info.re_2_sc.proj max.pos.get()
+    draw_grid: ( info ) ->
+        orig = [ 0 + info.padding * 0.5, info.h - info.padding / 2, 0]
+        width_axis = info.w - info.padding/2
+        height_axis = -info.h + orig[ 1 ] + info.padding
+        
+        info.ctx.beginPath()
+        info.ctx.strokeStyle = @grid_color.to_rgba()
+        
+        # vertical line
+        for i in [ 1 ... @legend_x_division.get() ]
+            pos = orig[ 0 ] + ( ( width_axis - orig[ 0 ] ) / @legend_x_division.get() ) * i
+            info.ctx.moveTo pos, orig[ 1 ]
+            info.ctx.lineTo pos, height_axis
+            info.ctx.stroke()
+            
+            
+        # horizontal line
+        for i in [ 1 ... @legend_y_division.get() ]
+            pos =  orig[ 1 ] + ( ( height_axis - orig[ 1 ] ) / @legend_y_division.get() ) * i
+            info.ctx.moveTo orig[ 0 ], pos
+            info.ctx.lineTo orig[ 0 ] + info.w - info.padding, pos
+        
+        info.ctx.stroke()
+        info.ctx.closePath()
+        
+        
+        
+#     get_height_axis : ( info ) ->
+#         max = @get_max_point info
+#         info.re_2_sc.proj max.pos.get()
 
     update_min_max: ( x_min, x_max ) ->
         for m in @points

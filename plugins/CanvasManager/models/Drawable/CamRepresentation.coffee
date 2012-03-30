@@ -10,7 +10,7 @@ class CamRepresentation extends Drawable
             this[ key ]?.set? val
             
     z_index: ->
-        100
+        10
         
     draw: ( info ) ->
         d = @cam.d.get()
@@ -33,15 +33,15 @@ class CamRepresentation extends Drawable
         #dist = Vec_3.dist focal, orig
         
         
-        lt = info.re_2_sc.proj [ F[ 0 ] + Z[ 0 ] + X[ 0 ] + Y[ 0 ], F[ 1 ] + Z[ 1 ] + X[ 1 ] + Y[ 1 ], F[ 2 ] + Z[ 2 ] + X[ 2 ] + Y[ 2 ] ]
-        rt = info.re_2_sc.proj [ F[ 0 ] + Z[ 0 ] - X[ 0 ] + Y[ 0 ], F[ 1 ] + Z[ 1 ] - X[ 1 ] + Y[ 1 ], F[ 2 ] + Z[ 2 ] - X[ 2 ] + Y[ 2 ] ]
+        lt = info.re_2_sc.proj [ F[ 0 ] + Z[ 0 ] - X[ 0 ] + Y[ 0 ], F[ 1 ] + Z[ 1 ] - X[ 1 ] + Y[ 1 ], F[ 2 ] + Z[ 2 ] - X[ 2 ] + Y[ 2 ] ]
+        rt = info.re_2_sc.proj [ F[ 0 ] + Z[ 0 ] + X[ 0 ] + Y[ 0 ], F[ 1 ] + Z[ 1 ] + X[ 1 ] + Y[ 1 ], F[ 2 ] + Z[ 2 ] + X[ 2 ] + Y[ 2 ] ]
         rb = info.re_2_sc.proj [ F[ 0 ] + Z[ 0 ] + X[ 0 ] - Y[ 0 ], F[ 1 ] + Z[ 1 ] + X[ 1 ] - Y[ 1 ], F[ 2 ] + Z[ 2 ] + X[ 2 ] - Y[ 2 ] ]
         lb = info.re_2_sc.proj [ F[ 0 ] + Z[ 0 ] - X[ 0 ] - Y[ 0 ], F[ 1 ] + Z[ 1 ] - X[ 1 ] - Y[ 1 ], F[ 2 ] + Z[ 2 ] - X[ 2 ] - Y[ 2 ] ]
         
         info.ctx.lineWidth = 2
         size_elem = 10
         info.ctx.beginPath()
-        info.ctx.strokeStyle = "blue"
+        info.ctx.strokeStyle = "lightBlue"
         info.ctx.moveTo P[ 0 ], P[ 1 ]
         info.ctx.lineTo lt[ 0 ], lt[ 1 ]
         
@@ -53,14 +53,19 @@ class CamRepresentation extends Drawable
         
         info.ctx.moveTo P[ 0 ], P[ 1 ]
         info.ctx.lineTo lb[ 0 ], lb[ 1 ]
-        info.ctx.stroke()
         
-        # info.ctx.strokeRect lt[ 0 ], lt[ 1 ], dim, dim
+        info.ctx.moveTo lt[ 0 ], lt[ 1 ]
+        info.ctx.lineTo rt[ 0 ], rt[ 1 ]
+        info.ctx.lineTo rb[ 0 ], rb[ 1 ]
+        info.ctx.lineTo lb[ 0 ], lb[ 1 ]
+        info.ctx.lineTo lt[ 0 ], lt[ 1 ]
+        
+        info.ctx.stroke()
         info.ctx.closePath()
         
         
         info.ctx.beginPath()
-        info.ctx.fillStyle = "red"
+        info.ctx.fillStyle = "navy"
         info.ctx.arc P[ 0 ], P[ 1 ], size_elem * 0.5, 0, Math.PI * 2, true
         info.ctx.fill()
         info.ctx.closePath()
