@@ -407,8 +407,11 @@ class CanvasManager extends View
                 a = Math.atan2( new_y - h / 2.0, new_x - w / 2.0 ) - Math.atan2( @old_y - h / 2.0, @old_x - w / 2.0 )
                 @cam.rotate 0.0, 0.0, a
             else if @old_button == "MIDDLE" or @old_button == "LEFT" and evt.ctrlKey # pan
-                if @constrain_zoom == "x" then x = 1 else x = 0
-                if @constrain_zoom == "y" then y = 1 else y = 0
+                if @constrain_zoom == false
+                    x = y = 1
+                else
+                    if @constrain_zoom == "x" then x = 1 else x = 0
+                    if @constrain_zoom == "y" then y = 1 else y = 0
                 @cam.pan (new_x - @old_x) * x, (new_y - @old_y) * y, w, h # , evt.ctrlKey
                 
             else if @old_button == "LEFT" # rotate / C

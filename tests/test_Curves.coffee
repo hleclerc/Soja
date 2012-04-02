@@ -36,10 +36,10 @@ test_Curves = ->
         y_axis: 'label Y'
         
         
-    m.points.push [   0, 0.045245, 0 ]
-    m.points.push [ 100, 0.08454, 0 ]
-    m.points.push [ 200, 0.0013, 0 ]
-    m.points.push [ 255, 0.0009154, 0 ]
+    m.points.push [   0, 12.04, 0 ]
+    m.points.push [ 100, 12.8, 0 ]
+    m.points.push [ 200, 12.1, 0 ]
+    m.points.push [ 255, 12.09, 0 ]
     
     c.items.push m
     c.fit 0
