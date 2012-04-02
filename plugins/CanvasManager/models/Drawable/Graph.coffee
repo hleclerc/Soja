@@ -386,21 +386,29 @@ class Graph extends Drawable
 #         console.log "-----------"
 #         console.log val, min, max
         size = Math.abs( max - min )
+#         console.log size
         
         if size > 1
             res = Math.round(val)
             if res.toString().length > 4
                 res = res.toExponential()
         else 
-#             for c, i in size.toString()
-#                 if c != "0" and c != "."
-#                     number = i
-#                     break;
-#             console.log "num " + number + " size " + size
-#             if number == 0
-#                 res = val.toPrecision()
-#             else
-            res = val.toPrecision( 2 )
+
+            num = Math.round(val).toString().length
+#             console.log num
+            if num <= 4
+                res = val.toPrecision( num + 2 )
+                
+                #for tiny number search how many number 0 after coma
+                for c, i in size.toString()
+                    if c != "0" and c != "."
+                        number = i
+                        break;
+#                 console.log "num " + number + " size " + size
+                if number >= 4
+                    res = parseFloat(res).toExponential()
+            else
+                res = val.toFixed(2)
 #         console.log res
         return res
     
