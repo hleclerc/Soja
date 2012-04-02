@@ -401,7 +401,7 @@ class Graph extends Drawable
                 
                 #for tiny number search how many number 0 after coma
                 for c, i in val.toString()
-                    if c != "0" and c != "."
+                    if c != "0" and c != "." and c != "-"
                         number = i
                         break;
 #                 console.log "num " + number + " size " + size
