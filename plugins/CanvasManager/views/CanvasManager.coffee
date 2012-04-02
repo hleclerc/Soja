@@ -42,6 +42,8 @@ class CanvasManager extends View
             @padding_ratio = 1.5
         if not @constrain_zoom?
             @constrain_zoom = false
+#         if not @zoom_max?
+#             @zoom_max = new Bool false
         if not @auto_fit?
             @auto_fit = new Bool false
             
@@ -405,7 +407,10 @@ class CanvasManager extends View
                 a = Math.atan2( new_y - h / 2.0, new_x - w / 2.0 ) - Math.atan2( @old_y - h / 2.0, @old_x - w / 2.0 )
                 @cam.rotate 0.0, 0.0, a
             else if @old_button == "MIDDLE" or @old_button == "LEFT" and evt.ctrlKey # pan
-                @cam.pan new_x - @old_x, new_y - @old_y, w, h # , evt.ctrlKey
+                if @constrain_zoom == "x" then x = 1 else x = 0
+                if @constrain_zoom == "y" then y = 1 else y = 0
+                @cam.pan (new_x - @old_x) * x, (new_y - @old_y) * y, w, h # , evt.ctrlKey
+                
             else if @old_button == "LEFT" # rotate / C
                 x = 2.0 * ( new_x - @old_x ) / mwh
                 y = 2.0 * ( new_y - @old_y ) / mwh

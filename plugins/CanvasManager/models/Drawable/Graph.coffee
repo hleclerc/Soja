@@ -400,12 +400,12 @@ class Graph extends Drawable
                 res = val.toPrecision( num + 2 )
                 
                 #for tiny number search how many number 0 after coma
-                for c, i in size.toString()
+                for c, i in val.toString()
                     if c != "0" and c != "."
                         number = i
                         break;
 #                 console.log "num " + number + " size " + size
-                if number >= 4
+                if number > 3
                     res = parseFloat(res).toExponential()
             else
                 res = val.toFixed(2)
