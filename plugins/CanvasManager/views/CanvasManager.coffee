@@ -264,33 +264,36 @@ class CanvasManager extends View
                 if evt.button < 2 then "LEFT" else ( if evt.button == 4 then "MIDDLE" else "RIGHT" )
             
          
-        @canvas.onmousemove = ( evt ) => @_img_mouse_move evt
         @old_x = evt.clientX - get_left( @canvas )
         @old_y = evt.clientY - get_top ( @canvas )
-  
+
         @mouse_has_moved_since_mouse_down = false
-
-        # look if there's a movable point under mouse
-        for phase in [ 0 ... 3 ]
-            movable_entities = @_get_movable_entities phase
-            if movable_entities.length
-                @undo_manager?.snapshot()
-                break
-
-        @movable_point = movable_entities[ 0 ]?.item
         
-        # if @movable_point 
-        if evt.ctrlKey # add / rem selection
-            if @movable_point?
-                @selected_entities.toggle_ref @movable_point
-        else
-            if @movable_point?
-                @selected_entities.clear()
-                @selected_entities.push @movable_point
+        if @old_button == "LEFT" or @old_button == "MIDDLE"
+            @canvas.onmousemove = ( evt ) => @_img_mouse_move evt
+            
+            if @old_button == "LEFT"
+                # look if there's a movable point under mouse
+                for phase in [ 0 ... 3 ]
+                    movable_entities = @_get_movable_entities phase
+                    if movable_entities.length
+                        @undo_manager?.snapshot()
+                        break
 
-                @movable_point.beg_click [ @old_x, @old_y ]
-            else
-                @selected_entities.clear()
+                @movable_point = movable_entities[ 0 ]?.item
+                
+                # if @movable_point 
+                if evt.ctrlKey # add / rem selection
+                    if @movable_point?
+                        @selected_entities.toggle_ref @movable_point
+                else
+                    if @movable_point?
+                        @selected_entities.clear()
+                        @selected_entities.push @movable_point
+
+                        @movable_point.beg_click [ @old_x, @old_y ]
+                    else
+                        @selected_entities.clear()
                 
         if @old_button == "RIGHT"
             @canvas.oncontextmenu = => return false

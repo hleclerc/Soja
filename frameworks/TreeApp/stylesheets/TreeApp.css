@@ -170,7 +170,7 @@
 .menu_container {
     position   : absolute;
     z-index    : 1001;
-    width      : 10em;
+    min-width  : 10em;
     background : white;
     box-shadow : 3px 3px 3px black;
     text-align : left;
@@ -200,6 +200,7 @@
     text-align:right;
     float:right;
     font-size:smaller;
+    padding-left: 1em;
 }
 
 .menu_img_arrow{

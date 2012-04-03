@@ -29,6 +29,8 @@
 # legend_x_division : number of division on X legend including start and begining
 # legend_y_division : number of division on y legend including start and begining
 
+# Warning: dimension of resize must suit the parent Node to avoid pixelisation
+
 test_Curves = ->
         
     d = new_dom_element
