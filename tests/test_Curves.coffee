@@ -10,6 +10,25 @@
 # lib gen/Animation.js
 # lib gen/Theme.js
 
+
+# Params available when you use a graph (taken from Graph.coffee)
+# show_line   : boolean which represent if a line linking all points must be drawn or not
+# line_color  : choose the color of linking line_color (in html way (hexa or string))
+# line_width  : width in pixels of line
+# shadow      : boolean which represent if shadow on line must be drawn or not
+# show_marker : boolean which represent if marker must be drawn or not
+# marker      : shape that mark all value : dot, cross, square or bar ( for bar chart )
+# size_marker : indicate size in pixels of marker
+# marker_color: choose the color of marker (in html way (hexa or string))
+# font_color  : color of font in axis and legend
+# font_size   : font size in pixels
+# show_grid   : boolean which represent if grid must be drawn or not
+# grid_color  : choose the color of grid (in html way (hexa or string))
+# x_axis      : label for x axis
+# y_axis      : label for y axis
+# legend_x_division : number of division on X legend including start and begining
+# legend_y_division : number of division on y legend including start and begining
+
 test_Curves = ->
         
     d = new_dom_element
