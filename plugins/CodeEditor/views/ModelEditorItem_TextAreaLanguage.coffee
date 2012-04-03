@@ -22,7 +22,7 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
                 @model.set @code_mirror.getValue()
                 @fullscreen_code_mirror = CodeMirror.fromTextArea @textarea, {
                     lineNumbers : true,
-                    mode: "javascript",
+                    mode: @model.get_language(),
                     lineWrapping: true,
                     onCursorActivity: =>
                         @fullscreen_code_mirror.setLineClass(@hlLine, null)
@@ -65,7 +65,7 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
 
         @code_mirror = CodeMirror.fromTextArea @textarea, {
             lineNumbers : true,
-            mode: "javascript",
+            mode: @model.get_language(),
             lineWrapping: true,
             onCursorActivity: =>
                 @code_mirror.setLineClass(@hlLine2, null)

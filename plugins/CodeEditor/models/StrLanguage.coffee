@@ -1,6 +1,6 @@
 #
 class StrLanguage extends Model
-    constructor: ( value = "" , language = "Text" ) ->
+    constructor: ( value = "" , language = "text" ) ->
         super()
         
         @value = new Str value
