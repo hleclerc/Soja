@@ -316,7 +316,7 @@ class Graph extends Drawable
     draw_legend: ( info ) ->
             
         x_padding_txt = 10
-        y_padding_txt = 3
+        y_padding_txt = 2
         decal_txt_X   = 3
         decal_txt_Y   = 1
                 

@@ -175,6 +175,7 @@ class IcoBar extends View
                             onmouseout: ( evt ) =>
                                 @display_child_menu_container evt, 0
                                 
+                                
                         arr = new_dom_element
                             parentNode : c
                             nodeName   : "img"
@@ -187,11 +188,21 @@ class IcoBar extends View
                             parentNode : parent
                             nodeName   : "div"
                             className  : "elem_container"
-                            txt        : act.txt + key
                             title      : act.txt + key
                             onmousedown: ( evt ) =>
                                 act.fun evt, @tree_app
                                 parent.classList.toggle "block"
+                                
+                        t = new_dom_element
+                            parentNode : s
+                            nodeName   : "span"
+                            txt        : act.txt
+                                
+                        hotkey = new_dom_element
+                            parentNode : s
+                            nodeName   : "span"
+                            className  : "elem_container_key"
+                            txt        : key
             
             else if prf? and prf == "list"
                     s = new_dom_element

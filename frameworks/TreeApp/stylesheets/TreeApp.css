@@ -196,6 +196,11 @@
     
 }
 
+.elem_container_key {
+    text-align:right;
+    float:right;
+    font-size:smaller;
+}
 
 .menu_img_arrow{
     border           : none !important;

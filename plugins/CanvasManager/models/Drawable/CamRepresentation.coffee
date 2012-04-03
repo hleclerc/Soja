@@ -21,17 +21,7 @@ class CamRepresentation extends Drawable
         
         F = @cam.focal_point()
         P = info.re_2_sc.proj F
-        
-        #         info.ctx.strokeStyle = "white"
-        #         info.ctx.beginPath()
-        #         info.ctx.moveTo proj_orig[ 0 ], proj_orig[ 1 ]
-        #         info.ctx.lineTo P[ 0 ], P[ 1 ]
-        #         info.ctx.stroke()
-        #         info.ctx.closePath()
-
-        #p1 = [ focal[ 0 ] - ( focal[ 0 ] - orig[ 0 ] ) * fac_dist, focal[ 1 ] - ( focal[ 1 ] - orig[ 1 ] ) * fac_dist, focal[ 2 ] - ( focal[ 2 ] - orig[ 2 ] ) * fac_dist ]
-        #dist = Vec_3.dist focal, orig
-        
+                
         
         lt = info.re_2_sc.proj [ F[ 0 ] + Z[ 0 ] - X[ 0 ] + Y[ 0 ], F[ 1 ] + Z[ 1 ] - X[ 1 ] + Y[ 1 ], F[ 2 ] + Z[ 2 ] - X[ 2 ] + Y[ 2 ] ]
         rt = info.re_2_sc.proj [ F[ 0 ] + Z[ 0 ] + X[ 0 ] + Y[ 0 ], F[ 1 ] + Z[ 1 ] + X[ 1 ] + Y[ 1 ], F[ 2 ] + Z[ 2 ] + X[ 2 ] + Y[ 2 ] ]

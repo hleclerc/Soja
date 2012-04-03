@@ -16,13 +16,13 @@ class ShootingItem extends TreeItem
             
             #
         
-        for el in @app.treeview.flat
-            if el.item instanceof DisplaySettingsItem
-                bind el.item, =>
-                    @view.lst.clear()
-                    for el in @app.treeview.flat
-                        if el.item instanceof ViewItem
-                            @view.lst.push @view.lst.length
+#         for el in @app.treeview.flat
+#             if el.item instanceof DisplaySettingsItem
+#                 bind el.item, =>
+#                     @view.lst.clear()
+#                     for el in @app.treeview.flat
+#                         if el.item instanceof ViewItem
+#                             @view.lst.push @view.lst.length
 #         
 #         bind @view, =>
 #             i = 0
