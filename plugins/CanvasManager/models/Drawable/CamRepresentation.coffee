@@ -29,7 +29,6 @@ class CamRepresentation extends Drawable
         lb = info.re_2_sc.proj [ F[ 0 ] + Z[ 0 ] - X[ 0 ] - Y[ 0 ], F[ 1 ] + Z[ 1 ] - X[ 1 ] - Y[ 1 ], F[ 2 ] + Z[ 2 ] - X[ 2 ] - Y[ 2 ] ]
         
         info.ctx.lineWidth = 2
-        size_elem = 10
         info.ctx.beginPath()
         info.ctx.strokeStyle = "lightBlue"
         info.ctx.moveTo P[ 0 ], P[ 1 ]
@@ -54,6 +53,7 @@ class CamRepresentation extends Drawable
         info.ctx.closePath()
         
         
+        size_elem = 10
         info.ctx.beginPath()
         info.ctx.fillStyle = "navy"
         info.ctx.arc P[ 0 ], P[ 1 ], size_elem * 0.5, 0, Math.PI * 2, true

@@ -120,13 +120,13 @@ class TreeAppModule extends Model
         
                                 
     #type represent the type of current item
-    child_in_selected: ( app, typeItem, sel_item ) ->
+    child_in_selected: ( app, typeItem, sel_item, item ) ->
         current = new typeItem
     
         for it in sel_item
             if current.accept_child it
                 app.data.selected_tree_items[ 0 ][ app.data.selected_tree_items[ 0 ].length - 2 ].rem_child it
-                @transf.add_child it
+                item.add_child it
                 id = it.model_id
                 for p in app.data.panel_id_list()
                     for c, i in app.data.visible_tree_items[ p ]

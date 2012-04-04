@@ -50,7 +50,16 @@ class TreeApp extends View
         layout = @layouts[ session.model_id ]
         for panel_id in @data.selected_canvas_pan when layout._pan_vs_id[ panel_id ]?
             layout._pan_vs_id[ panel_id ]
-
+            
+    # return all CanvasManagerPanelInstance from current session
+    all_canvas_inst: ->
+        session = @data.selected_session()
+        layout = @layouts[ session.model_id ]
+        cmpi = []
+        for ch, key of layout._pan_vs_id when key instanceof CanvasManagerPanelInstance
+            cmpi.push key
+        return cmpi
+            
     fit: ( anim = 1 ) ->
         for inst in @selected_canvas_inst()
             inst.cm.fit anim
