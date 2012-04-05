@@ -93,13 +93,35 @@ test_Curves = ->
         size_marker: 2,
         show_line: false,
         show_grid: false,
-        x_axis: 'label X',
-        y_axis: 'label Y'
+        x_axis: 'Day',
+        y_axis: 'Rain (mm)'
 
     m.points.push [   0, 0, 0 ]
+    m.points.push [  10, 1.5, 0 ]
+    m.points.push [  20, 0.2, 0 ]
+    m.points.push [  30, 2.1, 0 ]
+    m.points.push [  40, 0.6, 0 ]
+    m.points.push [  50, 2, 0 ]
+    m.points.push [  60, 0.3, 0 ]
+    m.points.push [  70, 1, 0 ]
+    m.points.push [  80, 3, 0 ]
+    m.points.push [  90, 0.4, 0 ]
     m.points.push [ 100, 1, 0 ]
+    m.points.push [ 110, 0.5, 0 ]
+    m.points.push [ 120, 0.2, 0 ]
+    m.points.push [ 130, 2.6, 0 ]
+    m.points.push [ 140, 0.4, 0 ]
+    m.points.push [ 150, 2, 0 ]
+    m.points.push [ 160, 0.7, 0 ]
+    m.points.push [ 170, 1, 0 ]
+    m.points.push [ 180, 3, 0 ]
+    m.points.push [ 190, 0.4, 0 ]
     m.points.push [ 200, 3, 0 ]
-    m.points.push [ 255, 2, 0 ]
+    m.points.push [ 210, 5, 0 ]
+    m.points.push [ 220, 2.5, 0 ]
+    m.points.push [ 230, 0.9, 0 ]
+    m.points.push [ 240, 1.4, 0 ]
+    m.points.push [ 250, 2, 0 ]
     
     c.items.push m
     c.fit 0

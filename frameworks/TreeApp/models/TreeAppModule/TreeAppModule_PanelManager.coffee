@@ -125,6 +125,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
                     @old_cm.items.push @zoom_area
                 else
                     @old_cm.items.remove_ref @zoom_area
+                    @old_cm.draw()
                     delete @zoom_area
                     
             key: [ "Z" ]
