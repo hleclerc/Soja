@@ -12,11 +12,7 @@ class Transform extends Drawable
             
     z_index: ->
         return 1000
-    
-#     change: ->
-#         console.log 'change'
-#     onchange: ->
-#         console.log 'onchange'
+
     
     draw: ( info ) ->
         draw_point = info.sel_item[ @model_id ]
@@ -64,8 +60,12 @@ class Transform extends Drawable
                         item: p
                         dist: d
                         type: "Transform"
-                    if @lock.get() != true
-                        res.push
-                            item: @old_points[ i ]
-                            dist: d
-                            type: "Transform"
+                        
+                        
+    # onmousemove func
+#         if @lock.get() != true
+#             @old_points[ i ].set @cur_points[ i ].get()
+#             res.push
+#                 item: @old_points[ i ]
+#                 dist: d
+#                 type: "Transform"

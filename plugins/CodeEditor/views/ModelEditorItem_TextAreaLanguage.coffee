@@ -9,13 +9,13 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
             parentNode: @ed
             nodeName  : "input"
             type      : "button"
-            className : "code_editor"
             value     : "FullScreen"
             onclick   : ( evt )  =>
                 # popup construction
                 p = new_popup @label or "Code Editor", event : evt, width: "50", onclose: =>
                     @onPopupClose( )
-                
+
+#                 win = window.open("","Code Editor", "menubar=no, status=no, scrollbars=yes, menubar=no, width=500, height=600")
 
                 p.appendChild @textarea
                 @code_mirror.save() # Copy the content of the editor into the textarea
