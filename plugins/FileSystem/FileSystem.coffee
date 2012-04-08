@@ -40,9 +40,19 @@ class FileSystem
     # 
     @_timeout_func: ->
         delete FileSystem._timer
-        for k, f of FileSystem._insts when f._data_to_send.length and f._session_num != -1
+        for k, f of FileSystem._insts when f._data_to_send.length 
+            # if we are waiting for a session id, do not send the data
+            # (@responseText will contain another call to @_timeout_func with the session id)
+            if f._session_num == -1
+                continue
+            
+            # for first call, do not add the session id (but say that we are waiting for one)
             if f._session_num == -2
-                f._session_num = -1 # means that additional data won't be sent after a timeout but after the answer
+                f._session_num = -1
+            else
+                f._data_to_send = "s #{f._session_num} " + f._data_to_send
+                
+            # request
             xhr_object = FileSystem._my_xml_http_request()
             xhr_object.open 'POST', f.url, true
             xhr_object.onreadystatechange = ->
