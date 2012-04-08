@@ -1,6 +1,6 @@
 # camera
 class Cam extends Model 
-    constructor: ->
+    constructor: ( want_aspect_ratio = false ) ->
         super()
 
         # default values
@@ -15,32 +15,50 @@ class Cam extends Model
                 min: 0
                 max: 80
             ) # perspective angle
-
+        if want_aspect_ratio
+            @add_attr
+               r: 1
+               
+    #
+    focal_point: ->
+        nZ = Vec_3.nor Vec_3.cro @X.get(), @Y.get()
+        ap = Math.tan( @a.get() / 2 * 3.14159265358979323846 / 180 )
+        [
+            @O[ 0 ].get() - 0.5 * @d.get() / ap * nZ[ 0 ],
+            @O[ 1 ].get() - 0.5 * @d.get() / ap * nZ[ 1 ],
+            @O[ 2 ].get() - 0.5 * @d.get() / ap * nZ[ 2 ]
+        ]
+               
     # translate screen
-    pan: ( x, y, w, h ) ->
+    pan: ( x, y, w, h, ctrl_key = false ) ->
+        if ctrl_key
+            x /= 10
+            y /= 10
         c = @d.get() / Math.min( w, h )
-        x *= c
+        r = @r or 1
+        x *= c * r
         y *= c
         for d in [ 0 .. 2 ]
-            @O[ d ].set @O[ d ].get() - x * @X[ d ].get() - y * @Y[ d ].get()
+            @O[ d ].set @O[ d ].get() - x * @X[ d ].get() + y * @Y[ d ].get()
 
-    #
+    # c may be a number or a vector of size 2
     zoom: ( x, y, c, w, h ) ->
-        # get position of the click in the real world
-        mwh = Math.min w, h
-        x = ( x - w / 2 ) * @d.get() / mwh
-        y = ( h / 2 - y ) * @d.get() / mwh
-        O = @O.get()
-        X = @X.get()
-        Y = @Y.get()
-        P = [ O[ 0 ] + x * X[ 0 ] + y * Y[ 0 ], O[ 1 ] + x * X[ 1 ] + y * Y[ 1 ], O[ 2 ] + x * X[ 2 ] + y * Y[ 2 ] ]
+        if typeof( c ) == "number"
+            zoom x, y, [ c, c ], w, h
+        else
+            o_sc_2_rw = @sc_2_rw w, h
+            o = o_sc_2_rw.pos x, y
+            
+            @d.set @d.get() / c[ 1 ]
+            if @r?
+                @r.set @r.get() * c[ 1 ] / c[ 0 ]
 
-        # update cam_data
-        @d.set @d.get() / c
-        for d in [ 0 ... 3 ]
-            @O[ d ].set P[ d ] + ( O[ d ] - P[ d ] ) / c
+            n_re_2_sc = @re_2_sc w, h
+            p = n_re_2_sc.proj o
+            
+            @pan x - p[ 0 ], y - p[ 1 ], w, h
 
-    # 
+    # around @C
     rotate: ( x, y, z ) ->
         if @threeD.get()
             R = @s_to_w_vec [ x, y, z ]
@@ -56,11 +74,13 @@ class Cam extends Model
 
     equal: ( l ) ->
         ap_3 = ( a, b, e = 1e-3 ) -> 
-            Math.abs( a[ 0 ] - b[ 0 ] ) < e and Math.abs( a[ 1 ] - b[ 1 ] ) < e and Math.abs( a[ 2 ] - b[ 2 ] ) < e 
+            Math.abs( a[ 0 ] - b[ 0 ] ) < e and Math.abs( a[ 1 ] - b[ 1 ] ) < e and Math.abs( a[ 2 ] - b[ 2 ] ) < e
+            
+        if @r? and l.r? and l.r.get() != @r.get()
+            return false
         return l.w == @w and l.h == @h and ap_3( l.O, @O ) and ap_3( l.X, @X ) and ap_3( l.Y, @Y ) and Math.abs( l.a - @a ) < 1e-3 and Math.abs( l.d - @d ) / @d < 1e-3
 
     s_to_w_vec: ( V ) -> # screen orientation to real world.
-        
         X = Vec_3.nor @X.get()
         Y = Vec_3.nor @Y.get()
         Z = Vec_3.nor Vec_3.cro X, Y
@@ -70,8 +90,17 @@ class Cam extends Model
             V[ 0 ] * @X[ 2 ] + V[ 1 ] * @Y[ 2 ] + V[ 2 ] * Z[ 2 ]
         ]
 
-    get_Z: () ->
+    get_X: ->
+        Vec_3.nor @X.get()
+
+    get_Y: ->
+        Vec_3.nor @Y.get()
+        
+    get_Z: ->
         Vec_3.nor Vec_3.cro @X.get(), @Y.get()
+        
+    get_a: ->
+        @a.get()
         
     # return coordinates depending the current cam state from real coordinates
     get_screen_coord : ( coord ) ->
@@ -87,11 +116,18 @@ class Cam extends Model
         constructor: ( d, w, h ) ->
             mwh = Math.min w, h
             c = d.d / mwh
-            @X = Vec_3.sm Vec_3.nor( d.X ), c
-            @Y = Vec_3.sm Vec_3.nor( d.Y ), - c
-            @Z = Vec_3.sm Vec_3.nor( Vec_3.cro( d.X, d.Y ) ), c
-            @p = Math.tan( d.a / 2 * 3.14159265358979323846 / 180 ) / ( mwh / 2 )
-            # center
+            r = d.r or 1
+            
+            @X = Vec_3.nor d.X
+            @Y = Vec_3.nor Vec_3.sub( d.Y, Vec_3.mus( Vec_3.dot( @X, d.Y ), @X ) )
+            nZ = Vec_3.cro( @X, @Y )
+
+            @X = Vec_3.sm @X, c * r
+            @Y = Vec_3.sm @Y, - c
+            @Z = Vec_3.sm nZ, c
+            
+            ap = Math.tan( d.a / 2 * 3.14159265358979323846 / 180 )
+            @p = 2 * ap / mwh
             @O = d.O
             @o_x = - w / 2
             @o_y = - h / 2
@@ -103,7 +139,7 @@ class Cam extends Model
                 ( ( x + @o_x ) * @X[ 2 ] + ( y + @o_y ) * @Y[ 2 ] ) * @p + @Z[ 2 ]
             ]
             
-        pos: ( x, y ) -> [
+        pos: ( x, y, z = 0 ) -> [
             @O[ 0 ] + ( x + @o_x ) * @X[ 0 ] + ( y + @o_y ) * @Y[ 0 ],
             @O[ 1 ] + ( x + @o_x ) * @X[ 1 ] + ( y + @o_y ) * @Y[ 1 ],
             @O[ 2 ] + ( x + @o_x ) * @X[ 2 ] + ( y + @o_y ) * @Y[ 2 ]
@@ -111,11 +147,18 @@ class Cam extends Model
 
     class TransBuf # real pos -> screen
         constructor: ( d, w, h ) ->
+            r = d.r or 1
             mwh = Math.min w, h
             c = mwh / d.d
-            @X = Vec_3.sm Vec_3.nor( d.X ), c
-            @Y = Vec_3.sm Vec_3.nor( d.Y ), - c
-            @Z = Vec_3.sm Vec_3.nor( Vec_3.cro( d.X, d.Y ) ), c
+
+            @X = Vec_3.nor d.X
+            @Y = Vec_3.nor Vec_3.sub( d.Y, Vec_3.mus( Vec_3.dot( @X, d.Y ), @X ) )
+            @Z = Vec_3.cro( @X, @Y )
+            
+            @X = Vec_3.sm @X, c / r
+            @Y = Vec_3.sm @Y, - c
+            @Z = Vec_3.sm @Z, c
+            
             @p = Math.tan( d.a / 2 * 3.14159265358979323846 / 180 ) / ( mwh / 2 )
             # center
             @O = d.O

@@ -20,6 +20,8 @@ class ConstrainedVal extends Model
     
     #
     _set: ( value ) ->
+        if value instanceof ConstrainedVal
+            return @val._set value.get()
         res = @val.set value
         @_check_val()
         return res

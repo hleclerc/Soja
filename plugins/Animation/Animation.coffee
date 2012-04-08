@@ -12,18 +12,31 @@ class Animation
     @easing: ( rat )-> Math.pow rat, 0.33
     
     @set: ( model, value, delay = 300, curve = Animation.linear ) ->
-        dt = (new Date).getTime()
-        Animation._curan[ model.model_id ] = 
-            mod: model
-            old: model.get()
-            val: value
-            beg: dt
-            end: dt + delay
-            crv: curve
+        value = Model.conv value
+        ms = model.size()
+        vs = value.size()
+        if ms.length
+            if ms.length == 1 and vs.length == 1 and ms[ 0 ] == vs[ 0 ]
+                for m, i in model
+                    Animation.set m, value[ i ], delay, curve
+            else # ->no animation
+                model.set value
+        else
+            dt = (new Date).getTime()
+            Animation._curan[ model.model_id ] = 
+                mod: model
+                old: model.get()
+                val: value
+                beg: dt
+                end: dt + delay
+                crv: curve
 
-        if not Animation._timer?
-            Animation._timer = setTimeout Animation._timeout_func, Animation.period_ms
+            if delay <= 0
+                Animation._timeout_func()
+            else if not Animation._timer?
+                Animation._timer = setTimeout Animation._timeout_func, Animation.period_ms
             
+        
     @_timeout_func: ->
         dt = (new Date).getTime()
         rm = []

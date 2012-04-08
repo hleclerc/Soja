@@ -11,6 +11,8 @@ class Mesh extends Drawable
             elementary_fields: new Model
             nodal_fields     : new Model
             _mv              : new MoveScheme_3D
+            constrain_lines  : new Lst
+            free_lines       : new Lst
         
         if legend?
             @add_attr
@@ -34,23 +36,27 @@ class Mesh extends Drawable
                 info.re_2_sc.proj p.pos.get()            
             
             info.ctx.lineWidth   = 1
-            info.ctx.strokeStyle = "#FFFFFF"
             info.ctx.fillStyle = "#FFFFFF"
+            
+            color_line = info.theme.line.to_hex()
+            info.ctx.strokeStyle = color_line
+            
             if draw_point
                 # draw points
+                color_selected_dot = info.theme.selected_dot.to_hex()
+                color_dot = info.theme.dot.to_hex()
                 for n in [ 0 ... proj.length ]
                     p = proj[ n ]
                     if info.selected[ @points[ n ].model_id ]?
-                        info.ctx.fillStyle = "#FF0000"
+                        info.ctx.fillStyle = color_selected_dot
                     else
-                        info.ctx.fillStyle = "#00FF00"
+                        info.ctx.fillStyle = color_dot
                     
                     info.ctx.beginPath()
                     info.ctx.arc p[ 0 ], p[ 1 ], 4, 0, Math.PI * 2, true
 #                     info.ctx.closePath()
                     info.ctx.fill()
                     info.ctx.stroke()
-                    info.ctx.fillStyle = "#FFFFFF"
                     
                     if info.pre_sele[ @points[ n ].model_id ]?
                         info.ctx.strokeStyle = "#FFFF22"
@@ -60,12 +66,19 @@ class Mesh extends Drawable
                         info.ctx.stroke()
 #                         info.ctx.closePath()
                         
-                        info.ctx.strokeStyle = "#FFFFFF"
+                        info.ctx.strokeStyle = color_line
                         info.ctx.lineWidth   = 1
                         
                 
             # draw lines
-            for l in @lines when l.length == 2
+            for l, j in @lines when l.length == 2
+                if parseInt( @constrain_lines.indexOf( j ) ) >= 0
+                    info.ctx.strokeStyle = info.theme.constrain_line.to_hex()
+                else if parseInt( @free_lines.indexOf( j ) ) >= 0
+                    info.ctx.strokeStyle = info.theme.free_line.to_hex()
+                else
+                    info.ctx.strokeStyle = color_line
+                
                 info.ctx.beginPath()
                 info.ctx.moveTo proj[ l[ 0 ].get() ][ 0 ], proj[ l[ 0 ].get() ][ 1 ]
                 info.ctx.lineTo proj[ l[ 1 ].get() ][ 0 ], proj[ l[ 1 ].get() ][ 1 ]
@@ -89,15 +102,20 @@ class Mesh extends Drawable
             
             # call adapted draw function for color and using gradient
             if @nodal_fields[ @displayed_field.get() ]?
-                field = @nodal_fields[ @displayed_field.get() ]
+                values = @nodal_fields[ @displayed_field.get() ].get()
+                @actualise_value_legend values
+                
                 for tri in @triangles
-                    @_draw_nodal_triangle info, tri.get(), proj, field
+                    @_draw_nodal_triangle info, tri.get(), proj, values
+                    
             else if @elementary_fields[ @displayed_field.get() ]?
                 values = @elementary_fields[ @displayed_field.get() ].get()
                 @actualise_value_legend values
                 
                 for tri, i in @triangles
                     @_draw_elementary_triangle info, tri.get(), proj, values[ i ]
+                    
+                
 
 
     get_max: ( l ) ->
@@ -118,17 +136,17 @@ class Mesh extends Drawable
         
     actualise_value_legend: ( values ) ->
         max = @get_max values
-        @_legend._max_val.set max
+        @_legend.max_val.set max
         
         min = @get_min values
-        @_legend._min_val.set min
+        @_legend.min_val.set min
 
 
     _draw_elementary_triangle: ( info, tri, proj, value ) ->
         position = for i in [ 0 ... 3 ]
                 proj[ tri[ i ] ]
         
-        pos = ( @_legend._max_val.get() - value ) / ( @_legend._max_val.get() - @_legend._min_val.get() )
+        pos = ( @_legend.max_val.get() - value ) / ( @_legend.max_val.get() - @_legend.min_val.get() )
         col = @_legend.gradient.get_color_from_pos pos
         
         if @fields.get() == "wireframe"
@@ -162,8 +180,14 @@ class Mesh extends Drawable
                 proj[ tri[ i ] ]
                 
         value = for i in [ 0 ... 3 ]
-                field[ tri[ i ] ].get()
+                field[ tri[ i ] ]
                 
+        max_legend = @_legend.max_val.get()
+        min_legend = @_legend.min_val.get()
+        
+        for val, i in value
+            value[ i ] = ( max_legend - val ) / ( max_legend - min_legend )
+            
         #position of every point
         x0 = posit[ 0 ][ 0 ]
         y0 = posit[ 0 ][ 1 ]
@@ -517,32 +541,34 @@ class Mesh extends Drawable
             proj = for p in @points
                 info.re_2_sc.proj p.pos.get()
                 
-            for li in @lines when li.length == 2
+            for li, j in @lines when li.length == 2
     
                 P0 = li[ 0 ].get()
                 P1 = li[ 1 ].get()
                 
                 point = @get_movable_entities_lines proj, P0, P1, x, y
                 if point?
-                    os = @points.length
+                    if info.add_p_lin == true
+                        os = @points.length
 
-                    @add_point [@points[ P0 ].pos[ 0 ].get() + point[ 0 ] * point[ 3 ],
-                        @points[ P0 ].pos[ 1 ].get() + point[ 1 ] * point[ 3 ],
-                        @points[ P0 ].pos[ 2 ].get() + point[ 2 ] * point[ 3 ]]
-                        
-                    n = @points[ @points.length-1 ]
-                    
-                    ol = P1
-                    li[ 1 ]._set os
-                    @lines.push [ os, ol ]
-                    
-                    res.push
-                        item: n
-                        dist: 0
-                        type: "Mesh"
-                    
-                    break
+                        @add_point [@points[ P0 ].pos[ 0 ].get() + point[ 0 ] * point[ 3 ],
+                            @points[ P0 ].pos[ 1 ].get() + point[ 1 ] * point[ 3 ],
+                            @points[ P0 ].pos[ 2 ].get() + point[ 2 ] * point[ 3 ]]
                             
+                        n = @points[ @points.length-1 ]
+                        ol = P1
+                        li[ 1 ]._set os
+                        @lines.push [ os, ol ]
+                        
+                        res.push
+                            item: n
+                            dist: 0
+                            type: "Mesh"
+                    else
+                        @constrain_lines.push j
+                        
+                    break
+
         if phase == 2
             proj = for p in @points
                 info.re_2_sc.proj p.pos.get()

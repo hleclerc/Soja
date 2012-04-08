@@ -26,4 +26,7 @@ class Choice extends Model
         @lst[ @num.get() ].equals a
     
     _set: ( value ) ->
+        for i, j in @lst.get()
+            if value == i
+                return @num.set j
         @num.set value

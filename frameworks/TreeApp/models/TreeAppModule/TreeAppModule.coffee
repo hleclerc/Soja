@@ -2,8 +2,24 @@ class TreeAppModule extends Model
     constructor: ->
         super()
         
-        @name = ''
-        @actions = []
+        @name    = ''      # indicate the module name
+        @visible = true # all module can be hidden from menu by setting this to false
+        @actions = []   # list of actions depending of the module
+
+    # actions is assumed to be formatted like this :
+        # ico: path to a picture
+        # siz: a number that indicates the icon size
+        # txt: contain a string with the text of the action
+        # key: [ "Ctrl+Z" ] # example of how to assign hotkeys to an action
+        # ina: function that returns true if actions is inactive, false if active
+        # vis: boolean that indicates if action is shown in menu or not
+        # fun: function that is executed when icon is pressed or hotkey detected ( except if action is inactive or got sub actions (function is reassigned ) )
+        # mod: a model
+        # ord: boolean true by default that indicates if icon must be alternated on top and bottom
+        # sub:
+        #    prf: prefered views ( 'menu' or 'list' )
+        #    act: an array that can contain another actions
+
 
     select_item: ( app, item, parent ) ->
         if !parent
@@ -21,7 +37,11 @@ class TreeAppModule extends Model
     watch_item: ( app, item ) ->
         for p in app.data.panel_id_list()
             app.data.visible_tree_items[ p ].push item
-
+            
+    get_animation_module: ( app ) ->
+        for child in app.data.modules
+            if child instanceof TreeAppModule_Animation
+                return child
         
     get_display_settings_item: ( app ) ->
         for child in app.data.tree_items[ 0 ]._children
@@ -76,6 +96,14 @@ class TreeAppModule extends Model
 #                         console.log '3'
                         find_object = true
 
+        #search if typeItem can be a child of the parent of selected item in tree        
+        if find_object == false
+            for items in app.data.selected_tree_items
+                parent = items[ items.length - 2 ]
+                item = new typeItem
+                if parent instanceof typeItem
+                    object = parent
+                    find_object = true
         
         #If selection didn't help to find a typeItem child
         if find_object == false
@@ -92,13 +120,13 @@ class TreeAppModule extends Model
         
                                 
     #type represent the type of current item
-    child_in_selected: ( app, typeItem, sel_item ) ->
+    child_in_selected: ( app, typeItem, sel_item, item ) ->
         current = new typeItem
     
         for it in sel_item
             if current.accept_child it
                 app.data.selected_tree_items[ 0 ][ app.data.selected_tree_items[ 0 ].length - 2 ].rem_child it
-                @transf.add_child it
+                item.add_child it
                 id = it.model_id
                 for p in app.data.panel_id_list()
                     for c, i in app.data.visible_tree_items[ p ]
@@ -106,14 +134,4 @@ class TreeAppModule extends Model
                             app.data.visible_tree_items[ p ].splice i, 1
                             break
 
-    add_action: ( act ) ->
-        @actions.push act
-        act.sub = []
-        
-        act.add_sub_action = ( n_act ) ->
-            act.sub.push n_act
-            n_act
-            
-        return act
-        
         

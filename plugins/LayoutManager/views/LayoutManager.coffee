@@ -51,7 +51,7 @@ class LayoutManager extends View
     render: ->
         b = @border_size
         p_min = [ @disp_left                    + b, @disp_top                       + b ]
-        p_max = [ @el.offsetWidth - @disp_right - 0, @el.offsetHeight - @disp_bottom - 0 ]
+        p_max = [ @el.offsetWidth - @disp_right - b, @el.offsetHeight - @disp_bottom - b ]
 
         @flat = @model.make_info p_min, p_max, b
 

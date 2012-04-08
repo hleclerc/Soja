@@ -9,6 +9,9 @@ class CanvasManager extends View
     #  - pre_selected_entities
     #  - undo_manager
     #  - allow_gl
+    #  - want_aspect_ratio
+    #  - constrain_zoom
+    #  - add_point_on_line
     constructor: ( params ) ->
         for key, val of params
             @[ key ] = val
@@ -16,7 +19,7 @@ class CanvasManager extends View
         if not @items?
             @items = new Lst
         if not @cam?
-            @cam = new Cam
+            @cam = new Cam @want_aspect_ratio
         if not @selected_items?
             @selected_items = new Lst
         if not @selected_entities?
@@ -25,20 +28,38 @@ class CanvasManager extends View
             @pre_selected_entities = new Lst
         if not @allow_gl?
             @allow_gl = false
+        if not @theme?
+            @theme = new Theme 'original'
         if not @time?
-            @time = 0
+            @time = new ConstrainedVal( 0,
+                                    min: 0
+                                    max: -1
+                                    div: 0
+                                )
+        if not @add_point_on_line?
+            @add_point_on_line = new Bool true
+        if not @padding_ratio
+            @padding_ratio = 1.5
+        if not @constrain_zoom?
+            @constrain_zoom = false
+#         if not @zoom_max?
+#             @zoom_max = new Bool false
+        if not @auto_fit?
+            @auto_fit = new Bool false
             
-        super [ @items, @cam, @selected_entities, @pre_selected_entities, @selected_items ]
+            
+        super [ @items, @cam, @selected_entities, @pre_selected_entities, @selected_items, @time ]
 
         @canvas = new_dom_element
             nodeName  : "canvas"
             parentNode: @el
             style     :
-                position: "absolute"
-                top     : 0
-                bottom  : 0
-                left    : 0
-                right   : 0
+                width: "100%"
+                #                 position: "absolute"
+                #                 top     : 0
+                #                 bottom  : 0
+                #                 left    : 0
+                #                 right   : 0
 
         # events
         @canvas.onmousedown  = ( evt ) => @_img_mouse_down evt
@@ -52,14 +73,49 @@ class CanvasManager extends View
         # drawing context
         @_init_ctx @allow_gl
 
+        @x_min = [ 0, 0, 0 ]
+        @x_max = [ 1, 1, 1 ]
+
         #
         @click_fun = [] # called if mouse down and up without move
+        @dblclick_fun = []
 
     onchange: ->
-        @draw()
+        if @need_to_redraw()
+            @draw()
+            
+    need_to_redraw: ->
+        return true if @cam.has_been_modified?()
+        return true if @selected_entities.has_been_modified?()
+        return true if @pre_selected_entities.has_been_modified?()
+        return true if @theme.has_been_modified?()
+        return true if @time.has_been_modified?()
+        return true if @padding_ratio.has_been_modified?()
+        return true if @add_point_on_line.has_been_modified?()
 
+        # selected objects
+        str_sel = ""
+        for s in @selected_items
+            if not s[ s.length - 1 ].has_nothing_to_draw?()
+                str_sel += " " + s[ s.length - 1 ].model_id
+        if @_old_str_sel != str_sel
+            @_old_str_sel = str_sel
+            return true
+            
+        # all objects and sub objects
+        flat = []
+        for item in @items
+            CanvasManager._get_flat_list flat, item
+        for f in flat
+            if f.has_been_modified?()
+                return true
+                
+        return false
+        
     #
     bounding_box: ->
+        if @_bounding_box?
+            return @_bounding_box
         get_min_max = ( item, x_min, x_max ) ->
             if item.update_min_max?
                 item.update_min_max x_min, x_max
@@ -73,45 +129,115 @@ class CanvasManager extends View
             get_min_max item, x_min, x_max
         if x_min[ 0 ] == +1e40
             return [ [ -1, -1, -1 ], [ 1, 1, 1 ] ]
-        return [ x_min, x_max ]
+        @_bounding_box = [ x_min, x_max ]
+        return @_bounding_box
         
     # 
-    fit: ->
+    fit: ( anim = 1 ) ->
         b = @bounding_box()
-        
-        @cam.O.set [
+
+        O = [
             0.5 * ( b[ 1 ][ 0 ] + b[ 0 ][ 0 ] ),
             0.5 * ( b[ 1 ][ 1 ] + b[ 0 ][ 1 ] ), 
             0.5 * ( b[ 1 ][ 2 ] + b[ 0 ][ 2 ] )
         ]
-        @cam.d.set Math.max(
-            1.5 * ( b[ 1 ][ 0 ] - b[ 0 ][ 0 ] ),
-            1.5 * ( b[ 1 ][ 1 ] - b[ 0 ][ 1 ] ), 
-            1.5 * ( b[ 1 ][ 2 ] - b[ 0 ][ 2 ] )
+        
+        d = @padding_ratio * Math.max(
+            ( b[ 1 ][ 0 ] - b[ 0 ][ 0 ] ),
+            ( b[ 1 ][ 1 ] - b[ 0 ][ 1 ] ),
+            ( b[ 1 ][ 2 ] - b[ 0 ][ 2 ] )
         )
-        @cam.C.set @cam.O.get()
+        d = 1 if d == 0
+        
+        if @cam.r?
+            w = @canvas.width
+            h = @canvas.height
+            
+            # assuming a 2D cam
+            dx = ( b[ 1 ][ 0 ] - b[ 0 ][ 0 ] )
+            dy = ( b[ 1 ][ 1 ] - b[ 0 ][ 1 ] )
+            dy = 1 if dy == 0
+            ip = 1 / @padding_ratio
+            
+            if w > h
+                rx = ( ip * w ) / ( w - h * ( 1 - ip ) )
+                @aset @cam.r, rx * ( h * dx ) / ( w * dy ), anim
+                d = dy * @padding_ratio
+            else
+                ry = ( h - w * ( 1 - ip ) ) / ( ip * h )
+                res = ry * ( h * dx ) / ( w * dy )
+                @aset @cam.r, res, anim
+                d = dx / res * @padding_ratio
+    
+        @aset @cam.O, O, anim
+        @aset @cam.d, d, anim
+        @aset @cam.C, @cam.O, anim
+    
+    # animed set 
+    aset: ( model, value, anim = 1 ) ->
+        Animation.set model, value, anim * @theme.anim_delay.get()
         
     # 
     top: ->
-        @cam.X.set [ 1, 0, 0]
-        @cam.Y.set [ 0, 0, 1]
+        @aset @cam.X, [ 1, 0, 0 ]
+        @aset @cam.Y, [ 0, 0, 1 ]
+    # 
+    bottom: ->
+        @aset @cam.X, [ 1, 0, 0 ]
+        @aset @cam.Y, [ 0, 0,-1 ]
+    
     # 
     right: ->
-        @cam.X.set [ 0, 0, 1]
-        @cam.Y.set [ 0, 1, 0]
-    # 
+        @aset @cam.X, [ 0, 0, 1 ]
+        @aset @cam.Y, [ 0, 1, 0 ]
+    
+    #
+    left: ->
+        @aset @cam.X, [ 0, 0,-1 ]
+        @aset @cam.Y, [ 0, 1, 0 ]
+    
+    #
     origin: ->
-        @cam.X.set [ 1, 0, 0]
-        @cam.Y.set [ 0, 1, 0]
+        @aset @cam.X, [ 1, 0, 0 ]
+        @aset @cam.Y, [ 0, 1, 0 ]
     
     # redraw all the scene
     draw: ->
         flat = []
         for item in @items
             CanvasManager._get_flat_list flat, item
+            
+        #
+        @on_mouse_move_items   = []
+        has_a_background       = false
+        has_a_changed_drawable = false
+        for f in flat
+            has_a_background |= f.draws_a_background?()
+            has_a_changed_drawable |= f.has_been_modified?()
+            if f.on_mouse_move?
+                @on_mouse_move_items.push f
+
+
+        if has_a_changed_drawable
+            delete @_bounding_box
+
+        #
+        if not has_a_background
+            @ctx.clearRect 0, 0, @canvas.width, @canvas.height
+        
+        if @auto_fit.get() and has_a_changed_drawable
+            if @first_fit?
+                @fit 1
+            else
+                @first_fit = true
+                @fit 0
+        
+        #
         @_mk_cam_info()
         #sort object depending z_index (a greater z index is in front of an element with a lower z index)
-        flat.sort( ( a, b ) -> return a.z_index() - b.z_index() )
+        flat.sort ( a, b ) -> a.z_index() - b.z_index()
+        
+        @_flat = flat
         
         for item in flat
             item.draw @cam_info
@@ -121,9 +247,13 @@ class CanvasManager extends View
         @canvas.height = h
 
     _dbl_click: ( evt ) ->
-        @add_transform( evt )
+        for fun in @dblclick_fun
+            fun( this, evt )
 
     _img_mouse_down: ( evt ) ->
+        for fun in @click_fun
+            fun( this, evt )
+            
         evt = window.event if not evt?
 
         # code from http://unixpapa.com/js/mouse.html
@@ -134,33 +264,36 @@ class CanvasManager extends View
                 if evt.button < 2 then "LEFT" else ( if evt.button == 4 then "MIDDLE" else "RIGHT" )
             
          
-        @canvas.onmousemove = ( evt ) => @_img_mouse_move evt
         @old_x = evt.clientX - get_left( @canvas )
         @old_y = evt.clientY - get_top ( @canvas )
-  
+
         @mouse_has_moved_since_mouse_down = false
-
-        # look if there's a movable point under mouse
-        for phase in [ 0 ... 3 ]
-            movable_entities = @_get_movable_entities phase
-            if movable_entities.length
-                @undo_manager?.snapshot()
-                break
-
-        @movable_point = movable_entities[ 0 ]?.item
         
-        # if @movable_point 
-        if evt.ctrlKey # add / rem selection
-            if @movable_point?
-                @selected_entities.toggle_ref @movable_point
-        else
-            if @movable_point?
-                @selected_entities.clear()
-                @selected_entities.push @movable_point
+        if @old_button == "LEFT" or @old_button == "MIDDLE"
+            @canvas.onmousemove = ( evt ) => @_img_mouse_move evt
+            
+            if @old_button == "LEFT"
+                # look if there's a movable point under mouse
+                for phase in [ 0 ... 3 ]
+                    movable_entities = @_get_movable_entities phase
+                    if movable_entities.length
+                        @undo_manager?.snapshot()
+                        break
 
-                @movable_point.beg_click [ @old_x, @old_y ]
-            else
-                @selected_entities.clear()
+                @movable_point = movable_entities[ 0 ]?.item
+                
+                # if @movable_point 
+                if evt.ctrlKey # add / rem selection
+                    if @movable_point?
+                        @selected_entities.toggle_ref @movable_point
+                else
+                    if @movable_point?
+                        @selected_entities.clear()
+                        @selected_entities.push @movable_point
+
+                        @movable_point.beg_click [ @old_x, @old_y ]
+                    else
+                        @selected_entities.clear()
                 
         if @old_button == "RIGHT"
             @canvas.oncontextmenu = => return false
@@ -178,9 +311,9 @@ class CanvasManager extends View
     _img_mouse_up: ( evt ) ->
         @canvas.onmousemove = ( evt ) => @_mouse_move evt # start event for hover
         if @old_button == "LEFT" and not @mouse_has_moved_since_mouse_down
-#             if not @movable_point?
-            for fun in @click_fun
-                fun( this, evt )
+            nothing = undefined#need to be deleted
+            #for fun in @click_fun
+                #fun( this, evt )
         if @old_button == "RIGHT" and not @mouse_has_moved_since_mouse_down
             @context_menu?( evt, true )
         else
@@ -206,32 +339,57 @@ class CanvasManager extends View
         c = Math.pow 1.2, delta
         x = evt.clientX - get_left( @canvas )
         y = evt.clientY - get_top ( @canvas )
+        
+        cx = if evt.shiftKey or @constrain_zoom == "y" then 1 else c
+        cy = if evt.altKey   or @constrain_zoom == "x" then 1 else c
 
-        @cam.zoom x, y, c, @canvas.width, @canvas.height
+        @cam.zoom x, y, [ cx, cy ], @canvas.width, @canvas.height
 
         evt.preventDefault?()
         evt.returnValue = false
         return false
         
-    _mouse_move: ( evt ) ->
+    _get_new_xy: ( evt ) ->
         evt = window.event if not evt?
-        @old_x = evt.clientX - get_left( @canvas )
-        @old_y = evt.clientY - get_top ( @canvas )
+        new_x = evt.clientX - get_left( @canvas )
+        new_y = evt.clientY - get_top ( @canvas )
+        
+        # refined displacement
+        if evt.ctrlKey
+            if not @clk_x?
+                @clk_x = new_x
+                @clk_y = new_y
+            new_x = @clk_x + ( new_x - @clk_x ) / 10
+            new_y = @clk_y + ( new_y - @clk_y ) / 10
+        else
+            delete @clk_x
+            delete @clk_y
+            
+        return [ new_x, new_y ]
+        
+    _mouse_move: ( evt ) ->
+        [ @old_x, @old_y ] = @_get_new_xy evt
+        
         movable_entities = @_get_movable_entities 0
         @movable_point = movable_entities[ 0 ]?.item
         @pre_selected_entities.clear()
         if @movable_point?
             @pre_selected_entities.push @movable_point
             
+        for f in @on_mouse_move_items
+            f.on_mouse_move @old_x, @old_y
+            
     _img_mouse_move: ( evt ) ->
         evt = window.event if not evt?
-        new_x = evt.clientX - get_left( @canvas )
-        new_y = evt.clientY - get_top ( @canvas )
+        [ new_x, new_y ] = @_get_new_xy evt
         if new_x == @old_x and new_y == @old_y
             return false
             
         if @movable_point? and not @mouse_has_moved_since_mouse_down
             @undo_manager?.snapshot()
+            
+        for f in @on_mouse_move_items
+            f.on_mouse_move new_x, new_y
 
         @mouse_has_moved_since_mouse_down = true
 
@@ -252,12 +410,18 @@ class CanvasManager extends View
                 a = Math.atan2( new_y - h / 2.0, new_x - w / 2.0 ) - Math.atan2( @old_y - h / 2.0, @old_x - w / 2.0 )
                 @cam.rotate 0.0, 0.0, a
             else if @old_button == "MIDDLE" or @old_button == "LEFT" and evt.ctrlKey # pan
-                @cam.pan new_x - @old_x, @old_y - new_y, w, h
+                if @constrain_zoom == false
+                    x = y = 1
+                else
+                    if @constrain_zoom == "x" then x = 1 else x = 0
+                    if @constrain_zoom == "y" then y = 1 else y = 0
+                @cam.pan (new_x - @old_x) * x, (new_y - @old_y) * y, w, h # , evt.ctrlKey
+                
             else if @old_button == "LEFT" # rotate / C
                 x = 2.0 * ( new_x - @old_x ) / mwh
                 y = 2.0 * ( new_y - @old_y ) / mwh
                 @cam.rotate y, x, 0.0
-
+    
         @old_x = new_x
         @old_y = new_y
     
@@ -299,9 +463,16 @@ class CanvasManager extends View
             for n in item.sub_canvas_items()
                 @_fill_selected_items_rec i, n
 
+    _get_x_min: ->
+        @bounding_box()[ 0 ]
+
+    _get_x_max: ->
+        @bounding_box()[ 1 ]
+        
+
     # compute and store camera info in @cam_info
     _mk_cam_info: ->
-        w = @canvas.width 
+        w = @canvas.width
         h = @canvas.height
         
         i = {}
@@ -317,22 +488,28 @@ class CanvasManager extends View
             pre_s[ item.model_id ] = true
             
         @cam_info =
-            w       : w
-            h       : h
-            mwh     : Math.min w, h
-            ctx     : @ctx
-            cam     : @cam
-            re_2_sc : @cam.re_2_sc w, h
-            sc_2_rw : @cam.sc_2_rw w, h
-            sel_item: i
-            selected: s
-            pre_sele: pre_s
-            time    : @time
+            w        : w
+            h        : h
+            mwh      : Math.min w, h
+            ctx      : @ctx
+            cam      : @cam
+            get_x_min: => @_get_x_min()
+            get_x_max: => @_get_x_max()
+            re_2_sc  : @cam.re_2_sc w, h
+            sc_2_rw  : @cam.sc_2_rw w, h
+            add_p_lin: @add_point_on_line.get()
+            sel_item : i
+            selected : s
+            pre_sele : pre_s
+            time     : @time.get()
+            theme    : @theme
+            padding  : ( 1 - 1 / @padding_ratio ) * Math.min( w, h ) # padding size in pixels
                     
     # get leaves in item list (i.e. object with a draw method)
     @_get_flat_list: ( flat, item ) ->
         if item.sub_canvas_items?
             for sub_item in item.sub_canvas_items()
                 CanvasManager._get_flat_list flat, sub_item
-        else
+                
+        if not item.has_nothing_to_draw?()
             flat.push item

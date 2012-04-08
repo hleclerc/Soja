@@ -1,12 +1,12 @@
 #
 class ViewItem extends TreeItem
-    constructor: ( @app_data, @panel_id ) ->
+    constructor: ( @app_data, @panel_id, cam = new( Cam ) ) ->
         super()
         
         # attributes
         @add_attr
             background: new Background
-            cam       : new Cam
+            cam       : cam
             axes      : new Axes
             _panel_id : panel_id
             
@@ -20,9 +20,13 @@ class ViewItem extends TreeItem
                 @_name_class.set "SelectedViewItem"
             else
                 @_name_class.set "UnselectedViewItem"
-                
+        
+        
     accept_child: ( ch ) ->
         #
+        
     sub_canvas_items: ->
         [ @background, @axes ]
- 
+
+    has_nothing_to_draw: ->
+        true

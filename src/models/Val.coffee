@@ -19,7 +19,14 @@ class Val extends Obj
     # we do not take _set from Obj because we want a conversion if value is not a number
     _set: ( value ) ->
         if typeof value == "string"
-            n = parseFloat value
+            if value.slice( 0, 2 ) == "0x"
+                n = parseInt value, 16
+            else
+                n = parseFloat value
+                if isNaN n
+                    n = parseInt value
+                if isNaN n
+                    console.log "Don't know how to transform #{value} to a Val"
         else if typeof value == "boolean"
             n = 1 * value
         else if value instanceof Val

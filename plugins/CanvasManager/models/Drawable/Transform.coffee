@@ -7,11 +7,13 @@ class Transform extends Drawable
         @add_attr
             cur_points: new Lst_Point
             old_points: new Lst_Point
+            lock      : true
             
             
     z_index: ->
         return 1000
-        
+
+    
     draw: ( info ) ->
         draw_point = info.sel_item[ @model_id ]
         if @cur_points.length && draw_point
@@ -48,7 +50,7 @@ class Transform extends Drawable
         x = pos[ 0 ]
         y = pos[ 1 ]
         if phase == 0
-            for p in @cur_points
+            for p, i in @cur_points
                 proj = info.re_2_sc.proj p.pos.get()
                 dx = x - proj[ 0 ]
                 dy = y - proj[ 1 ]
@@ -59,3 +61,11 @@ class Transform extends Drawable
                         dist: d
                         type: "Transform"
                         
+                        
+    # onmousemove func
+#         if @lock.get() != true
+#             @old_points[ i ].set @cur_points[ i ].get()
+#             res.push
+#                 item: @old_points[ i ]
+#                 dist: d
+#                 type: "Transform"

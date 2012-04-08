@@ -2,10 +2,12 @@
 class ModelEditorItem_Gradient extends ModelEditorItem
     constructor: ( params ) ->
         super params
-        
+
+            
         @canvas = new_dom_element
             parentNode: @ed
             nodeName  : "canvas"
+            className : "ModelEditorGradientSelector"
             style     :
                 width  : @ew + "%"
                 height : 20 # !!!

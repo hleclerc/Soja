@@ -16,11 +16,30 @@ class EditView extends View
                 s = path[ path.length - 1 ]
                 e = @model_editors[ s.model_id ]
                 if not e?
+                    # generic div to contain the model editor and the informations
                     e = new_dom_element()
+                    
                     m = new_model_editor
                         el          : e
                         model       : s
                         undo_manager: @undo_manager
+                        focus       : @app_data.focus
+
+                    # information div
+                    if s.information?
+                        f = new_dom_element
+                            nodeName  : "fieldset"
+                            parentNode: e
+                                
+                        legend = new_dom_element
+                            nodeName  : "legend"
+                            parentNode: f
+                            txt       : "Informations"
+                            
+                        d = new_dom_element parentNode: f
+                        s.bind ->
+                            s.information d
+                        
                     @model_editors[ s.model_id ] = e
                     
                 @div.appendChild e

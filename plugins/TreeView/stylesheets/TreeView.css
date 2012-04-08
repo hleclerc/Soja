@@ -1,7 +1,7 @@
 .TreeView {
-    /* font-family: "Verdana, Arial, Helvetica, sans-serif"; */
-    /* margin-left: 6px; */
-    font-size  : 13px;
+    font-family: "Verdana, Arial, Helvetica, sans-serif";
+    margin-left: 6px; 
+    font-size  : 14px;
 }
 
 .TreeSelected {

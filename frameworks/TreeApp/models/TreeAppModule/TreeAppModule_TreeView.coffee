@@ -4,78 +4,75 @@ class TreeAppModule_TreeView extends TreeAppModule
         super()
         
         @name = 'Tree View'
+        @visible = false
         
+        _ina = ( app ) =>
+            app.data.focus.get() != app.treeview.view_id
+        
+        _ina_cm = ( app ) =>
+            app.data.focus.get() != app.selected_canvas_inst()?[ 0 ]?.cm.view_id and 
+            app.data.focus.get() != app.treeview.view_id
+            
         @actions.push
             txt: "Delete current tree item"
             key: [ "Del" ]
+            ina: _ina
             fun: ( evt, app ) =>
-                if app.selected_view == "TreeView"
-                    for path in app.data.selected_tree_items
-                        #prevent deleting root item (session)
-                        if path.length > 1
-                            m = path[ path.length - 1 ]
+                for path in app.data.selected_tree_items
+                    #prevent deleting root item (session)
+                    if path.length > 1
+                        m = path[ path.length - 1 ]
+                        if m instanceof ViewItem
+                            modules = app.data.modules
+                            for mod in modules 
+                                if mod instanceof TreeAppModule_PanelManager
+                                    mod.actions[ 4 ].fun evt, app
+                        else
                             path[ path.length - 2 ].rem_child m
-                            
                             @delete_from_tree app, m
-                    
+                        
+                        
+        lst_equals = ( a, b ) ->
+            if a.length != b.length
+                return false
+            for va, ia in a
+                if va != b[ ia ]
+                    return false
+            return true
+                
+        up_down_fun = ( evt, app, inc ) ->
+            items = app.data.selected_tree_items
+            session = app.data.selected_session()
+            if items.length == 0
+                app.data.selected_tree_items.clear()
+                app.data.selected_tree_items.push [ session ]
+            else if items.length == 1
+                #first search position of current selected item
+                flat = app.layouts[ session.model_id ]._pan_vs_id.TreeView.treeview.flat
+                for f, i in flat
+                    if i + inc >= 0 and i + inc < flat.length and lst_equals( items[ 0 ], f.item_path )
+                        app.data.selected_tree_items.clear()
+                        app.data.selected_tree_items.push flat[ i + inc ].item_path
+                        break
+    
         @actions.push
             txt: ""
             key: [ "UpArrow" ]
+            ina: _ina_cm
             fun: ( evt, app ) =>
-                items = app.data.get_selected_tree_items()
-                session = app.data.selected_session()
-                if items.length == 0
-                    app.data.selected_tree_items.clear()
-                    app.data.selected_tree_items.push [ session ]
-                else if items.length == 1
-                    #first search position of current selected item
-                    it = items[ 0 ]
-                    tv = app.layouts[session.model_id]._pan_vs_id.TreeView.treeview.flat
-                    flat = []
-                    for tree in tv
-                        flat.push tree.item
-                    index = flat.indexOf it
-                    
-                    if index > 0
-                        #then add previous item to selected
-                        new_item_selected = flat[index - 1]
-                        path = app.data.get_root_path new_item_selected
-                        app.data.selected_tree_items.clear()
-                        for item in path
-                            app.data.selected_tree_items.push item
-                    
+                up_down_fun evt, app, -1         
 
         @actions.push
             txt: ""
             key: [ "DownArrow" ]
+            ina: _ina_cm
             fun: ( evt, app ) =>
-                #
-                items = app.data.get_selected_tree_items()
-                session = app.data.selected_session()
-                if items.length == 0
-                    app.data.selected_tree_items.clear()
-                    app.data.selected_tree_items.push [ session ]
-                    
-                else if items.length == 1
-                    #first search position of current selected item
-                    it = items[ 0 ]
-                    tv = app.layouts[session.model_id]._pan_vs_id.TreeView.treeview.flat
-                    flat = []
-                    for tree in tv
-                        flat.push tree.item
-                    index = flat.indexOf it
-                    
-                    if index < flat.length-1
-                        #then add next item to selected
-                        new_item_selected = flat[index + 1]
-                        path = app.data.get_root_path new_item_selected
-                        app.data.selected_tree_items.clear()
-                        for item in path
-                            app.data.selected_tree_items.push item
+                up_down_fun evt, app, 1
 
         @actions.push
             txt: ""
             key: [ "LeftArrow" ]
+            ina: _ina_cm
             fun: ( evt, app ) =>
                 # Close selected items
                 items = app.data.selected_tree_items
@@ -87,6 +84,7 @@ class TreeAppModule_TreeView extends TreeAppModule
         @actions.push
             txt: ""
             key: [ "RightArrow" ]
+            ina: _ina_cm
             fun: ( evt, app ) =>
                 # Open selected items
                 items = app.data.selected_tree_items
@@ -98,12 +96,13 @@ class TreeAppModule_TreeView extends TreeAppModule
         @actions.push
             txt: ""
             key: [ "Enter" ]
+            ina: _ina_cm
             fun: ( evt, app ) =>
-                if app.selected_view == "TreeView"
-                    # Show/hide items
-                    path_items = app.data.selected_tree_items
-                    for path_item in path_items
-                        item = path_item[ path_item.length - 1]
+                # Show/hide items
+                path_items = app.data.selected_tree_items
+                for path_item in path_items
+                    item = path_item[ path_item.length - 1]
+                    if item._viewable?.get() == 1
                         for p in app.data.panel_id_list()
                             app.data.visible_tree_items[ p ].toggle item
                         
@@ -122,10 +121,6 @@ class TreeAppModule_TreeView extends TreeAppModule
             app.data.visible_tree_items[ p ].remove item
         app.data.selected_tree_items.clear()
         
-        # TODO
-#         if item instanceof ImgItem
-        # if item is using animation module, display settings anim_time._max should loose 1 or do something according to time
-    
     is_close: ( app, item ) ->
         for closed_item_path in app.data.closed_tree_items
             if item.equals closed_item_path

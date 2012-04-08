@@ -10,6 +10,9 @@ class ModelEditorItem_ConstrainedVal extends ModelEditorItem
             item_width: 0.3 * @ew
             item_type : ModelEditorItem_Input
 
+        @ev?.onmousedown = =>
+            @get_focus()?.set @inp.view_id
+
         # slider
         @div = new_dom_element
             parentNode: @ed
@@ -43,7 +46,11 @@ class ModelEditorItem_ConstrainedVal extends ModelEditorItem
 
                 m = 10 * ( 1 + 9 * evt.shiftKey ) * ( 1 + 9 * evt.ctrlKey ) * ( 1 + 9 * evt.altKey )
                 
-                @model.set @model.get() + delta * @model.delta() / m
+                if @model._div.get() != 0
+                    @model.set @model.get() + delta * @model.delta() / @model._div.get()
+                else
+                    @model.set @model.get() + delta * @model.delta() / m
+                
                 evt.stopPropagation?()
                 evt.preventDefault?()
                 return false

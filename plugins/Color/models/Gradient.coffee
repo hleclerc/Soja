@@ -15,7 +15,7 @@ class Gradient extends Model
             color: new Color color[0], color[1], color[2], color[3]
             position: position
             
-    remove_color: (position) ->
+    remove_color: ( position ) ->
         @color_stop.splice position, 1
         
     get_color_from_pos: ( position ) ->

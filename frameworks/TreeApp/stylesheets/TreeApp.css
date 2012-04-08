@@ -1,10 +1,10 @@
 .PanelInstanceTreeView {
-    background: lightGrey; /*lightGrey ?*/
+    background: #eee;
     overflow  : auto;
 }
 
 .PanelInstanceEditView {
-    background: lightGrey;
+    background: #eee;
     overflow  : auto;
 }
 
@@ -22,4 +22,197 @@
 }
 .UnselectedViewItem {
     opacity: 0.5;
+}
+
+
+
+/* IcoBar */
+
+/*.IcoBar div {
+    display: inline-block;
+    width: 4px;
+    height: 35px;
+}
+
+.IcoBarSepModules {
+    width:1px;
+    height:24px;
+    border-right:thin solid lightGrey;
+    margin-right:4px;
+}*/
+
+.IcoBar {
+    height: auto;
+    background: #eee;
+}
+
+.module {
+    background: -moz-linear-gradient(270deg, #eee, #eee, #eee, #c6c6c6);
+    background: -webkit-linear-gradient(top, #eee, #eee, #eee, #c6c6c6);
+    background: -o-linear-gradient(top, #eee, #eee, #eee, #c6c6c6);
+    background: -ms-linear-gradient(top, #eee, #eee, #eee, #c6c6c6);
+    background: linear-gradient(top, #eee, #eee, #eee, #c6c6c6);
+    border-right:thin solid grey;
+    color: DarkSlateGrey;
+    display: inline-block;
+    padding: 1em 1em 0.2em 1em;
+    text-align: center;
+}
+
+.container_icon {
+    float:left;
+/*     margin-bottom:5px; */
+}
+
+.icon_top_span {
+}
+
+.icon_bot_span {
+}
+
+.big_icon_span {
+}
+
+.module_title{
+    margin-top: 2.7em;
+    clear:both;
+    text-align: center;
+}
+
+
+.IcoBar img {
+    margin-right:2px;
+    padding: 0.1em;
+    border:thin solid #eee;
+}
+
+.IcoBar img:hover {
+    border:thin solid grey;
+    background           : #fff;
+    -moz-border-radius   : 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius     : 3px;
+    border-radius        : 3px;
+}
+
+.click_container {
+    height               : 29px;
+    display              : inline-block;
+    border               : dashed thin grey;
+    -moz-border-radius   : 3px 3px 0px 3px;
+    -webkit-border-radius: 3px 3px 0px 3px;
+    -o-border-radius     : 3px 3px 0px 3px;
+    border-radius        : 3px 3px 0px 3px;
+}
+
+.click_container:hover {
+    border: solid thin grey;
+/*     background-color: #ccc; */
+}
+
+.container_hidden_icon {
+    display    : none;
+    position   : absolute;
+    z-index    : 1001;
+    background : #eee;
+    padding    : 0.4em;
+    
+    border               : thin solid grey;
+    -moz-border-radius   : 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius     : 3px;
+    border-radius        : 3px;
+}
+
+.container_hidden_icon img {
+    padding: 0.1em;
+    border:thin solid #eee;
+    margin-top: 0.4em;
+}
+
+.container_hidden_icon img:hover {
+    background-color     : #fff;
+    -moz-border-radius   : 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius     : 3px;
+    border-radius        : 3px;
+}
+
+
+.arrow{
+    margin-bottom: 6px;
+}
+.arrow_container{
+    height               : 29px;
+    display              : inline-block;
+}
+
+.arrow_container:hover{
+/*     background: white !important; */
+}
+
+#contextMenu {
+    background: white;
+    border: thin solid black;
+    box-shadow: 3px 3px 3px black;
+}
+
+.contextMenuElement {
+    cursor: pointer;
+    padding: 6px;
+}
+
+.contextMenuElement:hover {
+    background: grey;
+}
+
+
+.menu_container {
+    position   : absolute;
+    z-index    : 1001;
+    min-width  : 10em;
+    background : white;
+    box-shadow : 3px 3px 3px black;
+    text-align : left;
+    display    : none;
+    border               : thin solid grey;
+    -moz-border-radius   : 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius     : 3px;
+    border-radius        : 3px;
+}
+.block {
+    display: block;
+}
+.inline {
+    display: inline;
+}
+.elem_container, .elem_container_parent {
+    cursor: pointer;
+    padding: 6px;
+}
+.elem_container:hover, .elem_container_parent:hover {
+    background: lightGrey;
+    
+}
+
+.elem_container_key {
+    text-align:right;
+    float:right;
+    font-size:smaller;
+    padding-left: 1em;
+}
+
+.menu_img_arrow{
+    border           : none !important;
+    padding          : 0px !important;
+    margin           : 0px !important;
+    margin-top       : 4px !important;
+    position         : absolute;
+    right            : 0px;
+    -webkit-transform: rotate(-90deg);
+       -moz-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+         -o-transform: rotate(-90deg);
+            transform: rotate(-90deg);
 }

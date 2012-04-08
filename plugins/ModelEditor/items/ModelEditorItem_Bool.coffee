@@ -18,14 +18,25 @@ class ModelEditorItem_CheckBox extends ModelEditorItem
             onchange  : =>
                 @get_undo_manager()?.snapshot()
                 @model.set @input.checked
+
+        @ev?.onmousedown = =>
+            @get_focus()?.set @view_id
+            @model.toggle()
         
     onchange: ->
-        @input.checked = @model.toBoolean()
+        if @model.has_been_modified()
+            @input.checked = @model.toBoolean()
 
-        if @label?
-            if @model.toBoolean()
-                add_class @label, "modelEditor_checked"
+            if @label?
+                if @model.toBoolean()
+                    add_class @label, "modelEditor_checked"
+                else
+                    rem_class @label, "modelEditor_checked"
+                    
+        if @get_focus()?.has_been_modified()
+            if @get_focus().get() == @view_id
+                @input.focus()
             else
-                rem_class @label, "modelEditor_checked"
+                @input.blur()
 
     

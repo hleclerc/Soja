@@ -9,13 +9,22 @@
     height    : 9px;
 }
 .ColorPicker {
-/*     background: url('img/slider-th-opa.png') transparent; */
     width     : 11px;
     height    : 17px;
 }
 
 /* --------------------------- Color Picker --------------------------- */
-.colorSelector {
+
+
+.ModelEditorColorSelector:hover {
+    border-radius: 15px;
+}
+
+.ModelEditorColorSelectorBackground:hover {
+    background: #333;
+}
+
+/*.colorSelector {
     cursor    :pointer;
     position  : relative;
     width     : 36px;
@@ -32,7 +41,7 @@
 }
 .colorPicker {
     z-index: 101;
-}
+}*/
 
 /* --------------------------- Gradient Picker --------------------------- */
 .rightContainer {

@@ -104,7 +104,7 @@ class ModelEditorItem_GradientPicker extends ModelEditorItem
             lineargradient = ctx.createLinearGradient 0, 0, @canvas.width, 0
             
         for c in @model.color_stop
-            lineargradient.addColorStop c.position.get(), 'rgba(' + c.color.r.get() + ',' + c.color.g.get() + ',' + c.color.b.get() + ',' + c.color.a.get() + ')'
+            lineargradient.addColorStop c.position.get(), c.color.to_rgba()
         ctx.fillStyle = lineargradient
         ctx.fillRect 0, 0, @canvas.width, @canvas.height
     

@@ -16,10 +16,12 @@ class TreeAppData extends Model
             browser_state      : new BrowserState
             # loaded modules
             modules            : new Lst
+            focus              : -1
+            time               : new ConstrainedVal( 0, { _min: 0, _max: -1, _div: 0 } )
             
     
     new_session: ( name ) ->
-        s = new SessionItem name
+        s = new SessionItem name, this
         @tree_items.push s
         
         d = new DisplaySettingsItem
