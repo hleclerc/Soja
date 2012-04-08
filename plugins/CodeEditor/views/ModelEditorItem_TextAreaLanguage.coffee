@@ -9,13 +9,13 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
             parentNode: @ed
             nodeName  : "input"
             type      : "button"
-            className : "code_editor"
             value     : "FullScreen"
             onclick   : ( evt )  =>
                 # popup construction
                 p = new_popup @label or "Code Editor", event : evt, width: "50", onclose: =>
                     @onPopupClose( )
-                
+
+#                 win = window.open("","Code Editor", "menubar=no, status=no, scrollbars=yes, menubar=no, width=500, height=600")
 
                 p.appendChild @textarea
                 @code_mirror.save() # Copy the content of the editor into the textarea
@@ -24,6 +24,10 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
                     lineNumbers : true,
                     mode: @model.get_language(),
                     lineWrapping: true,
+                    onChange: =>
+                        changed_string = @fullscreen_code_mirror.getValue()
+                        @model.set changed_string
+                        @model.callback?()
                     onCursorActivity: =>
                         @fullscreen_code_mirror.setLineClass(@hlLine, null)
                         @hlLine = @fullscreen_code_mirror.setLineClass(@fullscreen_code_mirror.getCursor().line, "activeline")
@@ -67,11 +71,15 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
             lineNumbers : true,
             mode: @model.get_language(),
             lineWrapping: true,
+            onChange: =>
+                @model.set @code_mirror.getValue()
+                @model.callback?()
             onCursorActivity: =>
                 @code_mirror.setLineClass(@hlLine2, null)
                 @hlLine2 = @code_mirror.setLineClass(@code_mirror.getCursor().line, "activeline")
                 @code_mirror.matchHighlight("CodeMirror-matchhighlight")
         }
+#             indentUnit = @code_mirror.getOption('indentUnit')
         @code_mirror.getWrapperElement().onmousedown= =>
             @get_focus()?.set @view_id
             
