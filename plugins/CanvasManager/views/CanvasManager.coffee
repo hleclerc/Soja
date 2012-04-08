@@ -251,49 +251,33 @@ class CanvasManager extends View
             fun( this, evt )
 
     _img_mouse_down: ( evt ) ->
-        for fun in @click_fun
-            fun( this, evt )
-            
         evt = window.event if not evt?
-
+        
+        @old_x = evt.clientX - get_left( @canvas )
+        @old_y = evt.clientY - get_top ( @canvas )
+        
         # code from http://unixpapa.com/js/mouse.html
         @old_button = 
             if evt.which?
                 if evt.which  < 2 then "LEFT" else ( if evt.which  == 2 then "MIDDLE" else "RIGHT" )
             else
                 if evt.button < 2 then "LEFT" else ( if evt.button == 4 then "MIDDLE" else "RIGHT" )
-            
-         
-        @old_x = evt.clientX - get_left( @canvas )
-        @old_y = evt.clientY - get_top ( @canvas )
 
         @mouse_has_moved_since_mouse_down = false
         
+        # click_fun from selected items
+        for s in @selected_items
+            if s[ s.length - 1 ].click_fun? this, evt, @old_x, @old_y, @old_button
+                return
+
+        # else, default click functions
+        for fun in @click_fun
+            if fun this, evt, [ @old_x, @old_y ], @old_button
+                return
+            
+        # default behavior
         if @old_button == "LEFT" or @old_button == "MIDDLE"
             @canvas.onmousemove = ( evt ) => @_img_mouse_move evt
-            
-            if @old_button == "LEFT"
-                # look if there's a movable point under mouse
-                for phase in [ 0 ... 3 ]
-                    movable_entities = @_get_movable_entities phase
-                    if movable_entities.length
-                        @undo_manager?.snapshot()
-                        break
-
-                @movable_point = movable_entities[ 0 ]?.item
-                
-                # if @movable_point 
-                if evt.ctrlKey # add / rem selection
-                    if @movable_point?
-                        @selected_entities.toggle_ref @movable_point
-                else
-                    if @movable_point?
-                        @selected_entities.clear()
-                        @selected_entities.push @movable_point
-
-                        @movable_point.beg_click [ @old_x, @old_y ]
-                    else
-                        @selected_entities.clear()
                 
         if @old_button == "RIGHT"
             @canvas.oncontextmenu = => return false
@@ -318,9 +302,15 @@ class CanvasManager extends View
             @context_menu?( evt, true )
         else
             @context_menu?( evt, false )
-                
+            
+        delete @clk_x
+        delete @clk_y
+
     _img_mouse_out: ( evt ) ->
         @canvas.onmousemove = ( evt ) => @_mouse_move evt # start event for hover
+            
+        delete @clk_x
+        delete @clk_y
             
     # zoom sur l'objet avec la mollette
     _img_mouse_wheel: ( evt ) ->
@@ -366,18 +356,6 @@ class CanvasManager extends View
             delete @clk_y
             
         return [ new_x, new_y ]
-        
-    _mouse_move: ( evt ) ->
-        [ @old_x, @old_y ] = @_get_new_xy evt
-        
-        movable_entities = @_get_movable_entities 0
-        @movable_point = movable_entities[ 0 ]?.item
-        @pre_selected_entities.clear()
-        if @movable_point?
-            @pre_selected_entities.push @movable_point
-            
-        for f in @on_mouse_move_items
-            f.on_mouse_move @old_x, @old_y
             
     _img_mouse_move: ( evt ) ->
         evt = window.event if not evt?
@@ -385,6 +363,14 @@ class CanvasManager extends View
         if new_x == @old_x and new_y == @old_y
             return false
             
+        # click_fun from selected items
+        for s in @selected_items
+            if s[ s.length - 1 ].move_fun? this, evt, [ @old_x, @old_y ], @old_button
+                @old_x = new_x
+                @old_y = new_y
+                return
+    
+    
         if @movable_point? and not @mouse_has_moved_since_mouse_down
             @undo_manager?.snapshot()
             
@@ -451,7 +437,7 @@ class CanvasManager extends View
     _get_movable_entities_rec: ( res, item, phase ) ->
         if item.get_movable_entities?
             item.get_movable_entities res, @cam_info, [ @old_x, @old_y ], phase
-        else if item.sub_canvas_items?
+        if item.sub_canvas_items?
             for sub_item in item.sub_canvas_items()
                 @_get_movable_entities_rec res, sub_item, phase
 
