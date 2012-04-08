@@ -164,11 +164,14 @@ class Cam extends Model
             @O = d.O
             @o_x = w / 2
             @o_y = h / 2
+            @d = d
             
         proj: ( P ) ->
             d = Vec_3.sub P, @O
             x = Vec_3.dot d, @X
             y = Vec_3.dot d, @Y
             z = Vec_3.dot d, @Z
+            if 1 + @p * z < d * 1e-6
+                return [ NaN, NaN, NaN ]
             d = 1 / ( 1 + @p * z )
             return [ @o_x + d * x, @o_y + d * y, z ]

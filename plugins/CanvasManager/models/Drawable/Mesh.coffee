@@ -10,9 +10,10 @@ class Mesh extends Drawable
             triangles        : new Lst
             elementary_fields: new Model
             nodal_fields     : new Model
-            _mv              : new MoveScheme_3D
             constrain_lines  : new Lst
             free_lines       : new Lst
+            _mv              : new MoveScheme_3D
+            _selected        : []
         
         if legend?
             @add_attr
@@ -31,6 +32,10 @@ class Mesh extends Drawable
     draw: ( info ) ->
         draw_point = info.sel_item[ @model_id ]
         
+        _selected = {}
+        for item in @_selected
+            _selected[ item.model_id ] = true
+        
         if @points.length
             proj = for p in @points
                 info.re_2_sc.proj p.pos.get()            
@@ -47,7 +52,7 @@ class Mesh extends Drawable
                 color_dot = info.theme.dot.to_hex()
                 for n in [ 0 ... proj.length ]
                     p = proj[ n ]
-                    if info.selected[ @points[ n ].model_id ]?
+                    if _selected[ @points[ n ].model_id ]?
                         info.ctx.fillStyle = color_selected_dot
                     else
                         info.ctx.fillStyle = color_dot
@@ -705,4 +710,41 @@ class Mesh extends Drawable
         #info.ctx.closePath()
         info.ctx.stroke()
 
+    click_fun: ( cm, evt, pos, b ) ->
+        if b == "LEFT"
+            # look if there's a movable point under mouse
+            for phase in [ 0 ... 3 ]
+                res = []
+                movable_entities = @get_movable_entities res, cm.cam_info, pos, phase
+
+                if movable_entities.length
+                    cm.undo_manager?.snapshot()
+                    
+                    @movable_point = movable_entities[ 0 ].item
+                    
+                    # if @movable_point 
+                    if evt.ctrlKey # add / rem selection
+                        if @movable_point?
+                            @_selected.toggle_ref @movable_point
+                    else
+                        if @movable_point?
+                            @_selected.clear()
+                            @_selected.push @movable_point
+
+                            @movable_point.beg_click pos
+                        else
+                            @_selected.clear()
+                    
+                    return true
+        return false
+                    
+    move_fun: ( cm, evt, pos, b ) ->
+        #         movable_entities = @_get_movable_entities 0
+        #         @movable_point = movable_entities[ 0 ]?.item
+        #         @pre_selected_entities.clear()
+        #         if @movable_point?
+        #             @pre_selected_entities.push @movable_point
+        #             
+        #         for f in @on_mouse_move_items
+        #             f.on_mouse_move @old_x, @old_y
         
