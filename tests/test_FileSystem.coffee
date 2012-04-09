@@ -13,8 +13,8 @@
 test_FileSystem = ->
     fs = new FileSystem
     
-    #     fs.load "/home/monkey/toto", ( val ) ->
-    #         new_model_editor el: document.body, model: val, label: "toto"
+    fs.load "/toto", ( val ) ->
+        new_model_editor el: document.body, model: val, label: "toto"
     #         
     #     val.set 150
     # 
