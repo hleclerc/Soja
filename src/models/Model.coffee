@@ -295,6 +295,10 @@ class Model
 
     # called by set. change_level should not be defined by the user (it permits to != change from child of from this)
     _signal_change: ( change_level = 2 ) ->
+        #
+        if change_level == 2 and @_server_id? and not Model._modlist[ @model_id ]?
+            FileSystem.signal_change this
+        
         # register this as a modified model
         Model._modlist[ @model_id ] = this
 

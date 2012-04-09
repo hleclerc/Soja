@@ -36,11 +36,26 @@ class FileSystem
         @_data_to_send += data
         if not FileSystem._timer?
             FileSystem._timer = setTimeout FileSystem._timeout_func, 0
-    
+
+    # send a request 
+    make_channel: ->
+        xhr_object = FileSystem._my_xml_http_request()
+        xhr_object.open 'GET', "/_?s=#{@_session_num}", true
+        xhr_object.onreadystatechange = ->
+            if @readyState == 4 and @status == 200
+                eval @responseText
+        xhr_object.send()
+
+    # send changes of m to instances. m is assumed to have a _server_id 
+    @signal_change: ( m ) ->
+        for k, f of FileSystem._insts
+            f.send "C #{m._server_id} #{m._get_state()} "
+        
+
     # 
     @_timeout_func: ->
         delete FileSystem._timer
-        for k, f of FileSystem._insts when f._data_to_send.length 
+        for k, f of FileSystem._insts when f._data_to_send.length
             # if we are waiting for a session id, do not send the data
             # (@responseText will contain another call to @_timeout_func with the session id)
             if f._session_num == -1

@@ -12,11 +12,15 @@
 # lib gen/FileSystem.js
 test_FileSystem = ->
     fs = new FileSystem
+
+    m = new Model
+    new_model_editor el: document.body, model: m, label: "model"
     
     fs.load "/toto", ( val ) ->
-        new_model_editor el: document.body, model: val, label: "toto"
-    #         
-    #     val.set 150
+        m.add_attr toto: val
+        
+    setTimeout ( -> m.toto.set 150 ), 1000
+    
     # 
     #     fs.save "/home/monkey/session/12345689", tree_app.session
         
