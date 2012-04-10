@@ -121,7 +121,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
                 if not @zoom_area
                     @old_cm = app.selected_canvas_inst()?[ 0 ]?.cm
                     @zoom_area = new ZoomArea @old_cm
-                    @zoom_area.zoom_pos.set [ @old_cm.old_x, @old_cm.old_y ]
+                    @zoom_area.zoom_pos.set [ @old_cm.mouse_x, @old_cm.mouse_y ]
                     @old_cm.items.push @zoom_area
                 else
                     @old_cm.items.remove_ref @zoom_area

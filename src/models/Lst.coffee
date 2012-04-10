@@ -185,6 +185,9 @@ class Lst extends Model
     contains: ( v ) ->
         @indexOf( v ) >= 0
 
+    contains_ref: ( v ) ->
+        @indexOf_ref( v ) >= 0
+
     # toggle presence of v
     toggle: ( v ) ->
         i = @indexOf v
