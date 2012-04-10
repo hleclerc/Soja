@@ -28,6 +28,7 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
                         changed_string = @fullscreen_code_mirror.getValue()
                         @model.set changed_string
                         @model.callback?()
+                        @get_focus()?.set @view_id
                     onCursorActivity: =>
                         @fullscreen_code_mirror.setLineClass(@hlLine, null)
                         @hlLine = @fullscreen_code_mirror.setLineClass(@fullscreen_code_mirror.getCursor().line, "activeline")
@@ -74,6 +75,8 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
             onChange: =>
                 @model.set @code_mirror.getValue()
                 @model.callback?()
+#                 @code_mirror.focus()
+                
             onCursorActivity: =>
                 @code_mirror.setLineClass(@hlLine2, null)
                 @hlLine2 = @code_mirror.setLineClass(@code_mirror.getCursor().line, "activeline")

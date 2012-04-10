@@ -15,7 +15,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             theme         : @app_data.selected_display_settings().theme
             
         @app_data.focus.set @cm.view_id
-        
+                
         @cm.click_fun.push ( cm, evt ) =>
             for view in @app_data._views
                 if view instanceof TreeApp
