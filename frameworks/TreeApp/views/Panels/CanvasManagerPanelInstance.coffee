@@ -81,21 +81,29 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
         else
             @_delete_context_menu( evt )
             
-    _delete_context_menu: ( evt ) =>
+    _delete_context_menu: ( evt ) ->
         if document.getElementById( "contextMenu" ) != null
-            menu = document.getElementById( "contextMenu" )
-            parent = document.getElementById( "main_window" )
+            menu = document.getElementById "contextMenu"
+            parent = document.getElementById "main_window"
             parent.removeChild menu
-    
-    _show_context_menu: ( evt ) =>
+
+    # HUM -> should be in respective objects...
+    _find_entity: ( evt ) ->
+        for phase in [ 0 ... 2 ]
+            for item in @cm.active_items() when item.get_movable_entities?
+                movable_entities = []
+                # BAD
+                item.get_movable_entities movable_entities, evt, [ @cm.mouse_x, @cm.mouse_y ], phase
+                if movable_entities.length
+                    return movable_entities
+        return []
+        
+    _show_context_menu: ( evt ) ->
+        evt = window.event if not evt?
         @_delete_context_menu()
         
-        evt = window.event if not evt?
         # look if there's a movable point under mouse
-        for phase in [ 0 ... 2 ]
-            movable_entities = @cm._get_movable_entities phase
-            if movable_entities.length
-                break
+        movable_entities = @_find_entity evt
                 
         point_under = false
         if movable_entities.length > 0
@@ -120,7 +128,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
 #             for c in m.actions
 #                 menu_item.push c.txt, c.fun
 
-        parent = document.getElementById( "main_window" )
+        parent = document.getElementById "main_window"
         @menu = new_dom_element
             parentNode: parent
             id        : "contextMenu"
