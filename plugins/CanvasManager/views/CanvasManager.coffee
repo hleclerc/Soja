@@ -19,35 +19,29 @@ class CanvasManager extends View
                 this[ field ] = fun()
 
         dv "items"                , -> new Lst
-        dv "cam"                  , -> new Cam @want_aspect_ratio
+        dv "cam"                  , => new Cam @want_aspect_ratio
         dv "allow_gl"             , -> false
         dv "theme"                , -> new Theme 'original'
         dv "time"                 , -> new ConstrainedVal( 0, { min: 0, max: -1, div: 0 } )
         dv "padding_ratio"        , -> 1.5
         dv "constrain_zoom"       , -> false
-        dv "auto_fit"             , -> new Bool false
+        dv "auto_fit"             , -> false
             
         super [ @items, @cam, @time ]
 
         #
         @canvas = new_dom_element
+            style     : { width: "100%" }
             nodeName  : "canvas"
             parentNode: @el
-            style     :
-                width: "100%"
-                #                 position: "absolute"
-                #                 top     : 0
-                #                 bottom  : 0
-                #                 left    : 0
-                #                 right   : 0
 
         # events
-        @canvas.onmousedown  = ( evt ) => @_mouse_down evt
-        @canvas.onmouseup    = ( evt ) => @_mouse_up evt
         @canvas.onmousewheel = ( evt ) => @_mouse_wheel evt
-        @canvas.onmouseout   = ( evt ) => @_mouse_out evt
+        @canvas.onmousedown  = ( evt ) => @_mouse_down evt
         @canvas.onmousemove  = ( evt ) => @_mouse_move evt
+        @canvas.onmouseout   = ( evt ) => @_mouse_out evt
         @canvas.ondblclick   = ( evt ) => @_dbl_click evt
+        @canvas.onmouseup    = ( evt ) => @_mouse_up evt
         @canvas.addEventListener? "DOMMouseScroll", @canvas.onmousewheel, false
 
         # drawing context
@@ -67,7 +61,6 @@ class CanvasManager extends View
         return true if @cam.has_been_modified?()
         return true if @theme.has_been_modified?()
         return true if @time.has_been_modified?()
-        return true if @padding_ratio.has_been_modified?()
 
         # if list of active_items has changed (not regarding the objects themselves)
         str_sel = ""
@@ -145,6 +138,7 @@ class CanvasManager extends View
                 @aset @cam.r, res, anim
                 d = dx / res * @padding_ratio
     
+        console.log "d", d
         @aset @cam.O, O, anim
         @aset @cam.d, d, anim
         @aset @cam.C, @cam.O, anim
@@ -197,7 +191,7 @@ class CanvasManager extends View
         if not has_a_background
             @ctx.clearRect 0, 0, @canvas.width, @canvas.height
         
-        if @auto_fit.get() and has_a_changed_drawable
+        if @auto_fit and has_a_changed_drawable
             if @first_fit?
                 @fit 1
             else

@@ -42,7 +42,7 @@ test_Curves = ->
         want_aspect_ratio: true
         padding_ratio: 1.4
         constrain_zoom: 'x'
-        auto_fit: new Bool true
+        auto_fit: true
         
     c.cam.threeD.set false
     c.resize 700, 400
