@@ -11,6 +11,9 @@ class FileSystem
     @_nb_insts = 0
     @_insts = {}
     
+    # _server_id -> object
+    @_objects = {}
+    
     constructor: ( @url = "/cmd" ) ->
         # default values
         @_data_to_send    = ""
@@ -43,6 +46,7 @@ class FileSystem
         xhr_object.open 'GET', "/_?s=#{@_session_num}", true
         xhr_object.onreadystatechange = ->
             if @readyState == 4 and @status == 200
+                # console.log "chan ->", @responseText
                 eval @responseText
         xhr_object.send()
 
@@ -72,7 +76,7 @@ class FileSystem
             xhr_object.open 'POST', f.url, true
             xhr_object.onreadystatechange = ->
                 if @readyState == 4 and @status == 200
-                    console.log @responseText
+                    #console.log "resp ->", @responseText
                     eval @responseText
             xhr_object.send f._data_to_send + "E "
             # console.log "-> ", f._data_to_send

@@ -375,6 +375,8 @@ class Model
     @_sync_views: ->
         views = {}
         for id, model of Model._modlist
+            if model._signal_id
+                FileSystem.signal_change model
             for view in model._views
                 views[ view.view_id ] = 
                     value: view
