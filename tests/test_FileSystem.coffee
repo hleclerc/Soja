@@ -19,7 +19,7 @@ test_FileSystem = ->
     fs.load "/toto", ( val ) ->
         m.add_attr toto: val
         
-    setTimeout ( -> m.toto.set 150 ), 1000
+    # setTimeout ( -> m.toto.set 150 ), 1000
     
     # 
     #     fs.save "/home/monkey/session/12345689", tree_app.session
