@@ -296,7 +296,7 @@ class Model
     # called by set. change_level should not be defined by the user (it permits to != change from child of from this)
     _signal_change: ( change_level = 2 ) ->
         #
-        if change_level == 2 and @_server_id? and not Model._modlist[ @model_id ]?
+        if change_level == 2 and @_server_id?
             FileSystem.signal_change this
         
         # register this as a modified model
@@ -375,8 +375,6 @@ class Model
     @_sync_views: ->
         views = {}
         for id, model of Model._modlist
-            if model._signal_id
-                FileSystem.signal_change model
             for view in model._views
                 views[ view.view_id ] = 
                     value: view
