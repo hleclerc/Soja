@@ -65,7 +65,8 @@ test_Curves = ->
     c.items.push m
     c.fit 0
     c.draw()
-    
+    c.active_items = ->
+        [ @.items[ 0 ] ]
     g = new_dom_element
         parentNode: document.body
         style     : { position: "fixed", top: 0, left: 800 }

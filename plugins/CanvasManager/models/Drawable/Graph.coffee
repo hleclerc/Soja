@@ -42,6 +42,8 @@ class Graph extends Drawable
             movable_hl_infos : true
             points           : new Lst_Point
             legend           : new Lst
+            # behavior
+            _pre_sele        : new Lst # references of selected points
 
         for key, val of params
             this[ key ]?.set? val
@@ -167,7 +169,7 @@ class Graph extends Drawable
         
         #TODO should check if values don't go outside the canvas size
         for p, i in @points
-            if info.pre_sele[ @points[ i ].model_id ]?
+            if @points[ i ] in @_pre_sele
                 highlighted_point = p.pos.get()
                 info.ctx.beginPath()
                 pos = info.re_2_sc.proj highlighted_point
@@ -192,7 +194,7 @@ class Graph extends Drawable
     draw_highlight_values: ( info ) ->
         padding = 10
         for p, i in @points
-            if info.pre_sele[ @points[ i ].model_id ]?
+            if @points[ i ] in @_pre_sele
                 highlighted_point = p.pos.get()
                 info.ctx.beginPath()
                 info.ctx.fillStyle = @font_color.to_rgba()
@@ -216,10 +218,8 @@ class Graph extends Drawable
 
     
     draw_marker_dot: ( info, orig, proj ) ->
-        
         for p, i in proj
-#             if p[ 0 ] >= @O_point[ 0 ] - @size_marker.get() and p[ 0 ] <= @X_point[ 0 ] + @size_marker.get()
-            if info.pre_sele[ @points[ i ].model_id ]?
+            if @points[ i ] in @_pre_sele
                 info.ctx.fillStyle = @sel_item_color.to_rgba()
             else
                 info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
@@ -230,7 +230,7 @@ class Graph extends Drawable
         
     draw_marker_cross: ( info, orig, proj ) ->
         for p, i in proj
-            if info.pre_sele[ @points[ i ].model_id ]?
+            if @points[ i ] in @_pre_sele
                 info.ctx.strokeStyle = @sel_item_color.to_rgba()
             else
                 info.ctx.strokeStyle = @legend[ i ] or @marker_color.to_rgba()
@@ -245,7 +245,7 @@ class Graph extends Drawable
         
     draw_marker_square: ( info, orig, proj ) ->
         for p, i in proj
-            if info.pre_sele[ @points[ i ].model_id ]?
+            if @points[ i ] in @_pre_sele
                 info.ctx.fillStyle = @sel_item_color.to_rgba()
             else
                 info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
@@ -255,7 +255,7 @@ class Graph extends Drawable
         
     draw_marker_diamond: ( info, orig, proj ) ->
         for p, i in proj
-            if info.pre_sele[ @points[ i ].model_id ]?
+            if @points[ i ] in @_pre_sele
                 info.ctx.fillStyle = @sel_item_color.to_rgba()
             else
                 info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
@@ -270,7 +270,7 @@ class Graph extends Drawable
     #bar chart
     draw_marker_bar: ( info, orig, proj ) ->
         for p, i in proj
-            if info.pre_sele[ @points[ i ].model_id ]?
+            if @points[ i ] in @_pre_sele
                 info.ctx.fillStyle = @sel_item_color.to_rgba()
             else
                 info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
@@ -450,13 +450,16 @@ class Graph extends Drawable
                 x_min[ d ] = Math.min x_min[ d ], p[ d ]
                 x_max[ d ] = Math.max x_max[ d ], p[ d ]
                 
-    get_movable_entities: ( res, info, pos, phase ) ->
+
+    on_mouse_move: ( cm, evt, pos, b, old ) ->
+        # pre selection
+        res = []
         x = pos[ 0 ]
         y = pos[ 1 ]
         
-        if @points.length and phase == 0
+        if @points.length
             for p, i in @points
-                proj = info.re_2_sc.proj p.pos.get()
+                proj = cm.cam_info.re_2_sc.proj p.pos.get()
                 dx = x - proj[ 0 ]
                 dy = y - proj[ 1 ]
                 d = Math.sqrt dx * dx + dy * dy
@@ -464,3 +467,13 @@ class Graph extends Drawable
                     res.push
                         item: p
                         dist: d
+        if res.length
+            res.sort ( a, b ) -> b.dist - a.dist
+            if @_pre_sele.length != 1 or @_pre_sele[ 0 ] != res[ 0 ].item
+                @_pre_sele.clear()
+                @_pre_sele.push res[ 0 ].item
+                
+        else if @_pre_sele.length
+            @_pre_sele.clear()
+            
+        return false

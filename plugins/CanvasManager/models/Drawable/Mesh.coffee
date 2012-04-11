@@ -11,7 +11,7 @@ class Mesh extends Drawable
             points           : new Lst_Point # "add_point" can be used to fill the list
             lines            : new Lst
             triangles        : new Lst
-            # fileds
+            # fields
             elementary_fields: new Model # { field_name: values, ... }
             nodal_fields     : new Model # { field_name: values, ... }
             # behavior
