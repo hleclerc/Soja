@@ -4,9 +4,6 @@ class CanvasManager extends View
     #  - el; laceholder
     #  - items:
     # optionnal params :
-    #  - selected_items
-    #  - selected_entities
-    #  - pre_selected_entities
     #  - undo_manager
     #  - allow_gl
     #  - want_aspect_ratio
@@ -23,7 +20,6 @@ class CanvasManager extends View
 
         dv "items"                , -> new Lst
         dv "cam"                  , -> new Cam @want_aspect_ratio
-        dv "selected_items"       , -> new Lst
         dv "allow_gl"             , -> false
         dv "theme"                , -> new Theme 'original'
         dv "time"                 , -> new ConstrainedVal( 0, { min: 0, max: -1, div: 0 } )
@@ -31,7 +27,7 @@ class CanvasManager extends View
         dv "constrain_zoom"       , -> false
         dv "auto_fit"             , -> new Bool false
             
-        super [ @items, @cam, @selected_items, @time ]
+        super [ @items, @cam, @time ]
 
         #
         @canvas = new_dom_element
@@ -73,11 +69,11 @@ class CanvasManager extends View
         return true if @time.has_been_modified?()
         return true if @padding_ratio.has_been_modified?()
 
-        # if list of selected objects has changed (not regarding the objects themselves)
+        # if list of active_items has changed (not regarding the objects themselves)
         str_sel = ""
-        for s in @selected_items
-            if not s[ s.length - 1 ].has_nothing_to_draw?()
-                str_sel += " " + s[ s.length - 1 ].model_id
+        for s in @active_items()
+            if not s.has_nothing_to_draw?()
+                str_sel += " " + s.model_id
         if @_old_str_sel != str_sel
             @_old_str_sel = str_sel
             return true
@@ -222,8 +218,7 @@ class CanvasManager extends View
         
     # return a list of items which can take events
     active_items: ->
-        for s in @selected_items
-            s[ s.length - 1 ]
+        @items
         
     # 
     _catch_evt: ( evt ) ->
@@ -401,7 +396,7 @@ class CanvasManager extends View
         
         i = {}
         for item in @active_items()
-            CanvasManager._get_selected_items_in_an_hash_table_rec i, item
+            CanvasManager._get_active_items_in_an_hash_table_rec i, item
             
         @cam_info =
             w        : w
@@ -428,8 +423,8 @@ class CanvasManager extends View
             flat.push item
 
     # fill an hash table with id of selected items
-    @_get_selected_items_in_an_hash_table_rec: ( i, item ) ->
+    @_get_active_items_in_an_hash_table_rec: ( i, item ) ->
         i[ item.model_id ] = true
         if item.sub_canvas_items?
             for n in item.sub_canvas_items()
-                CanvasManager._get_selected_items_in_an_hash_table_rec i, n
+                CanvasManager._get_active_items_in_an_hash_table_rec i, n

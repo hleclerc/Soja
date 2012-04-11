@@ -40,7 +40,7 @@ class FileSystem
         if not FileSystem._timer?
             FileSystem._timer = setTimeout FileSystem._timeout_func, 0
 
-    # send a request 
+    # send a request for a "push" channel
     make_channel: ->
         xhr_object = FileSystem._my_xml_http_request()
         xhr_object.open 'GET', "/_?s=#{@_session_num}", true

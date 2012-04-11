@@ -58,22 +58,20 @@ test_Curves = ->
         
         
     m.points.push [   0, 12.04, 0 ]
-    m.points.push [ 100, 12.8, 0 ]
-    m.points.push [ 200, 12.1, 0 ]
+    m.points.push [ 100, 93.80, 0 ]
+    m.points.push [ 200, 12.10, 0 ]
     m.points.push [ 255, 12.09, 0 ]
     
     c.items.push m
     c.fit 0
     c.draw()
-    c.active_items = ->
-        [ @.items[ 0 ] ]
     g = new_dom_element
         parentNode: document.body
         style     : { position: "fixed", top: 0, left: 800 }
     editor = new_model_editor el: g, model: m, label: "Simple Graph", item_width: 48
     editor.default_types.push ( model ) -> ModelEditorItem_Bool_Img       if model instanceof Bool
     
-    new_model_editor el: g, model: c.cam, label: "cam", item_width: 48
+    new_model_editor el: g, model: c.cam  , label: "cam"  , item_width: 48
     new_model_editor el: g, model: c.theme, label: "theme", item_width: 48
     
     #-------------------

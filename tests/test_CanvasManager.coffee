@@ -5,7 +5,9 @@
 # lib gen/Color.js
 # lib gen/Geometry.js
 # lib gen/BrowserState.js
+# lib gen/Theme.js
 # lib gen/CanvasManager.js
+# lib gen/Animation.js
 test_CanvasManager = ->
     d = new_dom_element
         parentNode: document.body
@@ -37,7 +39,7 @@ test_CanvasManager = ->
     
     #     m.gradient.add_color [ 0, 0, 0, 255 ], 0
     #     m.gradient.add_color [ 255, 255, 255, 255 ], 1
-    c.selected_items.push [ m ]
+    c.active_items = -> [ m ]
     c.items.push m
     
     # IMG
