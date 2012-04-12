@@ -58,7 +58,7 @@ test_Curves = ->
         
         
     m.points.push [   0, 12.04, 0 ]
-    m.points.push [ 100, 93.80, 0 ]
+    m.points.push [ 100, 12.8, 0 ]
     m.points.push [ 200, 12.10, 0 ]
     m.points.push [ 255, 12.09, 0 ]
     

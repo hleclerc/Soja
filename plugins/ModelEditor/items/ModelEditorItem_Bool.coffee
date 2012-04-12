@@ -3,6 +3,8 @@ class ModelEditorItem_CheckBox extends ModelEditorItem
     constructor: ( params ) ->
         super params
         
+        @legend_focus = params.parent.legend_focus
+        
         # checkbox
         span = new_dom_element
             parentNode: @ed
@@ -19,10 +21,12 @@ class ModelEditorItem_CheckBox extends ModelEditorItem
                 @get_undo_manager()?.snapshot()
                 @model.set @input.checked
 
-        @ev?.onmousedown = =>
-            @get_focus()?.set @view_id
-            @model.toggle()
         
+        if @legend_focus != false
+            @ev?.onmousedown = =>
+                @get_focus()?.set @view_id
+                @model.toggle()
+            
     onchange: ->
         if @model.has_been_modified()
             @input.checked = @model.toBoolean()
@@ -33,10 +37,9 @@ class ModelEditorItem_CheckBox extends ModelEditorItem
                 else
                     rem_class @label, "modelEditor_checked"
                     
-        if @get_focus()?.has_been_modified()
-            if @get_focus().get() == @view_id
-                @input.focus()
-            else
-                @input.blur()
-
-    
+        if @legend_focus != false
+            if @get_focus()?.has_been_modified()
+                if @get_focus().get() == @view_id
+                    @input.focus()
+                else
+                    @input.blur()

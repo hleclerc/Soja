@@ -4,9 +4,12 @@ class CuttingPlan extends Drawable
         super()
         
         @add_attr
-            pos    : new Point pos
-            dir    : new Point dir
-            opacity: new ConstrainedVal( 50, { min: 0, max: 100, div: 100 } )
+            pos       : new Point pos
+            dir       : new Point dir
+            opacity   : new ConstrainedVal( 50, { min: 0, max: 100, div: 100 } )
+            # behavior
+            _selected : new Lst
+            _pre_sele : new Lst
         @b = []
 #         @size_marker = 0.1
         
@@ -81,12 +84,12 @@ class CuttingPlan extends Drawable
         
         #draw pos point
         info.ctx.beginPath()
-        if info.pre_sele[ @pos.model_id ]?
+        if @pos in @_pre_sele
             info.ctx.strokeStyle = "yellow"
         else
             info.ctx.strokeStyle = "#333311"
             
-        if info.selected[ @pos.model_id ]?
+        if @pos in @_selected
             info.ctx.fillStyle = "red"
         else
             info.ctx.fillStyle = "#333311"
@@ -111,12 +114,12 @@ class CuttingPlan extends Drawable
         
         #draw dir point
         info.ctx.beginPath()
-        if info.pre_sele[ @dir.model_id ]?
+        if @dir in @_pre_sele
             info.ctx.strokeStyle = "yellow"
         else
             info.ctx.strokeStyle = "#333311"
             
-        if info.selected[ @dir.model_id ]?
+        if @dir in @_selected
             info.ctx.fillStyle = "red"
         else
             info.ctx.fillStyle = "#333311"
@@ -165,3 +168,79 @@ class CuttingPlan extends Drawable
                     item: @dir
                     dist: d
                     type: "CuttingPlan"
+                    
+                        
+    on_mouse_down: ( cm, evt, pos, b ) ->
+        delete @_movable_entity
+        
+        if b == "LEFT"
+            # look if there's a movable point under mouse
+            for phase in [ 0 ... 3 ]
+                # closest entity under mouse
+                res = []
+                @get_movable_entities res, cm.cam_info, pos, phase
+                if res.length
+                    res.sort ( a, b ) -> b.dist - a.dist
+                    @_movable_entity = res[ 0 ].item
+                    @_may_need_snapshot = true
+                    
+                    if evt.ctrlKey # add / rem selection
+                        @_selected.toggle_ref @_movable_entity
+                        if not @_selected.contains_ref @_movable_entity
+                            delete @_movable_entity
+                    else
+                        @_selected.clear()
+                        @_selected.push @_movable_entity
+                        @_movable_entity.beg_click pos
+                        
+                    return true
+                    
+        return false
+                    
+    on_mouse_move: ( cm, evt, pos, b, old ) ->
+        if b == "LEFT" and @_movable_entity?
+            if @_may_need_snapshot
+                cm.undo_manager?.snapshot()
+                delete @_may_need_snapshot
+                
+            p_0 = cm.cam_info.sc_2_rw.pos pos[ 0 ], pos[ 1 ]
+            d_0 = cm.cam_info.sc_2_rw.dir pos[ 0 ], pos[ 1 ]
+            @_movable_entity.mov_click @_selected, @_movable_entity.pos, p_0, d_0
+            
+            return true
+
+        # pre selection
+        res = []
+        x = pos[ 0 ]
+        y = pos[ 1 ]
+        
+        if @dir?
+            proj = cm.cam_info.re_2_sc.proj @dir.pos.get()
+            dx = x - proj[ 0 ]
+            dy = y - proj[ 1 ]
+            d = Math.sqrt dx * dx + dy * dy
+            if d <= 10
+                res.push
+                    item: @dir
+                    dist: d
+                    
+        if @pos?
+            proj = cm.cam_info.re_2_sc.proj @pos.pos.get()
+            dx = x - proj[ 0 ]
+            dy = y - proj[ 1 ]
+            d = Math.sqrt dx * dx + dy * dy
+            if d <= 10
+                res.push
+                    item: @pos
+                    dist: d
+                    
+        if res.length
+            res.sort ( a, b ) -> b.dist - a.dist
+            if @_pre_sele.length != 1 or @_pre_sele[ 0 ] != res[ 0 ].item
+                @_pre_sele.clear()
+                @_pre_sele.push res[ 0 ].item
+                
+        else if @_pre_sele.length
+            @_pre_sele.clear()
+    
+        return false
