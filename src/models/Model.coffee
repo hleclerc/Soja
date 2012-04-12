@@ -73,9 +73,9 @@ class Model
 
     # modify data, using another values, or Model instances. Should not be redefined (but _set should be)
     # returns true if object os modified
-    set: ( value ) ->
+    set: ( value, sig_server = true ) ->
         if @_set value # change internal data
-            @_signal_change()
+            @_signal_change sig_server
             return true
         return false
         
@@ -129,7 +129,7 @@ class Model
     # can be called with
     #  - name, instance of Model (two arguments)
     #  - { name_1: instance_1, name_2: instance_2, ... } (only one argument)
-    add_attr: ( n, p, signal_change = true ) ->
+    add_attr: ( n, p, signal_change = true, sig_server = true ) ->
         # name, model
         if p?
             if typeof( p ) == "function"
@@ -145,7 +145,7 @@ class Model
                 this[ n ] = p
                 
                 if signal_change
-                    @_signal_change()
+                    @_signal_change sig_server
             
         # else, asuming { name_1: instance_1, name_2: instance_2, ... }
         else
@@ -154,7 +154,7 @@ class Model
             
 
     # remove attribute named name
-    rem_attr: ( name, signal_change = true ) ->
+    rem_attr: ( name, signal_change = true, sig_server = true ) ->
         c = this[ name ]
         if c
             i = c._parents.indexOf this
@@ -170,7 +170,7 @@ class Model
                 @attribute_names.splice i, 1
             
             if signal_change
-                @_signal_change()
+                @_signal_change sig_server
 
     # change attribute named n to p
     mod_attr: ( n, p ) ->
@@ -294,9 +294,9 @@ class Model
         return change
 
     # called by set. change_level should not be defined by the user (it permits to != change from child of from this)
-    _signal_change: ( change_level = 2 ) ->
+    _signal_change: ( sig_server = true, change_level = 2 ) ->
         #
-        if change_level == 2 and @_server_id?
+        if sig_server and @_server_id?
             FileSystem.signal_change this
         
         # register this as a modified model
@@ -306,7 +306,7 @@ class Model
         if @_date_last_modification <= Model._counter
             @_date_last_modification = Model._counter + change_level
             for p in @_parents
-                p._signal_change 1
+                p._signal_change false, 1
                 
         # start if not done a timer
         Model._need_sync_views()

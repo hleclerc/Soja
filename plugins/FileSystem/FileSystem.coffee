@@ -1,5 +1,5 @@
 #
-# 
+# data from changed object are sent if not activity since 100ms
 # 
 #
 class FileSystem
