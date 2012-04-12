@@ -9,8 +9,8 @@ class Transform extends Drawable
             old_points: new Lst_Point
             lock      : true
             # behavior
-            _selected        : new Lst # references of selected points / lines / ...
-            _pre_sele        : new Lst # references of selected points / lines / ...
+            _selected : new Lst # references of selected points / lines / ...
+            _pre_sele : new Lst # references of selected points / lines / ...
             
             
     z_index: ->
@@ -74,6 +74,12 @@ class Transform extends Drawable
                         item: p
                         dist: d
                         type: "Transform"
+                    if @lock?.get() == false
+                        res.push
+                            item: @old_points[ i ]
+                            dist: d
+                            type: "Transform"
+                
                         
     on_mouse_down: ( cm, evt, pos, b ) ->
         delete @_movable_entity

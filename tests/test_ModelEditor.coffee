@@ -52,9 +52,9 @@ test_ModelEditor = ->
     new_model_editor el: docbod, model: focus
 
     # view with item which take 50%
-    editor = new_model_editor el: docbod, model: model.simple_aggregate, label: "Simple aggregate model with item_width at 48", item_width: 48, focus: focus
+    editor = new_model_editor el: docbod, model: model.simple_aggregate, label: "Simple aggregate model with item_width at 48", item_width: 48, focus: focus, legend_focus: false
     spacing()
-
+    
     # with choice roll
     editor = new_model_editor el: docbod, model: model.simple_aggregate, label: "Some sample alternate editors", focus: focus
     editor.label_ratio = 0.2

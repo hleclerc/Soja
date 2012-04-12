@@ -138,7 +138,6 @@ class CanvasManager extends View
                 @aset @cam.r, res, anim
                 d = dx / res * @padding_ratio
     
-        console.log "d", d
         @aset @cam.O, O, anim
         @aset @cam.d, d, anim
         @aset @cam.C, @cam.O, anim
