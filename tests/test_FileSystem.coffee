@@ -22,6 +22,9 @@ test_FileSystem = ->
     fs.load "/tata", ( val ) ->
         m.add_attr tata: val
         
+    fs.load "/titi", ( val ) ->
+        m.add_attr titi: val
+        
     # setTimeout ( -> m.toto.set 150 ), 1000
     
     # 
