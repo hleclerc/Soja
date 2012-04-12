@@ -45,7 +45,7 @@ class Str extends Obj
         encodeURI @_data
 
     _set_state: ( str, map ) ->
-        @set decodeURI str
+        @set decodeURIComponent str
 
     
     
