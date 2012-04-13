@@ -241,7 +241,19 @@ class Lst extends Model
                 @push l
             for l in o
                 @push l
-
+    
+    # permits to set an item or to grow the list if index == @length
+    set_or_push: ( index, val ) ->
+        if index < @length
+            @[ index ].set val
+        else if index == @length
+            @push val
+    
+    # permits to reduce the size (resize is allowed only if we known how to create new items)
+    trim: ( size ) ->
+        while @length > size
+            @pop()
+    
     # return a string with representation of items, separated by sep
     join: ( sep ) ->
         @get().join sep

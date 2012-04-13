@@ -55,7 +55,7 @@ class FileSystem
         xhr_object.open 'GET', "/_?s=#{@_session_num}", true
         xhr_object.onreadystatechange = ->
             if @readyState == 4 and @status == 200
-                # console.log "chan ->", @responseText
+                console.log "chan ->", @responseText
                 FileSystem._sig_server = false
                 eval @responseText
                 FileSystem._sig_server = true
@@ -67,14 +67,6 @@ class FileSystem
             obj._server_id = FileSystem._get_cur_tmp_server_id()
             obj._get_fs_data out, "N", "#{Model.get_object_class( obj )} "
             FileSystem._tmp_objects[ obj._server_id ] = obj
-            
-            
-    @_get_cur_tmp_server_id: ->
-        FileSystem._cur_tmp_server_id++
-        if FileSystem._cur_tmp_server_id % 4 == 0
-            FileSystem._cur_tmp_server_id++
-        FileSystem._cur_tmp_server_id
-
 
     # send changes of m to instances. m is assumed to have a _server_id 
     @signal_change: ( m ) ->
@@ -83,6 +75,19 @@ class FileSystem
             if FileSystem._timer_chan?
                 clearTimeout FileSystem._timeout_chan
             FileSystem._timer_chan = setTimeout FileSystem._timeout_chan_func, 100
+
+    #
+    @_tmp_id_to_real= ( tmp_id, res ) ->
+        tmp = FileSystem._tmp_objects[ tmp_id ]
+        delete FileSystem._tmp_objects[ tmp_id ]
+        FileSystem._objects[ res ] = tmp
+        tmp._server_id = res
+
+    @_get_cur_tmp_server_id: ->
+        FileSystem._cur_tmp_server_id++
+        if FileSystem._cur_tmp_server_id % 4 == 0
+            FileSystem._cur_tmp_server_id++
+        FileSystem._cur_tmp_server_id
             
     # timeout for at least one changed object
     @_timeout_chan_func: ->
@@ -113,7 +118,7 @@ class FileSystem
             xhr_object.open 'POST', f.url, true
             xhr_object.onreadystatechange = ->
                 if @readyState == 4 and @status == 200
-                    #console.log "resp ->", @responseText
+                    console.log "resp ->", @responseText
                     FileSystem._sig_server = false
                     eval @responseText
                     FileSystem._sig_server = true

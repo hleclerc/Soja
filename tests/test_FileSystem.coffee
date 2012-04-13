@@ -13,25 +13,30 @@
 test_FileSystem = ->
     fs = new FileSystem
 
+    # load
     m = new Model
     new_model_editor el: document.body, model: m, label: "model"
     
-    fs.load "/toto", ( val ) ->
-        m.add_attr toto: val
+    l = ( n ) ->
+        fs.load n, ( val ) ->
+            m.add_attr n, val
         
-    fs.load "/tata", ( val ) ->
-        m.add_attr tata: val
+    l "toto"
+    l "tata"
+    l "titi"
+    l "mod"
         
-    fs.load "/titi", ( val ) ->
-        m.add_attr titi: val
-        
+    #
     new_dom_element
         parentNode: document.body
         nodeName: "button"
         onclick: -> m.titi.push 127
         txt: "push 127"
-
-        
+    new_dom_element
+        parentNode: document.body
+        nodeName: "button"
+        onclick: -> m.mod.add_attr "pouet", "toz"
+        txt: "add attr"
     # setTimeout ( -> m.toto.set 150 ), 1000
     
     # 

@@ -172,10 +172,21 @@ class Model
             if signal_change
                 @_signal_change()
 
-    # change attribute named n to p
+    # change attribute named n to p (use references for comparison)
     mod_attr: ( n, p ) ->
-        @rem_attr n
-        @add_attr n, p
+        if @[ n ] != p
+            @rem_attr n
+            @add_attr n, p
+            
+    # add / mod / rem attr to get the same data than o
+    set_attr: ( o ) ->
+        # new ones / updates
+        for k, v of o
+            @mod_attr k, v
+        # remove
+        to_rem = ( k for k, v of this when v instanceof Model and not o[ k ]? )
+        for r in to_rem
+            @rem_attr r
 
     # dimension of the object -> [] for a scalar, [ length ] for a vector, ...
     size: ->
@@ -240,7 +251,10 @@ class Model
         
     # send data to server
     _get_fs_data: ( out, pre = "C", suf = "" ) ->
-        console.log "TODO"
+        str = for name, obj of this when obj instanceof Model
+            FileSystem.save_if_necessary out, obj
+            name + ":" + obj._server_id
+        out "#{pre} #{@_server_id} #{str.join ","} #{suf}"
 
     # may be redefined
     # make instructions to go from $o to $this
@@ -294,7 +308,7 @@ class Model
     # called by set. change_level should not be defined by the user (it permits to != change from child of from this)
     _signal_change: ( change_level = 2 ) ->
         #
-        if @_server_id?
+        if change_level == 2 and @_server_id?
             FileSystem.signal_change this
         
         # register this as a modified model
