@@ -25,6 +25,13 @@ test_FileSystem = ->
     fs.load "/titi", ( val ) ->
         m.add_attr titi: val
         
+    new_dom_element
+        parentNode: document.body
+        nodeName: "button"
+        onclick: -> m.titi.push 127
+        txt: "push 127"
+
+        
     # setTimeout ( -> m.toto.set 150 ), 1000
     
     # 
