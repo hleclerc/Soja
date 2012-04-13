@@ -3,6 +3,10 @@
 # 
 #
 class FileSystem
+    # when object are saved, their _server_id is assigned to a tmp value
+    @_cur_tmp_server_id = 0
+    @_sig_server = true # if changes has to be sent
+    
     # data are sent after a timeout (and are concatened before)
     @_objects_to_send = {}
     @_timer_send = undefined #
@@ -16,8 +20,9 @@ class FileSystem
     @_nb_insts = 0
     @_insts = {}
     
-    # _server_id -> object
-    @_objects = {}
+    # ..._server_id -> object
+    @_tmp_objects = {} # objects waiting for a real _server_id
+    @_objects = {} # _server_id -> object
     
     constructor: ( @url = "/cmd" ) ->
         # default values
@@ -37,10 +42,9 @@ class FileSystem
         @send "L #{encodeURI path} #{FileSystem._nb_callbacks} "
         FileSystem._callbacks[ FileSystem._nb_callbacks ] = callback
         FileSystem._nb_callbacks++
-
+        
     # explicitly send a command
     send: ( data ) ->
-        console.log data
         @_data_to_send += data
         if not FileSystem._timer_send?
             FileSystem._timer_send = setTimeout FileSystem._timeout_send_func, 1
@@ -52,21 +56,40 @@ class FileSystem
         xhr_object.onreadystatechange = ->
             if @readyState == 4 and @status == 200
                 # console.log "chan ->", @responseText
+                FileSystem._sig_server = false
                 eval @responseText
+                FileSystem._sig_server = true
         xhr_object.send()
+        
+    # 
+    @save_if_necessary: ( out, obj ) ->
+        if not obj._server_id?
+            obj._server_id = FileSystem._get_cur_tmp_server_id()
+            obj._get_fs_data out, "N", "#{Model.get_object_class( obj )} "
+            FileSystem._tmp_objects[ obj._server_id ] = obj
+            
+            
+    @_get_cur_tmp_server_id: ->
+        FileSystem._cur_tmp_server_id++
+        if FileSystem._cur_tmp_server_id % 4 == 0
+            FileSystem._cur_tmp_server_id++
+        FileSystem._cur_tmp_server_id
+
 
     # send changes of m to instances. m is assumed to have a _server_id 
     @signal_change: ( m ) ->
-        FileSystem._objects_to_send[ m.model_id ] = m
-        if FileSystem._timer_chan?
-            clearTimeout FileSystem._timeout_chan
-        FileSystem._timer_chan = setTimeout FileSystem._timeout_chan_func, 100
+        if FileSystem._sig_server
+            FileSystem._objects_to_send[ m.model_id ] = m
+            if FileSystem._timer_chan?
+                clearTimeout FileSystem._timeout_chan
+            FileSystem._timer_chan = setTimeout FileSystem._timeout_chan_func, 100
             
-    # timeout for at least noe changed object
+    # timeout for at least one changed object
     @_timeout_chan_func: ->
-        for k, f of FileSystem._insts
-            for n, m of FileSystem._objects_to_send
-                f.send "C #{m._server_id} #{m._get_state()} "
+        for n, m of FileSystem._objects_to_send
+            m._get_fs_data ( d ) => 
+                for k, f of FileSystem._insts
+                    f.send d
         #
         delete FileSystem._timer_chan
         FileSystem._objects_to_send = {}
@@ -91,9 +114,11 @@ class FileSystem
             xhr_object.onreadystatechange = ->
                 if @readyState == 4 and @status == 200
                     #console.log "resp ->", @responseText
+                    FileSystem._sig_server = false
                     eval @responseText
+                    FileSystem._sig_server = true
             xhr_object.send f._data_to_send + "E "
-            # console.log "-> ", f._data_to_send
+            console.log "-> ", f._data_to_send
             f._data_to_send = ""
         #
         delete FileSystem._timer_send

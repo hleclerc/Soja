@@ -17,6 +17,9 @@ class Obj extends Model
     get: ->
         @_data
 
+    _get_fs_data: ( out, pre = "C", suf = "" ) ->
+        out "#{pre} #{@_server_id} #{@toString()} #{suf}"
+
     _set: ( value ) ->
         if @_data != value
             @_data = value

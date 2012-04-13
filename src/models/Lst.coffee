@@ -266,7 +266,13 @@ class Lst extends Model
             @length = value.length
 
         return change
-        
+
+    _get_fs_data: ( out, pre = "C", suf = "" ) ->
+        str = for obj in this
+            FileSystem.save_if_necessary out, obj
+            obj._server_id
+        out "#{pre} #{@_server_id} #{str.join ","} #{suf}"
+
     _get_state: ->
         str = for obj in this
             obj.model_id
