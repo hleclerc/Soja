@@ -13,19 +13,29 @@
 test_FileSystem = ->
     fs = new FileSystem
 
+    # fs.save "/home/monkey/session/12345689", tree_app.session
+    
+    
     # load
     m = new Model
     new_model_editor el: document.body, model: m, label: "model"
     
     l = ( n ) ->
-        fs.load n, ( val ) ->
+        fs.load "/" + n, ( val ) ->
             m.add_attr n, val
         
     l "toto"
     l "tata"
     l "titi"
     l "mod"
+
+    # load dir
+    fs.load "/", ( val ) ->
+        console.log val.get()
         
+    # load dir
+    fs.save "/saved", new Val( 10 )
+
     #
     new_dom_element
         parentNode: document.body
@@ -40,5 +50,4 @@ test_FileSystem = ->
     # setTimeout ( -> m.toto.set 150 ), 1000
     
     # 
-    #     fs.save "/home/monkey/session/12345689", tree_app.session
         
