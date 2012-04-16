@@ -3,9 +3,10 @@ class StrLanguage extends Model
     constructor: ( value = "" , language = "text", callback = undefined ) ->
         super()
         
-        @value = new Str value
-        @language = language
-        @callback = callback
+        @add_attr
+            value    : new Str value
+            language : language
+            callback : callback
         
     get: ->
         return @value.get()
@@ -14,4 +15,4 @@ class StrLanguage extends Model
         @value.set val
     
     get_language: ->
-        return @language
+        return @language.get()

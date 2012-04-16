@@ -83,7 +83,7 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
                 @code_mirror.matchHighlight("CodeMirror-matchhighlight")
         }
 #             indentUnit = @code_mirror.getOption('indentUnit')
-        @code_mirror.getWrapperElement().onmousedown= =>
+        @code_mirror.getWrapperElement().onmousedown = =>
             @get_focus()?.set @view_id
             
         @hlLine2 = @code_mirror.setLineClass(0, "activeline")

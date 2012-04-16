@@ -1,10 +1,10 @@
 #
 class Border extends Drawable
-    constructor: ( border_type = "#FFFFFF" ) ->
+    constructor: ( _border_type = "#FFFFFF" ) ->
         super()
         
         @add_attr
-            border_type      : border_type
+            _border_type     : _border_type
             # geometry
             points           : new Lst_Point # "add_point" can be used to fill the list
             lines            : new Lst
@@ -32,10 +32,12 @@ class Border extends Drawable
             info.re_2_sc.proj p.pos.get()
         
         # 
-        if @border_type.get() == 'constrain'
-            color_line = info.theme.constrain_border.to_hex()
-        if @border_type.get() == 'free'
-            color_line = info.theme.free_border.to_hex()
+        if @_border_type.get() == 'constrain_displacement'
+            color_line = info.theme.constrain_boundary_displacement.to_hex()
+        if @_border_type.get() == 'constrain_strain'
+            color_line = info.theme.constrain_boundary_strain.to_hex()
+        if @_border_type.get() == 'free'
+            color_line = info.theme.free_boundary.to_hex()
             
         info.ctx.fillStyle = "#FFFFFF"
         info.ctx.strokeStyle = color_line
@@ -84,7 +86,6 @@ class Border extends Drawable
                         
                         @points.push P0
                         @points.push P1
-                        console.log "pusj"
                         @lines.push [ l, l + 1 ]
                     else
                         console.log "line deleted"
