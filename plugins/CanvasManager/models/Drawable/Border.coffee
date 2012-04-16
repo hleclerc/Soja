@@ -84,6 +84,7 @@ class Border extends Drawable
                         
                         @points.push P0
                         @points.push P1
+                        console.log "pusj"
                         @lines.push [ l, l + 1 ]
                     else
                         console.log "line deleted"

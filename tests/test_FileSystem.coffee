@@ -47,7 +47,3 @@ test_FileSystem = ->
         nodeName: "button"
         onclick: -> m.mod.add_attr "pouet", "toz"
         txt: "add attr"
-    # setTimeout ( -> m.toto.set 150 ), 1000
-    
-    # 
-        
