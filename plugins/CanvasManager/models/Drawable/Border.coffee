@@ -81,6 +81,7 @@ class Border extends Drawable
                         #We could bind P0 pos to actual mesh (so if mesh move, P0 will move too)
                         P0   = res[ 0 ].item[ 1 ]
                         P1   = res[ 0 ].item[ 2 ]
+                        
                         @points.push P0
                         @points.push P1
                         @lines.push [ l, l + 1 ]
