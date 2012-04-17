@@ -1,8 +1,8 @@
-# lib gen/Soja.js
-# lib gen/DomHelper.js
-# lib gen/ModelEditor.js
-# lib gen/ModelEditor.css
-# lib gen/Animation.js
+# lib Soja.js
+# lib DomHelper.js
+# lib ModelEditor.js
+# lib ModelEditor.css
+# lib Animation.js
 test_Animation = ->
     add_butt = ( txt, fun ) ->
         new_dom_element

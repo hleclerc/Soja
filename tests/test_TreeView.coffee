@@ -1,7 +1,7 @@
-# lib gen/Soja.js
-# lib gen/DomHelper.js
-# lib gen/TreeView.js
-# lib gen/TreeView.css
+# lib Soja.js
+# lib DomHelper.js
+# lib TreeView.js
+# lib TreeView.css
 test_TreeView = ->
     d = new Lst [
         _name: "root"

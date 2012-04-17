@@ -1,9 +1,9 @@
-# lib gen/Soja.js
-# lib gen/DomHelper.js
-# lib gen/ModelEditor.js
-# lib gen/ModelEditor.css
-# lib gen/Color.js
-# lib gen/Color.css
+# lib Soja.js
+# lib DomHelper.js
+# lib ModelEditor.js
+# lib ModelEditor.css
+# lib Color.js
+# lib Color.css
 test_ModelEditor = ->
     #     model = new Model
     #         bool          : true

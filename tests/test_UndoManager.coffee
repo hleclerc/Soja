@@ -1,8 +1,8 @@
-# lib gen/Soja.js
-# lib gen/DomHelper.js
-# lib gen/ModelEditor.js
-# lib gen/ModelEditor.css
-# lib gen/UndoManager.js
+# lib Soja.js
+# lib DomHelper.js
+# lib ModelEditor.js
+# lib ModelEditor.css
+# lib UndoManager.js
 
 test_UndoManager = ->
     add_butt = ( txt, fun ) ->
