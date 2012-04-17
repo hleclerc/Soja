@@ -174,14 +174,9 @@ class Mesh extends Drawable
         return false
         
     delete_selected_point: ( info ) ->
-        if @points.length > 0
-            selectedPoint = []
-            for i in [ 0 ... @points.length ]
-                if info.selected[ @points[ i ].model_id ]?
-                    selectedPoint.push i
-                    
-        for i in [ selectedPoint.length-1..0 ]
-            @delete_point selectedPoint[ i ]
+        for i in [ 0 ... @points.length ]
+            if @_selected.contains_ref @points[ i ]
+                @delete_point i
     
     delete_point: ( index ) ->
         if typeof index == "undefined"
@@ -231,13 +226,9 @@ class Mesh extends Drawable
                     @lines[ i ][ j ]._set( @lines[ i ][ j ].get() - 1 )
 
     break_line_from_selected: ( info ) ->
-        if @lines.length > 0
-            selectedPoint = []
-            for i in [ 0 ... @points.length ]
-                if info.selected[ @points[ i ].model_id ]?
-                    selectedPoint.push i
-            for i in [ selectedPoint.length-1..0 ]
-                @break_line selectedPoint[ i ]
+        for i in [ 0 ... @points.length ]
+            if @_selected.contains_ref @points[ i ]
+                @break_line i
     
     break_line: ( index ) ->
         if typeof index == "undefined"

@@ -9,6 +9,7 @@ class Theme extends Model
             line                            : new Color 255, 255, 255, 255
             constrain_boundary_displacement : new Color 122,   0,   0, 255
             constrain_boundary_strain       : new Color 200, 100, 100, 255
+            constrain_boundary_pressure     : new Color  50,   0,   0, 255
             free_boundary                   : new Color   0, 122,   0, 255
             dot                             : new Color   0, 255,   0, 255
             selected_dot                    : new Color 255,   0,   0, 255

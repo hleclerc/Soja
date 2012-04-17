@@ -99,7 +99,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             for item in @cm.active_items() when item.get_movable_entities?
                 movable_entities = []
                 # BAD
-                item.get_movable_entities movable_entities, evt, [ @cm.mouse_x, @cm.mouse_y ], phase
+                item.get_movable_entities movable_entities, @cm.cam_info, [ @cm.mouse_x, @cm.mouse_y ], phase
                 if movable_entities.length
                     return movable_entities
         return []
@@ -110,7 +110,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
         
         # look if there's a movable point under mouse
         movable_entities = @_find_entity evt
-                
+        
         point_under = false
         if movable_entities.length > 0
             if movable_entities[ 0 ].type == "Transform"

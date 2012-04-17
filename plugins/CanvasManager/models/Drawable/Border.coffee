@@ -5,6 +5,7 @@ class Border extends Drawable
         
         @add_attr
             _border_type     : _border_type
+            
             # geometry
             points           : new Lst_Point # "add_point" can be used to fill the list
             lines            : new Lst
@@ -36,6 +37,8 @@ class Border extends Drawable
             color_line = info.theme.constrain_boundary_displacement.to_hex()
         if @_border_type.get() == 'constrain_strain'
             color_line = info.theme.constrain_boundary_strain.to_hex()
+        if @_border_type.get() == 'constrain_pressure'
+            color_line = info.theme.constrain_boundary_pressure.to_hex()
         if @_border_type.get() == 'free'
             color_line = info.theme.free_boundary.to_hex()
             

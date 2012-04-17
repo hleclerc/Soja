@@ -59,7 +59,6 @@ class Transform extends Drawable
 
                     info.ctx.closePath()
     
-    
     get_movable_entities: ( res, info, pos, phase ) ->
         x = pos[ 0 ]
         y = pos[ 1 ]
