@@ -1,13 +1,13 @@
-# lib gen/Soja.js
-# lib gen/ModelEditor.js
-# lib gen/ModelEditor.css
-# lib gen/DomHelper.js
-# lib gen/Color.js
-# lib gen/Geometry.js
-# lib gen/BrowserState.js
-# lib gen/Theme.js
-# lib gen/CanvasManager.js
-# lib gen/Animation.js
+# lib Soja.js
+# lib ModelEditor.js
+# lib ModelEditor.css
+# lib DomHelper.js
+# lib Color.js
+# lib Geometry.js
+# lib BrowserState.js
+# lib Theme.js
+# lib CanvasManager.js
+# lib Animation.js
 test_CanvasManager = ->
     d = new_dom_element
         parentNode: document.body

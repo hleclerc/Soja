@@ -1,15 +1,15 @@
-# lib gen/Soja.js
-# lib gen/ModelEditor.js
-# lib gen/ModelEditor.css
-# lib gen/DomHelper.js
-# lib gen/Color.js
-# lib gen/Color.css
-# lib gen/Geometry.js
-# lib gen/BrowserState.js
-# lib gen/CanvasManager.js
-# lib gen/Animation.js
-# lib gen/Theme.js
-# lib gen/FileSystem.js
+# lib Soja.js
+# lib ModelEditor.js
+# lib ModelEditor.css
+# lib DomHelper.js
+# lib Color.js
+# lib Color.css
+# lib Geometry.js
+# lib BrowserState.js
+# lib CanvasManager.js
+# lib Animation.js
+# lib Theme.js
+# lib FileSystem.js
 test_FileSystem = ->
     fs = new FileSystem
 

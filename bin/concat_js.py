@@ -145,3 +145,35 @@ def concat_js( root_dir, output_js, output_cs = "", tmp_dir = ".gen" ):
 
     return libs
     
+#
+def make_tests( tests_dir = "tests", base_dir = "gen", pref_js = "../" ):
+    for p in os.listdir( tests_dir ):
+        if p[ 0 ] == ".":
+            continue
+        if not p.endswith( ".coffee" ):
+            continue
+        ra = p.replace( ".coffee", "" )
+        ba = base_dir + "/" + ra
+        js = ba + ".js"
+        ht = ba + ".html"
+        libs = concat_js( tests_dir + "/" + p, js )
+        libs.append( pref_js +  js )
+        html = file( ht, "w" )
+        print 'html ouput ->', ht
+        
+        print >> html, '<html> '
+        print >> html, '  <head> '
+        print >> html, '    <title>__' + ba + '__</title>'
+        print >> html, '    '
+        for l in libs:
+            # l = l[ len( base_dir ) + 1 : ] # we remove gen/
+            if l.endswith( ".css" ):
+                print >> html, '    <link type="text/css" href="' + l + '" rel="stylesheet"/>'
+            if l.endswith( ".js" ):
+                print >> html, '    <script type="text/javascript" src="' + l + '"></script>'
+        print >> html, '    '
+        print >> html, '  <body onload="' + ra + '()"> '
+        print >> html, '  </body> '
+        print >> html, '</html>'
+        
+    
