@@ -59,7 +59,16 @@ class ZoomArea extends Drawable
         info.ctx.shadowBlur    = 0
         info.ctx.shadowColor   = "transparent black"
         
+        info.ctx.fillStyle = "lightBlue"
+        info.ctx.font = "10px Arial"
+        info.ctx.textBaseline = 'bottom'
+        info.ctx.textAlign = 'left'
+        info.ctx.fillText "X " + @zoom_factor[ 0 ].get().toFixed(1), clientX + 75 , clientY - 75
+        
+        info.ctx.closePath()
         info.ctx.clip()
+        
+        
         
         for it in @canvas_manager._flat when it != this and it not instanceof Axes
             it.draw n_info

@@ -15,6 +15,7 @@ class Theme extends Model
             selected_dot                    : new Color 255,   0,   0, 255
             gradient_legend                 : new Gradient
             anim_delay                      : 300
+            zoom_factor                     : 5
             
         @gradient_legend.add_color [ 255,255,255, 255 ], 0
         @gradient_legend.add_color [   0,  0,  0, 255 ], 1
