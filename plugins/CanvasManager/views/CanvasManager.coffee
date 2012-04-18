@@ -211,6 +211,7 @@ class CanvasManager extends View
         
     # return a list of items which can take events
     active_items: ->
+        console.log "act ", @items
         @items
         
     # 
@@ -328,7 +329,7 @@ class CanvasManager extends View
         else
             @mouse_x = @rea_x
             @mouse_y = @rea_y
-            
+        
         # click_fun from selected items
         for item in @active_items()
             if item.on_mouse_move? this, evt, [ @mouse_x, @mouse_y ], @mouse_b, [ old_x, old_y ]

@@ -18,7 +18,10 @@ class TreeAppData extends Model
             modules            : new Lst
             focus              : -1
             time               : new ConstrainedVal( 0, { _min: 0, _max: -1, _div: 0 } )
-            
+        
+#         bind @focus, =>
+#             console.log @focus.get()
+    
     
     new_session: ( name ) ->
         s = new SessionItem name, this

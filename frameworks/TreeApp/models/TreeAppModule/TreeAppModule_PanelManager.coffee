@@ -123,6 +123,9 @@ class TreeAppModule_PanelManager extends TreeAppModule
                     @zoom_area = new ZoomArea @old_cm
                     @zoom_area.zoom_pos.set [ @old_cm.mouse_x, @old_cm.mouse_y ]
                     @old_cm.items.push @zoom_area
+                    console.log '----------------'
+                    console.log @old_cm
+                    console.log @old_cm.items
                 else
                     @old_cm.items.remove_ref @zoom_area
                     @old_cm.draw()
@@ -141,7 +144,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
             if s instanceof ShootingItem
                 cam = s.cam
                 child = s
-        console.log cam
+#         console.log cam
                 
         d = app.data.selected_display_settings()
         for panel_id in app.data.selected_canvas_pan
