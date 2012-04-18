@@ -12,10 +12,20 @@ class ZoomArea extends Drawable
     z_index: ->
         1000
 
+    always_active: ->
+        true
+        
     on_mouse_move: ( cm, evt, pos, b ) ->
         @zoom_pos[ 0 ].set pos[ 0 ]
         @zoom_pos[ 1 ].set pos[ 1 ]
-        
+        false
+    
+    on_mouse_wheel: ( cm, evt, pos, b, delta ) ->
+        n = Math.pow 1.2, delta
+        @zoom_factor[ 0 ].set @zoom_factor[ 0 ] * n
+        @zoom_factor[ 1 ].set @zoom_factor[ 1 ] * n
+        true
+
     draw: ( info ) ->
         clientX = @zoom_pos[ 0 ].get()
         clientY = @zoom_pos[ 1 ].get()
