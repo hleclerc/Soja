@@ -26,6 +26,7 @@ class TreeItem extends Model
             @_children.splice child, 1
         
 
+        
     # default draw method
     draw: ( info ) ->
         for i in @sub_canvas_items()

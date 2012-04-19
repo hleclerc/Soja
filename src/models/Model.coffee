@@ -212,6 +212,13 @@ class Model
                 return false
         return false
 
+    # get first parents that checks func_to_check
+    get_parents_that_check: ( func_to_check ) ->
+        res = []
+        visited = {}
+        @_get_parents_that_check_rec res, visited, func_to_check
+        return res
+        
     #
     @load: ( filename, func ) ->
         if not Model.synchronizer
@@ -350,6 +357,16 @@ class Model
             if not u[ attr ]
                 @rem_attr attr
 
+    # see get_parents_that_check
+    _get_parents_that_check_rec: ( res, visited, func_to_check ) ->
+        if not visited[ @model_id ]?
+            visited[ @model_id ] = true
+            if func_to_check this
+                res.push this
+            else
+                for p in @_parents
+                    p._get_parents_that_check_rec res, visited, func_to_check
+        
 
     # return true if info from map[ mid ] if compatible with this.
     # If it's the case, use this information to update data

@@ -58,6 +58,7 @@ class CanvasManager extends View
             @draw()
             
     need_to_redraw: ->
+        return true if @items.has_been_directly_modified?()
         return true if @cam.has_been_modified?()
         return true if @theme.has_been_modified?()
         return true if @time.has_been_modified?()
@@ -210,8 +211,18 @@ class CanvasManager extends View
         @canvas.height = h
         
     # return a list of items which can take events
+    # BEWARE: may be surdefined (as e.g. in CanvasManagerPanelInstance)
     active_items: ->
         @items
+        
+    active_items_rec: ( l = @active_items() ) ->
+        res = []
+        for item in l
+            res.push item
+            if item.sub_canvas_items?
+                for sub_item in @active_items_rec item.sub_canvas_items()
+                    res.push sub_item
+        res
         
     # 
     _catch_evt: ( evt ) ->
@@ -225,7 +236,7 @@ class CanvasManager extends View
         @mouse_x = evt.clientX - get_left( @canvas )
         @mouse_y = evt.clientY - get_top ( @canvas )
         
-        for item in @active_items()
+        for item in @active_items_rec()
             if item.on_dbl_click? this, evt, [ @mouse_x, @mouse_y ], @mouse_b
                 return @_catch_evt evt
                 
@@ -258,7 +269,7 @@ class CanvasManager extends View
         @mouse_y = evt.clientY - get_top ( @canvas )
         
         # click_fun from selected items
-        for item in @active_items()
+        for item in @active_items_rec()
             if item.on_mouse_down? this, evt, [ @mouse_x, @mouse_y ], @mouse_b
                 return @_catch_evt evt
 
@@ -303,6 +314,11 @@ class CanvasManager extends View
         else if evt.detail
             delta = - evt.detail / 3.0
 
+        # 
+        for item in @active_items_rec()
+            if item.on_mouse_wheel? this, evt, [ @mouse_x, @mouse_y ], @mouse_b, delta
+                return @_catch_evt evt
+
         # do the zoom
         c = Math.pow 1.2, delta
         cx = if evt.shiftKey or @constrain_zoom == "y" then 1 else c
@@ -328,9 +344,9 @@ class CanvasManager extends View
         else
             @mouse_x = @rea_x
             @mouse_y = @rea_y
-            
+        
         # click_fun from selected items
-        for item in @active_items()
+        for item in @active_items_rec()
             if item.on_mouse_move? this, evt, [ @mouse_x, @mouse_y ], @mouse_b, [ old_x, old_y ]
                 return @_catch_evt evt
 
@@ -388,7 +404,7 @@ class CanvasManager extends View
         h = @canvas.height
         
         i = {}
-        for item in @active_items()
+        for item in @active_items_rec()
             CanvasManager._get_active_items_in_an_hash_table_rec i, item
             
         @cam_info =

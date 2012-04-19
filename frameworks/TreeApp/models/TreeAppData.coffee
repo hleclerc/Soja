@@ -18,7 +18,21 @@ class TreeAppData extends Model
             modules            : new Lst
             focus              : -1
             time               : new ConstrainedVal( 0, { _min: 0, _max: -1, _div: 0 } )
+        
+#         bind @focus, =>
+#             console.log @focus.get()
+    
+    watch_item: ( item ) ->
+        for p in @panel_id_list()
+            @visible_tree_items[ p ].push item
             
+    close_item: ( item ) ->
+        @closed_tree_items.push item
+        
+    open_item: ( item ) ->
+        for it, index in @closed_tree_items
+            if item.equals it
+                @closed_tree_items.splice index, 1        
     
     new_session: ( name ) ->
         s = new SessionItem name, this
@@ -73,6 +87,22 @@ class TreeAppData extends Model
                 return true
         return false
     
+    #return list of child from "item" that corresponding to instance of "type"
+    get_child_of_type: ( item, type ) ->
+        res = []
+        visited = {}
+        @_get_child_of_type_rec res, visited, item, type
+        return res
+        
+    _get_child_of_type_rec: ( res, visited, item, type ) ->
+        if not visited[ item.model_id ]?
+            visited[ item.model_id ] = true
+            if item instanceof type
+                res.push item
+            if item._children?
+                for ch in item._children
+                    @_get_child_of_type_rec res, visited, ch, type
+                    
     # return item selected (not the path)
     get_selected_tree_items: ->
         items = new Lst

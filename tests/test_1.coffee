@@ -1,7 +1,7 @@
-# lib gen/Soja.js
-# lib gen/DomHelper.js
-# lib gen/ModelEditor.js
-# lib gen/ModelEditor.css
+# lib Soja.js
+# lib DomHelper.js
+# lib ModelEditor.js
+# lib ModelEditor.css
 test_1 = ->
     class Color extends Model
         constructor: ->

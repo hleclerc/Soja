@@ -1,5 +1,5 @@
-# lib gen/Soja.js
-# lib gen/BrowserState.js
+# lib Soja.js
+# lib BrowserState.js
 
 # simple view of a browser state which displays main values
 test_BrowserState = ->

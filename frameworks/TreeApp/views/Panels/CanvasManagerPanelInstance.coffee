@@ -15,8 +15,13 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             
         # active_items
         @cm.active_items = =>
+            res = for i in @cm.items when i.always_active?()
+                i
             for s in @app_data.selected_tree_items
-                s[ s.length - 1 ]
+                if s[ s.length - 1 ] not in res
+                    res.push s[ s.length - 1 ]
+            res
+                
         @app_data.selected_tree_items.bind @cm
 
         #
@@ -99,7 +104,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             for item in @cm.active_items() when item.get_movable_entities?
                 movable_entities = []
                 # BAD
-                item.get_movable_entities movable_entities, evt, [ @cm.mouse_x, @cm.mouse_y ], phase
+                item.get_movable_entities movable_entities, @cm.cam_info, [ @cm.mouse_x, @cm.mouse_y ], phase
                 if movable_entities.length
                     return movable_entities
         return []
@@ -110,7 +115,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
         
         # look if there's a movable point under mouse
         movable_entities = @_find_entity evt
-                
+        
         point_under = false
         if movable_entities.length > 0
             if movable_entities[ 0 ].type == "Transform"
@@ -165,7 +170,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
                     parentNode: @menu
                     className : "contextMenuElement"
                     onclick   : ( evt ) => 
-                        c.fun evt, @app_data._views[0]
+                        c.fun evt, @app_data._views[ 0 ]
                         @_delete_context_menu( evt )
                         
                 new_dom_element

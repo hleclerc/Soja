@@ -120,12 +120,14 @@ class TreeAppModule_PanelManager extends TreeAppModule
             fun: ( evt, app ) ->
                 if not @zoom_area
                     @old_cm = app.selected_canvas_inst()?[ 0 ]?.cm
-                    @zoom_area = new ZoomArea @old_cm
+                    @theme = @old_cm.theme
+                    @zoom_area = new ZoomArea @old_cm, zoom_factor : [ @theme.zoom_factor, @theme.zoom_factor, 1 ]
                     @zoom_area.zoom_pos.set [ @old_cm.mouse_x, @old_cm.mouse_y ]
                     @old_cm.items.push @zoom_area
                 else
                     @old_cm.items.remove_ref @zoom_area
                     @old_cm.draw()
+                    @theme.zoom_factor.set @zoom_area.zoom_factor[ 0 ] # use last zoom_factor as a default for user
                     delete @zoom_area
                     
             key: [ "Z" ]
@@ -141,7 +143,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
             if s instanceof ShootingItem
                 cam = s.cam
                 child = s
-        console.log cam
+#         console.log cam
                 
         d = app.data.selected_display_settings()
         for panel_id in app.data.selected_canvas_pan

@@ -5,6 +5,7 @@ class Border extends Drawable
         
         @add_attr
             _border_type     : _border_type
+            
             # geometry
             points           : new Lst_Point # "add_point" can be used to fill the list
             lines            : new Lst
@@ -13,7 +14,7 @@ class Border extends Drawable
             _pre_sele        : new Lst # references of selected points / lines / ...
                     
     z_index: ->
-        return 1000
+        return 1
         
     draw: ( info ) ->
         if @points.length == 0
@@ -36,6 +37,8 @@ class Border extends Drawable
             color_line = info.theme.constrain_boundary_displacement.to_hex()
         if @_border_type.get() == 'constrain_strain'
             color_line = info.theme.constrain_boundary_strain.to_hex()
+        if @_border_type.get() == 'constrain_pressure'
+            color_line = info.theme.constrain_boundary_pressure.to_hex()
         if @_border_type.get() == 'free'
             color_line = info.theme.free_boundary.to_hex()
             
@@ -46,7 +49,6 @@ class Border extends Drawable
         # draw lines
         for l, j in @lines when l.length == 2
             if l in @_pre_sele
-                console.log 'double'
                 info.ctx.lineWidth = 2
             else
                 info.ctx.lineWidth = 1
@@ -67,7 +69,7 @@ class Border extends Drawable
         if b == "LEFT"
             if cm._flat?
                 res = []
-                for el in cm._flat when el instanceof Mesh
+                for el in cm._flat when el instanceof Mesh or el instanceof Border
                     if el.lines?
                         # closest entity under mouse
                         @get_movable_entities res, cm.cam_info, pos, el
@@ -101,19 +103,18 @@ class Border extends Drawable
         @_pre_sele.clear()
         if cm._flat?
             res = []
-            for el in cm._flat when el instanceof Mesh
+            for el in cm._flat when el instanceof Mesh or el instanceof Border
                 if el.lines?
                     # closest entity under mouse
                     @get_movable_entities res, cm.cam_info, pos, el
         if res.length
             res.sort ( a, b ) -> b.dist - a.dist
-            @_may_need_snapshot = true
+            @_may_need_snapshot = false
             line = res[ 0 ].item[ 0 ]
             P0   = res[ 0 ].item[ 1 ]
             P1   = res[ 0 ].item[ 2 ]
             if line not in @_pre_sele
                 @_pre_sele.push line
-                l = @points.length
                 # should call onchange method
             
     get_movable_entities: ( res, info, pos, el ) ->
@@ -122,9 +123,9 @@ class Border extends Drawable
         proj = for p in el.points
             info.re_2_sc.proj p.pos.get()
             
-        for li in el.lines when li.length == 2
-            P0 = li[ 0 ].get()
-            P1 = li[ 1 ].get()
+        for li, i in el.lines when li.length == 2
+            P0 = el.lines[ i ][ 0 ].get()
+            P1 = el.lines[ i ][ 1 ].get()
             
             point = @_get_line_inter proj, P0, P1, x, y, el
             if point?

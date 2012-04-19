@@ -54,7 +54,6 @@ class ImgItem extends TreeItem
             
 #             @cm.items.push bg
             @cm.items.push m
-            @cm.selected_items.push [ m ]
             @cm.fit()
 
         @txt.innerHTML = "

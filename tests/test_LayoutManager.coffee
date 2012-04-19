@@ -1,8 +1,8 @@
-# lib gen/Soja.js
-# lib gen/DomHelper.js
-# lib gen/BrowserState.js
-# lib gen/LayoutManager.js
-# lib gen/Animation.js
+# lib Soja.js
+# lib DomHelper.js
+# lib BrowserState.js
+# lib LayoutManager.js
+# lib Animation.js
 test_LayoutManager = ->
     # m = new LayoutManagerData panel_id: "main_view"
     m = new LayoutManagerData

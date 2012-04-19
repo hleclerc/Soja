@@ -1,18 +1,18 @@
-# lib gen/Soja.js
-# lib gen/DomHelper.js
-# lib gen/TreeView.js
-# lib gen/TreeView.css
-# lib gen/BrowserState.js
-# lib gen/LayoutManager.js
-# lib gen/ModelEditor.js
-# lib gen/ModelEditor.css
-# lib gen/Color.js
-# lib gen/Color.css
-# lib gen/Geometry.js
-# lib gen/UndoManager.js
-# lib gen/CanvasManager.js
-# lib gen/TreeApp.js
-# lib gen/TreeApp.css
+# lib Soja.js
+# lib DomHelper.js
+# lib TreeView.js
+# lib TreeView.css
+# lib BrowserState.js
+# lib LayoutManager.js
+# lib ModelEditor.js
+# lib ModelEditor.css
+# lib Color.js
+# lib Color.css
+# lib Geometry.js
+# lib UndoManager.js
+# lib CanvasManager.js
+# lib TreeApp.js
+# lib TreeApp.css
 
 test_TreeApp = ->
     m = new TreeAppData

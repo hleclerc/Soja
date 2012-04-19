@@ -12,10 +12,20 @@ class ZoomArea extends Drawable
     z_index: ->
         1000
 
-    on_mouse_move: ( x, y ) ->
-        @zoom_pos[ 0 ].set x
-        @zoom_pos[ 1 ].set y
+    always_active: ->
+        true
         
+    on_mouse_move: ( cm, evt, pos, b ) ->
+        @zoom_pos[ 0 ].set pos[ 0 ]
+        @zoom_pos[ 1 ].set pos[ 1 ]
+        false
+    
+    on_mouse_wheel: ( cm, evt, pos, b, delta ) ->
+        n = Math.pow 1.2, delta
+        @zoom_factor[ 0 ].set @zoom_factor[ 0 ] * n
+        @zoom_factor[ 1 ].set @zoom_factor[ 1 ] * n
+        true
+
     draw: ( info ) ->
         clientX = @zoom_pos[ 0 ].get()
         clientY = @zoom_pos[ 1 ].get()
@@ -49,7 +59,16 @@ class ZoomArea extends Drawable
         info.ctx.shadowBlur    = 0
         info.ctx.shadowColor   = "transparent black"
         
+        info.ctx.fillStyle = "lightBlue"
+        info.ctx.font = "10px Arial"
+        info.ctx.textBaseline = 'bottom'
+        info.ctx.textAlign = 'left'
+        info.ctx.fillText "X " + @zoom_factor[ 0 ].get().toFixed(1), clientX + 75 , clientY - 75
+        
+        info.ctx.closePath()
         info.ctx.clip()
+        
+        
         
         for it in @canvas_manager._flat when it != this and it not instanceof Axes
             it.draw n_info

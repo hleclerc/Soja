@@ -128,8 +128,7 @@ class TreeAppModule_TreeView extends TreeAppModule
         return false
     
     add_item_to_close_tree: ( app, item ) ->
-        app.data.closed_tree_items.push item
+        app.data.close_item item
         
     rem_item_to_close_tree: ( app, item ) ->
-        ind = app.data.closed_tree_items.indexOf item
-        app.data.closed_tree_items.splice ind, 1
+        app.data.open_item item

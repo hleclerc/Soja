@@ -1,6 +1,9 @@
-#
+# This class is use to draw line/dot graph or bar chart
+# params available :
+# _pre_sele_color
+# _selected_color
 class Mesh extends Drawable
-    constructor: ( legend ) ->
+    constructor: ( legend, params = {} ) ->
         super()
         
         @add_attr
@@ -17,6 +20,12 @@ class Mesh extends Drawable
             # behavior
             _selected        : new Lst # references of selected points / lines / ...
             _pre_sele        : new Lst # references of selected points / lines / ...
+            _selected_color  : new Color 255,   0,   0
+            _pre_sele_color  : new Color 255, 255, 100
+            
+            
+        for key, val of params
+            this[ key ]?.set? val
         
         if legend?
             @add_attr
@@ -108,7 +117,7 @@ class Mesh extends Drawable
 
         # pre selected items
         if @_pre_sele.length
-            info.ctx.strokeStyle = "#FFFF22"
+            info.ctx.strokeStyle = @_pre_sele_color.to_hex()
             info.ctx.lineWidth = 1.5
             for item in @_pre_sele when item instanceof Point
                 p = info.re_2_sc.proj item.pos.get()
@@ -116,12 +125,19 @@ class Mesh extends Drawable
                 info.ctx.beginPath()
                 info.ctx.arc p[ 0 ], p[ 1 ], 5, 0, Math.PI * 2, true
                 info.ctx.stroke()
+            for l in @_pre_sele when item not instanceof Point
+                if l.length == 2
+                    info.ctx.lineWidth = 2
+                    info.ctx.beginPath()
+                    info.ctx.moveTo proj[ l[ 0 ].get() ][ 0 ], proj[ l[ 0 ].get() ][ 1 ]
+                    info.ctx.lineTo proj[ l[ 1 ].get() ][ 0 ], proj[ l[ 1 ].get() ][ 1 ]
+                    info.ctx.stroke()
                 
 
     on_mouse_down: ( cm, evt, pos, b ) ->
         delete @_movable_entity
         
-        if b == "LEFT"
+        if b == "LEFT" or b == "RIGHT"
             # look if there's a movable point under mouse
             for phase in [ 0 ... 3 ]
                 # closest entity under mouse
@@ -141,6 +157,9 @@ class Mesh extends Drawable
                         @_selected.clear()
                         @_selected.push @_movable_entity
                         @_movable_entity.beg_click pos
+                        
+                    if b == "RIGHT"
+                        return false
                         
                     return true
                     
@@ -174,14 +193,9 @@ class Mesh extends Drawable
         return false
         
     delete_selected_point: ( info ) ->
-        if @points.length > 0
-            selectedPoint = []
-            for i in [ 0 ... @points.length ]
-                if info.selected[ @points[ i ].model_id ]?
-                    selectedPoint.push i
-                    
-        for i in [ selectedPoint.length-1..0 ]
-            @delete_point selectedPoint[ i ]
+        for i in [ 0 ... @points.length ]
+            if @_selected.contains_ref @points[ i ]
+                @delete_point i
     
     delete_point: ( index ) ->
         if typeof index == "undefined"
@@ -231,13 +245,9 @@ class Mesh extends Drawable
                     @lines[ i ][ j ]._set( @lines[ i ][ j ].get() - 1 )
 
     break_line_from_selected: ( info ) ->
-        if @lines.length > 0
-            selectedPoint = []
-            for i in [ 0 ... @points.length ]
-                if info.selected[ @points[ i ].model_id ]?
-                    selectedPoint.push i
-            for i in [ selectedPoint.length-1..0 ]
-                @break_line selectedPoint[ i ]
+        for i in [ 0 ... @points.length ]
+            if @_selected.contains_ref @points[ i ]
+                @break_line i
     
     break_line: ( index ) ->
         if typeof index == "undefined"
@@ -352,6 +362,7 @@ class Mesh extends Drawable
                 d = Math.sqrt dx * dx + dy * dy
                 if d <= 10
                     res.push
+                        prov: this
                         item: p
                         dist: d
 
@@ -373,7 +384,9 @@ class Mesh extends Drawable
                 
                     if dry
                         res.push 
-                            item: new Point P
+                            prov: this
+#                             item: new Point P
+                            item: [ li, @points[ P0 ], @points[ P1 ] ]
                             dist: 0
                     else
                         os = @points.length
@@ -386,6 +399,7 @@ class Mesh extends Drawable
                         @lines.push [ os, ol ]
                         
                         res.push
+                            prov: this
                             item: n
                             dist: 0
                             type: "Mesh"
@@ -444,6 +458,7 @@ class Mesh extends Drawable
         #                             li.push tmp[tmp.length - 1].get()
         #                             
         #                             res.push
+        #                                 prov: this
         #                                 item: n
         #                                 dist: 0
         #                                 type: "Mesh"
