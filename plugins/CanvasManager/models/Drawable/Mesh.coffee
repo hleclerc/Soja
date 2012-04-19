@@ -116,6 +116,13 @@ class Mesh extends Drawable
                 info.ctx.beginPath()
                 info.ctx.arc p[ 0 ], p[ 1 ], 5, 0, Math.PI * 2, true
                 info.ctx.stroke()
+            for l in @_pre_sele when item not instanceof Point
+                if l.length == 2
+                    info.ctx.lineWidth = 2
+                    info.ctx.beginPath()
+                    info.ctx.moveTo proj[ l[ 0 ].get() ][ 0 ], proj[ l[ 0 ].get() ][ 1 ]
+                    info.ctx.lineTo proj[ l[ 1 ].get() ][ 0 ], proj[ l[ 1 ].get() ][ 1 ]
+                    info.ctx.stroke()
                 
 
     on_mouse_down: ( cm, evt, pos, b ) ->

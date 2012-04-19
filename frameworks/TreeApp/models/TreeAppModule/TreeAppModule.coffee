@@ -21,7 +21,6 @@ class TreeAppModule extends Model
         #    act: an array that can contain another actions
 
 
-                
     select_item: ( app, item, parent ) ->
         if !parent
             path = []
@@ -36,8 +35,7 @@ class TreeAppModule extends Model
         app.data.selected_tree_items.clear()
 
     watch_item: ( app, item ) ->
-        for p in app.data.panel_id_list()
-            app.data.visible_tree_items[ p ].push item
+        app.data.watch_item item
             
     get_animation_module: ( app ) ->
         for child in app.data.modules

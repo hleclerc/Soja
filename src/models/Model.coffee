@@ -359,8 +359,8 @@ class Model
 
     # see get_parents_that_check
     _get_parents_that_check_rec: ( res, visited, func_to_check ) ->
-        if not visited[ model_id ]?
-            visited[ model_id ] = true
+        if not visited[ @model_id ]?
+            visited[ @model_id ] = true
             if func_to_check this
                 res.push this
             else
