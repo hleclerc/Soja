@@ -129,7 +129,7 @@ class Border extends Drawable
             point = @_get_line_inter proj, P0, P1, x, y, el
             if point?
                 res.push
-                    item: [ li, el.points[ P0 ].pos, el.points[ P1 ].pos ]
+                    item: [ li, el.points[ P0 ], el.points[ P1 ] ]
                     dist: 0
                     type: "Mesh"
                 break

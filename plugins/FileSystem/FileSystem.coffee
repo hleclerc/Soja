@@ -6,6 +6,7 @@ class FileSystem
     # when object are saved, their _server_id is assigned to a tmp value
     @_cur_tmp_server_id = 0
     @_sig_server = true # if changes has to be sent
+    @_disp = true
     
     # data are sent after a timeout (and are concatened before)
     @_objects_to_send = {}
@@ -60,7 +61,8 @@ class FileSystem
         xhr_object.open 'GET', "/_?s=#{@_session_num}", true
         xhr_object.onreadystatechange = ->
             if @readyState == 4 and @status == 200
-                #console.log "chan ->", @responseText
+                if FileSystem._disp
+                    console.log "chan ->", @responseText
                 FileSystem._sig_server = false
                 eval @responseText
                 FileSystem._sig_server = true
@@ -84,9 +86,9 @@ class FileSystem
     #
     @_tmp_id_to_real= ( tmp_id, res ) ->
         tmp = FileSystem._tmp_objects[ tmp_id ]
-        delete FileSystem._tmp_objects[ tmp_id ]
         FileSystem._objects[ res ] = tmp
         tmp._server_id = res
+        delete FileSystem._tmp_objects[ tmp_id ]
 
     @_get_cur_tmp_server_id: ->
         FileSystem._cur_tmp_server_id++
@@ -123,7 +125,8 @@ class FileSystem
             xhr_object.open 'POST', f.url, true
             xhr_object.onreadystatechange = ->
                 if @readyState == 4 and @status == 200
-                    #console.log "resp ->", @responseText
+                    if FileSystem._disp
+                        console.log "resp ->", @responseText
                     FileSystem._sig_server = false
                     eval @responseText
                     FileSystem._sig_server = true

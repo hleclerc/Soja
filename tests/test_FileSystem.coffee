@@ -13,28 +13,26 @@
 test_FileSystem = ->
     fs = new FileSystem
 
-    # fs.save "/home/monkey/session/12345689", tree_app.session
-    
-    
     # load
     m = new Model
     new_model_editor el: document.body, model: m, label: "model"
     
-    l = ( n ) ->
-        fs.load "/" + n, ( val ) ->
+    l = ( n, d ) ->
+        fs.load "/" + n, ( val, err ) ->
+            if err
+                val = Model.conv d
+                console.log val
+                fs.save "/" + n, Model.conv d
             m.add_attr n, val
         
-    l "toto"
-    l "tata"
-    l "titi"
-    l "mod"
+    l "toto", 10
+    #l "tata", "pouet"
+    #l "titi", [ 1, 2 ]
+    #l "mod"
 
     # load dir
-    fs.load "/", ( val ) ->
-        console.log val.get()
-        
-    # load dir
-    fs.save "/saved", new Val( 10 )
+    #fs.load "/", ( val, err ) ->
+    #    console.log val.get()
 
     #
     new_dom_element
