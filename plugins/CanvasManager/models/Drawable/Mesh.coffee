@@ -121,7 +121,7 @@ class Mesh extends Drawable
     on_mouse_down: ( cm, evt, pos, b ) ->
         delete @_movable_entity
         
-        if b == "LEFT"
+        if b == "LEFT" or b == "RIGHT"
             # look if there's a movable point under mouse
             for phase in [ 0 ... 3 ]
                 # closest entity under mouse
@@ -141,6 +141,9 @@ class Mesh extends Drawable
                         @_selected.clear()
                         @_selected.push @_movable_entity
                         @_movable_entity.beg_click pos
+                        
+                    if b == "RIGHT"
+                        return false
                         
                     return true
                     
@@ -343,6 +346,7 @@ class Mesh extends Drawable
                 d = Math.sqrt dx * dx + dy * dy
                 if d <= 10
                     res.push
+                        prov: this
                         item: p
                         dist: d
 
@@ -364,7 +368,9 @@ class Mesh extends Drawable
                 
                     if dry
                         res.push 
-                            item: new Point P
+                            prov: this
+#                             item: new Point P
+                            item: [ li, @points[ P0 ], @points[ P1 ] ]
                             dist: 0
                     else
                         os = @points.length
@@ -377,6 +383,7 @@ class Mesh extends Drawable
                         @lines.push [ os, ol ]
                         
                         res.push
+                            prov: this
                             item: n
                             dist: 0
                             type: "Mesh"
@@ -435,6 +442,7 @@ class Mesh extends Drawable
         #                             li.push tmp[tmp.length - 1].get()
         #                             
         #                             res.push
+        #                                 prov: this
         #                                 item: n
         #                                 dist: 0
         #                                 type: "Mesh"

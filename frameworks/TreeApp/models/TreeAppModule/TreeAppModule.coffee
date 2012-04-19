@@ -21,6 +21,7 @@ class TreeAppModule extends Model
         #    act: an array that can contain another actions
 
 
+                
     select_item: ( app, item, parent ) ->
         if !parent
             path = []

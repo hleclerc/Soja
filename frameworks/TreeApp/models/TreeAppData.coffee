@@ -22,6 +22,13 @@ class TreeAppData extends Model
 #         bind @focus, =>
 #             console.log @focus.get()
     
+    close_item: ( item ) ->
+        @closed_tree_items.push item
+        
+    open_item: ( item ) ->
+        for it, index in @closed_tree_items
+            if item.equals it
+                @closed_tree_items.splice index, 1        
     
     new_session: ( name ) ->
         s = new SessionItem name, this

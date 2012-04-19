@@ -83,7 +83,7 @@ class Transform extends Drawable
     on_mouse_down: ( cm, evt, pos, b ) ->
         delete @_movable_entity
         
-        if b == "LEFT"
+        if b == "LEFT" or b == "RIGHT"
             # look if there's a movable point under mouse
             for phase in [ 0 ... 3 ]
                 # closest entity under mouse
@@ -102,6 +102,9 @@ class Transform extends Drawable
                         @_selected.clear()
                         @_selected.push @_movable_entity
                         @_movable_entity.beg_click pos
+                        
+                    if b == "RIGHT"
+                        return false
                         
                     return true
                     

@@ -170,7 +170,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
                     parentNode: @menu
                     className : "contextMenuElement"
                     onclick   : ( evt ) => 
-                        c.fun evt, @app_data._views[0]
+                        c.fun evt, @app_data._views[ 0 ]
                         @_delete_context_menu( evt )
                         
                 new_dom_element
