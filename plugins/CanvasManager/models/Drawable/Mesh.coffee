@@ -1,6 +1,9 @@
-#
+# This class is use to draw line/dot graph or bar chart
+# params available :
+# _pre_sele_color
+# _selected_color
 class Mesh extends Drawable
-    constructor: ( legend ) ->
+    constructor: ( legend, params = {} ) ->
         super()
         
         @add_attr
@@ -17,6 +20,12 @@ class Mesh extends Drawable
             # behavior
             _selected        : new Lst # references of selected points / lines / ...
             _pre_sele        : new Lst # references of selected points / lines / ...
+            _selected_color  : new Color 255,   0,   0
+            _pre_sele_color  : new Color 255, 255, 100
+            
+            
+        for key, val of params
+            this[ key ]?.set? val
         
         if legend?
             @add_attr
@@ -108,7 +117,7 @@ class Mesh extends Drawable
 
         # pre selected items
         if @_pre_sele.length
-            info.ctx.strokeStyle = "#FFFF22"
+            info.ctx.strokeStyle = @_pre_sele_color.to_hex()
             info.ctx.lineWidth = 1.5
             for item in @_pre_sele when item instanceof Point
                 p = info.re_2_sc.proj item.pos.get()
