@@ -14,6 +14,7 @@ class Mesh extends Drawable
             points           : new Lst_Point # "add_point" can be used to fill the list
             lines            : new Lst
             triangles        : new Lst
+            polygons         : new Lst
             # fields
             elementary_fields: new Model # { field_name: values, ... }
             nodal_fields     : new Model # { field_name: values, ... }
@@ -98,7 +99,9 @@ class Mesh extends Drawable
             point =  for p in l
                 @points[ p.get() ].pos.get()
             @_disp_arc_n_points info, point
-        
+            
+        for polyg in @polygons
+            @_draw_polygon info, polyg.get(), proj
         
         # call adapted draw function for color and using gradient
         if @nodal_fields[ @displayed_field.get() ]?
@@ -133,7 +136,30 @@ class Mesh extends Drawable
                     info.ctx.lineTo proj[ l[ 1 ].get() ][ 0 ], proj[ l[ 1 ].get() ][ 1 ]
                     info.ctx.stroke()
                 
-
+    _draw_polygon: ( info, polyg, proj ) ->
+        if polyg.length > 0
+            info.ctx.beginPath()
+            info.ctx.strokeStyle = info.theme.line.to_hex()
+            info.ctx.fillStyle   = info.theme.line.to_hex()
+            
+            first_point = polyg[ 0 ]
+            pos_first_point = proj[ first_point ]
+            info.ctx.moveTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
+            
+            for line in polyg
+                pos_p = proj[ line ]
+                if pos_p?
+                    info.ctx.lineTo( pos_p[ 0 ], pos_p[ 1 ] )
+            # come back to first point
+            info.ctx.lineTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
+            
+            if @display_style.get() == "wireframe"
+                info.ctx.stroke()
+            else
+                info.ctx.fill()
+            info.ctx.closePath()
+    
+    
     on_mouse_down: ( cm, evt, pos, b ) ->
         delete @_movable_entity
         
