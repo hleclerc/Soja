@@ -9,7 +9,7 @@ class Mesh extends Drawable
         @add_attr
             # display parms
             displayed_field  : new Choice( 0, [ "" ] )
-            display_style    : new Choice( 0, [ "surface", "wireframe" ] )
+            display_style    : new Choice( 0, [ "wireframe", "surface" ] )
             # geometry
             points           : new Lst_Point # "add_point" can be used to fill the list
             lines            : new Lst
