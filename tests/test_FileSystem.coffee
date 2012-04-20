@@ -21,14 +21,15 @@ test_FileSystem = ->
         fs.load "/" + n, ( val, err ) ->
             if err
                 val = Model.conv d
-                console.log val
                 fs.save "/" + n, val
+            else
+                console.log "load ->", val.get()
             m.add_attr n, val
         
     l "toto", 10
-    #l "tata", "pouet"
-    #l "titi", [ 1, 2 ]
-    #l "mod"
+    l "tata", "pouet"
+    l "titi", [ 1, 2 ]
+    l "mod", {}
 
     # load dir
     #fs.load "/", ( val, err ) ->
