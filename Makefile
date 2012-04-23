@@ -13,7 +13,12 @@ test_%: compilation
 # same s test but launched with Soda
 soda_%: compilation ext/Soda
 	make -C ext/Soda
-	ext/Soda/soda -l --base-dir gen --start-page /test_$*.html
+	ext/Soda/soda --base-dir gen -l --start-page /test_$*.html
+
+# launch the soda server
+soda: compilation ext/Soda
+	make -C ext/Soda
+	ext/Soda/soda --base-dir gen
 	
 ext/Soda:
 	mkdir -p ext; cd ext; test -e Soda || ( test -e ../../Soda && ln -s `pwd`/../../Soda . ) || git clone git@gitosis.lmt.ens-cachan.fr:Soda
