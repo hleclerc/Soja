@@ -45,7 +45,7 @@ class Mesh extends Drawable
     points_have_to_be_drawn: ( info ) ->
         info.sel_item[ @model_id ]
 
-    draw: ( info ) ->
+    draw: ( info, params = {} ) ->
         if @points.length == 0
             return
             
