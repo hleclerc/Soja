@@ -16,7 +16,7 @@ soda_%: compilation ext/Soda
 	ext/Soda/soda -l --base-dir gen --start-page /test_$*.html
 	
 ext/Soda:
-	mkdir -p ext; cd ext; test -e Soda || ( test -e ../../Soda && ln -s `pwd`/../../Soda . ) || git clone git@gitosis.lmt.ens-cachan.fr:Soda
+	mkdir -p ext; cd ext; test -e Soda || ( test -e ../../Soda && ln -s `pwd`/../../Soda . ) || git clone git@github.com:hleclerc/Soda.git
 
 
 .PHONY: compilation
