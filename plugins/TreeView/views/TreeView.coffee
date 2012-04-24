@@ -36,6 +36,9 @@ class TreeView extends View
         # used to destroy elements from previous rendering
         @_created_elements = []
         
+        # used to link model_id of tree item to dom
+        @linked_id_dom = {}
+        
     @default_types: [
         # 0 is in directory
     ]
@@ -70,7 +73,15 @@ class TreeView extends View
         if @_need_render()
             @_update_repr()
             @_render()
-            
+#             console.log "------------"
+            for el in @flat
+                model = el.item
+                if @linked_id_dom[ model.model_id ]?
+                    if model.has_been_modified?
+                        dom_elem = @linked_id_dom[ model.model_id ]
+#                         console.log model, dom_elem
+#                         dom_elem.style.backgroundColor = "lightYellow"
+                        
     #looking for duplication in tree
     _get_color_element: ( info ) ->
         col = "black"
@@ -98,7 +109,7 @@ class TreeView extends View
         for c in @_created_elements
             @el.removeChild c
         @_created_elements = []
-
+        @linked_id_dom = {}
         pos_y = 0
         for info in @flat
             do ( info ) =>
@@ -182,7 +193,10 @@ class TreeView extends View
                         evt.stopPropagation()
                         evt.preventDefault()
                         return false
-
+                
+                @linked_id_dom[ info.item.model_id ] = div
+                
+                
                 if @selected.contains info.item_path
                     div.className += " #{@css_prefix}TreeSelected"
                 else if @closed.contains( info.item_path ) and @_has_a_selected_child( info.item, info.item_path )
