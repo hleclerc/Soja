@@ -79,8 +79,10 @@ class TreeView extends View
                 if @linked_id_dom[ model.model_id ]?
                     if model.has_been_modified?
                         dom_elem = @linked_id_dom[ model.model_id ]
+                        dom_elem.classList.add "TreeJustModified"
 #                         console.log model, dom_elem
-#                         dom_elem.style.backgroundColor = "lightYellow"
+#                         if Animation?
+#                               dom_elem.style.backgroundColor = "lightYellow"
                         
     #looking for duplication in tree
     _get_color_element: ( info ) ->
