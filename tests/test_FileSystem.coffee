@@ -29,7 +29,7 @@ test_FileSystem = ->
     l "toto", 10
     # l "tete", new ConstrainedVal 0, { min:0, max:100 }
     l "tata", "pouet"
-    #     l "titi", [ 1, 2 ]
+    l "titi", [ 1, 2 ]
     #     l "coul", new Color
     #     l "mod", {}
 
