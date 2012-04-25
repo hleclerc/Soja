@@ -21,7 +21,7 @@ soda: compilation ext/Soda
 	ext/Soda/soda --base-dir gen
 	
 ext/Soda:
-	mkdir -p ext; cd ext; test -e Soda || ( test -e ../../Soda && ln -s `pwd`/../../Soda . ) || git clone git@gitosis.lmt.ens-cachan.fr:Soda
+	mkdir -p ext; cd ext; test -e Soda || ( test -e ../../Soda && ln -s `pwd`/../../Soda . ) || git clone git@github.com:hleclerc/Soda.git
 
 
 .PHONY: compilation

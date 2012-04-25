@@ -40,3 +40,59 @@
 .TreeIcon_tree_end     { background: transparent url( 'img/tree_end.png'     ); }
 .TreeIcon_tree_end_add { background: transparent url( 'img/tree_end_add.png' ); }
 .TreeIcon_tree_end_sub { background: transparent url( 'img/tree_end_sub.png' ); }
+
+.TreeJustModified {
+    -ms-animation-duration: 1s;
+    -ms-animation-name: highlight;
+    -moz-animation-duration: 1s;
+    -moz-animation-name: highlight;
+    -o-animation-duration: 1s;
+    -o-animation-name: highlight;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-name: highlight;
+    animation-duration: 1s;
+    animation-name: highlight;
+}
+
+@-ms-keyframes highlight {  
+    from {
+        background : rgba(255,255,0, 255);
+    }
+    to {
+        background : rgba(255,255,0, 0);
+    }
+}
+@-moz-keyframes highlight {  
+    from {
+        background : rgba(255,255,0, 255);
+    }
+    to {
+        background : rgba(255,255,0, 0);
+    }
+}
+
+@-webkit-keyframes highlight {  
+    from {
+        background : rgba(255,255,0, 255);
+    }
+    to {
+        background : rgba(255,255,0, 0);
+    }
+}
+
+@-o-keyframes highlight {  
+    from {
+        background : rgba(255,255,0, 255);
+    }
+    to {
+        background : rgba(255,255,0, 0);
+    }
+}
+@keyframes highlight {  
+    from {
+        background : rgba(255,255,0, 255);
+    }
+    to {
+        background : rgba(255,255,0, 0);
+    }
+}
