@@ -100,8 +100,8 @@ class Mesh extends Drawable
                 @points[ p.get() ].pos.get()
             @_disp_arc_n_points info, point
             
-        for polyg in @polygons
-            @_draw_polygon info, polyg.get(), proj
+#         for polyg in @polygons
+#             @_draw_polygon info, polyg.get(), proj
         
         # call adapted draw function for color and using gradient
         if @nodal_fields[ @displayed_field.get() ]?
