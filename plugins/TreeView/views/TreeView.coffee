@@ -73,13 +73,13 @@ class TreeView extends View
         if @_need_render()
             @_update_repr()
             @_render()
-#             console.log "------------"
-            for el in @flat
-                model = el.item
-                if @linked_id_dom[ model.model_id ]?
-                    if model.has_been_modified?
-                        dom_elem = @linked_id_dom[ model.model_id ]
-                        dom_elem.classList.add "TreeJustModified"
+            
+        for el in @flat
+            model = el.item
+            if @linked_id_dom[ model.model_id ]?
+                if @get_children_of( model )?.has_been_directly_modified()
+                    dom_elem = @linked_id_dom[ model.model_id ]
+                    dom_elem.classList.add "TreeJustModified"
 #                         console.log model, dom_elem
 #                         if Animation?
 #                               dom_elem.style.backgroundColor = "lightYellow"
@@ -351,7 +351,7 @@ class TreeView extends View
             @visible.add_attr @visibility_context.get(), new Lst
             
         for i in [ @closed, @selected, @visible[ @visibility_context.get() ], @visibility_context ]
-            if i.has_been_modified()
+            if i.has_been_directly_modified()
                 return true
         for item in @_flat_item_list()
             if item.has_been_directly_modified()
