@@ -279,11 +279,10 @@ class Lst extends Model
 
         return change
 
-    _get_fs_data: ( out, pre = "C", suf = "" ) ->
+    _get_fs_data: ( out ) ->
         str = for obj in this
-            FileSystem.save_if_necessary out, obj
             obj._server_id
-        out "#{pre} #{@_server_id} #{str.join ","} #{suf}"
+        out "C #{@_server_id} #{str.join ","} "
 
     _get_state: ->
         str = for obj in this

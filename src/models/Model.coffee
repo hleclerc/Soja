@@ -257,11 +257,10 @@ class Model
         return str.join ","
         
     # send data to server
-    _get_fs_data: ( out, pre = "C", suf = "" ) ->
+    _get_fs_data: ( out ) ->
         str = for name, obj of this when obj instanceof Model
-            FileSystem.save_if_necessary out, obj
             name + ":" + obj._server_id
-        out "#{pre} #{@_server_id} #{str.join ","} #{suf}"
+        out "C #{@_server_id} #{str.join ","} "
 
     # may be redefined
     # make instructions to go from $o to $this

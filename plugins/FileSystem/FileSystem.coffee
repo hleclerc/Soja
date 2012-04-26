@@ -40,14 +40,24 @@ class FileSystem
     
     # load object in $path and call $callback with the corresponding ref
     load: ( path, callback ) ->
-        @send "L #{encodeURI path} #{FileSystem._nb_callbacks} "
+        @send "L #{FileSystem._nb_callbacks} #{encodeURI path} "
         FileSystem._callbacks[ FileSystem._nb_callbacks ] = callback
         FileSystem._nb_callbacks++
     
     # 
     save: ( path, model ) ->
-        FileSystem.save_if_necessary ( ( d ) => @send d ), model
-        @send "R #{encodeURI path} #{model._server_id} "
+        # get ptr on objects not present in the server 
+        obl = {}
+        out = ( d ) => @send d
+        FileSystem.set_server_id_if_necessary out, obl, model
+        
+        #
+        for key, obj of obl
+            console.log "obj", key, obj
+            obj._get_fs_data out
+        
+        # save in path
+        @send "R #{model._server_id} #{encodeURI path} "
         
     # explicitly send a command
     send: ( data ) ->
@@ -69,11 +79,19 @@ class FileSystem
         xhr_object.send()
         
     # 
-    @save_if_necessary: ( out, obj ) ->
+    @set_server_id_if_necessary: ( out, obl, obj ) ->
         if not obj._server_id?
-            obj._server_id = FileSystem._get_cur_tmp_server_id()
-            obj._get_fs_data out, "N", "#{Model.get_object_class( obj )} "
+            # registering
+            obj._server_id = FileSystem._get_new_tmp_server_id()
             FileSystem._tmp_objects[ obj._server_id ] = obj
+            obl[ obj.model_id ] = obj
+            
+            # output
+            out "N #{obj._server_id} #{Model.get_object_class( obj )} "
+
+            # children
+            for key, val of obj when val instanceof Model
+                FileSystem.set_server_id_if_necessary out, obl, val
 
     # send changes of m to instances. m is assumed to have a _server_id 
     @signal_change: ( m ) ->
@@ -90,7 +108,7 @@ class FileSystem
         tmp._server_id = res
         delete FileSystem._tmp_objects[ tmp_id ]
 
-    @_get_cur_tmp_server_id: ->
+    @_get_new_tmp_server_id: ->
         FileSystem._cur_tmp_server_id++
         if FileSystem._cur_tmp_server_id % 4 == 0
             FileSystem._cur_tmp_server_id++

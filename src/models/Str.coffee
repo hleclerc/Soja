@@ -29,8 +29,8 @@ class Str extends Obj
     equals: ( str ) ->
         return @_data == str.toString()
 
-    _get_fs_data: ( out, pre = "C", suf = "" ) ->
-        out "#{pre} #{@_server_id} #{encodeURI @_data} #{suf}"
+    _get_fs_data: ( out ) ->
+        out "C #{@_server_id} #{encodeURI @_data} "
 
     #
     _set: ( value ) ->
