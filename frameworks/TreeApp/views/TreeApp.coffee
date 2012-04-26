@@ -164,7 +164,6 @@ class TreeApp extends View
             cur_key += special_keys[ evt.keyCode ] or String.fromCharCode( evt.keyCode ).toUpperCase()
 
             
-            
             for m in @data.modules
                 @_on_key_down_rec m.actions, cur_key, evt
                 
