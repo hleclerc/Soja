@@ -13,8 +13,13 @@ class Val extends Obj
     toggle: ->
         @set not @_data
 
+    #
     toBoolean: ->
         Boolean @_data
+
+    #
+    deep_copy: ->
+        new Val @_data
 
     # we do not take _set from Obj because we want a conversion if value is not a number
     _set: ( value ) ->

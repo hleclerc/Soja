@@ -257,7 +257,15 @@ class Lst extends Model
     # return a string with representation of items, separated by sep
     join: ( sep ) ->
         @get().join sep
-    
+
+    #
+    deep_copy: ->
+        res = new Lst
+        for v in this
+            res.push v.deep_copy()
+        res
+        
+    #
     _set: ( value ) ->
         change = @length != value.length
         

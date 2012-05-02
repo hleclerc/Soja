@@ -107,23 +107,6 @@ class Model
                 res += "\n" + obj.model_id + " " + Model.get_object_class( obj ) + " " + obj._get_state()
         return res
             
-        
-    # modify state according to str. str can be the result of a previous @get_state
-    @new_from_state: ( str ) ->
-        map = {}
-        lst = str.split "\n"
-        mid = lst.shift()
-        for l in lst when l.length
-            s = l.split " "
-            map[ s[ 0 ] ] =
-                type: s[ 1 ]
-                data: s[ 2 ]
-                buff: undefined
-                
-        # fill / update this with data in map[ mid ]
-        eval "var __new__ = new #{map[ mid ].type};"
-        __new__._set_state map[ mid ].data, map
-        return __new__
 
     # add attribute (p.values must contain models)
     # can be called with
@@ -218,6 +201,34 @@ class Model
         visited = {}
         @_get_parents_that_check_rec res, visited, func_to_check
         return res
+
+    #
+    deep_copy: ->
+        o = {}
+        for key, val of this when val instanceof Model
+            o[ key ] = val.deep_copy()
+        
+        eval "var __new__ = new #{Model.get_object_class this};"
+        __new__.set_attr o
+        __new__
+        
+        
+    # modify state according to str. str can be the result of a previous @get_state
+    @new_from_state: ( str ) ->
+        map = {}
+        lst = str.split "\n"
+        mid = lst.shift()
+        for l in lst when l.length
+            s = l.split " "
+            map[ s[ 0 ] ] =
+                type: s[ 1 ]
+                data: s[ 2 ]
+                buff: undefined
+                
+        # fill / update this with data in map[ mid ]
+        eval "var __new__ = new #{map[ mid ].type};"
+        __new__._set_state map[ mid ].data, map
+        return __new__
         
     #
     @load: ( filename, func ) ->

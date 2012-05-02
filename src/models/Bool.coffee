@@ -17,6 +17,10 @@ class Bool extends Obj
     toBoolean: ->
         @_data
 
+    #
+    deep_copy: ->
+        new Bool @_data
+
     # we do not take _set from Obj because we want a conversion if value is not a boolean
     _set: ( value ) ->
         if n instanceof Model

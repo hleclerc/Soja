@@ -29,6 +29,11 @@ class Str extends Obj
     equals: ( str ) ->
         return @_data == str.toString()
 
+    #
+    deep_copy: ->
+        new Str @_data + ""
+
+    #
     _get_fs_data: ( out ) ->
         out.mod += "C #{@_checked_server_id out} #{encodeURI @_data} "
 
