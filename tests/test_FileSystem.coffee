@@ -11,6 +11,7 @@
 # lib Theme.js
 # lib FileSystem.js
 test_FileSystem = ->
+    FileSystem._disp = true
     fs = new FileSystem
 
     # load
@@ -27,17 +28,18 @@ test_FileSystem = ->
             m.add_attr n, val
         
     l "toto", 10
-    # l "tete", new ConstrainedVal 0, { min:0, max:100 }
+    l "tete", new ConstrainedVal 0, { min:0, max:100 }
     l "tata", "pouet"
     l "titi", [ 1, 2 ]
-    #     l "coul", new Color
-    #     l "mod", {}
+    l "coul", new Color
+    l "mod", {}
 
     # load dir
     #fs.load "/", ( val, err ) ->
     #    console.log val.get()
 
     #
+    cpt = 0
     new_dom_element
         parentNode: document.body
         nodeName: "button"
@@ -46,5 +48,5 @@ test_FileSystem = ->
     new_dom_element
         parentNode: document.body
         nodeName: "button"
-        onclick: -> m.mod.add_attr "pouet", "toz"
+        onclick: -> m.mod.add_attr "attr_#{cpt += 1}", "toz"
         txt: "add attr"

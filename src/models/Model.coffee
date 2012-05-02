@@ -259,9 +259,14 @@ class Model
     # send data to server
     _get_fs_data: ( out ) ->
         str = for name, obj of this when obj instanceof Model
-            name + ":" + obj._server_id
-        out "C #{@_server_id} #{str.join ","} "
+            name + ":" + obj._checked_server_id( out )
+        out.mod += "C #{@_checked_server_id out} #{str.join ","} "
 
+    #
+    _checked_server_id: ( out ) ->
+        FileSystem.set_server_id_if_necessary out, this
+        @_server_id
+        
     # may be redefined
     # make instructions to go from $o to $this
     _get_patch: ( o, path ) ->

@@ -6,7 +6,7 @@ class FileSystem
     # when object are saved, their _server_id is assigned to a tmp value
     @_cur_tmp_server_id = 0
     @_sig_server = true # if changes has to be sent
-    @_disp = true
+    @_disp = false
     
     # data are sent after a timeout (and are concatened before)
     @_objects_to_send = {}
@@ -46,15 +46,10 @@ class FileSystem
     
     # 
     save: ( path, model ) ->
-        # get ptr on objects not present in the server 
-        obl = {}
-        out = ( d ) => @send d
-        FileSystem.set_server_id_if_necessary out, obl, model
-        
-        #
-        for key, obj of obl
-            console.log "obj", key, obj
-            obj._get_fs_data out
+        if not model._server_id
+            out = { cre: "", mod: "" }
+            model._get_fs_data out
+            @send out.cre + out.mod
         
         # save in path
         @send "R #{model._server_id} #{encodeURI path} "
@@ -78,27 +73,25 @@ class FileSystem
                 FileSystem._sig_server = true
         xhr_object.send()
         
-    # 
-    @set_server_id_if_necessary: ( out, obl, obj ) ->
+    #
+    @set_server_id_if_necessary: ( out, obj ) ->
         if not obj._server_id?
             # registering
             obj._server_id = FileSystem._get_new_tmp_server_id()
             FileSystem._tmp_objects[ obj._server_id ] = obj
-            obl[ obj.model_id ] = obj
             
-            # output
-            out "N #{obj._server_id} #{Model.get_object_class( obj )} "
+            # new object
+            out.cre += "N #{obj._server_id} #{Model.get_object_class( obj )} "
 
-            # children
-            for key, val of obj when val instanceof Model
-                FileSystem.set_server_id_if_necessary out, obl, val
+            # data
+            obj._get_fs_data out
 
-    # send changes of m to instances. m is assumed to have a _server_id 
+    # send changes of m to instances.
     @signal_change: ( m ) ->
         if FileSystem._sig_server
             FileSystem._objects_to_send[ m.model_id ] = m
             if FileSystem._timer_chan?
-                clearTimeout FileSystem._timeout_chan
+                clearTimeout FileSystem._timer_chan
             FileSystem._timer_chan = setTimeout FileSystem._timeout_chan_func, 100
 
     #
@@ -116,10 +109,15 @@ class FileSystem
             
     # timeout for at least one changed object
     @_timeout_chan_func: ->
-        for n, m of FileSystem._objects_to_send
-            m._get_fs_data ( d ) => 
-                for k, f of FileSystem._insts
-                    f.send d
+        # get data
+        out = { cre: "", mod: "" }
+        for n, model of FileSystem._objects_to_send
+            model._get_fs_data out
+            
+        # send
+        for k, f of FileSystem._insts
+            f.send out.cre + out.mod
+                
         #
         delete FileSystem._timer_chan
         FileSystem._objects_to_send = {}

@@ -281,8 +281,8 @@ class Lst extends Model
 
     _get_fs_data: ( out ) ->
         str = for obj in this
-            obj._server_id
-        out "C #{@_server_id} #{str.join ","} "
+            obj._checked_server_id out
+        out.mod += "C #{@_checked_server_id out} #{str.join ","} "
 
     _get_state: ->
         str = for obj in this

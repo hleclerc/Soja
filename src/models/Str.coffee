@@ -30,7 +30,7 @@ class Str extends Obj
         return @_data == str.toString()
 
     _get_fs_data: ( out ) ->
-        out "C #{@_server_id} #{encodeURI @_data} "
+        out.mod += "C #{@_checked_server_id out} #{encodeURI @_data} "
 
     #
     _set: ( value ) ->
