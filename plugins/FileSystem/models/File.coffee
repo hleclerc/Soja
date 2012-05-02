@@ -4,5 +4,8 @@ class File extends Model
 
         @add_attr
             name: name
+            _preview: {
+                # img: ...
+            }
             _ptr: ptr # _server_id of the object. The corresponding model can be found using FilesSystem._objects[ _ptr ]
     

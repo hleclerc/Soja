@@ -34,6 +34,9 @@ test_FileSystem = ->
     l "coul", new Color
     l "mod", {}
 
+    fs.load "/", ( val, err ) ->
+        console.log val
+
     # load dir
     #fs.load "/", ( val, err ) ->
     #    console.log val.get()

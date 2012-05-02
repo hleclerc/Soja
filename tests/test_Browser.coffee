@@ -12,14 +12,20 @@
 # lib FileSystem.js
 test_Browser = ->
     fs = new FileSystem
+    
+    cpt = 0
 
-    m = new Model
-        toto: 10
-        tata: 20
-    m._server_id = 1
-    FileSystem._objects[ m._server_id ] = m
+    a = ( d, n, m ) ->
+        m._server_id = cpt += 1
+        FileSystem._objects[ m._server_id ] = m
+        d.push new File "toto", m._server_id
+        m
     
     d = new Directory
-    d.push new File "toto", m._server_id
+    e = new Directory
+    a d, "toto", new Model { toto: 10, tata: 20 }
+    a d, "tata", new Model { toto: 11, tata: 22 }
+    a d, "dir" , e
+    a e, "titi", new Str "toto"
     
     editor = new_model_editor el: document.body, model: d
