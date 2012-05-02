@@ -2,12 +2,7 @@
 # lib ModelEditor.js
 # lib ModelEditor.css
 # lib DomHelper.js
-# lib Color.js
-# lib Color.css
-# lib Geometry.js
 # lib BrowserState.js
-# lib CanvasManager.js
-# lib Animation.js
 # lib Theme.js
 # lib FileSystem.js
 test_Browser = ->
