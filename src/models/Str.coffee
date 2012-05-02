@@ -27,7 +27,7 @@ class Str extends Obj
 
     #
     equals: ( str ) ->
-        return @_data == str.toString()
+        @_data == str.toString()
 
     #
     deep_copy: ->
