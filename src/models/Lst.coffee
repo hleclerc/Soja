@@ -157,7 +157,7 @@ class Lst extends Model
             new_array.push it
             
         #sort array
-        new_array.sort fun_sort        
+        new_array.sort fun_sort    
         
         return new_array
 
