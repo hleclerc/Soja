@@ -6,20 +6,25 @@
 # lib FileSystem.js
 test_Browser = ->
     fs = new FileSystem
-    
-    cpt = 0
 
-    a = ( d, n, m ) ->
-        m._server_id = cpt += 1
-        FileSystem._objects[ m._server_id ] = m
-        d.push new File "toto", m._server_id
-        m
+    disp = ( m ) ->
+        for f in m
+            f._info.add_attr
+                icon: "icon"
+        
+        console.log m
+        new_model_editor el: document.body, model: m
     
-    d = new Directory
-    e = new Directory
-    a d, "toto", new Model { toto: 10, tata: 20 }
-    a d, "tata", new Model { toto: 11, tata: 22 }
-    a d, "dir" , e
-    a e, "titi", new Str "toto"
-    
-    editor = new_model_editor el: document.body, model: d
+    fs.load "/test_browser", ( m, err ) ->
+        if err
+            fs.save "/test_browser", new Directory
+            fs.save "/test_browser/toto", new Lst [ 1, 2 ]
+            fs.save "/test_browser/tata", new Lst [ 1, 2 ]
+            
+            fs.load "/test_browser", ( m, err ) ->
+                if err
+                    console.log "Bing"
+                disp m
+        else
+            disp m
+        
