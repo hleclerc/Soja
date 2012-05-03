@@ -4,6 +4,7 @@
 # lib DomHelper.js
 # lib Theme.js
 # lib FileSystem.js
+# lib FileSystem.css
 test_Browser = ->
     fs = new FileSystem
 
@@ -13,7 +14,8 @@ test_Browser = ->
                 icon: "icon"
         
         console.log m
-        new_model_editor el: document.body, model: m
+        editor = new_model_editor el: document.body, model: m
+        editor.default_types.push ( model ) -> ModelEditorItem_Directory if model instanceof File
     
     fs.load "/test_browser", ( m, err ) ->
         if err
@@ -27,4 +29,5 @@ test_Browser = ->
                 disp m
         else
             disp m
+            
         

@@ -359,6 +359,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         if a.name.get().toLowerCase() > b.name.get().toLowerCase() then 1 else -1
     
     init: ->
+        console.log @model
         sorted = @model.data.children.sorted sort_dir
 #         if @breadcrumb.length > 1
 #             parent = new File Directory, ".."
