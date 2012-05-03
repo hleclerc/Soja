@@ -2,7 +2,6 @@
 # lib ModelEditor.js
 # lib ModelEditor.css
 # lib DomHelper.js
-# lib BrowserState.js
 # lib Theme.js
 # lib FileSystem.js
 test_Browser = ->
