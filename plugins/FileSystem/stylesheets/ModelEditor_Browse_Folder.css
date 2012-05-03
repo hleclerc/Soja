@@ -1,0 +1,66 @@
+.browse_container{
+    height: 300px;
+}
+
+#drop_zone {
+    border: medium dashed gray;
+    border-radius: 5px 5px 5px 5px;
+    text-align: center;
+    background: OldLace;
+}
+
+.file_container{
+    float: left;
+    width: 200px;
+    text-align:center;
+    padding-top:0.5em;
+    padding-bottom:0.5em;
+    -moz-border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    -o-border-radius: 0.5em;
+    border-radius: 0.5em;
+}
+
+.file_container:hover {
+    background: lightBlue;
+    text-decoration: underline;
+    cursor:pointer;
+}
+
+.picture{
+    max-height: 128px;
+}
+
+
+.icon_scene{
+    padding-bottom: 1em;
+}
+.icon_scene img{
+    padding:0.3em;
+    height:2em;
+}
+
+.icon_scene img:hover{
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+    background-color: lightGrey;
+}
+
+.breadcrumb{
+    cursor: pointer;
+}
+.breadcrumb:hover{
+    text-decoration: underline;
+}
+
+.selected_file {
+    background-color: #7578a6;
+}
+.selected_file:hover {
+    background-color: #8ba6f4;
+}
+
+
+
