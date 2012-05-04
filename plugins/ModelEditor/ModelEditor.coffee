@@ -26,6 +26,7 @@ class ModelEditor # extends View
         # 
         if parent?
             return parent.get_item_type_for model
+
             
         # global default types
         for t in ModelEditor.default_types

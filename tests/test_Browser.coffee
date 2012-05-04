@@ -20,7 +20,10 @@ test_Browser = ->
             f._info.add_attr
                 icon: "icon"
         
+        
+        ModelEditor.default_types.unshift ( model ) ->
+            ModelEditorItem_Directory if model instanceof Directory
+            
         editor = new_model_editor el: document.body, model: m
-        editor.default_types.push ( model ) -> ModelEditorItem_Directory if model instanceof File
 
         
