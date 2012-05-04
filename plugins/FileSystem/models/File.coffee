@@ -10,8 +10,4 @@ class File extends Model
                 #icon: "toto"
                 #model_type:
             }
-    
-        icones =
-            toto: new Image
-                src: "data/base64...."
             
