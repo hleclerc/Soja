@@ -18,9 +18,7 @@ test_Browser = ->
             fs.save "/test_browser/Result/Hello", new Directory
             fs.save "/test_browser/Mesh", new Lst [ 1, 2 ]
             fs.save "/test_browser/Work", new Lst [ 1, 2 ]
-        
-        console.log m
-        
+                
         m[ 0 ]._info.add_attr
             icon: "directory"
             model_type: "Directory"
@@ -31,8 +29,10 @@ test_Browser = ->
         m[ 2 ]._info.add_attr
             model_type: "Directory"
         
-#         m[ 3 ]._info.add_attr
-#             model_type: "Directory"
+        fs.load "/test_browser/Result", ( s, err ) ->
+            console.log "->", s
+            s[ 0 ]._info.add_attr
+                model_type: "Directory"
         
         ModelEditor.default_types.unshift ( model ) ->
             ModelEditorItem_Directory if model instanceof Directory

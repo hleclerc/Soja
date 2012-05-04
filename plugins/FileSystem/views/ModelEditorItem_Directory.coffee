@@ -277,11 +277,12 @@ class ModelEditorItem_Directory extends ModelEditorItem
     
     load_folder: ( children ) =>
         # watching children
-        console.log children
+        console.log "loading : ", children
         fs = new FileSystem
         
+        #TODO, use path
         fs.load "/test_browser" + "/" + children.name.get() , ( m, err ) =>
-            console.log m, err
+            console.log "fs load : ", m, err
             @model = m
             @breadcrumb.push m
             
@@ -368,8 +369,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         if a.name.get().toLowerCase() > b.name.get().toLowerCase() then 1 else -1
     
     init: ->
-        console.log this
-        console.log @model
+        console.log "init ",@model
         sorted = @model.sorted sort_dir
 #         if @breadcrumb.length > 1
 #             parent = new File Directory, ".."
