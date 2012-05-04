@@ -34,6 +34,10 @@ test_Browser = ->
         fs.load "/test_browser/Result", ( m, err ) ->
             m[ 0 ]._info.add_attr
                 model_type: "Directory"
+            console.log "<->", m[ 0 ]
+            
+            fs.load "/test_browser/Result", ( m, err ) ->
+                console.log "<-->", m[ 0 ]._info.model_type.get()
         
 #         m[ 3 ]._info.add_attr
 #             model_type: "Directory"
