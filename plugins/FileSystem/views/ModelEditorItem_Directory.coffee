@@ -41,8 +41,12 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 alt       : "New folder"
                 title     : "New folder"
                 onclick: ( evt ) =>
-                    n = new File Directory, "New folder"
-                    @model.data.children.push n
+                    n = new File "New folder", 0
+                    n._info.add_attr
+                        icon: "directory"
+                        model_type: "Directory"
+                        
+                    @model.push n
                     @refresh()
                     
         @icon_cut = new_dom_element
@@ -162,17 +166,17 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 if @selected_file.length > 0
                     if evt.shiftKey
                         index_last_file_selected = @selected_file[ @selected_file.length - 1 ]
-                        if index_last_file_selected < @model.data.children.length - 1
+                        if index_last_file_selected < @model.length - 1
                             @selected_file.push index_last_file_selected + 1
                             
                     else
                         ind = @selected_file[ @selected_file.length - 1 ]
-                        if ind < @model.data.children.length - 1
+                        if ind < @model.length - 1
                             @selected_file = []
                             @selected_file.push ind + 1
                         else
                             @selected_file = []
-                            @selected_file.push @model.data.children.length - 1
+                            @selected_file.push @model.length - 1
                 
                 # case no file is selected
                 else
@@ -185,7 +189,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
             65 : ( evt ) => # A
                 if evt.ctrlKey # select all
                     @selected_file = []
-                    for child, i in @model.data.children
+                    for child, i in @model
                         @selected_file.push i
                     @draw_selected_file()
                     
@@ -207,7 +211,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
             113 : ( evt ) => # F2
                 file_contain = document.getElementsByClassName('selected_file')[ 0 ]?.getElementsByClassName('linkDirectory')
                 if file_contain?
-                    @rename_file file_contain[ 0 ], @model.data.children[ @search_ord_index_from_id @selected_file[ 0 ] ]
+                    @rename_file file_contain[ 0 ], @model[ @search_ord_index_from_id @selected_file[ 0 ] ]
                 
             116 : ( evt ) => # F5
                 @refresh()
@@ -230,7 +234,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
             @clipboard = []
             for ind_children in @selected_file
                 real_ind = @search_ord_index_from_id ind_children
-                @clipboard.push @model.data.children[ real_ind ]
+                @clipboard.push @model[ real_ind ]
             @cutroot = @model
             
     copy: ->
@@ -238,20 +242,20 @@ class ModelEditorItem_Directory extends ModelEditorItem
             @clipboard = []
             for ind_children in @selected_file
                 real_ind = @search_ord_index_from_id ind_children
-                @clipboard.push @model.data.children[ real_ind ]
+                @clipboard.push @model[ real_ind ]
             @cutroot = undefined
             
     paste: ->
         if @cutroot?
             for mod in @clipboard
-                pos = @cutroot.data.children.indexOf mod
+                pos = @cutroot.indexOf mod
                 if pos != -1
-                    @cutroot.data.children.splice pos, 1
+                    @cutroot.splice pos, 1
         for file in @clipboard
 #             new_file = file
             new_file = file.deep_copy()
             console.log new_file, file
-            @model.data.children.push new_file
+            @model.push new_file
         @refresh()
         
         
@@ -273,6 +277,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
     
     load_folder: ( children ) =>
         # watching children
+        console.log children
         @model = children
         @breadcrumb.push @model
         
@@ -318,9 +323,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
             @breadcrumb.pop()
     
     search_ord_index_from_id: ( id ) ->
-        sorted = @model.data.children.sorted sort_dir
-        for i in @model.data.children
-            pos = @model.data.children.indexOf sorted[ id ]
+        sorted = @model.sorted sort_dir
+        for i in @model
+            pos = @model.indexOf sorted[ id ]
             if pos != -1
                 return pos
         
@@ -333,7 +338,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 index_array.push index
                 
             for i in [ index_array.length - 1 .. 0 ]
-                @model.data.children.splice( index_array[ i ] , 1)
+                @model.splice( index_array[ i ] , 1)
                 
             @selected_file = []
             @refresh()
@@ -359,8 +364,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
         if a.name.get().toLowerCase() > b.name.get().toLowerCase() then 1 else -1
     
     init: ->
+        console.log this
         console.log @model
-        sorted = @model.data.children.sorted sort_dir
+        sorted = @model.sorted sort_dir
 #         if @breadcrumb.length > 1
 #             parent = new File Directory, ".."
 #             sorted.unshift parent
@@ -392,7 +398,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     
                     ondrop: ( evt ) =>
                         # drop file got index = i
-                        if sorted[ i ].data instanceof Directory
+                        if sorted[ i ]._info.model_type.get() == "Directory"
 #                             console.log @drag_source
 #                             console.log @breadcrumb[ @breadcrumb.length - 2 ]
                             if sorted[ i ].name == ".."
@@ -401,12 +407,12 @@ class ModelEditorItem_Directory extends ModelEditorItem
                                 # add selected children to target directory
                                 index = @search_ord_index_from_id i
                                 for ind in @drag_source
-                                    @model.data.children[ index ].data.children.push sorted[ ind ]
+                                    @model[ index ].data.children.push sorted[ ind ]
                                 
                             # remove selected children from current directory
                             for sorted_ind in @drag_source
                                 index = @search_ord_index_from_id sorted_ind
-                                @model.data.children.splice index, 1
+                                @model.splice index, 1
     
                             @selected_file = []
                             @refresh()
@@ -437,7 +443,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         
                         @draw_selected_file()
                 
-                if elem.data instanceof ImgItem
+                if elem._info.model_type.get() == "ImgItem"
                     @picture = new_dom_element
                         parentNode: file_container
                         className : "picture"
@@ -456,7 +462,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         onclick: ( evt ) =>
                             @rename_file text, sorted[ i ]
                 
-                else if elem.data instanceof Mesh
+                else if elem._info.model_type.get() == "Mesh"
                     @picture = new_dom_element
                         parentNode: file_container
                         nodeName  : "img"
@@ -474,7 +480,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         onclick: ( evt ) =>
                             @rename_file text, sorted[ i ]
                             
-                else if elem.data instanceof Directory
+                else if elem._info.model_type.get() == "Directory"
                     @picture = new_dom_element
                         parentNode: file_container
                         nodeName  : "img"
