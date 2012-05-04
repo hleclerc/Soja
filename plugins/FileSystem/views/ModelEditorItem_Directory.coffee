@@ -213,8 +213,8 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 if file_contain?
                     @rename_file file_contain[ 0 ], @model[ @search_ord_index_from_id @selected_file[ 0 ] ]
                 
-            116 : ( evt ) => # F5
-                @refresh()
+#             116 : ( evt ) => # F5
+#                 @refresh()
         }
 
         document.onkeydown = ( evt ) =>
@@ -278,10 +278,14 @@ class ModelEditorItem_Directory extends ModelEditorItem
     load_folder: ( children ) =>
         # watching children
         console.log children
-        @model = children
-        @breadcrumb.push @model
+        fs = new FileSystem
         
-        @refresh()
+        fs.load "/test_browser" + "/" + children.name.get() , ( m, err ) =>
+            console.log m, err
+            @model = m
+            @breadcrumb.push m
+            
+            @refresh()
 
         
     draw_breadcrumb: ->
