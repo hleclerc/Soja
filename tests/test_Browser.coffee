@@ -10,15 +10,18 @@ test_Browser = ->
 
     fs.load "/test_browser", ( m, err ) ->
         if err
-            m = new Directory
-            fs.save "/test_browser", m
-            fs.save "/test_browser/toto", new Lst [ 1, 2 ]
-            fs.save "/test_browser/tata", new Lst [ 1, 2 ]
+            fs.load "/", ( d, err ) ->
+                t = new Directory
+                d.add "test_browser", t
+                t.add "tata", new Lst [ 1, 2 ]
+                t.add "teta", new Lst [ 3, 4 ]
             
         for f in m
             f._info.add_attr
                 icon: "icon"
-        
-        console.log m
+                
+        m.bind ->
+            console.log m
+            
         new_model_editor el: document.body, model: m
-        
+            
