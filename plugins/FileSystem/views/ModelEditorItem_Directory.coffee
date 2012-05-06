@@ -277,13 +277,12 @@ class ModelEditorItem_Directory extends ModelEditorItem
     
     load_folder: ( children ) ->
         # watching children
-        console.log children
+        console.log "loading : ", children
         fs = new FileSystem
         
-        fs.load "/test_browser/" + children.name.get(), ( m, err ) =>
-            console.log "cdscds-> ", "/test_browser/" + children.name.get()
-            console.log "cdscds-> ", m[ 0 ]._info._server_id
-            console.log "cdscds-> ", m[ 0 ]._info.model_type.get(), err
+        #TODO, use path
+        fs.load "/test_browser" + "/" + children.name.get() , ( m, err ) =>
+            console.log "fs load : ", m, err
             @model = m
             @breadcrumb.push m
             
@@ -370,8 +369,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         if a.name.get().toLowerCase() > b.name.get().toLowerCase() then 1 else -1
     
     init: ->
-        console.log this
-        console.log @model
+        console.log "init ",@model
         sorted = @model.sorted sort_dir
 #         if @breadcrumb.length > 1
 #             parent = new File Directory, ".."
@@ -532,4 +530,5 @@ class ModelEditorItem_Directory extends ModelEditorItem
             style:
                 clear: "both"
 
-ModelEditor.default_types.push ( model ) -> ModelEditorItem_Directory if model instanceof Directory
+# registering
+ModelEditor.default_types.unshift ( model ) -> ModelEditorItem_Directory if model instanceof Directory

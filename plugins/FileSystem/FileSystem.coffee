@@ -146,6 +146,8 @@ class FileSystem
                     FileSystem._sig_server = false
                     eval @responseText
                     FileSystem._sig_server = true
+            if FileSystem._disp
+                console.log "sent ->", f._data_to_send + "E "
             xhr_object.send f._data_to_send + "E "
             #console.log "-> ", f._data_to_send
             f._data_to_send = ""
