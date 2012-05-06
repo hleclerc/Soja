@@ -275,13 +275,15 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @all_file_container.innerHTML = ""
         @selected_file = []
     
-    load_folder: ( children ) =>
+    load_folder: ( children ) ->
         # watching children
         console.log children
         fs = new FileSystem
         
-        fs.load "/test_browser" + "/" + children.name.get() , ( m, err ) =>
-            console.log m, err
+        fs.load "/test_browser/" + children.name.get(), ( m, err ) =>
+            console.log "cdscds-> ", "/test_browser/" + children.name.get()
+            console.log "cdscds-> ", m[ 0 ]._info._server_id
+            console.log "cdscds-> ", m[ 0 ]._info.model_type.get(), err
             @model = m
             @breadcrumb.push m
             
@@ -316,7 +318,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                             @load_model_from_breadcrumb i
 
             
-    load_model_from_breadcrumb: ( ind ) =>
+    load_model_from_breadcrumb: ( ind ) ->
         if ind != -1
             @delete_breadcrumb_from_index ind
             @model = @breadcrumb[ ind ]

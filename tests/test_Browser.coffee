@@ -7,41 +7,43 @@
 # lib FileSystem.css
 test_Browser = ->
     fs = new FileSystem
-    FileSystem._disp = false
+    FileSystem._disp = true
 
     fs.load "/test_browser", ( m, err ) ->
         if err
             m = new Directory
+            r = new Directory
             fs.save "/test_browser", m
-            fs.save "/test_browser/Result", new Directory
+            fs.save "/test_browser/Result", r
             fs.save "/test_browser/Result/Hello", new Directory
             fs.save "/test_browser/Mesh", new Lst [ 1, 2 ]
             fs.save "/test_browser/Work", new Lst [ 1, 2 ]
+            
+            fun = ->
+                fs.load "/test_browser", ( m, err ) ->
+                    console.log m
+                    
+                    m[ 0 ]._info.add_attr
+                        icon: "directory"
+                        model_type: "Directory"
+                        
+                    m[ 1 ]._info.add_attr
+                        model_type: "Mesh"
+                        
+                    m[ 2 ]._info.add_attr
+                        model_type: "Directory"
+
+                fs.load "/test_browser/Result", ( r, err ) ->
+                    r[ 0 ]._info.add_attr
+                        model_type: "Directory"
+                        
+                console.log "done"
+
+            setTimeout fun, 1000
+                        
             return
         
-        console.log m
-        
-        m[ 0 ]._info.add_attr
-            icon: "directory"
-            model_type: "Directory"
             
-        m[ 1 ]._info.add_attr
-            model_type: "Mesh"
-            
-        m[ 2 ]._info.add_attr
-            model_type: "Directory"
-            
-        fs.load "/test_browser/Result", ( m, err ) ->
-            m[ 0 ]._info.add_attr
-                model_type: "Directory"
-            console.log "<->", m[ 0 ]
-            
-            fs.load "/test_browser/Result", ( m, err ) ->
-                console.log "<-->", m[ 0 ]._info.model_type.get()
-        
-#         m[ 3 ]._info.add_attr
-#             model_type: "Directory"
-        
         ModelEditor.default_types.unshift ( model ) ->
             ModelEditorItem_Directory if model instanceof Directory
             
