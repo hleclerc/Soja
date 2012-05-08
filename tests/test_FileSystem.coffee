@@ -19,11 +19,10 @@ test_FileSystem = ->
         # add if necessary
         add_ifn = ( dir, name, fun ) ->
             f = dir.find name
-            console.log "s", dir._server_id
-            console.log f
+            console.log name, "->", f
             if not f?
                 dir.add_file name, Model.conv fun()
-                console.log dir
+                console.log "dir", dir
                 
         console.log dir.get()
         add_ifn dir, "toto", -> 10

@@ -143,9 +143,12 @@ class FileSystem
                 if @readyState == 4 and @status == 200
                     if FileSystem._disp
                         console.log "resp ->", @responseText
+                    _c = []
                     FileSystem._sig_server = false
                     eval @responseText
                     FileSystem._sig_server = true
+                    for c in _c
+                        FileSystem._callbacks[ c[ 0 ] ] c[ 1 ], c[ 2 ]
             if FileSystem._disp
                 console.log "sent ->", f._data_to_send + "E "
             xhr_object.send f._data_to_send + "E "

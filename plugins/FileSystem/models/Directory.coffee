@@ -13,5 +13,6 @@ class Directory extends Lst
         return undefined
         
     add_file: ( name, obj ) ->
+        
         @push new File name, 1
    
