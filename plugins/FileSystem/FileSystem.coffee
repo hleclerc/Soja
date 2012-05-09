@@ -44,16 +44,12 @@ class FileSystem
         @send "L #{FileSystem._nb_callbacks} #{encodeURI path} "
         FileSystem._callbacks[ FileSystem._nb_callbacks ] = callback
         FileSystem._nb_callbacks++
-    
-    # 
-    save: ( path, model ) ->
-        if not model._server_id
-            out = { cre: "", mod: "" }
-            model._get_fs_data out
-            @send out.cre + out.mod
         
-        # save in path
-        @send "R #{model._server_id} #{encodeURI path} "
+    # load an object using is pointer and call $callback with the corresponding ref
+    load_ptr: ( ptr, callback ) ->
+        @send "l #{FileSystem._nb_callbacks} #{ptr} "
+        FileSystem._callbacks[ FileSystem._nb_callbacks ] = callback
+        FileSystem._nb_callbacks++
         
     # explicitly send a command
     send: ( data ) ->
@@ -102,7 +98,10 @@ class FileSystem
         tmp._server_id = res
         delete FileSystem._tmp_objects[ tmp_id ]
         #
-        # if FileSystem._ptr_to_update[ tmp_id ]?
+        ptr = FileSystem._ptr_to_update[ tmp_id ] 
+        if ptr?
+            ptr.data.value = res
+            
 
     @_get_new_tmp_server_id: ->
         FileSystem._cur_tmp_server_id++
@@ -116,7 +115,7 @@ class FileSystem
         out = { cre: "", mod: "" }
         for n, model of FileSystem._objects_to_send
             model._get_fs_data out
-            
+        
         # send
         for k, f of FileSystem._insts
             f.send out.cre + out.mod

@@ -2,17 +2,11 @@
 #
 #
 class Ptr extends Model
+    # model may be a number (the pointer)
     constructor: ( model ) ->
         super()
-        
-        if typeof model == "number"
-            @data =
-                value: 0
-        else if model instanceof Model
-            @data =
-                model: model
-                value: model._server_id
-            
+        @data = {}
+        @_set model
         
     load: ( callback ) ->
         if @data.model?
@@ -22,19 +16,31 @@ class Ptr extends Model
             
         
     _get_fs_data: ( out ) ->
+        FileSystem.set_server_id_if_necessary out, this
         if @data.model?
-            out.mod += "C #{@_checked_server_id out} #{@data.model._checked_server_id out} "
+            FileSystem.set_server_id_if_necessary out, @data.model
+            out.mod += "C #{@_server_id} #{@data.model._server_id} "
             #
             @data.value = @data.model._server_id
             if @data.model._server_id & 3
                 FileSystem._ptr_to_update[ @model_id ] = this
         else
-            out.mod += "C #{@_checked_server_id out} #{@data.value} "
+            out.mod += "C #{@_server_id} #{@data.value} "
 
-    _set: ( value ) ->
-        if @data != value
-            @data = value
-            return true
+    _set: ( model ) ->
+        if typeof model == "number"
+            res = @data.value != model
+            @data =
+                value: 0
+            return res
+            
+        if model instanceof Model
+            res = @data.value != model._server_id
+            @data =
+                model: model
+                value: model._server_id
+            return res
+                
         return false
             
     _get_state: ->

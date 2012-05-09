@@ -35,7 +35,8 @@ class Str extends Obj
 
     #
     _get_fs_data: ( out ) ->
-        out.mod += "C #{@_checked_server_id out} #{encodeURI @_data} "
+        FileSystem.set_server_id_if_necessary out, this
+        out.mod += "C #{@_server_id} #{encodeURI @_data} "
 
     #
     _set: ( value ) ->
