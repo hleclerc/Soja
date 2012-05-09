@@ -8,7 +8,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         
         
         @selected_file = new Lst
-        @clipboard     = [] # contain last 'copy' or 'cut' file
+        @clipboard     = new Lst # contain last 'copy' or 'cut' file
         
         @breadcrumb.bind this
         @selected_file.bind this
@@ -236,6 +236,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @empty_window()
         @init()
 
+    onchange: ->
+        @refresh()
+        
     cut: ->
         if @selected_file.length > 0
             @clipboard = []
@@ -348,7 +351,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
             index_array.sort @sort_numerically
             
             for i in [ index_array.length - 1 .. 0 ]
-                @model.splice( index_array[ i ] , 1)
+                @model.splice index_array[ i ], 1
                 
             @selected_file = []
 #             @refresh()

@@ -18,7 +18,8 @@ class Obj extends Model
         @_data
 
     _get_fs_data: ( out ) ->
-        out.mod += "C #{@_checked_server_id out} #{@toString()} "
+        FileSystem.set_server_id_if_necessary out, this
+        out.mod += "C #{@_server_id} #{@toString()} "
 
     _set: ( value ) ->
         if @_data != value

@@ -7,11 +7,12 @@
 # lib FileSystem.css
 test_Browser = ->
     fs = new FileSystem
-#     FileSystem._disp = false
+    FileSystem._disp = false
 
     fs.load "/test_browser", ( m, err ) ->
         if err
             fs.load "/", ( d, err ) ->
+                console.log "MAKE"
                 m = new Directory
                 d.add_file "test_browser", m, model_type: "Directory"
                 t = new Directory

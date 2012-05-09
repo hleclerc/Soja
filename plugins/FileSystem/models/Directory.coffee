@@ -13,5 +13,7 @@ class Directory extends Lst
         return undefined
         
     add_file: ( name, obj, params = {} ) ->
-        @push new File name, obj, params
+        o = @find name
+        if not o?
+            @push new File name, obj, params
    

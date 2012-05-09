@@ -245,7 +245,7 @@ class Lst extends Model
     # permits to set an item or to grow the list if index == @length
     set_or_push: ( index, val ) ->
         if index < @length
-            @[ index ].set val
+            @mod_attr index, val
         else if index == @length
             @push val
     
@@ -288,9 +288,11 @@ class Lst extends Model
         return change
 
     _get_fs_data: ( out ) ->
+        FileSystem.set_server_id_if_necessary out, this
         str = for obj in this
-            obj._checked_server_id out
-        out.mod += "C #{@_checked_server_id out} #{str.join ","} "
+            FileSystem.set_server_id_if_necessary out, obj
+            obj._server_id
+        out.mod += "C #{@_server_id} #{str.join ","} "
 
     _get_state: ->
         str = for obj in this
