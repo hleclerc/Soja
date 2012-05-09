@@ -275,16 +275,10 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @all_file_container.innerHTML = ""
         @selected_file = []
     
-    load_folder: ( children ) ->
-        # watching children
-        console.log "loading : ", children
-        fs = new FileSystem
-        
-        #TODO, use path
-        fs.load "/test_browser" + "/" + children.name.get() , ( m, err ) =>
-            console.log "fs load : ", m, err
+    load_folder: ( file ) ->
+        file._ptr.load ( m, err ) =>
             @model = m
-            @breadcrumb.push m
+            @breadcrumb.push file
             
             @refresh()
 
@@ -312,7 +306,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         parentNode: @breadcrumb_dom
                         nodeName  : "span"
                         className : "breadcrumb"
-                        txt       : folder.name.get()
+                        txt       : folder.name
                         onclick   : ( evt ) =>
                             @load_model_from_breadcrumb i
 

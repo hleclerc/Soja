@@ -10,6 +10,13 @@ class Ptr extends Model
             value: 0
             
         
+    load: ( callback ) ->
+        if @data.model?
+            callback @data.model, false
+        else if FileSystem._insts.length
+            FileSystem._insts[ 0 ].load_ptr @data.value, callback
+            
+        
     _get_fs_data: ( out ) ->
         out.mod += "C #{@_checked_server_id out} #{@data.model._checked_server_id out} "
 
