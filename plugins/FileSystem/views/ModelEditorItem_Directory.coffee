@@ -6,9 +6,14 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @breadcrumb = new Lst
         @breadcrumb.push @model
         
-       
-        @selected_file = []
+        
+        @selected_file = new Lst
         @clipboard     = [] # contain last 'copy' or 'cut' file
+        
+        @breadcrumb.bind this
+        @selected_file.bind this
+        @clipboard.bind this
+        
         
         @allow_shortkey = true # allow the use of shortkey like Ctrl+C / Delete. Set to false when renaming
         
@@ -47,7 +52,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         model_type: "Directory"
                         
                     @model.push n
-                    @refresh()
+#                     @refresh()
                     
         @icon_cut = new_dom_element
                 parentNode: @icon_scene
@@ -130,7 +135,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
 #                     evt.stopPropagation()
 #                     return false
 
-        @refresh()
+#         @refresh()
         
         key_map = {
             8 : ( evt ) => # backspace
@@ -160,7 +165,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     @selected_file.push 0 
                 @draw_selected_file()
                 
-#             38 : ( evt ) => # up
+            38 : ( evt ) => # up
+                if evt.altKey
+                    @load_model_from_breadcrumb @breadcrumb.length - 2
                 
             39 : ( evt ) => # right
                 if @selected_file.length > 0
@@ -256,7 +263,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
             new_file = file.deep_copy()
             console.log new_file, file
             @model.push new_file
-        @refresh()
+#         @refresh()
         
         
     rename_file: ( file, child_index ) ->
@@ -280,7 +287,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
             @model = m
             @breadcrumb.push file
             
-            @refresh()
+#             @refresh()
 
         
     draw_breadcrumb: ->
@@ -301,7 +308,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         parentNode: @breadcrumb_dom
                         nodeName  : "span"
                         txt       : " > "
-                        
+                    console.log folder
                     f = new_dom_element
                         parentNode: @breadcrumb_dom
                         nodeName  : "span"
@@ -314,8 +321,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
     load_model_from_breadcrumb: ( ind ) ->
         if ind != -1
             @delete_breadcrumb_from_index ind
-            @model = @breadcrumb[ ind ]
-            @refresh()
+            @breadcrumb[ ind ]._ptr.load ( m, err ) =>
+                @model = m
+#             @refresh()
         
     delete_breadcrumb_from_index: ( index ) ->
         for i in [ @breadcrumb.length-1 ... index ]
@@ -328,6 +336,8 @@ class ModelEditorItem_Directory extends ModelEditorItem
             if pos != -1
                 return pos
         
+    sort_numerically = ( a, b ) ->
+        return (a - b)
     
     delete_file: ->
         if @selected_file.length
@@ -335,12 +345,13 @@ class ModelEditorItem_Directory extends ModelEditorItem
             for i in @selected_file
                 index = @search_ord_index_from_id i
                 index_array.push index
-                
+            index_array.sort @sort_numerically
+            
             for i in [ index_array.length - 1 .. 0 ]
                 @model.splice( index_array[ i ] , 1)
                 
             @selected_file = []
-            @refresh()
+#             @refresh()
             
     draw_selected_file: ->
         file_contain = document.getElementsByClassName 'file_container'
@@ -413,7 +424,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                                 @model.splice index, 1
     
                             @selected_file = []
-                            @refresh()
+#                             @refresh()
                         
                         evt.stopPropagation()
                         return false
