@@ -13,11 +13,10 @@ test_Browser = ->
         if err
             fs.load "/", ( d, err ) ->
                 m = new Directory
-                d.save "test_browser", m
-                d.save "Result", new Directory
-                # d.save "Result/Hello", new Directory
-                d.save "Mesh", new Lst [ 1, 2 ]
-                d.save "Work", new Lst [ 1, 2 ]
+                d.add_file "test_browser", m, model_type: "Directory"
+                m.add_file "Result", ( new Directory ), model_type: "Directory"
+                m.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
+                m.add_file "Work", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
                 
                 new_model_editor el: document.body, model: m
         else

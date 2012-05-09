@@ -1,13 +1,13 @@
+#
 class File extends Model
-    constructor: ( name = "", ptr = 0 ) ->
+    constructor: ( name = "", ptr_or_model = 0, info = {} ) ->
         super()
 
         @add_attr
             name: name
-            _ptr: ptr # _server_id of the object. The corresponding model can be found using FilesSystem._objects[ _ptr ]
-            _info: {
-                #img : "data/base64...."
-                #icon: "toto"
-                #model_type:
-            }
+            _ptr: new Ptr ptr_or_model
+            _info: info
+            # -> img : "data/base64...."
+            # -> icon: "toto"
+            # -> model_type: "Directory"...
             
