@@ -10,6 +10,15 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @selected_file = new Lst
         @clipboard     = new Lst # contain last 'copy' or 'cut' file
         
+#         @model_type : [
+#             if model_type == "Directory"
+#                 open: () ->
+#                     console.log 'open folder'
+#             else if model_type == "ImgItem"
+#                 open: () ->
+#                     #
+#         ]
+        
         @breadcrumb.bind this
         @selected_file.bind this
         @clipboard.bind this
@@ -113,6 +122,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 multiple  : "true"
                 onchange: ( evt ) ->
                     if this.files.length > 0
+                        console.log "File Count: " + files.length + "\n"
                         for file in this.files
                             console.log file
     #                     @handleFiles '', this.files
@@ -124,32 +134,48 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @all_file_container = new_dom_element
                 parentNode: @container
                 nodeName  : "div"
-#                 ondragover: ( evt ) =>
-#                     @all_file_container.id = "drop_zone"
-#                     return false
-#                 ondragleave: ( evt ) =>
-#                     @all_file_container.id = ""
-#                     return false
-#                 ondrop: ( evt ) =>
-#                     @all_file_container.id = ""
-#                     evt.stopPropagation()
-#                     return false
+                id  : "test"
+                ondragover: ( evt ) =>
+                    return false
+                ondragleave: ( evt ) =>
+                    return false
+                ondrop: ( evt ) =>
+                    evt.stopPropagation()
+                    evt.preventDefault()
+                    files = evt.dataTransfer.files
+                    if files.length > 0
+                        console.log "File Count: " + files.length + "\n"
+                        for file in files
+                            console.log file
+                        
+                    return false
 
-#         @refresh()
         
         key_map = {
             8 : ( evt ) => # backspace
                 @load_model_from_breadcrumb @breadcrumb.length - 2
                         
-#             13 : ( evt ) => # enter
+            13 : ( evt ) => # enter
+                if @selected_file.length > 0
+                    for sel_file in @selected_file
+                        @open sel_file
                 
             37 : ( evt ) => # left
                 if @selected_file.length > 0
                     if evt.shiftKey
-                        # TODO shift selected need to use a reference file and not push the next or previous file ( this is to prevent multiple occurence of file when shift leftand then shift+right etc)
                         index_last_file_selected = @selected_file[ @selected_file.length - 1 ]
+                        
+                        if not @reference_file?
+                            @selected_file = []
+                            @selected_file.push index_last_file_selected
+                            @reference_file = index_last_file_selected
+                        
                         if index_last_file_selected > 0
-                            @selected_file.push index_last_file_selected - 1
+                            if index_last_file_selected <= @reference_file
+                                @selected_file.push index_last_file_selected - 1
+                            else
+                                @selected_file.pop()
+                                
                             
                     else
                         ind = @selected_file[ @selected_file.length - 1 ]
@@ -159,10 +185,13 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         else
                             @selected_file = []
                             @selected_file.push 0
+                            
+                        @reference_file = undefined
                 
                 # case no file is selected
                 else
                     @selected_file.push 0 
+                    @reference_file = undefined
                 @draw_selected_file()
                 
             38 : ( evt ) => # up
@@ -173,8 +202,17 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 if @selected_file.length > 0
                     if evt.shiftKey
                         index_last_file_selected = @selected_file[ @selected_file.length - 1 ]
+                        if not @reference_file?
+                            @selected_file = []
+                            @selected_file.push index_last_file_selected
+                            @reference_file = index_last_file_selected
+                        
                         if index_last_file_selected < @model.length - 1
-                            @selected_file.push index_last_file_selected + 1
+                            if index_last_file_selected >= @reference_file
+                                @selected_file.push index_last_file_selected + 1
+                            else
+                                @selected_file.pop()
+                                
                             
                     else
                         ind = @selected_file[ @selected_file.length - 1 ]
@@ -184,6 +222,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         else
                             @selected_file = []
                             @selected_file.push @model.length - 1
+                        @reference_file = undefined
                 
                 # case no file is selected
                 else
@@ -191,7 +230,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     
                 @draw_selected_file()
                 
-#             40 : ( evt ) => # down
+            40 : ( evt ) => # down
+                if @selected_file.length > 0
+                    @open @selected_file[ 0 ]
                 
             65 : ( evt ) => # A
                 if evt.ctrlKey # select all
@@ -262,11 +303,8 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 if pos != -1
                     @cutroot.splice pos, 1
         for file in @clipboard
-#             new_file = file
             new_file = file.deep_copy()
-            console.log new_file, file
             @model.push new_file
-#         @refresh()
         
         
     rename_file: ( file, child_index ) ->
@@ -285,14 +323,14 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @all_file_container.innerHTML = ""
         @selected_file = []
     
-    load_folder: ( file ) ->
+    load_folder: ( file ) ->            
         file._ptr.load ( m, err ) =>
             @model = m
             @breadcrumb.push file
             
-#             @refresh()
-
-        
+    open: ( file ) ->
+        @model_type.open()
+     
     draw_breadcrumb: ->
         @breadcrumb_dom.innerHTML = ""
         for folder, i in @breadcrumb
@@ -311,7 +349,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         parentNode: @breadcrumb_dom
                         nodeName  : "span"
                         txt       : " > "
-                    console.log folder
+                        
                     f = new_dom_element
                         parentNode: @breadcrumb_dom
                         nodeName  : "span"
@@ -324,9 +362,11 @@ class ModelEditorItem_Directory extends ModelEditorItem
     load_model_from_breadcrumb: ( ind ) ->
         if ind != -1
             @delete_breadcrumb_from_index ind
-            @breadcrumb[ ind ]._ptr.load ( m, err ) =>
-                @model = m
-#             @refresh()
+            if ind == 0
+                @model = @breadcrumb[ 0 ]
+            else
+                @breadcrumb[ ind ]._ptr.load ( m, err ) =>
+                    @model = m
         
     delete_breadcrumb_from_index: ( index ) ->
         for i in [ @breadcrumb.length-1 ... index ]
@@ -354,7 +394,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 @model.splice index_array[ i ], 1
                 
             @selected_file = []
-#             @refresh()
             
     draw_selected_file: ->
         file_contain = document.getElementsByClassName 'file_container'
@@ -377,8 +416,11 @@ class ModelEditorItem_Directory extends ModelEditorItem
         if a.name.get().toLowerCase() > b.name.get().toLowerCase() then 1 else -1
     
     init: ->
-        console.log "init ",@model
+#         console.log "---"
         sorted = @model.sorted sort_dir
+#         console.log "init ",@model
+#         console.log "sorted ",sorted
+
 #         if @breadcrumb.length > 1
 #             parent = new File Directory, ".."
 #             sorted.unshift parent
@@ -392,8 +434,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     className : "file_container"
                     
                     ondragstart: ( evt ) =>
-                        @popup_closer_zindex = document.getElementById('popup_closer').style.zIndex
-                        document.getElementById('popup_closer').style.zIndex = -1
+                        if document.getElementById('popup_closer')?
+                            @popup_closer_zindex = document.getElementById('popup_closer').style.zIndex
+                            document.getElementById('popup_closer').style.zIndex = -1
                         
                         @drag_source = []
                         @drag_source = @selected_file.slice 0
@@ -406,25 +449,31 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         return false
                         
                     ondragend: ( evt ) =>
-                        document.getElementById('popup_closer').style.zIndex = @popup_closer_zindex
+                        if document.getElementById('popup_closer')?
+                            document.getElementById('popup_closer').style.zIndex = @popup_closer_zindex
                     
                     ondrop: ( evt ) =>
                         # drop file got index = i
                         if sorted[ i ]._info.model_type.get() == "Directory"
-#                             console.log @drag_source
-#                             console.log @breadcrumb[ @breadcrumb.length - 2 ]
                             if sorted[ i ].name == ".."
-#                                 @breadcrumb[ @breadcrumb.length - 2 ].data.children.push sorted[ ind ]
+#                                 @breadcrumb[ @breadcrumb.length - 2 ].push sorted[ ind ]
                             else
                                 # add selected children to target directory
                                 index = @search_ord_index_from_id i
                                 for ind in @drag_source
-                                    @model[ index ].data.children.push sorted[ ind ]
-                                
+                                    # sorted[ ind ] is the drop file source
+                                    # sorted[ i ]   is the drop file target
+                                    if sorted[ ind ] == sorted[ i ]
+                                        return false
+                                        
+                                        
+                                    sorted[ i ]._ptr.load ( m, err ) =>
+                                        m.push sorted[ ind ]
+                                        
                             # remove selected children from current directory
                             for sorted_ind in @drag_source
                                 index = @search_ord_index_from_id sorted_ind
-                                @model.splice index, 1
+                                @model.splice sorted[ index ], 1
     
                             @selected_file = []
 #                             @refresh()
@@ -465,6 +514,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         title     : elem.data._name
                         ondblclick: ( evt ) =>
                             @fundblclick evt, sorted[ i ]
+#                             @open sorted[ i ]
                             
                     text = new_dom_element
                         parentNode: file_container
@@ -483,6 +533,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         title     : ""
                         ondblclick: ( evt ) =>
                             @fundblclick evt, sorted[ i ]
+#                             @open sorted[ i ]
                             
                     text = new_dom_element
                         parentNode: file_container
@@ -504,6 +555,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                                 @load_model_from_breadcrumb @breadcrumb.length - 2
                             else
                                 @load_folder sorted[ i ]
+#                             @open sorted[ i ]
                         
                     text = new_dom_element
                         parentNode: file_container
