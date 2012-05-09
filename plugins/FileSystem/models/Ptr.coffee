@@ -5,9 +5,13 @@ class Ptr extends Model
     constructor: ( model ) ->
         super()
         
-        @data =
-            model: model
-            value: 0
+        if typeof model == "number"
+            @data =
+                value: 0
+        else if model instanceof Model
+            @data =
+                model: model
+                value: model._server_id
             
         
     load: ( callback ) ->
@@ -18,7 +22,14 @@ class Ptr extends Model
             
         
     _get_fs_data: ( out ) ->
-        out.mod += "C #{@_checked_server_id out} #{@data.model._checked_server_id out} "
+        if @data.model?
+            out.mod += "C #{@_checked_server_id out} #{@data.model._checked_server_id out} "
+            #
+            @data.value = @data.model._server_id
+            if @data.model._server_id & 3
+                FileSystem._ptr_to_update[ @model_id ] = this
+        else
+            out.mod += "C #{@_checked_server_id out} #{@data.value} "
 
     _set: ( value ) ->
         if @data != value

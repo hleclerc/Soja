@@ -22,9 +22,10 @@ class FileSystem
     @_insts = {}
     
     # ..._server_id -> object
+    @_ptr_to_update = {} # Ptr objects that need an update, associated with @_tmp_objects
     @_tmp_objects = {} # objects waiting for a real _server_id
     @_objects = {} # _server_id -> object
-    
+
     constructor: ( @url = "/cmd" ) ->
         # default values
         @_data_to_send    = ""
@@ -95,11 +96,13 @@ class FileSystem
             FileSystem._timer_chan = setTimeout FileSystem._timeout_chan_func, 100
 
     #
-    @_tmp_id_to_real= ( tmp_id, res ) ->
+    @_tmp_id_to_real: ( tmp_id, res ) ->
         tmp = FileSystem._tmp_objects[ tmp_id ]
         FileSystem._objects[ res ] = tmp
         tmp._server_id = res
         delete FileSystem._tmp_objects[ tmp_id ]
+        #
+        # if FileSystem._ptr_to_update[ tmp_id ]?
 
     @_get_new_tmp_server_id: ->
         FileSystem._cur_tmp_server_id++
