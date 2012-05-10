@@ -1,5 +1,16 @@
 # Browsing and dnd
 class ModelEditorItem_Directory extends ModelEditorItem
+    # @see add_action
+    @_action_list : 
+        "Directory": [
+            ( file, path, browser ) -> 
+                #if sorted[ i ].name.get() == ".."
+                #    @load_model_from_breadcrumb @breadcrumb.length - 2
+                #else
+                browser.load_folder file
+                console.log file, path
+        ]
+
     constructor: ( params ) ->
         super params
         
@@ -10,15 +21,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @selected_file = new Lst
         @clipboard     = new Lst # contain last 'copy' or 'cut' file
         
-#         @model_type : [
-#             if model_type == "Directory"
-#                 open: () ->
-#                     console.log 'open folder'
-#             else if model_type == "ImgItem"
-#                 open: () ->
-#                     #
-#         ]
-        
+            
         @breadcrumb.bind this
         @selected_file.bind this
         @clipboard.bind this
@@ -158,7 +161,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
             13 : ( evt ) => # enter
                 if @selected_file.length > 0
                     for sel_file in @selected_file
-                        @open sel_file
+                        @open sel_file, @path()
                 
             37 : ( evt ) => # left
                 if @selected_file.length > 0
@@ -232,7 +235,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 
             40 : ( evt ) => # down
                 if @selected_file.length > 0
-                    @open @selected_file[ 0 ]
+                    @open @selected_file[ 0 ], @path()
                 
             65 : ( evt ) => # A
                 if evt.ctrlKey # select all
@@ -328,8 +331,11 @@ class ModelEditorItem_Directory extends ModelEditorItem
             @model = m
             @breadcrumb.push file
             
-    open: ( file ) ->
-        @model_type.open()
+    open: ( file, path ) ->
+        if file._info.model_type?
+            l = ModelEditorItem_Directory._action_list[ file._info.model_type ]
+            if l? and l.length
+                l[ 0 ] file, path, this
      
     draw_breadcrumb: ->
         @breadcrumb_dom.innerHTML = ""
@@ -504,7 +510,29 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         
                         @draw_selected_file()
                 
-                if elem._info.model_type.get() == "ImgItem"
+                
+                if elem._info.img?
+                    @picture = new_dom_element
+                        parentNode: file_container
+                        className : "picture"
+                        nodeName  : "img"
+                        src       : elem._info.img.get()
+                        alt       : ""
+                        title     : elem.name.get()
+                        ondblclick: ( evt ) =>
+                            @open sorted[ i ], @path()
+                        width     : 128
+                        height    : 128
+                            
+                    text = new_dom_element
+                        parentNode: file_container
+                        className : "linkDirectory"
+                        nodeName  : "div"
+                        txt       : elem.name.get()
+                        onclick: ( evt ) =>
+                            @rename_file text, sorted[ i ]
+                    
+                else if elem._info.model_type.get() == "ImgItem"
                     @picture = new_dom_element
                         parentNode: file_container
                         className : "picture"
@@ -513,8 +541,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         alt       : ""
                         title     : elem.data._name
                         ondblclick: ( evt ) =>
-                            @fundblclick evt, sorted[ i ]
-#                             @open sorted[ i ]
+                            @open sorted[ i ], @path()
                             
                     text = new_dom_element
                         parentNode: file_container
@@ -532,8 +559,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         alt       : ""
                         title     : ""
                         ondblclick: ( evt ) =>
-                            @fundblclick evt, sorted[ i ]
-#                             @open sorted[ i ]
+                             @open sorted[ i ], @path()
                             
                     text = new_dom_element
                         parentNode: file_container
@@ -551,11 +577,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         alt       : elem.name
                         title     : elem.name
                         ondblclick: ( evt ) =>
-                            if sorted[ i ].name.get() == ".."
-                                @load_model_from_breadcrumb @breadcrumb.length - 2
-                            else
-                                @load_folder sorted[ i ]
-#                             @open sorted[ i ]
+                            @open sorted[ i ], @path()
                         
                     text = new_dom_element
                         parentNode: file_container
@@ -589,6 +611,15 @@ class ModelEditorItem_Directory extends ModelEditorItem
             nodeName  : "div"
             style:
                 clear: "both"
+
+                
+    path: ->
+        "pouet"
+    
+    @add_action: ( model_type, fun ) ->
+        if not ModelEditorItem_Directory._action_list[ model_type ]?
+            ModelEditorItem_Directory._action_list[ model_type ] = []
+        ModelEditorItem_Directory._action_list[ model_type ].push fun
 
 # registering
 ModelEditor.default_types.unshift ( model ) -> ModelEditorItem_Directory if model instanceof Directory

@@ -16,4 +16,6 @@ class Directory extends Lst
         o = @find name
         if not o?
             @push new File name, obj, params
-   
+
+    get_file_info: ( info ) ->
+        info.icon = "directory"

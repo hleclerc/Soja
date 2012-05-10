@@ -56,6 +56,15 @@ class FileSystem
         @_data_to_send += data
         if not FileSystem._timer_send?
             FileSystem._timer_send = setTimeout FileSystem._timeout_send_func, 1
+        
+    # send file data to the server.
+    send_raw: ( file, path_model, file_info ) ->
+        xhr_object = FileSystem._my_xml_http_request()
+        xhr_object.open 'PUT', "/s=#{@_session_num}&p=#{path_model.model_id}&i=#{file_info.model_id}", true
+        xhr_object.onreadystatechange = ->
+            if @readyState == 4 and @status == 200
+                eval @responseText
+        xhr_object.send file
 
     # send a request for a "push" channel
     make_channel: ->
