@@ -316,16 +316,16 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @selected_file.clear()
     
     load_folder: ( file ) ->
-
-        @breadcrumb.unbind()
-        @selected_file.unbind()
-        @clipboard.unbind()
+#         @breadcrumb.unbind @model
+# #         @selected_file.unbind @model
+#         @clipboard.unbind @model
+        
         file._ptr.load ( m, err ) =>
             @model = m
-            
-            @breadcrumb.bind m
-            @selected_file.bind m
-            @clipboard.bind m
+           
+            @breadcrumb.bind @model
+#             @selected_file.bind m
+            @clipboard.bind @model
             
             @breadcrumb.push file
             
