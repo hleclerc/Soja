@@ -55,10 +55,23 @@ class Model
                 Model._need_sync_views()
         else
             class BindView extends View
-                constructor: ( model ) -> super model, onchange_construction
-                onchange: -> f()
+                constructor: ( model ) ->
+                    super model, onchange_construction
+                    @f = f
+                onchange: ->
+                    f()
             new BindView this
 
+    #  ...
+    # 
+    unbind: ( f ) ->
+        if f instanceof View
+            @_views.splice @_views.indexOf( f ), 1
+            f._models.splice f._models.indexOf( this ), 1
+        else
+            for v in @_views when v instanceof BindView and v.f == f
+                @unbind v
+        
 
     # return a copy of data in a "standard" representation (e.g. string, number, objects, ...)
     # users are encouraged to use Models as much as possible (meaning that get should not be called for every manipulation),

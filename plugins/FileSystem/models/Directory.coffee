@@ -14,8 +14,11 @@ class Directory extends Lst
         
     add_file: ( name, obj, params = {} ) ->
         o = @find name
-        if not o?
-            @push new File name, obj, params
+        if o?
+            return o
+        res = new File name, obj, params
+        @push res
+        return res
 
     get_file_info: ( info ) ->
         info.model_type = "Directory"
