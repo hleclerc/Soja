@@ -16,67 +16,56 @@ class TreeAppModule_File extends TreeAppModule
             txt: "Open"
             ina: _ina
             fun: ( evt, app ) ->
-#                 @model = new File Directory, "LMT"
-#                 
-#                 p = new File ImgItem, "composite01.png"
-#                 ma = new File ImgItem, "masque_0.png"
-#                 d = new File Directory, "Work"
-#                 m = new File Mesh, "Mesh"
-#                 
-#                 @model.data.children.push m
-#                 @model.data.children.push ma
-#                 @model.data.children.push p
-#                 @model.data.children.push d
-#                 
-#                 
-#                 mesh = new File Directory, "Mesh"
-#                 pictures = new File Directory, "Pictures"
-#                 result = new File Directory, "Result"
-#                 d.data.children.push mesh
-#                 d.data.children.push pictures
-#                 d.data.children.push result
-#                 
-#                 
-#                 pic5 = new File ImgItem, "composite05.png"
-#                 pic7 = new File ImgItem, "composite07.png"
-#                 pictures.data.children.push pic5
-#                 pictures.data.children.push pic7
-#                 
-#                 mes1 = new File Mesh, "Mesh"
-#                 mesh.data.children.push mes1
-#                 
-# 
-#                 dz = new File ImgItem, "explo_dz_alpha.png"
-#                 inn = new File ImgItem, "explo_in_alpha.png"
-#                 re = new File ImgItem, "explo_re_alpha.png"
-#                 res0 = new File ImgItem, "res_orig.png"
-#                 res1 = new File ImgItem, "res_depX.png"
-#                 res2 = new File ImgItem, "res_depY.png"
-#                 result.data.children.push dz
-#                 result.data.children.push inn
-#                 result.data.children.push re
-#                 result.data.children.push res0
-#                 result.data.children.push res1
-#                 result.data.children.push res2
-#                 
-#                 @d = new_dom_element
-#                     className : "browse_container"
-#                     id        : "id_browse_container"
-#                 item_cp = new ModelEditorItem_Directory
-#                     el    : @d
-#                     model : @model
-#                     fundblclick: ( evt, file ) =>
-#                         if file.data instanceof ImgItem
-#                             @modules = app.data.modules
-#                             for m in @modules
-#                                 if m instanceof TreeAppModule_ImageSet
-#                                     m.actions[ 1 ].fun evt, app, file.data
-#                                 
-#                         else if file.data instanceof Mesh
-#                             @modules = app.data.modules
-#                             for m in @modules 
-#                                 if m instanceof TreeAppModule_Sketch
-#                                     m.actions[ 2 ].fun evt, app, file.data
+                @d = new_dom_element
+                    className : "browse_container"
+                    id        : "id_browse_container"
+                
+                
+                if FileSystem? and FileSystem._insts[ 0 ]?
+                    fs = FileSystem._insts[ 0 ]
+                else
+                    fs = new FileSystem
+                    FileSystem._disp = false
+
+                    fs.load "/test_browser", ( m, err ) ->
+                        if err
+                            fs.load "/", ( d, err ) ->
+                                m = new Directory
+                                d.add_file "test_browser", m
+                                t = new Directory
+                                m.add_file "Result", t
+                                t.add_file "Steel", ( new Directory )
+                                t.add_file "Steel", ( new Lst [ 1, 2 ] )
+                                m.add_file "Mesh", ( new Lst [ 1, 2 ] )
+                                m.add_file "Work", ( new Lst [ 1, 2 ] )
+                                
+                                item_cp = new ModelEditorItem_Directory
+                                    el    : @d
+                                    model : m
+                                    ModelEditorItem_Directory._action_list.Mesh = [
+                                        ( file, path, browser ) ->
+                                            console.log "open mesh"
+                                            if TreeAppModule_Sketch? and app?
+                                                @modules = app.data.modules
+                                                for m in @modules 
+                                                    if m instanceof TreeAppModule_Sketch
+                                                        m.actions[ 2 ].fun evt, app, file
+                                    ]
+                                    ModelEditorItem_Directory._action_list.Img = [
+                                        ( file, path, browser ) ->
+                                            console.log "open img"
+                                            if TreeAppModule_ImageSet? and app?
+                                                @modules = app.data.modules
+                                                for m in @modules
+                                                    if m instanceof TreeAppModule_ImageSet
+                                                        m.actions[ 1 ].fun evt, app, file
+                                    ]
+                                
+                        #                     
+                        else
+                            new_model_editor el: @d, model: m
+
+                
 
                 
                     

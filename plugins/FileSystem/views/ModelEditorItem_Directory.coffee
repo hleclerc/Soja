@@ -6,22 +6,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
             ( file, path, browser ) -> 
                 browser.load_folder file
         ]
-        "Mesh": [
-            ( file, path, browser ) ->
-                console.log "open mesh"
-#                 @modules = app.data.modules
-#                 for m in @modules 
-#                     if m instanceof TreeAppModule_Sketch
-#                         m.actions[ 2 ].fun evt, app, file.data
-        ]
-        "Img": [
-            ( file, path, browser ) ->
-                console.log "open img"
-#                 @modules = app.data.modules
-#                 for m in @modules
-#                     if m instanceof TreeAppModule_ImageSet
-#                         m.actions[ 1 ].fun evt, app, file.data
-        ]
+        # others type can be added by other files
 
     constructor: ( params ) ->
         super params
@@ -35,7 +20,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         
             
         @breadcrumb.bind this
-        @selected_file.bind this
+#         @selected_file.bind this
         @clipboard.bind this
         
         
@@ -147,7 +132,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @all_file_container = new_dom_element
                 parentNode: @container
                 nodeName  : "div"
-                id  : "test"
                 ondragover: ( evt ) =>
                     return false
                 ondragleave: ( evt ) =>
@@ -165,18 +149,17 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         
             13 : ( evt ) => # enter
                 if @selected_file.length > 0
-                    for ind_sel_file in @selected_file
+                    for ind_sel_file in @selected_file.get()
                         index = @search_ord_index_from_id ind_sel_file
                         @open @model[ index ], @path()
-                
                 
             37 : ( evt ) => # left
                 if @selected_file.length > 0
                     if evt.shiftKey
-                        index_last_file_selected = @selected_file[ @selected_file.length - 1 ]
+                        index_last_file_selected = @selected_file[ @selected_file.length - 1 ].get()
                         
                         if not @reference_file?
-                            @selected_file = []
+                            @selected_file.clear()
                             @selected_file.push index_last_file_selected
                             @reference_file = index_last_file_selected
                         
@@ -185,15 +168,13 @@ class ModelEditorItem_Directory extends ModelEditorItem
                                 @selected_file.push index_last_file_selected - 1
                             else
                                 @selected_file.pop()
-                                
-                            
                     else
-                        ind = @selected_file[ @selected_file.length - 1 ]
+                        ind = @selected_file[ @selected_file.length - 1 ].get()
                         if ind != 0
-                            @selected_file = []
+                            @selected_file.clear()
                             @selected_file.push ind - 1
                         else
-                            @selected_file = []
+                            @selected_file.clear()
                             @selected_file.push 0
                             
                         @reference_file = undefined
@@ -211,9 +192,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
             39 : ( evt ) => # right
                 if @selected_file.length > 0
                     if evt.shiftKey
-                        index_last_file_selected = @selected_file[ @selected_file.length - 1 ]
+                        index_last_file_selected = @selected_file[ @selected_file.length - 1 ].get()
                         if not @reference_file?
-                            @selected_file = []
+                            @selected_file.clear()
                             @selected_file.push index_last_file_selected
                             @reference_file = index_last_file_selected
                         
@@ -222,18 +203,15 @@ class ModelEditorItem_Directory extends ModelEditorItem
                                 @selected_file.push index_last_file_selected + 1
                             else
                                 @selected_file.pop()
-                                
-                            
                     else
-                        ind = @selected_file[ @selected_file.length - 1 ]
+                        ind = @selected_file[ @selected_file.length - 1 ].get()
                         if ind < @model.length - 1
-                            @selected_file = []
+                            @selected_file.clear()
                             @selected_file.push ind + 1
                         else
-                            @selected_file = []
+                            @selected_file.clear()
                             @selected_file.push @model.length - 1
                         @reference_file = undefined
-                
                 # case no file is selected
                 else
                     @selected_file.push 0 
@@ -241,12 +219,15 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 @draw_selected_file()
                 
             40 : ( evt ) => # down
-                if @selected_file.length > 0
-                    @open @selected_file[ 0 ], @path()
+                if evt.altKey
+                    if @selected_file.length > 0
+                        for ind_sel_file in @selected_file.get()
+                            index = @search_ord_index_from_id ind_sel_file
+                            @open @model[ index ], @path()
                 
             65 : ( evt ) => # A
                 if evt.ctrlKey # select all
-                    @selected_file = []
+                    @selected_file.clear()
                     for child, i in @model
                         @selected_file.push i
                     @draw_selected_file()
@@ -268,8 +249,8 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 
             113 : ( evt ) => # F2
                 file_contain = document.getElementsByClassName('selected_file')[ 0 ]?.getElementsByClassName('linkDirectory')
-                if file_contain?
-                    @rename_file file_contain[ 0 ], @model[ @search_ord_index_from_id @selected_file[ 0 ] ]
+                if file_contain? and file_contain.length > 0
+                    @rename_file file_contain[ 0 ], @model[ @search_ord_index_from_id @selected_file[ 0 ].get() ]
                 
 #             116 : ( evt ) => # F5
 #                 @refresh()
@@ -293,27 +274,27 @@ class ModelEditorItem_Directory extends ModelEditorItem
         
     cut: ->
         if @selected_file.length > 0
-            @clipboard = []
-            for ind_children in @selected_file
+            @clipboard.clear()
+            for ind_children in @selected_file.get()
                 real_ind = @search_ord_index_from_id ind_children
                 @clipboard.push @model[ real_ind ]
             @cutroot = @model
             
     copy: ->
         if @selected_file.length > 0
-            @clipboard = []
-            for ind_children in @selected_file
+            @clipboard.clear()
+            for ind_children in @selected_file.get()
                 real_ind = @search_ord_index_from_id ind_children
                 @clipboard.push @model[ real_ind ]
             @cutroot = undefined
             
     paste: ->
         if @cutroot?
-            for mod in @clipboard
+            for mod in @clipboard.get()
                 pos = @cutroot.indexOf mod
                 if pos != -1
                     @cutroot.splice pos, 1
-        for file in @clipboard
+        for file in @clipboard.get()
             new_file = file.deep_copy()
             @model.push new_file
         
@@ -332,11 +313,20 @@ class ModelEditorItem_Directory extends ModelEditorItem
     
     empty_window: ->
         @all_file_container.innerHTML = ""
-        @selected_file = []
+        @selected_file.clear()
     
-    load_folder: ( file ) ->            
+    load_folder: ( file ) ->
+
+        @breadcrumb.unbind()
+        @selected_file.unbind()
+        @clipboard.unbind()
         file._ptr.load ( m, err ) =>
             @model = m
+            
+            @breadcrumb.bind m
+            @selected_file.bind m
+            @clipboard.bind m
+            
             @breadcrumb.push file
             
     open: ( file, path ) ->
@@ -348,12 +338,11 @@ class ModelEditorItem_Directory extends ModelEditorItem
     handle_files: ( files ) ->
         if files.length > 0
             if FileSystem?
-#                 fs = new FileSystem
+                fs = FileSystem._insts[ 0 ]
                 for file in files
-                    console.log file
-                    new_file = new File file.name, undefined
-                    @model.push new_file
-#                     fs.send_raw new_file, @path(), model_type: "Mesh"
+                    data_upload = new UploadData
+                    new_file = @model.add_file file.name, data_upload, model_type: "Mesh"
+                    fs.send_raw new_file, @path(), model_type: "Mesh"
 
     
     
@@ -411,7 +400,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
     delete_file: ->
         if @selected_file.length
             index_array = []
-            for i in @selected_file
+            for i in @selected_file.get()
                 index = @search_ord_index_from_id i
                 index_array.push index
             index_array.sort @sort_numerically
@@ -419,7 +408,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
             for i in [ index_array.length - 1 .. 0 ]
                 @model.splice index_array[ i ], 1
                 
-            @selected_file = []
+            @selected_file.clear()
             
     draw_selected_file: ->
         file_contain = document.getElementsByClassName 'file_container'
@@ -501,7 +490,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                                 index = @search_ord_index_from_id sorted_ind
                                 @model.splice sorted[ index ], 1
     
-                            @selected_file = []
+                            @selected_file.clear()
 #                             @refresh()
                         
                         evt.stopPropagation()
@@ -519,13 +508,13 @@ class ModelEditorItem_Directory extends ModelEditorItem
                             if @selected_file.length == 0
                                 @selected_file.push i
                             else
-                                index_last_file_selected = @selected_file[ @selected_file.length - 1 ]
-                                @selected_file = []
+                                index_last_file_selected = @selected_file[ @selected_file.length - 1 ].get()
+                                @selected_file.clear()
                                 for j in [ index_last_file_selected .. i ]
                                     @selected_file.push j
                                 
                         else
-                            @selected_file = []
+                            @selected_file.clear()
                             @selected_file.push i
                         
                         @draw_selected_file()
@@ -635,7 +624,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         
                     text = new_dom_element
                         parentNode: file_container
-                        className : "text"
+                        className : "linkDirectory"
                         nodeName  : "div"
                         txt       : elem.name
                         onclick: ( evt ) =>
