@@ -11,8 +11,8 @@ class Ptr extends Model
     load: ( callback ) ->
         if @data.model?
             callback @data.model, false
-        else if FileSystem._insts.length
-            FileSystem._insts[ 0 ].load_ptr @data.value, callback
+        else
+            FileSystem.get_inst()?.load_ptr @data.value, callback
             
         
     _get_fs_data: ( out ) ->
@@ -31,7 +31,7 @@ class Ptr extends Model
         if typeof model == "number"
             res = @data.value != model
             @data =
-                value: 0
+                value: model
             return res
             
         if model instanceof Model

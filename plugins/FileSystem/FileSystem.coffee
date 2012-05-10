@@ -78,6 +78,12 @@ class FileSystem
                 eval @responseText
                 FileSystem._sig_server = true
         xhr_object.send()
+
+    # get the first running inst
+    @get_inst: ->
+        for k, i of FileSystem._insts
+            return i
+        undefined
         
     #
     @set_server_id_if_necessary: ( out, obj ) ->

@@ -21,4 +21,7 @@ class File extends Model
             # -> img : "data/base64...."
             # -> icon: "toto"
             # -> model_type: "Directory"...
-            
+
+    load: ( callback ) ->
+        @_ptr.load callback
+    

@@ -11,7 +11,13 @@ class Directory extends Lst
             if f.name.equals name
                 return f
         return undefined
-        
+
+    has: ( name ) ->
+        for f in this
+            if f.name.equals name
+                return true
+        return false
+    
     add_file: ( name, obj, params = {} ) ->
         o = @find name
         if o?

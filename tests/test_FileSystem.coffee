@@ -14,43 +14,33 @@ test_FileSystem = ->
     FileSystem._disp = true
     fs = new FileSystem
     
-    # load
+    # load the root dir
     fs.load "/", ( dir, err ) ->
+        a = new Model
+        b = new Model
+        new_model_editor el: document.body, model: a, label: "existing models"
+        new_model_editor el: document.body, model: b, label: "new ones"
+
         # add if necessary
-        add_ifn = ( dir, name, fun ) ->
+        add_ifn = ( name, fun ) ->
             f = dir.find name
-            console.log name, "->", f
-            if not f?
-                dir.add_file name, Model.conv fun()
-                console.log "dir", dir
+            if f?
+                f.load ( obj, err ) ->
+                    console.log "err", err
+                    if not err
+                        a.add_attr name, obj
+            else
+                obj = Model.conv fun()
+                dir.add_file name, obj
+                b.add_attr name, obj
                 
         console.log dir.get()
-        add_ifn dir, "toto", -> 10
-        
-        # new_model_editor el: document.body, model: dir, label: "model"
+        add_ifn "val", -> 10
+        add_ifn "con", -> new ConstrainedVal 0, { min:0, max:100 }
+        add_ifn "str", -> "txt"
+        add_ifn "lst", -> [ 1, 2 ]
+        add_ifn "col", -> new Color
 
-        
-#             if err
-#                 val = Model.conv d
-#                 fs.save "/" + n, val
-#             else
-#                 console.log "load ->", val.get()
-#             m.add_attr n, val
-#         
-#     l "toto", 10
-#     l "tete", new ConstrainedVal 0, { min:0, max:100 }
-#     l "tata", "pouet"
-#     l "titi", [ 1, 2 ]
-#     l "coul", new Color
-#     l "mod", {}
-# 
-#     fs.load "/", ( val, err ) ->
-#         console.log val
-# 
-#     # load dir
-#     #fs.load "/", ( val, err ) ->
-#     #    console.log val.get()
-# 
 #     #
 #     cpt = 0
 #     new_dom_element
