@@ -14,7 +14,10 @@ test_Browser = ->
             fs.load "/", ( d, err ) ->
                 m = new Directory
                 d.add_file "test_browser", m, model_type: "Directory"
-                m.add_file "Result", ( new Directory ), model_type: "Directory"
+                t = new Directory
+                m.add_file "Result", t, model_type: "Directory"
+                t.add_file "Steel", ( new Directory ), model_type: "Directory"
+                t.add_file "Steel", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
                 m.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
                 m.add_file "Work", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
                 
