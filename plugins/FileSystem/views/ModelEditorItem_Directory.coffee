@@ -4,11 +4,23 @@ class ModelEditorItem_Directory extends ModelEditorItem
     @_action_list : 
         "Directory": [
             ( file, path, browser ) -> 
-                #if sorted[ i ].name.get() == ".."
-                #    @load_model_from_breadcrumb @breadcrumb.length - 2
-                #else
                 browser.load_folder file
-                console.log file, path
+        ]
+        "Mesh": [
+            ( file, path, browser ) ->
+                console.log "open mesh"
+#                 @modules = app.data.modules
+#                 for m in @modules 
+#                     if m instanceof TreeAppModule_Sketch
+#                         m.actions[ 2 ].fun evt, app, file.data
+        ]
+        "Img": [
+            ( file, path, browser ) ->
+                console.log "open img"
+#                 @modules = app.data.modules
+#                 for m in @modules
+#                     if m instanceof TreeAppModule_ImageSet
+#                         m.actions[ 1 ].fun evt, app, file.data
         ]
 
     constructor: ( params ) ->
@@ -60,7 +72,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 onclick: ( evt ) =>
                     n = new File "New folder", 0
                     n._info.add_attr
-                        icon: "directory"
+                        icon: "folder"
                         model_type: "Directory"
                         
                     @model.push n
@@ -121,15 +133,13 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 parentNode: @icon_scene
                 nodeName  : "input"
                 type      : "file"
-                accept    : "image/*"
                 multiple  : "true"
-                onchange: ( evt ) ->
-                    if this.files.length > 0
-                        console.log "File Count: " + files.length + "\n"
-                        for file in this.files
-                            console.log file
-    #                     @handleFiles '', this.files
-                
+                id        : "upload"
+                onchange  : ( evt ) =>
+                    _this = document.getElementById('upload')
+                    @handle_files _this.files
+                                
+        
         @breadcrumb_dom = new_dom_element
                 parentNode: @container                
                 nodeName  : "div"
@@ -145,12 +155,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 ondrop: ( evt ) =>
                     evt.stopPropagation()
                     evt.preventDefault()
-                    files = evt.dataTransfer.files
-                    if files.length > 0
-                        console.log "File Count: " + files.length + "\n"
-                        for file in files
-                            console.log file
-                        
+                    @handle_files evt.dataTransfer.files
                     return false
 
         
@@ -160,8 +165,10 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         
             13 : ( evt ) => # enter
                 if @selected_file.length > 0
-                    for sel_file in @selected_file
-                        @open sel_file, @path()
+                    for ind_sel_file in @selected_file
+                        index = @search_ord_index_from_id ind_sel_file
+                        @open @model[ index ], @path()
+                
                 
             37 : ( evt ) => # left
                 if @selected_file.length > 0
@@ -276,6 +283,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     key_map[ evt.keyCode ]( evt )
                     return true
 
+    
     refresh: ->
         @empty_window()
         @init()
@@ -336,7 +344,19 @@ class ModelEditorItem_Directory extends ModelEditorItem
             l = ModelEditorItem_Directory._action_list[ file._info.model_type ]
             if l? and l.length
                 l[ 0 ] file, path, this
-     
+    
+    handle_files: ( files ) ->
+        if files.length > 0
+            if FileSystem?
+#                 fs = new FileSystem
+                for file in files
+                    console.log file
+                    new_file = new File file.name, undefined
+                    @model.push new_file
+#                     fs.send_raw new_file, @path(), model_type: "Mesh"
+
+    
+    
     draw_breadcrumb: ->
         @breadcrumb_dom.innerHTML = ""
         for folder, i in @breadcrumb
@@ -531,8 +551,26 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         txt       : elem.name.get()
                         onclick: ( evt ) =>
                             @rename_file text, sorted[ i ]
+                            
+#                 else if elem._info.icon?
+#                     @picture = new_dom_element
+#                         parentNode: file_container
+#                         className : "picture" + " " + "icon_" + elem._info.icon.get() + "_128"
+#                         title     : elem.name.get()
+#                         ondblclick: ( evt ) =>
+#                             @open sorted[ i ], @path()
+#                         width     : 128
+#                         height    : 128
+#                             
+#                     text = new_dom_element
+#                         parentNode: file_container
+#                         className : "linkDirectory"
+#                         nodeName  : "div"
+#                         txt       : elem.name.get()
+#                         onclick: ( evt ) =>
+#                             @rename_file text, sorted[ i ]
                     
-                else if elem._info.model_type.get() == "ImgItem"
+                else if elem._info.model_type.get() == "Img"
                     @picture = new_dom_element
                         parentNode: file_container
                         className : "picture"

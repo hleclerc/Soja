@@ -7,7 +7,7 @@ class File extends Model
         cp_info = {}
         for key, val of info
             cp_info[ key ] = val
-            
+        
         if ptr_or_model instanceof Model
             if not cp_info.model_type?
                 cp_info.model_type = Model.get_object_class ptr_or_model

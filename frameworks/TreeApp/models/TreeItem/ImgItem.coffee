@@ -31,6 +31,11 @@ class ImgItem extends TreeItem
     update_min_max: ( x_min, x_max ) ->
         @img.update_min_max( x_min, x_max )
         
+    # use on directory when browsing
+    get_file_info: ( info ) ->
+        info.model_type = "Img"
+        info.icon = "picture"
+        
     information: ( div ) ->
         if not @cm?
             @txt = new_dom_element

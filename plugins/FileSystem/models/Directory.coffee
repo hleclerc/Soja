@@ -18,4 +18,5 @@ class Directory extends Lst
             @push new File name, obj, params
 
     get_file_info: ( info ) ->
-        info.icon = "directory"
+        info.model_type = "Directory"
+        info.icon = "folder"
