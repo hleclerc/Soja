@@ -54,12 +54,6 @@ class Model
                 Model._n_views[ f.view_id ] = f
                 Model._need_sync_views()
         else
-            class BindView extends View
-                constructor: ( model ) ->
-                    super model, onchange_construction
-                    @f = f
-                onchange: ->
-                    f()
             new BindView this
 
     #  ...
