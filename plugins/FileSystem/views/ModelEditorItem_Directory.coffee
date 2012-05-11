@@ -265,14 +265,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     return true
 
     
-    refresh: ->
-        @empty_window()
-        @init()
-
-    onchange: ->
-        console.log "change"
-        @refresh()
-        
     cut: ->
         if @selected_file.length > 0
             @clipboard.clear()
@@ -312,20 +304,27 @@ class ModelEditorItem_Directory extends ModelEditorItem
             child_index.name.set title
             file.contentEditable = "false"
     
+    onchange: ->
+        console.log 'change'
+        @refresh()
+#         if @selected_file.has_been_modified()
+
+    refresh: ->
+        @empty_window()
+        @init()
+        @draw_selected_file()
+
     empty_window: ->
         @all_file_container.innerHTML = ""
-        @selected_file.clear()
     
     load_folder: ( file ) ->
         @model.unbind this
-        
         file._ptr.load ( m, err ) =>
             @model = m
-           
-            # console.log @model, @model instanceof Model
             @model.bind this
             
             @breadcrumb.push file
+            @selected_file.clear()
             
     open: ( file, path ) ->
         if file._info.model_type?
@@ -399,6 +398,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         if @selected_file.length
             index_array = []
             for i in @selected_file.get()
+                console.log i
                 index = @search_ord_index_from_id i
                 index_array.push index
             index_array.sort @sort_numerically
@@ -415,7 +415,15 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 add_class file, 'selected_file'
             else
                 rem_class file, 'selected_file'
-
+                
+    cancel_natural_hotkeys: ( evt ) ->
+        if not evt
+            evt = window.event
+        evt.cancelBubble = true
+        evt.stopPropagation?()
+        evt.preventDefault?()
+        return false
+        
     sort_dir = ( a, b ) -> 
     # following is commented because it doesn't sort item that are pasted
 #         c = 0
@@ -468,31 +476,27 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     ondrop: ( evt ) =>
                         # drop file got index = i
                         if sorted[ i ]._info.model_type.get() == "Directory"
-                            if sorted[ i ].name == ".."
+#                             if sorted[ i ].name == ".."
 #                                 @breadcrumb[ @breadcrumb.length - 2 ].push sorted[ ind ]
-                            else
+#                             else
                                 # add selected children to target directory
-                                index = @search_ord_index_from_id i
-                                for ind in @drag_source
-                                    # sorted[ ind ] is the drop file source
-                                    # sorted[ i ]   is the drop file target
-                                    if sorted[ ind ] == sorted[ i ]
-                                        return false
-                                        
-                                        
-                                    sorted[ i ]._ptr.load ( m, err ) =>
-                                        m.push sorted[ ind ]
+                            for ind in @drag_source.get()
+                                # sorted[ ind ] is the drop file source
+                                # sorted[ i ]   is the drop file target
+                                if sorted[ ind ] == sorted[ i ]
+                                    return false
+                                    
+                                sorted[ i ]._ptr.load ( m, err ) =>
+                                    m.push sorted[ ind ]
                                         
                             # remove selected children from current directory
-                            for sorted_ind in @drag_source
+                            for sorted_ind in @drag_source.get()
                                 index = @search_ord_index_from_id sorted_ind
-                                @model.splice sorted[ index ], 1
+                                @model.splice index, 1
     
                             @selected_file.clear()
-#                             @refresh()
                         
-                        evt.stopPropagation()
-                        return false
+                        @cancel_natural_hotkeys evt
                         
                     onmousedown : ( evt ) =>
                         if evt.ctrlKey
@@ -528,6 +532,8 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         title     : elem.name.get()
                         ondblclick: ( evt ) =>
                             @open sorted[ i ], @path()
+                            @cancel_natural_hotkeys evt
+                            
                         width     : 128
                         height    : 128
                             
@@ -567,6 +573,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         title     : elem.data._name
                         ondblclick: ( evt ) =>
                             @open sorted[ i ], @path()
+                            @cancel_natural_hotkeys evt
                             
                     text = new_dom_element
                         parentNode: file_container
@@ -584,7 +591,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         alt       : ""
                         title     : ""
                         ondblclick: ( evt ) =>
-                             @open sorted[ i ], @path()
+                            @open sorted[ i ], @path()
+                            @cancel_natural_hotkeys evt
+                            
                             
                     text = new_dom_element
                         parentNode: file_container
@@ -603,7 +612,8 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         title     : elem.name
                         ondblclick: ( evt ) =>
                             @open sorted[ i ], @path()
-                        
+                            @cancel_natural_hotkeys evt
+                            
                     text = new_dom_element
                         parentNode: file_container
                         className : "linkDirectory"
