@@ -22,6 +22,7 @@ class FileSystem
     @_insts = {}
     
     # ..._server_id -> object
+    @_files_to_upload = {} # ref to Path waiting to be registered before sending data
     @_ptr_to_update = {} # Ptr objects that need an update, associated with @_tmp_objects
     @_tmp_objects = {} # objects waiting for a real _server_id
     @_objects = {} # _server_id -> object
@@ -112,10 +113,18 @@ class FileSystem
         FileSystem._objects[ res ] = tmp
         tmp._server_id = res
         delete FileSystem._tmp_objects[ tmp_id ]
+        
         #
         ptr = FileSystem._ptr_to_update[ tmp_id ] 
         if ptr?
             ptr.data.value = res
+            delete FileSystem._ptr_to_update[ tmp_id ] 
+            
+        #
+        file = FileSystem._files_to_upload[ tmp_id ] 
+        if file?
+            console.log "upload", file
+            delete FileSystem._files_to_upload[ tmp_id ] 
             
 
     @_get_new_tmp_server_id: ->

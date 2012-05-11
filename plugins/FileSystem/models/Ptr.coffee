@@ -23,7 +23,7 @@ class Ptr extends Model
             #
             @data.value = @data.model._server_id
             if @data.model._server_id & 3
-                FileSystem._ptr_to_update[ @model_id ] = this
+                FileSystem._ptr_to_update[ @data.model._server_id ] = this
         else
             out.mod += "C #{@_server_id} #{@data.value} "
 

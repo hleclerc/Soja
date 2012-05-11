@@ -270,7 +270,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @init()
 
     onchange: ->
-        console.log "change"
         @refresh()
         
     cut: ->

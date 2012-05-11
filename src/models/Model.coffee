@@ -45,6 +45,7 @@ class Model
     #  view.destructor will be called if this is destroyed.
     #  ...
     #  can be seen as a bind with an object
+    # onchange_construction true means that onchange will be automatically called after after the bind
     bind: ( f, onchange_construction = true ) ->
         if f instanceof View
             @_views.push f
