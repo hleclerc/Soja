@@ -7,7 +7,7 @@
 # lib FileSystem.css
 test_Browser = ->
     fs = new FileSystem
-    FileSystem._disp = false
+    FileSystem._disp = true
 
     fs.load "/test_browser", ( m, err ) ->
         if err
