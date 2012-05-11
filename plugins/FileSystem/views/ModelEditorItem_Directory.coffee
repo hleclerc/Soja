@@ -316,9 +316,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @selected_file.clear()
     
     load_folder: ( file ) ->
-#         @breadcrumb.unbind @model
-# #         @selected_file.unbind @model
-#         @clipboard.unbind @model
+        @breadcrumb.unbind @model
+#         @selected_file.unbind @model
+        @clipboard.unbind @model
         
         file._ptr.load ( m, err ) =>
             @model = m
