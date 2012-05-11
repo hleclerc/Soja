@@ -75,7 +75,7 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
             onChange: =>
                 @model.set @code_mirror.getValue()
                 @model.callback?()
-#                 @code_mirror.focus()
+                setTimeout ( => @code_mirror.focus() ), 1
                 
             onCursorActivity: =>
                 @code_mirror.setLineClass(@hlLine2, null)

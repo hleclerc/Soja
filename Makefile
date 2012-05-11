@@ -1,6 +1,6 @@
 # to run a test from the test directory, e.g. tests/test_xx.coffee, type "make test_xx" or "make soda_xx" if soda is necessary
 # to launch an example from the tutorial 0, "make tuto_0_coffee" (for the coffee version) or "make tuto_0_js" (for the javascript version)
-# xdotool is used to switch to an already existing window (to avoid respawing a browser for each launch)
+# xdotool is used to switch to an already existing window (to avoid respawning a browser for each launch)
 browser = google-chrome
 xdotool = xdotool
 
