@@ -42,24 +42,22 @@ class TreeAppModule_File extends TreeAppModule
                             item_cp = new ModelEditorItem_Directory
                                 el    : @d
                                 model : m
-                                ModelEditorItem_Directory._action_list.Mesh = [
-                                    ( file, path, browser ) ->
-                                        console.log "open mesh"
-                                        if TreeAppModule_Sketch? and app?
-                                            @modules = app.data.modules
-                                            for m in @modules 
-                                                if m instanceof TreeAppModule_Sketch
-                                                    m.actions[ 2 ].fun evt, app, file
-                                ]
-                                ModelEditorItem_Directory._action_list.Img = [
-                                    ( file, path, browser ) ->
-                                        console.log "open img"
-                                        if TreeAppModule_ImageSet? and app?
-                                            @modules = app.data.modules
-                                            for m in @modules
-                                                if m instanceof TreeAppModule_ImageSet
-                                                    m.actions[ 1 ].fun evt, app, file
-                                ]
+                                
+                            ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) ->
+                                console.log "open mesh"
+                                if TreeAppModule_Sketch? and app?
+                                    @modules = app.data.modules
+                                    for m in @modules 
+                                        if m instanceof TreeAppModule_Sketch
+                                            m.actions[ 2 ].fun evt, app, file
+                                            
+                            ModelEditorItem_Directory.add_action "Img", ( file, path, browser ) ->
+                                console.log "open img"
+                                if TreeAppModule_ImageSet? and app?
+                                    @modules = app.data.modules
+                                    for m in @modules
+                                        if m instanceof TreeAppModule_ImageSet
+                                            m.actions[ 1 ].fun evt, app, file
                             
                     #                     
                     else
