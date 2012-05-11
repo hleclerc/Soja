@@ -27,5 +27,4 @@ class Directory extends Lst
         return res
 
     get_file_info: ( info ) ->
-        info.model_type = "Directory"
         info.icon = "folder"

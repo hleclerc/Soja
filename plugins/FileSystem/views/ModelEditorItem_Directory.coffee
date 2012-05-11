@@ -514,6 +514,10 @@ class ModelEditorItem_Directory extends ModelEditorItem
                             @selected_file.clear()
                             @selected_file.push i
                 
+                            
+                stext = ""
+                if elem._info?.remaining?.get()
+                    stext += "(r=#{elem._info.remaining.get()})"
                 
                 if elem._info.img?
                     @picture = new_dom_element
@@ -534,7 +538,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         parentNode: file_container
                         className : "linkDirectory"
                         nodeName  : "div"
-                        txt       : elem.name.get()
+                        txt       : elem.name.get() + stext
                         onclick: ( evt ) =>
                             @rename_file text, sorted[ i ]
                             
@@ -572,7 +576,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         parentNode: file_container
                         className : "linkDirectory"
                         nodeName  : "div"
-                        txt       : elem.name
+                        txt       : elem.name.get() + stext
                         onclick: ( evt ) =>
                             @rename_file text, sorted[ i ]
                 
@@ -592,7 +596,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         parentNode: file_container
                         className : "linkDirectory"
                         nodeName  : "div"
-                        txt       : elem.name
+                        txt       : elem.name.get() + stext
                         onclick: ( evt ) =>
                             @rename_file text, sorted[ i ]
                             
@@ -611,7 +615,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         parentNode: file_container
                         className : "linkDirectory"
                         nodeName  : "div"
-                        txt       : elem.name
+                        txt       : elem.name.get() + stext
                         onclick: ( evt ) =>
                             @rename_file text, sorted[ i ]
                             
@@ -627,7 +631,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         parentNode: file_container
                         className : "linkDirectory"
                         nodeName  : "div"
-                        txt       : elem.name
+                        txt       : elem.name.get() + stext
                         onclick: ( evt ) =>
                             @rename_file text, sorted[ i ]
                 

@@ -4,10 +4,17 @@ class Path extends Model
     constructor: ( @file ) ->
         super()
 
+        console.log @file.fileSize
+        @add_attr
+            remaining: @file.fileSize
+            to_upload: @file.fileSize
+
+    get_file_info: ( info ) ->
+        info.remaining = @remaining
+        info.to_upload = @to_upload
+        
     _get_fs_data: ( out ) ->
-        # will make a new
-        if @file?
-            FileSystem.set_server_id_if_necessary out, this
-            if @_server_id & 3
-                FileSystem._files_to_upload[ @_server_id ] = this
-    
+        super out
+        # permit to send the data after the server"s answaer
+        if @file? and @_server_id & 3
+            FileSystem._files_to_upload[ @_server_id ] = this
