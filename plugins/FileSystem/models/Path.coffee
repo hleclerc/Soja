@@ -4,7 +4,6 @@ class Path extends Model
     constructor: ( @file ) ->
         super()
 
-        console.log @file.fileSize
         @add_attr
             remaining: @file.fileSize
             to_upload: @file.fileSize
