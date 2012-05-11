@@ -20,7 +20,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         
             
         @breadcrumb.bind this
-#         @selected_file.bind this
+        @selected_file.bind this
         @clipboard.bind this
         
         
@@ -181,7 +181,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 else
                     @selected_file.push 0 
                     @reference_file = undefined
-                @draw_selected_file()
                 
             38 : ( evt ) => # up
                 if evt.altKey
@@ -214,7 +213,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 else
                     @selected_file.push 0 
                     
-                @draw_selected_file()
                 
             40 : ( evt ) => # down
                 if evt.altKey
@@ -228,7 +226,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     @selected_file.clear()
                     for child, i in @model
                         @selected_file.push i
-                    @draw_selected_file()
                     
             88 : ( evt ) => # X
                 if evt.ctrlKey # cut
@@ -303,9 +300,10 @@ class ModelEditorItem_Directory extends ModelEditorItem
             file.contentEditable = "false"
     
     onchange: ->
-        console.log 'change'
-        @refresh()
-#         if @selected_file.has_been_modified()
+        if @selected_file.has_been_directly_modified()
+            @draw_selected_file()
+        if @model.has_been_modified() or @breadcrumb.has_been_modified()
+            @refresh()
 
     refresh: ->
         @empty_window()
@@ -515,8 +513,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         else
                             @selected_file.clear()
                             @selected_file.push i
-                        
-                        @draw_selected_file()
                 
                 
                 if elem._info.img?
