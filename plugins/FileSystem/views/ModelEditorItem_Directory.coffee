@@ -270,6 +270,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @init()
 
     onchange: ->
+        console.log "change"
         @refresh()
         
     cut: ->
@@ -316,16 +317,13 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @selected_file.clear()
     
     load_folder: ( file ) ->
-        @breadcrumb.unbind @model
-#         @selected_file.unbind @model
-        @clipboard.unbind @model
+        @model.unbind this
         
         file._ptr.load ( m, err ) =>
             @model = m
            
-            @breadcrumb.bind @model
-#             @selected_file.bind m
-            @clipboard.bind @model
+            # console.log @model, @model instanceof Model
+            @model.bind this
             
             @breadcrumb.push file
             
