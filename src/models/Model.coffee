@@ -127,7 +127,7 @@ class Model
                 this[ n ] = p
             else
                 if this[ n ]?
-                    console.log "attribute #{n} already exists"
+                    console.error "attribute #{n} already exists #{Model.get_object_class this}"
                 p = Model.conv p
                 
                 if this not in p._parents

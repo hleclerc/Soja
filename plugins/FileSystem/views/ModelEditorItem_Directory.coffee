@@ -517,7 +517,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
                             
                 stext = ""
                 if elem._info?.remaining?.get()
-                    stext += "(r=#{elem._info.remaining.get()})"
+                    r = elem._info.remaining.get()
+                    u = elem._info.to_upload.get()
+                    stext += "(#{ ( 100 * ( u  - r ) / u ).toFixed( 0 ) }%)"
                 
                 if elem._info.img?
                     @picture = new_dom_element
