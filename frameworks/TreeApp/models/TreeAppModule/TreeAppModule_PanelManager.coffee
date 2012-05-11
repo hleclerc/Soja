@@ -98,7 +98,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
             
             
         @actions.push
-            ico: "img/close_panel.png" 
+            ico: "img/close_panel.png"
             siz: 1
             txt: "Close current view"
             ina: _ina
@@ -114,9 +114,11 @@ class TreeAppModule_PanelManager extends TreeAppModule
             key: [ "Shift+X" ]
         
         @actions.push
+            ico: "img/zoom_32.png"
+            siz: 1
             txt: "Zoom"
             ina: _ina
-            vis: false
+#             vis: false
             fun: ( evt, app ) ->
                 if not @zoom_area
                     @old_cm = app.selected_canvas_inst()?[ 0 ]?.cm
