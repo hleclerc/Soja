@@ -338,7 +338,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
     handle_files: ( files ) ->
         if files.length > 0
             if FileSystem?
-                fs = FileSystem._insts[ 0 ]
+                fs = FileSystem.get_inst()
                 for file in files
                     data_upload = new UploadData
                     new_file = @model.add_file file.name, data_upload, model_type: "Mesh"

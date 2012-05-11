@@ -21,8 +21,8 @@ class TreeAppModule_File extends TreeAppModule
                     id        : "id_browse_container"
                 
                 
-                if FileSystem? and FileSystem._insts[ 0 ]?
-                    fs = FileSystem._insts[ 0 ]
+                if FileSystem? and FileSystem.get_inst()?
+                    fs = FileSystem.get_inst()
                 else
                     fs = new FileSystem
                     FileSystem._disp = false
