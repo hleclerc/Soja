@@ -83,7 +83,7 @@ class FileSystem
     @get_inst: ->
         for k, i of FileSystem._insts
             return i
-        undefined
+        new FileSystem
         
     #
     @set_server_id_if_necessary: ( out, obj ) ->
