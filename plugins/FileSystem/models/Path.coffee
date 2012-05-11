@@ -8,6 +8,6 @@ class Path extends Model
         # will make a new
         if @file?
             FileSystem.set_server_id_if_necessary out, this
-            if @data.model._server_id & 3
-                FileSystem._files_to_upload[ @data.model._server_id ] = this
+            if @_server_id & 3
+                FileSystem._files_to_upload[ @_server_id ] = this
     

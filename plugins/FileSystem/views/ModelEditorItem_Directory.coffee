@@ -115,14 +115,12 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 txt       : "Add new file(s) "
                 
         @upload = new_dom_element
-                parentNode: @icon_scene
-                nodeName  : "input"
-                type      : "file"
-                multiple  : "true"
-                id        : "upload"
-                onchange  : ( evt ) =>
-                    _this = document.getElementById('upload')
-                    @handle_files _this.files
+            parentNode: @icon_scene
+            nodeName  : "input"
+            type      : "file"
+            multiple  : "true"
+            onchange  : ( evt ) =>
+                @handle_files @upload.files
                                 
         
         @breadcrumb_dom = new_dom_element
@@ -337,9 +335,8 @@ class ModelEditorItem_Directory extends ModelEditorItem
             if FileSystem?
                 fs = FileSystem.get_inst()
                 for file in files
-                    data_upload = new UploadData
-                    new_file = @model.add_file file.name, data_upload, model_type: "Mesh"
-                    fs.send_raw new_file, @path(), model_type: "Mesh"
+                    # TODO: make a model of the correct type (containing a Path)
+                    @model.add_file file.name, new Path file
 
     
     

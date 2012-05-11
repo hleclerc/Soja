@@ -57,15 +57,6 @@ class FileSystem
         @_data_to_send += data
         if not FileSystem._timer_send?
             FileSystem._timer_send = setTimeout FileSystem._timeout_send_func, 1
-        
-    # send file data to the server.
-    send_raw: ( file, path_model, file_info ) ->
-        xhr_object = FileSystem._my_xml_http_request()
-        xhr_object.open 'PUT', "/s=#{@_session_num}&p=#{path_model.model_id}&i=#{file_info.model_id}", true
-        xhr_object.onreadystatechange = ->
-            if @readyState == 4 and @status == 200
-                eval @responseText
-        xhr_object.send file
 
     # send a request for a "push" channel
     make_channel: ->
@@ -115,16 +106,23 @@ class FileSystem
         delete FileSystem._tmp_objects[ tmp_id ]
         
         #
-        ptr = FileSystem._ptr_to_update[ tmp_id ] 
+        ptr = FileSystem._ptr_to_update[ tmp_id ]
         if ptr?
-            ptr.data.value = res
             delete FileSystem._ptr_to_update[ tmp_id ] 
+            ptr.data.value = res
             
         #
-        file = FileSystem._files_to_upload[ tmp_id ] 
-        if file?
-            console.log "upload", file
+        if FileSystem._files_to_upload[ tmp_id ]? and tmp.file?
             delete FileSystem._files_to_upload[ tmp_id ] 
+            # send the file
+            fs = FileSystem.get_inst()
+            xhr_object = FileSystem._my_xml_http_request()
+            xhr_object.open 'PUT', "/_?s=#{fs._session_num}&p=#{tmp._server_id}", true
+            xhr_object.onreadystatechange = ->
+                if @readyState == 4 and @status == 200
+                    eval @responseText
+            xhr_object.send tmp.file
+            delete tmp.file
             
 
     @_get_new_tmp_server_id: ->
