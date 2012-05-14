@@ -5,8 +5,19 @@ class ModelEditorItem_Aggregate extends ModelEditorItem
         @containers = {}
         
     onchange: ->
+        # rm unnecessary ones
+        for model_id, me of @containers
+            res = false
+            for name in @model.attribute_names when name[ 0 ] != "_"
+                val = @model[ name ]
+                res |= val.model_id == parseInt model_id
+            if not res
+                me.edit.destructor()
+                delete @containers[ model_id ]
+
         # new editors
-        for name, val of @model when val instanceof Model and name[ 0 ] != "_"
+        for name in @model.attribute_names when name[ 0 ] != "_"
+            val = @model[ name ]
             if not @containers[ val.model_id ]?
                 @containers[ val.model_id ] = 
                     edit: new_model_editor
@@ -16,20 +27,12 @@ class ModelEditorItem_Aggregate extends ModelEditorItem
                         parent: this
                     span: if @get_justification() then new_dom_element( parentNode: @ed, nodeName  : "span" ) else undefined
                 
-        # rm unnecessary ones
-        for model_id, me of @containers
-            res = false
-            for name, val of @model when val instanceof Model and name[ 0 ] != "_"
-                res |= val.model_id == parseInt model_id
-            if not res
-                me.edit.destructor()
-                delete @containers[ model_id ]
-
         # justification
         if @get_justification()
             w = 0
             o = []
-            for name, val of @model when val instanceof Model and name[ 0 ] != "_"
+            for name in @model.attribute_names when name[ 0 ] != "_"
+                val = @model[ name ]
                 info = @containers[ val.model_id ]
                 if w + info.edit.get_item_width() > 100
                     info.span.style.width = 0
