@@ -4,9 +4,11 @@ class Path extends Model
     constructor: ( @file ) ->
         super()
 
+        size = if @file.fileSize? then @file.fileSize else @file.size
+        
         @add_attr
-            remaining: @file.fileSize
-            to_upload: @file.fileSize
+            remaining: size
+            to_upload: size
 
     get_file_info: ( info ) ->
         info.remaining = @remaining
