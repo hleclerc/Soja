@@ -113,6 +113,19 @@ class TreeView extends View
         @_created_elements = []
         @linked_id_dom = {}
         pos_y = 0
+        
+        # draw header
+        @height_header = @line_height + 3
+        inspector = new_dom_element
+            nodeName  : "div"
+            className : "HeaderMainView"
+            parentNode: @el
+            txt       : "Scene"
+            style     :
+                height  : @height_header
+        @_created_elements.push inspector
+        pos_y += @height_header
+        
         for info in @flat
             do ( info ) =>
                 div = new_dom_element
@@ -127,7 +140,32 @@ class TreeView extends View
                         right   : 0
                         overflow: "hidden"
                         color   : @_get_color_element info
+                    
+                    onmousedown: ( evt ) =>
+                        evt = window.event if not evt?
+
+                        mouse_b = if evt.which?
+                            if evt.which > 2
+                                "LEFT"
+                            else if evt.which == 2 
+                                "MIDDLE"
+                            else
+                                "RIGHT"
+                        else
+                            if evt.button < 2
+                                "LEFT"
+                            else if evt.button == 4 
+                                "MIDDLE"
+                            else
+                                "RIGHT"
                         
+                        if mouse_b == "RIGHT"
+                            evt.stopPropagation()
+                            evt.cancelBubble = true
+                            # ... rien ne marche sous chrome sauf document.oncontextmenu = => return false 
+                            document.oncontextmenu = => return false
+                        
+                    
                     onclick: ( evt ) =>
                         if evt.ctrlKey
                             @selected.toggle info.item_path
@@ -210,7 +248,47 @@ class TreeView extends View
                 @_add_tree_signs div, info
                 @_make_line      div, info
                 
+        
+        footer = new_dom_element
+            nodeName  : "div"
+            className : "FooterTreeView"
+            parentNode: @el
+            style:
+                position: "absolute"
+                bottom : 0
+            
+        delet = new_dom_element
+            nodeName  : "img"
+            src       : "img/trash_24.png"
+            className : "FooterTreeViewIcon"
+            parentNode: footer
+            alt       : "Delete"
+            title     : "Delete"
+            onclick   : ( evt ) =>
+                #TODO find app and actions
+#                 if TreeAppModule_TreeView?
+#                     console.log TreeAppModule_TreeView
+#                     TreeAppModule_TreeView.actions[ 0 ].fun evt, TreeApp
 
+        save = new_dom_element
+            nodeName  : "img"
+            src       : "img/save_24.png"
+            className : "FooterTreeViewIcon"
+            parentNode: footer
+            alt       : "Save"
+            title     : "Save"
+            onclick   : =>
+                for selected_tree_item_path in @selected
+                    selected_tree_item = selected_tree_item_path[ selected_tree_item_path.length - 1 ]
+                    console.log "saving : ", selected_tree_item
+                    if FileSystem?
+                        fs = FileSystem.get_inst()
+                        # we should ask for filename and path
+                        name = "my-item"
+                        fs.load "/tree_items", ( m, err ) ->
+                            m.add_file name, new Path selected_tree_item, info.model_type "TreeItem"
+                            
+        @_created_elements.push footer
 
 
     #
