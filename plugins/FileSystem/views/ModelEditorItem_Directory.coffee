@@ -32,6 +32,15 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @container = new_dom_element
                 parentNode: @ed                
                 nodeName  : "div"
+                ondragover: ( evt ) =>
+                    return false
+                ondragleave: ( evt ) =>
+                    return false
+                ondrop: ( evt ) =>
+                    evt.stopPropagation()
+                    evt.preventDefault()
+                    @handle_files evt.dataTransfer.files
+                    return false
                         
         @icon_scene = new_dom_element
                 parentNode: @container
@@ -130,15 +139,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @all_file_container = new_dom_element
                 parentNode: @container
                 nodeName  : "div"
-                ondragover: ( evt ) =>
-                    return false
-                ondragleave: ( evt ) =>
-                    return false
-                ondrop: ( evt ) =>
-                    evt.stopPropagation()
-                    evt.preventDefault()
-                    @handle_files evt.dataTransfer.files
-                    return false
 
         
         key_map = {
