@@ -63,8 +63,19 @@
 }
 
 .icon_folder_128 {
-    background: url('../img/orange_folder.png');
+    text-align: center;
+    background: url('img/orange_folder.png') no-repeat;
+    margin:auto;
     height:128px;
+    width: 128px;
+}
+
+.icon_mesh_128 {
+    text-align: center;
+    background: url('img/unknown.png') no-repeat;
+    margin:auto;
+    height:128px;
+    width: 128px;
 }
 
 

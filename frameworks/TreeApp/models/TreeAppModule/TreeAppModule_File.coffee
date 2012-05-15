@@ -21,15 +21,18 @@ class TreeAppModule_File extends TreeAppModule
                     id        : "id_browse_container"
                 
                 
-                if FileSystem? and FileSystem.inst[ 0 ]?
+                if FileSystem? and FileSystem.get_inst()?
                     fs = FileSystem.get_inst()
                 else
                     fs = new FileSystem
                     FileSystem._disp = false
-
+                
                 fs.load "/test_browser", ( m, err ) ->
+                    console.log "am", m, err
                     if err
+                        console.log "m", m, err
                         fs.load "/", ( d, err ) ->
+                            console.log d, err
                             m = new Directory
                             d.add_file "test_browser", m
                             t = new Directory
@@ -43,23 +46,22 @@ class TreeAppModule_File extends TreeAppModule
                                 el    : @d
                                 model : m
                                 
-                            ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) ->
-                                console.log "open mesh"
-                                if TreeAppModule_Sketch? and app?
-                                    @modules = app.data.modules
-                                    for m in @modules 
-                                        if m instanceof TreeAppModule_Sketch
-                                            m.actions[ 2 ].fun evt, app, file
-                                            
-                            ModelEditorItem_Directory.add_action "Img", ( file, path, browser ) ->
-                                console.log "open img"
-                                if TreeAppModule_ImageSet? and app?
-                                    @modules = app.data.modules
-                                    for m in @modules
-                                        if m instanceof TreeAppModule_ImageSet
-                                            m.actions[ 1 ].fun evt, app, file
-                            
-                    #                     
+#                             ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) ->
+#                                 console.log "open mesh"
+#                                 if TreeAppModule_Sketch? and app?
+#                                     @modules = app.data.modules
+#                                     for m in @modules 
+#                                         if m instanceof TreeAppModule_Sketch
+#                                             m.actions[ 2 ].fun evt, app, file
+#                                             
+#                             ModelEditorItem_Directory.add_action "Img", ( file, path, browser ) ->
+#                                 console.log "open img"
+#                                 if TreeAppModule_ImageSet? and app?
+#                                     @modules = app.data.modules
+#                                     for m in @modules
+#                                         if m instanceof TreeAppModule_ImageSet
+#                                             m.actions[ 1 ].fun evt, app, file
+
                     else
                         new_model_editor el: @d, model: m
 

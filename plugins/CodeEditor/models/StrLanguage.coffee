@@ -11,7 +11,7 @@ class StrLanguage extends Model
     get: ->
         return @value.get()
         
-    set: (val ) ->
+    set: ( val ) ->
         @value.set val
     
     get_language: ->

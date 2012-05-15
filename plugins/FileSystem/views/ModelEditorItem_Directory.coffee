@@ -32,6 +32,15 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @container = new_dom_element
                 parentNode: @ed                
                 nodeName  : "div"
+                ondragover: ( evt ) =>
+                    return false
+                ondragleave: ( evt ) =>
+                    return false
+                ondrop: ( evt ) =>
+                    evt.stopPropagation()
+                    evt.preventDefault()
+                    @handle_files evt.dataTransfer.files
+                    return false
                         
         @icon_scene = new_dom_element
                 parentNode: @container
@@ -130,15 +139,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @all_file_container = new_dom_element
                 parentNode: @container
                 nodeName  : "div"
-                ondragover: ( evt ) =>
-                    return false
-                ondragleave: ( evt ) =>
-                    return false
-                ondrop: ( evt ) =>
-                    evt.stopPropagation()
-                    evt.preventDefault()
-                    @handle_files evt.dataTransfer.files
-                    return false
 
         
         key_map = {
@@ -515,111 +515,32 @@ class ModelEditorItem_Directory extends ModelEditorItem
                             @selected_file.push i
                 
                             
-                stext = ""
-                if elem._info?.remaining?.get()
-                    r = elem._info.remaining.get()
-                    u = elem._info.to_upload.get()
-                    stext += "(#{ ( 100 * ( u  - r ) / u ).toFixed( 0 ) }%)"
-                
+                # show correct icon/preview
                 if elem._info.img?
                     @picture = new_dom_element
                         parentNode: file_container
                         className : "picture"
                         nodeName  : "img"
                         src       : elem._info.img.get()
-                        alt       : ""
+                        alt       : elem.name.get()
                         title     : elem.name.get()
                         ondblclick: ( evt ) =>
                             @open sorted[ i ], @path()
                             @cancel_natural_hotkeys evt
-                            
                         width     : 128
                         height    : 128
                             
-                    text = new_dom_element
-                        parentNode: file_container
-                        className : "linkDirectory"
-                        nodeName  : "div"
-                        txt       : elem.name.get() + stext
-                        onclick: ( evt ) =>
-                            @rename_file text, sorted[ i ]
                             
-#                 else if elem._info.icon?
-#                     @picture = new_dom_element
-#                         parentNode: file_container
-#                         className : "picture" + " " + "icon_" + elem._info.icon.get() + "_128"
-#                         title     : elem.name.get()
-#                         ondblclick: ( evt ) =>
-#                             @open sorted[ i ], @path()
-#                         width     : 128
-#                         height    : 128
-#                             
-#                     text = new_dom_element
-#                         parentNode: file_container
-#                         className : "linkDirectory"
-#                         nodeName  : "div"
-#                         txt       : elem.name.get()
-#                         onclick: ( evt ) =>
-#                             @rename_file text, sorted[ i ]
-                    
-                else if elem._info.model_type.get() == "Img"
+                else if elem._info.icon?
                     @picture = new_dom_element
                         parentNode: file_container
-                        className : "picture"
-                        nodeName  : "img"
-                        src       : elem.data._name
-                        alt       : ""
-                        title     : elem.data._name
+                        className : "picture" + " " + "icon_" + elem._info.icon.get() + "_128"
+                        title     : elem.name.get()
                         ondblclick: ( evt ) =>
                             @open sorted[ i ], @path()
                             @cancel_natural_hotkeys evt
-                            
-                    text = new_dom_element
-                        parentNode: file_container
-                        className : "linkDirectory"
-                        nodeName  : "div"
-                        txt       : elem.name.get() + stext
-                        onclick: ( evt ) =>
-                            @rename_file text, sorted[ i ]
-                
-                else if elem._info.model_type.get() == "Mesh"
-                    @picture = new_dom_element
-                        parentNode: file_container
-                        nodeName  : "img"
-                        src       : "img/unknown.png"
-                        alt       : ""
-                        title     : ""
-                        ondblclick: ( evt ) =>
-                            @open sorted[ i ], @path()
-                            @cancel_natural_hotkeys evt
-                            
-                            
-                    text = new_dom_element
-                        parentNode: file_container
-                        className : "linkDirectory"
-                        nodeName  : "div"
-                        txt       : elem.name.get() + stext
-                        onclick: ( evt ) =>
-                            @rename_file text, sorted[ i ]
-                            
-                else if elem._info.model_type.get() == "Directory"
-                    @picture = new_dom_element
-                        parentNode: file_container
-                        nodeName  : "img"
-                        src       : "img/orange_folder.png"
-                        alt       : elem.name
-                        title     : elem.name
-                        ondblclick: ( evt ) =>
-                            @open sorted[ i ], @path()
-                            @cancel_natural_hotkeys evt
-                            
-                    text = new_dom_element
-                        parentNode: file_container
-                        className : "linkDirectory"
-                        nodeName  : "div"
-                        txt       : elem.name.get() + stext
-                        onclick: ( evt ) =>
-                            @rename_file text, sorted[ i ]
+                        width     : 128
+                        height    : 128
                             
                 else
                     @picture = new_dom_element
@@ -629,13 +550,82 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         alt       : ""
                         title     : "" 
                         
-                    text = new_dom_element
-                        parentNode: file_container
-                        className : "linkDirectory"
-                        nodeName  : "div"
-                        txt       : elem.name.get() + stext
-                        onclick: ( evt ) =>
-                            @rename_file text, sorted[ i ]
+                # stext write percent uploading
+                stext = ""
+                if elem._info?.remaining?.get()
+                    r = elem._info.remaining.get()
+                    u = elem._info.to_upload.get()
+                    stext += "(#{ ( 100 * ( u  - r ) / u ).toFixed( 0 ) }%)"
+                
+                #Show file name
+                text = new_dom_element
+                    parentNode: file_container
+                    className : "linkDirectory"
+                    nodeName  : "div"
+                    txt       : elem.name.get() + stext
+                    onclick: ( evt ) =>
+                        @rename_file text, sorted[ i ]
+                        
+                    
+#                 else if elem._info.model_type.get() == "Img"
+#                     @picture = new_dom_element
+#                         parentNode: file_container
+#                         className : "picture"
+#                         nodeName  : "img"
+#                         src       : elem.data._name
+#                         alt       : ""
+#                         title     : elem.data._name
+#                         ondblclick: ( evt ) =>
+#                             @open sorted[ i ], @path()
+#                             @cancel_natural_hotkeys evt
+#                             
+#                     text = new_dom_element
+#                         parentNode: file_container
+#                         className : "linkDirectory"
+#                         nodeName  : "div"
+#                         txt       : elem.name.get() + stext
+#                         onclick: ( evt ) =>
+#                             @rename_file text, sorted[ i ]
+#                 
+#                 else if elem._info.model_type.get() == "Mesh"
+#                     @picture = new_dom_element
+#                         parentNode: file_container
+#                         nodeName  : "img"
+#                         src       : "img/unknown.png"
+#                         alt       : ""
+#                         title     : ""
+#                         ondblclick: ( evt ) =>
+#                             @open sorted[ i ], @path()
+#                             @cancel_natural_hotkeys evt
+#                             
+#                             
+#                     text = new_dom_element
+#                         parentNode: file_container
+#                         className : "linkDirectory"
+#                         nodeName  : "div"
+#                         txt       : elem.name.get() + stext
+#                         onclick: ( evt ) =>
+#                             @rename_file text, sorted[ i ]
+#                             
+#                 else if elem._info.model_type.get() == "Directory"
+#                     @picture = new_dom_element
+#                         parentNode: file_container
+#                         nodeName  : "img"
+#                         src       : "img/orange_folder.png"
+#                         alt       : elem.name
+#                         title     : elem.name
+#                         ondblclick: ( evt ) =>
+#                             @open sorted[ i ], @path()
+#                             @cancel_natural_hotkeys evt
+#                             
+#                     text = new_dom_element
+#                         parentNode: file_container
+#                         className : "linkDirectory"
+#                         nodeName  : "div"
+#                         txt       : elem.name.get() + stext
+#                         onclick: ( evt ) =>
+#                             @rename_file text, sorted[ i ]
+                            
                 
         @draw_breadcrumb()
         
@@ -648,7 +638,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
 
                 
     path: ->
-        "pouet"
+        "test_need_to_be_complete"
     
     @add_action: ( model_type, fun ) ->
         if not ModelEditorItem_Directory._action_list[ model_type ]?

@@ -25,3 +25,34 @@ class File extends Model
     load: ( callback ) ->
         @_ptr.load callback
     
+    
+    
+    
+#     drop: ( evt, info ) ->
+#         @handleFiles evt, info
+#         evt.returnValue = false
+#         evt.stopPropagation()
+#         evt.preventDefault()
+#         return false
+#         
+#     handleFiles: (event, info, files) -> 
+#         if typeof files == "undefined" #Drag and drop
+#             event.stopPropagation()
+#             event.returnValue = false
+#             event.preventDefault()
+#             files = event.dataTransfer.files
+#             
+#         if event.dataTransfer.files.length > 0
+#             for file in files 
+#                 format = file.type.indexOf "image"
+#                 if format isnt -1
+#                     pic = new ImgItem file.name
+#                     accept_child = info.item.accept_child pic
+#                     if accept_child == true
+#                         info.item.add_child pic
+# #                         info.item.img_collection.push pic
+#                         
+# #             @sendFiles()
+# TreeView.default_types.push ( evt, info ) -> 
+#     d = new Directory
+#     d.drop evt, info

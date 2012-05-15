@@ -5,6 +5,14 @@ class EditView extends View
         @model_editors = {}
         @old_divs = []
         
+        inspector = new_dom_element
+            nodeName  : "div"
+            className : "HeaderMainView"
+            parentNode: @div
+            txt       : "Inspector"
+            style     :
+                height  : 19
+        
     onchange: ->
         if @app_data.selected_tree_items.has_been_modified
             # remove old panel
@@ -12,6 +20,7 @@ class EditView extends View
                 @div.removeChild d
             @old_divs = []
 
+                
             for path in @app_data.selected_tree_items
                 s = path[ path.length - 1 ]
                 e = @model_editors[ s.model_id ]

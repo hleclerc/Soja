@@ -4,7 +4,8 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
     constructor: ( params ) ->
         super params
         
-        
+        @current_path = "/scripts"
+                
         @button = new_dom_element
             parentNode: @ed
             nodeName  : "input"
@@ -58,6 +59,20 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
                 }
                 @hlLine = @fullscreen_code_mirror.setLineClass(0, "activeline")
 
+#         @save = new_dom_element
+#             parentNode: @ed
+#             nodeName  : "input"
+#             type      : "button"
+#             value     : "Save"
+#             onclick   : ( evt )  =>
+#                 console.log 'save'
+#                 if FileSystem?
+#                     fs = FileSystem.get_inst()
+#                     # we should ask for filename and path
+#                     name = "my-script"
+#                     path = @current_path
+#                     fs.load path, ( m, err ) ->
+#                         m.add_file name, new Path @model.get(), info.model_type "txt"
 
         @textarea = new_dom_element
             parentNode: @ed
@@ -75,7 +90,7 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
             onChange: =>
                 @model.set @code_mirror.getValue()
                 @model.callback?()
-#                 @code_mirror.focus()
+                setTimeout ( => @code_mirror.focus() ), 1
                 
             onCursorActivity: =>
                 @code_mirror.setLineClass(@hlLine2, null)
