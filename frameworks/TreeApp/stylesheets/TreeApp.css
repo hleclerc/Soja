@@ -37,6 +37,25 @@
 .FooterTreeViewIcon:hover {
     background: #fff;
 }
+
+/*.FooterTreeViewIcon {
+    cursor : pointer;
+    float  :right;
+    padding:2px;
+    margin: 3px;
+    margin-left: 1px;
+    border:thin solid #eee;
+}
+
+.FooterTreeViewIcon:hover {
+    border:thin solid grey;
+    background           : #fff;
+    -moz-border-radius   : 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius     : 3px;
+    border-radius        : 3px;
+}*/
+
 .LayoutManager_Border {
     /* opacity   : 0.25; */
     background: #666;

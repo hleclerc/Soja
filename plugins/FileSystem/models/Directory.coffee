@@ -28,3 +28,4 @@ class Directory extends Lst
 
     get_file_info: ( info ) ->
         info.icon = "folder"
+        

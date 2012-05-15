@@ -197,7 +197,7 @@ class TreeView extends View
                                 if num + 1 < info.path.length
                                     bar = info.path[ num + 1 ]
                                     n = bar.num_in_flat + @_nb_displayed_children( bar )
-                                @_line_div.style.top  = @line_height * ( n + 1 )
+                                @_line_div.style.top  = @line_height * ( n + 1 ) + @height_header
                                 @_line_div.style.left = @sep_x * ( num + 1 )
                                 @el.appendChild @_line_div
                                 break
