@@ -16,6 +16,6 @@ class Path extends Model
         
     _get_fs_data: ( out ) ->
         super out
-        # permit to send the data after the server"s answaer
+        # permit to send the data after the server's answaer
         if @file? and @_server_id & 3
             FileSystem._files_to_upload[ @_server_id ] = this
