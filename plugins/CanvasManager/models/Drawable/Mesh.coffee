@@ -58,8 +58,8 @@ class Mesh extends Drawable
             selected[ item.model_id ] = true
         
         proj = for p, i in @points
-            if @warp_by.val.get()
-                v = Vec_3.add v, @warp_factor.get() * @nodal_fields[ @warp_by.get() ][ i ].get()
+#             if @warp_by.get()
+#                 v = Vec_3.add v, @warp_factor.get() * @nodal_fields[ @warp_by.get() ][ i ].get()
             info.re_2_sc.proj p.pos.get()
         
         # 

@@ -45,7 +45,12 @@ class TreeView extends View
         
     # may be redefined depending on how the user want to construct the graph. Return the children of item
     get_children_of: ( item ) ->
-        return item._children
+        tab = new Lst
+        for output in item._output
+            tab.push output
+        for ch in item._children
+            tab.push ch
+        return tab
 
     insert_child: ( par, pos, chi ) ->
         if not par._children?
@@ -107,6 +112,7 @@ class TreeView extends View
         
         
     _render: ->
+            
         # remove old elements
         for c in @_created_elements
             @el.removeChild c
@@ -118,18 +124,25 @@ class TreeView extends View
         @height_header = @line_height + 3
         inspector = new_dom_element
             nodeName  : "div"
-            className : "HeaderMainView"
+            className : "HeaderTreeView"
             parentNode: @el
             txt       : "Scene"
             style     :
                 height  : @height_header
-        @_created_elements.push inspector
         pos_y += @height_header
+        @_created_elements.push inspector
+        
+        @treeContainer = new_dom_element
+            nodeName  : "div"
+            id        : "ContainerTreeView"
+            parentNode: @el
+        @_created_elements.push @treeContainer
+        
         
         for info in @flat
             do ( info ) =>
                 div = new_dom_element
-                    parentNode: @el
+                    parentNode: @treeContainer
                     className : @css_prefix + "TreeView"
                     my_item   : info # this is really bad, but necessary for external drag and drop
                     style     :
@@ -212,8 +225,8 @@ class TreeView extends View
         
                     ondrop : ( evt ) =>
                         #TODO how to not put 0
-                        r = TreeView.default_types[ 0 ]
-                        r evt, info
+#                         r = TreeView.default_types[ 0 ]
+#                         r evt, info
                                     
                         for num in [ info.path.length - 1 .. 0 ]
                             par = info.path[ num ]
@@ -233,6 +246,7 @@ class TreeView extends View
                         evt.stopPropagation()
                         evt.preventDefault()
                         return false
+
                 
                 @linked_id_dom[ info.item.model_id ] = div
                 
@@ -242,7 +256,7 @@ class TreeView extends View
                 else if @closed.contains( info.item_path ) and @_has_a_selected_child( info.item, info.item_path )
                     div.className += " #{@css_prefix}TreePartiallySelected"
                     
-                @_created_elements.push div
+#                 @_created_elements.push div
                 pos_y += @line_height
                 
                 @_add_tree_signs div, info
@@ -255,7 +269,8 @@ class TreeView extends View
             parentNode: @el
             style:
                 position: "absolute"
-                bottom : 0
+                bottom  : 0
+                zIndex : 100
             
         delet = new_dom_element
             nodeName  : "img"
@@ -289,7 +304,6 @@ class TreeView extends View
                             m.add_file name, new Path selected_tree_item, info.model_type "TreeItem"
                             
         @_created_elements.push footer
-
 
     #
     _add_tree_signs: ( div, info ) ->
@@ -372,6 +386,10 @@ class TreeView extends View
                 right   : 0
 #             onclick: =>
 #                 name.contentEditable = true
+#         if info.item._output.has info
+#         name.style.textAlign = "right"
+#         name.style.right = "20px"
+                
                 
         # visibility
         if @get_viewable_of( info.item )?.toBoolean()

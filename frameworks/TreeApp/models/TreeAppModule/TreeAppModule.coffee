@@ -59,10 +59,10 @@ class TreeAppModule extends Model
     
     
     # this function is used to create item on the right tree place
-    # type represent the type of item you want to use
+    # typeItem represent the type of item you want to use
     add_item_depending_selected_tree: ( app, typeItem ) ->
         items = app.data.get_selected_tree_items()
-        #search for typeItem in tree
+        # search for typeItem in tree
         find_object = false
         for it in items
             if it instanceof typeItem
@@ -70,7 +70,7 @@ class TreeAppModule extends Model
 #                 console.log '1'
                 find_object = true
         
-        #search if typeItem can be a child of the selected item in tree
+        # search if typeItem can be a child of the selected item in tree
         if find_object == false
             for it in items
                 item = new typeItem
@@ -118,7 +118,7 @@ class TreeAppModule extends Model
         return object
         
                                 
-    #type represent the type of current item
+    # typeItem represent the type of current item
     child_in_selected: ( app, typeItem, sel_item, item ) ->
         current = new typeItem
     
