@@ -7,8 +7,7 @@
     background: #eee;
     overflow  : auto;
 }
-
-.HeaderTreeView {
+.HeaderMainView, .HeaderTreeView {
     text-align:center;
     color     : DarkSlateGrey;
     background: #bbb;

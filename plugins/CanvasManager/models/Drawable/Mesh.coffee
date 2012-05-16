@@ -3,7 +3,7 @@
 # _pre_sele_color
 # _selected_color
 class Mesh extends Drawable
-    constructor: ( legend, params = {} ) ->
+    constructor: ( legend = null, params = {} ) ->
         super()
         
         @add_attr
@@ -30,10 +30,13 @@ class Mesh extends Drawable
             
         for key, val of params
             this[ key ]?.set? val
-        
-        if legend?
+            
+        if legend? and legend instanceof Legend
             @add_attr
                 _legend: legend
+        else
+            @add_attr
+                _legend: new Legend ""
                 
         # default move scheme
         @move_scheme = MoveScheme_3D

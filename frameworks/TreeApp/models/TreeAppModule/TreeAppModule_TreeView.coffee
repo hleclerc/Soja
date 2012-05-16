@@ -17,6 +17,7 @@ class TreeAppModule_TreeView extends TreeAppModule
             txt: "Delete current tree item"
             key: [ "Del" ]
             ina: _ina
+            loc: true
             fun: ( evt, app ) =>
                 for path in app.data.selected_tree_items
                     #prevent deleting root item (session)

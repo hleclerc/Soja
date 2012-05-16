@@ -78,10 +78,13 @@ class TreeApp extends View
             res = new LayoutManagerPanelInstance @el
             res.div.className = "PanelInstanceTreeView"
             #res.div.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
-            @treeview = new TreeView res.div, @data.tree_items, @data.selected_tree_items, @data.visible_tree_items, @data.closed_tree_items, @data.last_canvas_pan
-            res.treeview = @treeview
+            @module_treeview = new TreeView_ModuleView res.div, @data.tree_items, @data.selected_tree_items, @data.visible_tree_items, @data.closed_tree_items, @data.last_canvas_pan, this
+            
+#             @treeview = new TreeView res.div, @data.tree_items, @data.selected_tree_items, @data.visible_tree_items, @data.closed_tree_items, @data.last_canvas_pan
+
+            res.treeview = @module_treeview.treeview
             res.div.onmousedown = =>
-                @data.focus.set @treeview.view_id
+                @data.focus.set @module_treeview.treeview.view_id
                 return true
             return res
             
