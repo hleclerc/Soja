@@ -7,6 +7,7 @@ class TreeItem extends Model
             _ico       : ""
             _name      : ""
             _children  : []
+            _output    : []
             _viewable  : 0 # eye
             _allow_vmod: true # autorise check/uncheck view
             _name_class: ""
@@ -24,6 +25,20 @@ class TreeItem extends Model
                     return
         else
             @_children.splice child, 1
+        
+    # child must be an instance of TreeItem
+    add_output: ( child ) ->
+        @_output.push child
+
+    # remove child, by ref or by num
+    rem_output: ( child ) ->
+        if child instanceof TreeItem
+            for num_c in [ 0 ... @_output.length ]
+                if @_output[ num_c ] == child
+                    @_output.splice num_c, 1
+                    return
+        else
+            @_output.splice child, 1
         
 
         
