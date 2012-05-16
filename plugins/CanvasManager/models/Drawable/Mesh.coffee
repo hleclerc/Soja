@@ -10,6 +10,9 @@ class Mesh extends Drawable
             # display parms
             displayed_field  : new Choice( 0, [ "" ] )
             display_style    : new Choice( 0, [ "wireframe", "surface" ] )
+            warp_by          : new Choice( 0, [ "none" ] )
+            warp_factor      : 1
+            
             # geometry
             points           : new Lst_Point # "add_point" can be used to fill the list
             lines            : new Lst
@@ -54,7 +57,9 @@ class Mesh extends Drawable
         for item in @_selected
             selected[ item.model_id ] = true
         
-        proj = for p in @points
+        proj = for p, i in @points
+            if @warp_by.val.get()
+                v = Vec_3.add v, @warp_factor.get() * @nodal_fields[ @warp_by.get() ][ i ].get()
             info.re_2_sc.proj p.pos.get()
         
         # 
