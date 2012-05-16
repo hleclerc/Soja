@@ -11,7 +11,7 @@
 # lib Theme.js
 # lib FileSystem.js
 test_FileSystem = ->
-    FileSystem._disp = false
+    FileSystem._disp = true
     fs = new FileSystem
     
     # load the root dir
