@@ -45,13 +45,20 @@ class TreeView extends View
         
     # may be redefined depending on how the user want to construct the graph. Return the children of item
     get_children_of: ( item ) ->
-        tab = new Lst
-        for output in item._output
-            tab.push output
-        for ch in item._children
-            tab.push ch
-        return tab
+        item._children
+        
+    # may be redefined depending on how the user want to construct the graph. Return the children of item
+    get_output_of: ( item ) ->
+        item._output
+        
+        #         tab = new Lst
+        #         for output in item._output
+        #             tab.push output
+        #         for ch in item._children
+        #             tab.push ch
+        #         return tab
 
+    # may be redefined
     insert_child: ( par, pos, chi ) ->
         if not par._children?
             par.add_attr _children: []
@@ -85,9 +92,9 @@ class TreeView extends View
                 if @get_children_of( model )?.has_been_directly_modified()
                     dom_elem = @linked_id_dom[ model.model_id ]
                     dom_elem.classList.add "TreeJustModified"
-#                         console.log model, dom_elem
-#                         if Animation?
-#                               dom_elem.style.backgroundColor = "lightYellow"
+                if @get_output_of( model )?.has_been_directly_modified()
+                    dom_elem = @linked_id_dom[ model.model_id ]
+                    dom_elem.classList.add "TreeJustModified"
                         
     #looking for duplication in tree
     _get_color_element: ( info ) ->
@@ -386,9 +393,10 @@ class TreeView extends View
                 right   : 0
 #             onclick: =>
 #                 name.contentEditable = true
-#         if info.item._output.has info
-#         name.style.textAlign = "right"
-#         name.style.right = "20px"
+
+        if info.is_an_output
+            name.style.textAlign = "right"
+            name.style.right = "20px"
                 
                 
         # visibility
@@ -412,7 +420,7 @@ class TreeView extends View
         @repr = for num_item in [ 0 ... @roots.length ]
             @_update_repr_rec @roots[ num_item ], num_item, @roots.length, []
         
-    _update_repr_rec: ( item, number, length, parents ) ->
+    _update_repr_rec: ( item, number, length, parents, output = false ) ->
         info =
             item         : item
             name         : @get_name_of( item ).get()
@@ -420,10 +428,12 @@ class TreeView extends View
             num_in_parent: number
             len_sibling  : length
             children     : []
+            outputs      : []
             parents      : parents
             path         : ( p for p in parents )
             item_path    : ( p.item for p in parents )
             num_in_flat  : @flat.length
+            is_an_output : output
 
         info.path.push info
         info.item_path.push item
@@ -431,13 +441,20 @@ class TreeView extends View
         @flat.push info
 
         if not @closed.contains( info.item_path )
+            ch = @get_output_of( item )
+            if ch?
+                info.outputs = for num_ch in [ 0 ... ch.length ]
+                    par = ( p for p in parents )
+                    par.push info
+                    @_update_repr_rec ch[ num_ch ], num_ch, ch.length, par, true
+
             ch = @get_children_of( item )
             if ch?
                 info.children = for num_ch in [ 0 ... ch.length ]
                     par = ( p for p in parents )
                     par.push info
-                    @_update_repr_rec ch[ num_ch ], num_ch, ch.length, par
-
+                    @_update_repr_rec ch[ num_ch ], num_ch, ch.length, par, false
+                    
         return info
                 
             
@@ -453,6 +470,8 @@ class TreeView extends View
             if item.has_been_directly_modified()
                 return true
             if @get_children_of( item )?.has_been_directly_modified()
+                return true
+            if @get_output_of( item )?.has_been_directly_modified()
                 return true
             if @get_viewable_of( item )?.has_been_directly_modified()
                 return true
@@ -488,6 +507,9 @@ class TreeView extends View
         
     _flat_item_list_rec: ( res, item ) ->
         res.push item
+        if @get_output_of( item )?
+            for c in @get_output_of( item )
+                @_flat_item_list_rec res, c
         if @get_children_of( item )?
             for c in @get_children_of( item )
                 @_flat_item_list_rec res, c
