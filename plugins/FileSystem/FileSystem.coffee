@@ -45,7 +45,22 @@ class FileSystem
         @send "L #{FileSystem._nb_callbacks} #{encodeURI path} "
         FileSystem._callbacks[ FileSystem._nb_callbacks ] = callback
         FileSystem._nb_callbacks++
-        
+
+    # make dir if not already present in the server. Call callback -- as in the @load proc -- when done (i.e. when loaded or created)
+    load_or_make_dir: ( dir, callback ) ->
+        @load dir, ( res, err ) =>
+            if err
+                lst = ( v for v in dir.split '/' when v.length )
+                nir = lst.pop()
+                oir = "/" + lst.join( "/" )
+                @load_or_make_dir oir, ( n_res, n_err ) =>
+                    n_dir = new Directory
+                    n_res.add_file nir, n_dir
+                    callback n_dir, n_err
+            else
+                callback res, err
+    
+
     # load an object using is pointer and call $callback with the corresponding ref
     load_ptr: ( ptr, callback ) ->
         @send "l #{FileSystem._nb_callbacks} #{ptr} "

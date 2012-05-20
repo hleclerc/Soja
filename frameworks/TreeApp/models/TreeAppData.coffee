@@ -36,7 +36,7 @@ class TreeAppData extends Model
     
     new_session: ( name ) ->
         s = new SessionItem name, this
-        @tree_items.push s
+        @add_session s
         
         d = new DisplaySettingsItem
             sep_norm: 0
@@ -53,7 +53,12 @@ class TreeAppData extends Model
                 } ]
             } ]
         s._children.push d
-
+        
+        s
+        
+    add_session: ( session ) ->
+        @tree_items.push session
+        
     #
     selected_session: ->
         for session in @tree_items
