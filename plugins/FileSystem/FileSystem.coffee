@@ -116,6 +116,8 @@ class FileSystem
     #
     @_tmp_id_to_real: ( tmp_id, res ) ->
         tmp = FileSystem._tmp_objects[ tmp_id ]
+        if not tmp?
+            console.log tmp_id
         FileSystem._objects[ res ] = tmp
         tmp._server_id = res
         delete FileSystem._tmp_objects[ tmp_id ]

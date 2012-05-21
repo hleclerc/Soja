@@ -12,6 +12,13 @@ class Directory extends Lst
                 return f
         return undefined
 
+    load: ( name, callback ) ->
+        f = @find name
+        if f
+            f.load callback
+        else
+            callback undefined, "file does not exist"
+        
     has: ( name ) ->
         for f in this
             if f.name.equals name
