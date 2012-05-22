@@ -429,7 +429,7 @@ class Mesh extends Drawable
                             
                         n = @points[ @points.length-1 ]
                         ol = P1
-                        li[ 1 ]._set os
+                        li[ 1 ].set os
                         @lines.push [ os, ol ]
                         
                         res.push
