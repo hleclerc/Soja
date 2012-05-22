@@ -1,4 +1,5 @@
 # List of files
+# _underlying_fs_type is not needed ()
 class Directory extends Lst
     constructor: () ->
         super()

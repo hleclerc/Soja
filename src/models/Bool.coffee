@@ -38,3 +38,8 @@ class Bool extends Obj
 
         return false
         
+    #
+    _get_fs_data: ( out ) ->
+        FileSystem.set_server_id_if_necessary out, this
+        out.mod += "C #{@_server_id} #{ 1 * Boolean( @_data ) } "
+        

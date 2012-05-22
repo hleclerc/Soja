@@ -106,7 +106,11 @@ class FileSystem
             FileSystem._tmp_objects[ obj._server_id ] = obj
             
             # new object
-            out.cre += "N #{obj._server_id} #{Model.get_object_class( obj )} "
+            ncl = Model.get_object_class( obj )
+            if obj._underlying_fs_type?
+                out.mod += "T #{obj._server_id} #{ncl} "
+                ncl = obj._underlying_fs_type()
+            out.cre += "N #{obj._server_id} #{ncl} "
 
             # data
             obj._get_fs_data out

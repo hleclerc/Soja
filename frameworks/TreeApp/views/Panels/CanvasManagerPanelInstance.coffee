@@ -7,7 +7,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
         @cm = new CanvasManager
             el   : @div
             cam  : @view_item.cam
-            items: @app_data.visible_tree_items[ @view_item.panel_id ]
+            items: @app_data.visible_tree_items[ @view_item._panel_id ]
             time : @app_data.time
             context_menu  : ( evt, show ) => @_launch_context_menu( evt, show )
             add_transform : ( evt, show ) => @_add_transform_node( evt )
@@ -34,12 +34,12 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             tree_app.data.focus.set @cm.view_id
                     
             if evt.ctrlKey
-                @app_data.selected_canvas_pan.toggle @view_item.panel_id
+                @app_data.selected_canvas_pan.toggle @view_item._panel_id
             else
-                @app_data.selected_canvas_pan.set [ @view_item.panel_id ]
+                @app_data.selected_canvas_pan.set [ @view_item._panel_id ]
                 
-            if @app_data.selected_canvas_pan.contains @view_item.panel_id
-                @app_data.last_canvas_pan.set @view_item.panel_id
+            if @app_data.selected_canvas_pan.contains @view_item._panel_id
+                @app_data.last_canvas_pan.set @view_item._panel_id
                 
         @cm.dblclick_fun.push ( cm, evt ) =>
             @_add_transform_node( evt )
@@ -68,7 +68,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
         
     #
     _update_borders: ->        
-        s = 1 * @app_data.selected_canvas_pan.contains( @view_item.panel_id )
+        s = 1 * @app_data.selected_canvas_pan.contains( @view_item._panel_id )
         
         @div.style.left   = @p_min[ 0 ] - s
         @div.style.top    = @p_min[ 1 ] - s

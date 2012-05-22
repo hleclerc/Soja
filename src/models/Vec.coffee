@@ -5,4 +5,7 @@ class Vec extends Lst
 
     base_type: ->
         Val
+
+    _underlying_fs_type: ->
+        "Lst"
         

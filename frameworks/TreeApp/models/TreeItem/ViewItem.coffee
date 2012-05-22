@@ -1,6 +1,6 @@
 #
 class ViewItem extends TreeItem
-    constructor: ( @app_data, @panel_id, cam = new( Cam ) ) ->
+    constructor: ( @app_data, panel_id, cam = new( Cam ) ) ->
         super()
         
         # attributes

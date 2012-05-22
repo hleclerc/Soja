@@ -93,16 +93,23 @@ class TreeApp extends View
     
         # else, -> canvas manager
         # add a ViewItem to display_settings
-        view_item = new ViewItem @data, data.panel_id, @_next_view_item_cam
-        if @_next_view_item_child
-            view_item.add_child @_next_view_item_child
-        display_settings._children.push view_item
-        delete @_next_view_item_cam
+        view_item = undefined
+        for c in display_settings._children
+            if c._panel_id.get() == data.panel_id
+                view_item = c
+                break
+
+        if not view_item?
+            view_item = new ViewItem @data, data.panel_id, @_next_view_item_cam
+            if @_next_view_item_child
+                view_item.add_child @_next_view_item_child
+            display_settings._children.push view_item
+            delete @_next_view_item_cam
         
         # 
         @data.visible_tree_items.add_attr data.panel_id, new Lst [ view_item ]
         for cm_inst in @selected_canvas_inst()
-            for tree_item in @data.visible_tree_items[ cm_inst.view_item.panel_id ]
+            for tree_item in @data.visible_tree_items[ cm_inst.view_item._panel_id.get() ]
                 if not ( tree_item instanceof ViewItem )
                     @data.visible_tree_items[ data.panel_id ].push tree_item
             view_item.cam.set cm_inst.cm.cam.get()
@@ -113,8 +120,7 @@ class TreeApp extends View
         @data.selected_canvas_pan.set [ data.panel_id ]
         @data.last_canvas_pan.set data.panel_id
         
-
-#         @el.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
+        # @el.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
         
         return new CanvasManagerPanelInstance @el, @data, view_item, @undo_manager
         

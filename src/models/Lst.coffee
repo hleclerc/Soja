@@ -286,7 +286,7 @@ class Lst extends Model
             @length = value.length
 
         return change
-
+        
     _get_fs_data: ( out ) ->
         FileSystem.set_server_id_if_necessary out, this
         str = for obj in this

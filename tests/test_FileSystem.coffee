@@ -11,7 +11,7 @@
 # lib Theme.js
 # lib FileSystem.js
 test_FileSystem = ->
-    # FileSystem._disp = true
+    FileSystem._disp = true
     fs = new FileSystem
     
     # load the root dir
@@ -35,11 +35,17 @@ test_FileSystem = ->
                 b.add_attr name, obj
                 
         console.log dir.get()
-        add_ifn "val", -> 10
-        add_ifn "con", -> new ConstrainedVal 0, { min:0, max:100 }
-        add_ifn "str", -> "txt"
-        add_ifn "lst", -> [ 1, 2 ]
-        add_ifn "col", -> new Color
+        #         add_ifn "val", -> 10
+        #         add_ifn "con", -> new ConstrainedVal 0, { min:0, max:100 }
+        #         add_ifn "str", -> "txt"
+        #         add_ifn "lst", -> [ 1, 2 ]
+        #         add_ifn "col", -> new Color
+        
+        add_ifn "poi", ->
+            r = new Lst_Point
+            r.push [1,2,3]
+            r
+        #         add_ifn "bol", -> new Bool
 
 #     #
 #     cpt = 0
