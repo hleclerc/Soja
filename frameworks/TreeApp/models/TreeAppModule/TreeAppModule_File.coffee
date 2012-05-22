@@ -15,7 +15,7 @@ class TreeAppModule_File extends TreeAppModule
             siz: 2
             txt: "Open"
             ina: _ina
-            fun: ( evt, app ) ->
+            fun: ( evt, app ) =>
                 @d = new_dom_element
                     className : "browse_container"
                     id        : "id_browse_container"
@@ -27,15 +27,13 @@ class TreeAppModule_File extends TreeAppModule
                     fs = new FileSystem
                     FileSystem._disp = false
                     
-                fs.load_or_make_dir "/home/monkey/test_browser", ( d, err ) ->
-                    m = new Directory
-                    d.add_file "test_browser", m
+                fs.load_or_make_dir "/home/monkey/test_browser", ( d, err ) =>
                     t = new Directory
-                    m.add_file "Result", t
+                    d.add_file "Result", t
                     t.add_file "Steel", ( new Directory )
                     t.add_file "Steel", ( new Lst [ 1, 2 ] )
-                    m.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
-                    m.add_file "Work", ( new Lst [ 1, 2 ] )
+                    d.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
+                    d.add_file "Work", ( new Lst [ 1, 2 ] )
                     item_cp = new ModelEditorItem_Directory
                         el    : @d
                         model : d
