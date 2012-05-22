@@ -8,7 +8,7 @@ class ModelEditorItem_Aggregate extends ModelEditorItem
         # rm unnecessary ones
         for model_id, me of @containers
             res = false
-            for name in @model.attribute_names when name[ 0 ] != "_"
+            for name in @model._attribute_names when name[ 0 ] != "_"
                 val = @model[ name ]
                 res |= val.model_id == parseInt model_id
             if not res
@@ -16,7 +16,7 @@ class ModelEditorItem_Aggregate extends ModelEditorItem
                 delete @containers[ model_id ]
 
         # new editors
-        for name in @model.attribute_names when name[ 0 ] != "_"
+        for name in @model._attribute_names when name[ 0 ] != "_"
             val = @model[ name ]
             if not @containers[ val.model_id ]?
                 @containers[ val.model_id ] = 
@@ -31,7 +31,7 @@ class ModelEditorItem_Aggregate extends ModelEditorItem
         if @get_justification()
             w = 0
             o = []
-            for name in @model.attribute_names when name[ 0 ] != "_"
+            for name in @model._attribute_names when name[ 0 ] != "_"
                 val = @model[ name ]
                 info = @containers[ val.model_id ]
                 if w + info.edit.get_item_width() > 100

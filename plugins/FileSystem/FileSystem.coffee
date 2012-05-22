@@ -81,6 +81,12 @@ class FileSystem
             if @readyState == 4 and @status == 200
                 if FileSystem._disp
                     console.log "chan ->", @responseText
+                    
+                _w = ( sid, obj ) ->
+                    if sid? and obj?
+                        obj._server_id = sid
+                        FileSystem._objects[ sid ] = obj
+                    
                 FileSystem._sig_server = false
                 eval @responseText
                 FileSystem._sig_server = true
@@ -137,6 +143,11 @@ class FileSystem
             xhr_object.open 'PUT', "/_?s=#{fs._session_num}&p=#{tmp._server_id}", true
             xhr_object.onreadystatechange = ->
                 if @readyState == 4 and @status == 200
+                    _w = ( sid, obj ) ->
+                        if sid? and obj?
+                            obj._server_id = sid
+                            FileSystem._objects[ sid ] = obj
+                    
                     eval @responseText
             xhr_object.send tmp.file
             delete tmp.file

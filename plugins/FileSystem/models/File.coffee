@@ -26,8 +26,6 @@ class File extends Model
         @_ptr.load callback
     
     
-    
-    
 #     drop: ( evt, info ) ->
 #         @handleFiles evt, info
 #         evt.returnValue = false

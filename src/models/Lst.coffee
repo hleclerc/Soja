@@ -261,8 +261,8 @@ class Lst extends Model
     #
     deep_copy: ->
         res = new Lst
-        for v in this when v instanceof Model
-            res.push v.deep_copy()
+        for i in [ 0 ... @length ]
+            res.push this[ i ].deep_copy()
         res
         
     #

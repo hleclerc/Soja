@@ -10,7 +10,7 @@ class Model
 
     constructor: ( attr ) ->
         # registered attribute names (in declaration order)
-        @attribute_names = []
+        @_attribute_names = []
 
         # id of the model
         @model_id = Model._cur_mid
@@ -75,7 +75,7 @@ class Model
     # May be redefined for specific types (e.g. Str, Lst, ...)
     get: ->
         res = {}
-        for name in @attribute_names
+        for name in @_attribute_names
             res[ name ] = this[ name ].get()
         return res
 
@@ -132,7 +132,7 @@ class Model
                 
                 if this not in p._parents
                     p._parents.push this
-                @attribute_names.push n
+                @_attribute_names.push n
                 this[ n ] = p
                 
                 if signal_change
@@ -156,9 +156,9 @@ class Model
                     
             delete this[ name ]
             
-            i = @attribute_names.indexOf name
+            i = @_attribute_names.indexOf name
             if i >= 0
-                @attribute_names.splice i, 1
+                @_attribute_names.splice i, 1
             
             if signal_change
                 @_signal_change()
@@ -169,13 +169,13 @@ class Model
             @rem_attr n
             @add_attr n, p
             
-    # add / mod / rem attr to get the same data than o
+    # add / mod / rem attr to get the same data than o (assumed to be something like { key: val, ... })
     set_attr: ( o ) ->
         # new ones / updates
         for k, v of o
             @mod_attr k, v
         # remove
-        to_rem = ( k for k, v of this when v instanceof Model and not o[ k ]? )
+        to_rem = ( k for k in @_attribute_names when not o[ k ]? )
         for r in to_rem
             @rem_attr r
 
@@ -192,13 +192,14 @@ class Model
         if this == m
             return true
         u = {}
-        for key, val of m when val instanceof Model
+        for key in m._attribute_names
+            val = m[ key ]
             if not this[ key ]?
                 return false
             if not this[ key ].equals( val )
                 return false
             u[ key ] = true
-        for key, val of this when val instanceof Model
+        for key in @_attribute_names
             if not u[ key ]?
                 return false
         return false
@@ -213,8 +214,8 @@ class Model
     #
     deep_copy: ->
         o = {}
-        for key, val of this when val instanceof Model
-            o[ key ] = val.deep_copy()
+        for key in @_attribute_names
+            o[ key ] = this[ key ].deep_copy()
         
         eval "var __new__ = new #{Model.get_object_class this};"
         __new__.set_attr o
@@ -271,14 +272,15 @@ class Model
 
     # may be redefined
     _get_state: ->
-        str = for name, obj of this when obj instanceof Model
-            name + ":" + obj.model_id
+        str = for name in @_attribute_names
+            name + ":" + this[ name ].model_id
         return str.join ","
         
     # send data to server
     _get_fs_data: ( out ) ->
         FileSystem.set_server_id_if_necessary out, this
-        str = for name, obj of this when obj instanceof Model
+        str = for name in @_attribute_names
+            obj = this[ name ]
             FileSystem.set_server_id_if_necessary out, obj
             name + ":" + obj._server_id
         out.mod += "C #{@_server_id} #{str.join ","} "
@@ -298,7 +300,8 @@ class Model
                 res += "REM_ATTR " + path + " " + attr + "\n"
         
         # ADD_ATTR
-        for attr, obj of this when obj instanceof Model
+        for attr in @_attribute_names
+            obj = this[ attr ]
             if not ohis[ attr ]?
                 res += "ADD_ATTR " + path + " " + attr + " " + obj.model_id + "\n"
             else if ohis[ attr ] != obj.model_id
@@ -325,7 +328,7 @@ class Model
             else
                 @add_attr key, val, false
             
-        for key, val of this when val instanceof Model
+        for key in @_attribute_names
             if not used[ key ]
                 change = true
                 @rem_attr key, false
@@ -373,7 +376,7 @@ class Model
                 else if not this[ attr ]._set_state_if_same_type k_id, map
                     @mod_attr attr, Model._new_model_from_state k_id, map
 
-        for attr, obj of this when obj instanceof Model
+        for attr in @_attribute_names
             if not u[ attr ]
                 @rem_attr attr
 
@@ -403,7 +406,8 @@ class Model
     _get_flat_model_map: ( map, date ) ->
         map[ @model_id ] = this
         
-        for name, obj of this when obj instanceof Model
+        for name in @_attribute_names
+            obj = this[ name ]
             if not map[ obj.model_id ]?
                 if obj._date_last_modification > date
                     obj._get_flat_model_map map, date

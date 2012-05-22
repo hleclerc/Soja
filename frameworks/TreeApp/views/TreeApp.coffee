@@ -14,9 +14,6 @@ class TreeApp extends View
         
         document.addEventListener "keydown", ( ( evt ) => @_on_key_down evt ), true
         
-        
-#         @selected_view = ""
-        
 
     onchange: ->
         # update layout if current session has changed
