@@ -85,7 +85,6 @@ class TreeApp extends View
 #                 return true
             
             res.div.onmousedown = =>
-                console.log 'this', this
                 @data.focus.set @module_treeview.treeview.view_id
                 return true
             return res
