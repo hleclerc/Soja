@@ -79,4 +79,12 @@
 }
 
 
+.icon_session_128 {
+    text-align: center;
+    background: url('img/text.png') no-repeat;
+    margin:auto;
+    height:128px;
+    width: 128px;
+}
+
 
