@@ -4,7 +4,6 @@ class SessionItem extends TreeItem
         
         @_name._set name
         @_ico._set "img/document-open.png"
-        
 
         bind this, =>
             max = 0
