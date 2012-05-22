@@ -30,7 +30,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         
         
         @container = new_dom_element
-                parentNode: @ed                
+                parentNode: @ed
                 nodeName  : "div"
                 ondragover: ( evt ) =>
                     return false
@@ -41,7 +41,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     evt.preventDefault()
                     @handle_files evt.dataTransfer.files
                     return false
-                        
+                    
         @icon_scene = new_dom_element
                 parentNode: @container
                 nodeName  : "div"
@@ -300,7 +300,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
             file.contentEditable = "false"
     
     onchange: ->
-        console.log @selected_file, this
         if @selected_file.has_been_directly_modified()
             @draw_selected_file()
         if @model.has_been_modified() or @breadcrumb.has_been_modified()
