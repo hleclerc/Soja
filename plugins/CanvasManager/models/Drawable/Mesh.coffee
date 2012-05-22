@@ -62,7 +62,8 @@ class Mesh extends Drawable
         
         proj = for p, i in @points
 #             if @warp_by.get()
-#                 v = Vec_3.add v, @warp_factor.get() * @nodal_fields[ @warp_by.get() ][ i ].get()
+                #TODO @warp_by.get() must be use to choose between nodal_fields or elementary_fields
+#                 v = Vec_3.add @nodal_fields[ @displayed_field.get() ][ i ].get(), @warp_factor.get() * @nodal_fields[ @displayed_field.get() ][ i ].get()
             info.re_2_sc.proj p.pos.get()
         
         # 

@@ -34,9 +34,6 @@ class TreeAppModule_File extends TreeAppModule
                     t.add_file "Steel", ( new Lst [ 1, 2 ] )
                     d.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
                     d.add_file "Work", ( new Lst [ 1, 2 ] )
-                    item_cp = new ModelEditorItem_Directory
-                        el    : @d
-                        model : d
                         
                     ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) ->
                         console.log "open mesh"
@@ -44,7 +41,7 @@ class TreeAppModule_File extends TreeAppModule
                             @modules = app.data.modules
                             for m in @modules 
                                 if m instanceof TreeAppModule_Sketch
-                                    m.actions[ 2 ].fun evt, app, file
+                                    m.actions[ 4 ].fun evt, app, file
                                     
                     ModelEditorItem_Directory.add_action "Img", ( file, path, browser ) ->
                         console.log "open img"
@@ -54,13 +51,16 @@ class TreeAppModule_File extends TreeAppModule
                                 if m instanceof TreeAppModule_ImageSet
                                     m.actions[ 1 ].fun evt, app, file
 
-                
+                    item_cp = new ModelEditorItem_Directory
+                        el    : @d
+                        model : d
+                        
                 p = new_popup "Browse Folder", event : evt, width : 70, child: @d, onclose: =>
                     @onPopupClose( app )
                 app.active_key.set false
                 
 #             key: [ "Shift+O" ]
 
-            onPopupClose: ( app ) =>
-                document.onkeydown = undefined
-                app.active_key.set true
+    onPopupClose: ( app ) =>
+        document.onkeydown = undefined
+        app.active_key.set true
