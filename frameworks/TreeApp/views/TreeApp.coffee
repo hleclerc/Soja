@@ -106,6 +106,14 @@ class TreeApp extends View
             display_settings._children.push view_item
             delete @_next_view_item_cam
         
+        #
+        bind @data.selected_canvas_pan, =>
+            if @data.selected_canvas_pan.contains data.panel_id
+                view_item._name_class.set "SelectedViewItem"
+            else
+                view_item._name_class.set "UnselectedViewItem"
+        
+        
         # 
         @data.visible_tree_items.add_attr data.panel_id, new Lst [ view_item ]
         for cm_inst in @selected_canvas_inst()

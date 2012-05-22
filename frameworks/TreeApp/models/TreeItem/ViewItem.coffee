@@ -15,12 +15,6 @@ class ViewItem extends TreeItem
         @_name.set "View"
         @_ico.set "img/view-presentation.png"
         
-        #         bind @app_data.selected_canvas_pan, =>
-        #             if @app_data.selected_canvas_pan.contains panel_id
-        #                 @_name_class.set "SelectedViewItem"
-        #             else
-        #                 @_name_class.set "UnselectedViewItem"
-        
         
     accept_child: ( ch ) ->
         #
