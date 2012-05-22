@@ -234,7 +234,7 @@ class TreeView extends View
                         #TODO how to not put 0
 #                         r = TreeView.default_types[ 0 ]
 #                         r evt, info
-                                    
+                        
                         for num in [ info.path.length - 1 .. 0 ]
                             par = info.path[ num ]
                             if @_accept_child par, @drag_info

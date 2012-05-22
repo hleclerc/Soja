@@ -78,8 +78,14 @@ class TreeApp extends View
             @module_treeview = new TreeView_ModuleView res.div, @data.tree_items, @data.selected_tree_items, @data.visible_tree_items, @data.closed_tree_items, @data.last_canvas_pan, this
             @treeview = @module_treeview.treeview # new TreeView res.div, @data.tree_items, @data.selected_tree_items, @data.visible_tree_items, @data.closed_tree_items, @data.last_canvas_pan
 
-            res.treeview = @module_treeview.treeview
+            res.treeview = @module_treeview.treeview            
+#             @treeview.treeContainer.onmousedown = =>
+#                 console.log 'fde', this
+#                 @data.focus.set @module_treeview.treeview.view_id
+#                 return true
+            
             res.div.onmousedown = =>
+                console.log 'this', this
                 @data.focus.set @module_treeview.treeview.view_id
                 return true
             return res
@@ -88,7 +94,7 @@ class TreeApp extends View
             res = new LayoutManagerPanelInstance @el
             res.div.className = "PanelInstanceEditView"
             #res.div.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
-            new EditView res.div, @data, @undo_manager            
+            new EditView res.div, @data, @undo_manager
             return res
     
         # else, -> canvas manager

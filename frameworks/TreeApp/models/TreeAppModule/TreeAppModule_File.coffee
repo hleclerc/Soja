@@ -67,7 +67,6 @@ class TreeAppModule_File extends TreeAppModule
                     
                 p = new_popup "Browse Folder", event : evt, width : 70, child: @d, onclose: =>
                     @onPopupClose( app )
-                
                 app.active_key.set false
                 
 #             key: [ "Shift+O" ]

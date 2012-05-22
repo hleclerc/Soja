@@ -282,7 +282,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                 pos = @cutroot.indexOf mod
                 if pos != -1
                     @cutroot.splice pos, 1
-        for file in @clipboard.get()
+        for file in @clipboard
             new_file = file.deep_copy()
             @model.push new_file
         
@@ -300,6 +300,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
             file.contentEditable = "false"
     
     onchange: ->
+        console.log @selected_file, this
         if @selected_file.has_been_directly_modified()
             @draw_selected_file()
         if @model.has_been_modified() or @breadcrumb.has_been_modified()
@@ -393,7 +394,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
         if @selected_file.length
             index_array = []
             for i in @selected_file.get()
-                console.log i
                 index = @search_ord_index_from_id i
                 index_array.push index
             index_array.sort @sort_numerically
