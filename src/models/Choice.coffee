@@ -3,7 +3,7 @@
 # num is the number of the choosen value in the list
 # lst contains the posible choices
 class Choice extends Model 
-    constructor: ( data, initial_list = [], @filter = ( ( obj ) -> true ) ) ->
+    constructor: ( data, initial_list = [] ) ->
         super()
         
         # default
@@ -15,6 +15,9 @@ class Choice extends Model
         if data?
             @num.set data
 
+    filter: ( obj ) ->
+        true
+            
     get: ->
         @_nlst()[ @num.get() ].get()
 
