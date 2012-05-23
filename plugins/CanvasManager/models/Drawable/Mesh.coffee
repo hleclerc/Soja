@@ -8,10 +8,12 @@ class Mesh extends Drawable
         
         
         @add_attr
-            _field           : new Lst
+            #_field           : new Lst
             displayed_field  : new Choice( 0, [] )
-            displayed_style  : new Choice( 0, [] )
-            warp_by          : new Choice( 0, [] )
+            displayed_style  : new Choice( 0, [ "Wireframe", "Surface" ] )
+            
+        @add_attr
+            warp_by          : new Choice( 0, @displayed_field.lst, ( ( obj ) -> obj.dim() == 3 ) )
             # display parms
             #             displayed_field  : new Choice( 0, [ "elementary", "nodal" ] )
             #             display_style    : new Choice( 0, [ "wireframe", "surface" ] )
@@ -25,8 +27,8 @@ class Mesh extends Drawable
             polygons         : new Lst
             
             # fields
-            elementary_fields: new Model # { field_name: values, ... }
-            nodal_fields     : new Model # { field_name: values, ... }
+            #elementary_fields: new Model # { field_name: values, ... }
+            #nodal_fields     : new Model # { field_name: values, ... }
             
             # behavior
             _selected        : new Lst # references of selected points / lines / ...
@@ -53,7 +55,10 @@ class Mesh extends Drawable
     #
     add_point: ( pos = [ 0, 0, 0 ] ) ->
         @points.push new Point pos, @move_scheme
-    
+        
+    add_field: ( field ) ->
+        @displayed_field.lst.push field
+            
     z_index: ->
         return 100
 
@@ -118,23 +123,23 @@ class Mesh extends Drawable
                 @points[ p.get() ].pos.get()
             @_disp_arc_n_points info, point
             
-#         for polyg in @polygons
-#             @_draw_polygon info, polyg.get(), proj
+        #         for polyg in @polygons
+        #             @_draw_polygon info, polyg.get(), proj
         
         # call adapted draw function for color and using gradient
-        if @nodal_fields[ @displayed_field.get() ]?
-            values = @nodal_fields[ @displayed_field.get() ].get()
-            @actualise_value_legend values
-            
-            for tri in @triangles
-                @_draw_nodal_triangle info, tri.get(), proj, values
-                
-        else if @elementary_fields[ @displayed_field.get() ]?
-            values = @elementary_fields[ @displayed_field.get() ].get()
-            @actualise_value_legend values
-            
-            for tri, i in @triangles
-                @_draw_elementary_triangle info, tri.get(), proj, values[ i ]
+        #         if @nodal_fields[ @displayed_field.get() ]?
+        #             values = @nodal_fields[ @displayed_field.get() ].get()
+        #             @actualise_value_legend values
+        #             
+        #             for tri in @triangles
+        #                 @_draw_nodal_triangle info, tri.get(), proj, values
+        #                 
+        #         else if @elementary_fields[ @displayed_field.get() ]?
+        #             values = @elementary_fields[ @displayed_field.get() ].get()
+        #             @actualise_value_legend values
+        #             
+        #             for tri, i in @triangles
+        #                 @_draw_elementary_triangle info, tri.get(), proj, values[ i ]
 
         # pre selected items
         if @_pre_sele.length
