@@ -83,7 +83,7 @@ class LayoutManagerData extends Model
             
             pa.set ci
         else
-            alert "TODO"
+            console.log "TODO"
             
         return true
 
