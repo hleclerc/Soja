@@ -14,10 +14,6 @@ class Mesh extends Drawable
             
         @add_attr
             warp_by          : new Choice( 0, @displayed_field.lst, ( ( obj ) -> obj.dim() == 3 ) )
-            # display parms
-            #             displayed_field  : new Choice( 0, [ "elementary", "nodal" ] )
-            #             display_style    : new Choice( 0, [ "wireframe", "surface" ] )
-            #             warp_by          : new Choice( 0, [ "none" ] )
             warp_factor      : 1
             
             # geometry
