@@ -267,7 +267,7 @@ class LayoutManager extends View
         p[ d ] = Math.min p[ d ], l_1
         
         if par.children.length > 2
-            alert "TODO: par.children.length > 2"
+            console.log "TODO: par.children.length > 2"
             
         @model.find_item_with_panel_id( par.children[ 0 ].panel_id ).strength.set p[ d ] - @border_size / 2 - p_0
         @model.find_item_with_panel_id( par.children[ 1 ].panel_id ).strength.set p_1 - p[ d ] - @border_size / 2

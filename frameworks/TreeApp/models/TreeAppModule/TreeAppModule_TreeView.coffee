@@ -23,7 +23,9 @@ class TreeAppModule_TreeView extends TreeAppModule
                     #prevent deleting root item (session)
                     if path.length > 1
                         m = path[ path.length - 1 ]
-                        if m instanceof ViewItem
+                        if m instanceof DisplaySettingsItem #prevent deleting display settings item
+                            return true
+                        else if m instanceof ViewItem
                             modules = app.data.modules
                             for mod in modules 
                                 if mod instanceof TreeAppModule_PanelManager

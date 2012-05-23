@@ -298,6 +298,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
             title = file.innerHTML
             child_index.name.set title
             file.contentEditable = "false"
+            @selected_file.clear()#TODO can be remove when selected_file will not contain index
     
     onchange: ->
         if @selected_file.has_been_directly_modified()
