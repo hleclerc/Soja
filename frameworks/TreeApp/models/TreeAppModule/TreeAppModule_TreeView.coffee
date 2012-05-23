@@ -61,21 +61,21 @@ class TreeAppModule_TreeView extends TreeAppModule
         @actions.push
             txt: ""
             key: [ "UpArrow" ]
-            ina: _ina_cm
+            ina: _ina
             fun: ( evt, app ) =>
                 up_down_fun evt, app, -1         
 
         @actions.push
             txt: ""
             key: [ "DownArrow" ]
-            ina: _ina_cm
+            ina: _ina
             fun: ( evt, app ) =>
                 up_down_fun evt, app, 1
 
         @actions.push
             txt: ""
             key: [ "LeftArrow" ]
-            ina: _ina_cm
+            ina: _ina
             fun: ( evt, app ) =>
                 # Close selected items
                 items = app.data.selected_tree_items
@@ -87,7 +87,7 @@ class TreeAppModule_TreeView extends TreeAppModule
         @actions.push
             txt: ""
             key: [ "RightArrow" ]
-            ina: _ina_cm
+            ina: _ina
             fun: ( evt, app ) =>
                 # Open selected items
                 items = app.data.selected_tree_items
@@ -99,7 +99,7 @@ class TreeAppModule_TreeView extends TreeAppModule
         @actions.push
             txt: ""
             key: [ "Enter" ]
-            ina: _ina_cm
+            ina: _ina
             fun: ( evt, app ) =>
                 # Show/hide items
                 path_items = app.data.selected_tree_items

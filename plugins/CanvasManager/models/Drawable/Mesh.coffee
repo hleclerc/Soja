@@ -6,11 +6,16 @@ class Mesh extends Drawable
     constructor: ( legend = null, params = {} ) ->
         super()
         
+        
         @add_attr
+            _field           : new Lst
+            displayed_field  : new Choice( 0, [] )
+            displayed_style  : new Choice( 0, [] )
+            warp_by          : new Choice( 0, [] )
             # display parms
-            displayed_field  : new Choice( 0, [ "" ] )
-            display_style    : new Choice( 0, [ "wireframe", "surface" ] )
-            warp_by          : new Choice( 0, [ "none" ] )
+            #             displayed_field  : new Choice( 0, [ "elementary", "nodal" ] )
+            #             display_style    : new Choice( 0, [ "wireframe", "surface" ] )
+            #             warp_by          : new Choice( 0, [ "none" ] )
             warp_factor      : 1
             
             # geometry
@@ -18,15 +23,18 @@ class Mesh extends Drawable
             lines            : new Lst
             triangles        : new Lst
             polygons         : new Lst
+            
             # fields
             elementary_fields: new Model # { field_name: values, ... }
             nodal_fields     : new Model # { field_name: values, ... }
+            
             # behavior
             _selected        : new Lst # references of selected points / lines / ...
             _pre_sele        : new Lst # references of selected points / lines / ...
             _selected_color  : new Color 255,   0,   0
             _pre_sele_color  : new Color 255, 255, 100
             
+        
             
         for key, val of params
             this[ key ]?.set? val
@@ -41,6 +49,7 @@ class Mesh extends Drawable
         # default move scheme
         @move_scheme = MoveScheme_3D
             
+    
     #
     add_point: ( pos = [ 0, 0, 0 ] ) ->
         @points.push new Point pos, @move_scheme
