@@ -161,30 +161,29 @@ class TreeView extends View
                         overflow: "hidden"
                         color   : @_get_color_element info
                     
-                    onmousedown: ( evt ) =>
-                        evt = window.event if not evt?
-
-                        mouse_b = if evt.which?
-                            if evt.which > 2
-                                "LEFT"
-                            else if evt.which == 2 
-                                "MIDDLE"
-                            else
-                                "RIGHT"
-                        else
-                            if evt.button < 2
-                                "LEFT"
-                            else if evt.button == 4 
-                                "MIDDLE"
-                            else
-                                "RIGHT"
-                        
-                        if mouse_b == "RIGHT"
-                            evt.stopPropagation()
-                            evt.cancelBubble = true
-                            # ... rien ne marche sous chrome sauf document.oncontextmenu = => return false 
-                            document.oncontextmenu = => return false
-                        
+                    #                     onmousedown: ( evt ) =>
+                    #                         evt = window.event if not evt?
+                    # 
+                    #                         mouse_b = if evt.which?
+                    #                             if evt.which > 2
+                    #                                 "LEFT"
+                    #                             else if evt.which == 2 
+                    #                                 "MIDDLE"
+                    #                             else
+                    #                                 "RIGHT"
+                    #                         else
+                    #                             if evt.button < 2
+                    #                                 "LEFT"
+                    #                             else if evt.button == 4 
+                    #                                 "MIDDLE"
+                    #                             else
+                    #                                 "RIGHT"
+                    #                         
+                    #                         if mouse_b == "RIGHT"
+                    #                             evt.stopPropagation()
+                    #                             evt.cancelBubble = true
+                    #                             # ... rien ne marche sous chrome sauf document.oncontextmenu = => return false 
+                    #                             document.oncontextmenu = => return false
                     
                     onclick: ( evt ) =>
                         if evt.ctrlKey
@@ -192,6 +191,7 @@ class TreeView extends View
                         else
                             @selected.clear()
                             @selected.push info.item_path
+                        return true
                             
                     draggable: true
                 

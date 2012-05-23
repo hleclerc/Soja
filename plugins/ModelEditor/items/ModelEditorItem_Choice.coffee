@@ -18,11 +18,11 @@ class ModelEditorItem_Choice extends ModelEditorItem
                 @select.removeChild @select.firstChild
 
             cpt = 0
-            for i in @model.lst
+            for i in @model._nlst()
                 new_dom_element
                     parentNode : @select
                     nodeName   : "option"
-                    txt        : i.get()
+                    txt        : i.toString()
                     value      : cpt
                     
                 cpt += 1

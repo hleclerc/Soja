@@ -11,7 +11,7 @@ class ModelEditorItem_Choice_Roll extends ModelEditorItem
             className : "ModelEditorChoiceRoll"
             onclick   : ( evt ) =>
                 @get_undo_manager()?.snapshot()
-                @model.set ( @model.num.get() + 1 ) % @model.lst.length
+                @model.set ( @model.num.get() + 1 ) % @model._nlst().length
                 evt.stopPropagation?()
             style:
                 color     : "rgba(0,0,0,0)"
@@ -32,7 +32,7 @@ class ModelEditorItem_Choice_Roll extends ModelEditorItem
             @_cl = []
                 
             cpt = 0
-            for i in @model.lst
+            for i in @model._nlst()
                 @_cl.push new_dom_element
                     parentNode : @window
                     txt        : i.get()
