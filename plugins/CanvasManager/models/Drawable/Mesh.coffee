@@ -76,13 +76,44 @@ class Mesh extends Drawable
             info.re_2_sc.proj p.pos.get()
         
         # 
-        color_line = info.theme.line.to_hex()
-        
         info.ctx.lineWidth = 1
         info.ctx.fillStyle = "#FFFFFF"
-        info.ctx.strokeStyle = color_line
+        info.ctx.strokeStyle = info.theme.line.to_hex()
+        
+        display = @displayed_style.get()
+        #TODO vectorial_field qui comprends une liste de field
+        #         if display == "Points"
+        @_draw_points info, proj, selected
 
-        # draw points
+        if display == "Surface with Edges" or display == "Wireframe"
+            @_draw_edges info, proj
+        
+        
+            
+        #         @_draw_polygons info, proj
+        
+        
+        if @displayed_field.lst.length > 0
+            selected_field = @displayed_field.lst[ @displayed_field.num.get() ]
+            @actualise_value_legend selected_field.get()
+            selected_field.draw info, @displayed_style.get(), @triangles, proj, @_legend
+            # call adapted draw function for color and using gradient
+            #         if @nodal_fields[ @displayed_field.get() ]?
+            #             values = @nodal_fields[ @displayed_field.get() ].get()
+            #             @actualise_value_legend values
+            #             
+            #             for tri in @triangles
+            #                 @_draw_nodal_triangle info, tri.get(), proj, values
+            #                 
+            #         else if @elementary_fields[ @displayed_field.get() ]?
+            #             values = @elementary_fields[ @displayed_field.get() ].get()
+            #             @actualise_value_legend values
+            #             
+            #             for tri, i in @triangles
+            #                 @_draw_elementary_triangle info, tri.get(), proj, values[ i ]
+
+    
+    _draw_points: ( info, proj, selected ) ->
         if @points_have_to_be_drawn info
             color_selected_dot = info.theme.selected_dot.to_hex()
             color_dot          = info.theme.dot.to_hex()
@@ -98,12 +129,40 @@ class Mesh extends Drawable
                 info.ctx.fill()
                 info.ctx.stroke()
             
+            # draw point that are under mouse
+            if @_pre_sele.length
+                info.ctx.strokeStyle = @_pre_sele_color.to_hex()
+                info.ctx.lineWidth = 1.5
+                for item in @_pre_sele when item instanceof Point
+                    p = info.re_2_sc.proj item.pos.get()
+                    
+                    info.ctx.beginPath()
+                    info.ctx.arc p[ 0 ], p[ 1 ], 5, 0, Math.PI * 2, true
+                    info.ctx.stroke()
+                info.ctx.strokeStyle = "#FFFFFF"
+                info.ctx.lineWidth = 1
+    
+    _draw_edges: ( info, proj ) ->
+        info.ctx.strokeStyle = info.theme.line.to_hex()
         # draw lines
         for l, j in @lines when l.length == 2
             info.ctx.beginPath()
             info.ctx.moveTo proj[ l[ 0 ].get() ][ 0 ], proj[ l[ 0 ].get() ][ 1 ]
             info.ctx.lineTo proj[ l[ 1 ].get() ][ 0 ], proj[ l[ 1 ].get() ][ 1 ]
             info.ctx.stroke()
+            
+        # draw lines that are under mouse
+        if @_pre_sele.length
+            info.ctx.strokeStyle = @_pre_sele_color.to_hex()
+            for l in @_pre_sele when l not instanceof Point
+                if l.length == 2
+                    info.ctx.lineWidth = 2
+                    info.ctx.beginPath()
+                    info.ctx.moveTo proj[ l[ 0 ].get() ][ 0 ], proj[ l[ 0 ].get() ][ 1 ]
+                    info.ctx.lineTo proj[ l[ 1 ].get() ][ 0 ], proj[ l[ 1 ].get() ][ 1 ]
+                    info.ctx.stroke()
+                    info.ctx.lineWidth = 1
+            info.ctx.strokeStyle = "#FFFFFF"
 
         # draw arcs
         for l in @lines when l.length == 3
@@ -118,68 +177,30 @@ class Mesh extends Drawable
                 @points[ p.get() ].pos.get()
             @_disp_arc_n_points info, point
             
-        #         for polyg in @polygons
-        #             @_draw_polygon info, polyg.get(), proj
-        
-        selected_field = @displayed_field.lst[ @displayed_field.num.get() ]
-        console.log selected_field.get()
-        @actualise_value_legend selected_field.get()
-        selected_field.draw info, @displayed_style.get(), @triangles, proj, @_legend
-        # call adapted draw function for color and using gradient
-        #         if @nodal_fields[ @displayed_field.get() ]?
-        #             values = @nodal_fields[ @displayed_field.get() ].get()
-        #             @actualise_value_legend values
-        #             
-        #             for tri in @triangles
-        #                 @_draw_nodal_triangle info, tri.get(), proj, values
-        #                 
-        #         else if @elementary_fields[ @displayed_field.get() ]?
-        #             values = @elementary_fields[ @displayed_field.get() ].get()
-        #             @actualise_value_legend values
-        #             
-        #             for tri, i in @triangles
-        #                 @_draw_elementary_triangle info, tri.get(), proj, values[ i ]
-
-        # pre selected items
-        if @_pre_sele.length
-            info.ctx.strokeStyle = @_pre_sele_color.to_hex()
-            info.ctx.lineWidth = 1.5
-            for item in @_pre_sele when item instanceof Point
-                p = info.re_2_sc.proj item.pos.get()
-                
+            
+    _draw_polygons: ( info, proj ) ->
+        for polyg in @polygons.get()
+            if polyg.length > 0
                 info.ctx.beginPath()
-                info.ctx.arc p[ 0 ], p[ 1 ], 5, 0, Math.PI * 2, true
-                info.ctx.stroke()
-            for l in @_pre_sele when item not instanceof Point
-                if l.length == 2
-                    info.ctx.lineWidth = 2
-                    info.ctx.beginPath()
-                    info.ctx.moveTo proj[ l[ 0 ].get() ][ 0 ], proj[ l[ 0 ].get() ][ 1 ]
-                    info.ctx.lineTo proj[ l[ 1 ].get() ][ 0 ], proj[ l[ 1 ].get() ][ 1 ]
-                    info.ctx.stroke()
+                info.ctx.strokeStyle = info.theme.line.to_hex()
+                info.ctx.fillStyle   = info.theme.line.to_hex()
                 
-    _draw_polygon: ( info, polyg, proj ) ->
-        if polyg.length > 0
-            info.ctx.beginPath()
-            info.ctx.strokeStyle = info.theme.line.to_hex()
-            info.ctx.fillStyle   = info.theme.line.to_hex()
-            
-            first_point = polyg[ 0 ]
-            pos_first_point = proj[ first_point ]
-            info.ctx.moveTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
-            
-            for line in polyg
-                pos_p = proj[ line ]
-                if pos_p?
-                    info.ctx.lineTo( pos_p[ 0 ], pos_p[ 1 ] )
-            # come back to first point
-            info.ctx.lineTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
-            
-            if @display_style.get() == "wireframe"
-                info.ctx.stroke()
-            else
-                info.ctx.fill()
-            info.ctx.closePath()
+                first_point = polyg[ 0 ]
+                pos_first_point = proj[ first_point ]
+                info.ctx.moveTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
+                
+                for line in polyg
+                    pos_p = proj[ line ]
+                    if pos_p?
+                        info.ctx.lineTo( pos_p[ 0 ], pos_p[ 1 ] )
+                # come back to first point
+                info.ctx.lineTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
+                
+                if @displayed_style.get() == "Wireframe"
+                    info.ctx.stroke()
+                else
+                    info.ctx.fill()
+                info.ctx.closePath()
     
     
     on_mouse_down: ( cm, evt, pos, b ) ->
@@ -397,7 +418,30 @@ class Mesh extends Drawable
                     @lines.splice(lineWithCurve[0][ ind ] - i, 1)
                 @lines.push newLine
 
-
+    _get_line_inter: ( proj, P0, P1, x, y ) ->
+        lg_0 = P0
+        lg_1 = P1
+        
+        a = proj[ lg_0 ]
+        b = proj[ lg_1 ]
+        
+        if a[ 0 ] != b[ 0 ] or a[ 1 ] != b[ 1 ]
+            dx = b[ 0 ] - a[ 0 ]
+            dy = b[ 1 ] - a[ 1 ]
+            px = x - a[ 0 ]
+            py = y - a[ 1 ]
+            l = dx * dx + dy * dy
+            d = px * dx + py * dy
+            if d >= 0 and d <= l
+                px = a[ 0 ] + dx * d / l
+                py = a[ 1 ] + dy * d / l
+                if Math.pow( px - x, 2 ) + Math.pow( py - y, 2 ) <= 4 * 4
+                    dx = @points[ lg_1 ].pos[ 0 ].get() - @points[ lg_0 ].pos[ 0 ].get()
+                    dy = @points[ lg_1 ].pos[ 1 ].get() - @points[ lg_0 ].pos[ 1 ].get()
+                    dz = @points[ lg_1 ].pos[ 2 ].get() - @points[ lg_0 ].pos[ 2 ].get()
+                    
+                    return [ dx, dy, dz, d / l ]
+                    
     get_movable_entities: ( res, info, pos, phase, dry = false ) ->
         x = pos[ 0 ]
         y = pos[ 1 ]
@@ -544,120 +588,6 @@ class Mesh extends Drawable
         min = @get_min values
         @_legend.min_val.set min
 
-
-    
-        
-    _get_center_radius: ( P0, P1, P2) ->
-        P01 = Vec_3.sub P1, P0
-        P02 = Vec_3.sub P2, P0
-        x1 = Vec_3.len P01
-        P01 = Vec_3.mus 1 / x1, P01
-        x2 = Vec_3.dot P02, P01
-        P02 = Vec_3.sub( P02, Vec_3.mus( x2, P01 ) )
-        y2 = Vec_3.len P02
-        P02 = Vec_3.mus 1 / y2, P02
-        xc = x1 * 0.5
-        yc = ( x2 * x2 + y2 * y2 - x2 * x1 ) / ( 2.0 * y2 )
-        C = Vec_3.add( Vec_3.add( P0, Vec_3.mus( xc, P01 ) ), Vec_3.mus( yc, P02 ) )
-        R = Vec_3.len( Vec_3.sub( P0, C ) )
-        
-        a0 = Math.atan2 (  0 - yc ), (  0 - xc )
-        a1 = Math.atan2 (  0 - yc ), ( x1 - xc )
-        a2 = Math.atan2 ( y2 - yc ), ( x2 - xc )
-        
-        ma = 0.5 * ( a0 + a2 )
-        if Math.abs( a1 - ma ) > Math.abs( a0 - ma ) # si a1 n'est pas compris dans l'intervalle
-            if a2 < a0
-                a2 += 2 * Math.PI
-            else
-                a0 += 2 * Math.PI
-                
-        ma = 0.5 * ( a0 + a2 )
-        if Math.abs( a1 - ma ) > Math.abs( a0 - ma ) # si a1 n'est toujours pas compris dans l'intervalle
-            a1 += 2 * Math.PI
-                
-        res =
-            C  : C
-            R  : R
-            a  : [ a0, a1, a2 ]
-            P01: P01
-            P02: P02
-        return res
-
-
-    _get_line_inter: ( proj, P0, P1, x, y ) ->
-        lg_0 = P0
-        lg_1 = P1
-        
-        a = proj[ lg_0 ]
-        b = proj[ lg_1 ]
-        
-        if a[ 0 ] != b[ 0 ] or a[ 1 ] != b[ 1 ]
-            dx = b[ 0 ] - a[ 0 ]
-            dy = b[ 1 ] - a[ 1 ]
-            px = x - a[ 0 ]
-            py = y - a[ 1 ]
-            l = dx * dx + dy * dy
-            d = px * dx + py * dy
-            if d >= 0 and d <= l
-                px = a[ 0 ] + dx * d / l
-                py = a[ 1 ] + dy * d / l
-                if Math.pow( px - x, 2 ) + Math.pow( py - y, 2 ) <= 4 * 4
-                    dx = @points[ lg_1 ].pos[ 0 ].get() - @points[ lg_0 ].pos[ 0 ].get()
-                    dy = @points[ lg_1 ].pos[ 1 ].get() - @points[ lg_0 ].pos[ 1 ].get()
-                    dz = @points[ lg_1 ].pos[ 2 ].get() - @points[ lg_0 ].pos[ 2 ].get()
-                    
-                    return [ dx, dy, dz, d / l ]
-        
-    _get_proj_arc: ( info, arc_info, a ) ->
-        rca = arc_info.R * Math.cos( a )
-        rsa = arc_info.R * Math.sin( a )
-        info.re_2_sc.proj [
-            arc_info.C[ 0 ] + rca * arc_info.P01[ 0 ] + rsa * arc_info.P02[ 0 ],
-            arc_info.C[ 1 ] + rca * arc_info.P01[ 1 ] + rsa * arc_info.P02[ 1 ],
-            arc_info.C[ 2 ] + rca * arc_info.P01[ 2 ] + rsa * arc_info.P02[ 2 ]
-        ]
-       
-    _disp_arc_n_points: ( info, point ) ->
-        res = for i in [ 0 ... point.length - 2 ]
-            @_get_center_radius point[ i ], point[ i + 1 ], point[ i + 2 ]
-                
-        info.ctx.beginPath()
-        p = info.re_2_sc.proj point[ 0 ]
-        info.ctx.moveTo p[ 0 ], p[ 1 ]
-
-        # beg
-        for n in [ 1 .. 30 ]
-            alpha = n / 30.0
-            ar = res[ 0 ].a[ 0 ] + ( res[ 0 ].a[ 1 ] - res[ 0 ].a[ 0 ] ) * alpha
-            pr = @_get_proj_arc info, res[ 0 ], ar
-            info.ctx.lineTo pr[ 0 ], pr[ 1 ]
-                
-        # mid
-        for i in [ 0 ... point.length - 3 ]
-            for n in [ 0 ... 30 ]
-                alpha = n / 30.0
-                a0 = res[ i + 0 ].a[ 1 ] + ( res[ i + 0 ].a[ 2 ] - res[ i + 0 ].a[ 1 ] ) * alpha
-                a1 = res[ i + 1 ].a[ 0 ] + ( res[ i + 1 ].a[ 1 ] - res[ i + 1 ].a[ 0 ] ) * alpha
-                
-                p0 = @_get_proj_arc info, res[ i + 0 ], a0
-                p1 = @_get_proj_arc info, res[ i + 1 ], a1
-                pr = Vec_3.add( Vec_3.mus( 1 - alpha, p0 ), Vec_3.mus( alpha, p1 ) )
-                
-                info.ctx.lineTo pr[ 0 ], pr[ 1 ]
-        
-        # end
-        nr = res.length - 1
-        for n in [ 0 .. 30 ]
-            alpha = n / 30.0
-            ar = res[ nr ].a[ 1 ] + ( res[ nr ].a[ 2 ] - res[ nr ].a[ 1 ] ) * alpha
-            pr = @_get_proj_arc info, res[ nr ], ar
-            info.ctx.lineTo pr[ 0 ], pr[ 1 ]
-        
-        
-        #info.ctx.closePath()
-        info.ctx.stroke()
-
     _disp_arc: ( info, P0, P1, P2 ) ->
         # 3D center and radius
         P01 = Vec_3.sub P1, P0
@@ -703,4 +633,89 @@ class Mesh extends Drawable
                 info.ctx.moveTo p[ 0 ], p[ 1 ]
         #info.ctx.closePath()
         info.ctx.stroke()
+
+    _get_center_radius: ( P0, P1, P2) ->
+        P01 = Vec_3.sub P1, P0
+        P02 = Vec_3.sub P2, P0
+        x1 = Vec_3.len P01
+        P01 = Vec_3.mus 1 / x1, P01
+        x2 = Vec_3.dot P02, P01
+        P02 = Vec_3.sub( P02, Vec_3.mus( x2, P01 ) )
+        y2 = Vec_3.len P02
+        P02 = Vec_3.mus 1 / y2, P02
+        xc = x1 * 0.5
+        yc = ( x2 * x2 + y2 * y2 - x2 * x1 ) / ( 2.0 * y2 )
+        C = Vec_3.add( Vec_3.add( P0, Vec_3.mus( xc, P01 ) ), Vec_3.mus( yc, P02 ) )
+        R = Vec_3.len( Vec_3.sub( P0, C ) )
         
+        a0 = Math.atan2 (  0 - yc ), (  0 - xc )
+        a1 = Math.atan2 (  0 - yc ), ( x1 - xc )
+        a2 = Math.atan2 ( y2 - yc ), ( x2 - xc )
+        
+        ma = 0.5 * ( a0 + a2 )
+        if Math.abs( a1 - ma ) > Math.abs( a0 - ma ) # si a1 n'est pas compris dans l'intervalle
+            if a2 < a0
+                a2 += 2 * Math.PI
+            else
+                a0 += 2 * Math.PI
+                
+        ma = 0.5 * ( a0 + a2 )
+        if Math.abs( a1 - ma ) > Math.abs( a0 - ma ) # si a1 n'est toujours pas compris dans l'intervalle
+            a1 += 2 * Math.PI
+                
+        res =
+            C  : C
+            R  : R
+            a  : [ a0, a1, a2 ]
+            P01: P01
+            P02: P02
+        return res
+        
+    _get_proj_arc: ( info, arc_info, a ) ->
+        rca = arc_info.R * Math.cos( a )
+        rsa = arc_info.R * Math.sin( a )
+        info.re_2_sc.proj [
+            arc_info.C[ 0 ] + rca * arc_info.P01[ 0 ] + rsa * arc_info.P02[ 0 ],
+            arc_info.C[ 1 ] + rca * arc_info.P01[ 1 ] + rsa * arc_info.P02[ 1 ],
+            arc_info.C[ 2 ] + rca * arc_info.P01[ 2 ] + rsa * arc_info.P02[ 2 ]
+        ]
+        
+    _disp_arc_n_points: ( info, point ) ->
+        res = for i in [ 0 ... point.length - 2 ]
+            @_get_center_radius point[ i ], point[ i + 1 ], point[ i + 2 ]
+                
+        info.ctx.beginPath()
+        p = info.re_2_sc.proj point[ 0 ]
+        info.ctx.moveTo p[ 0 ], p[ 1 ]
+
+        # beg
+        for n in [ 1 .. 30 ]
+            alpha = n / 30.0
+            ar = res[ 0 ].a[ 0 ] + ( res[ 0 ].a[ 1 ] - res[ 0 ].a[ 0 ] ) * alpha
+            pr = @_get_proj_arc info, res[ 0 ], ar
+            info.ctx.lineTo pr[ 0 ], pr[ 1 ]
+                
+        # mid
+        for i in [ 0 ... point.length - 3 ]
+            for n in [ 0 ... 30 ]
+                alpha = n / 30.0
+                a0 = res[ i + 0 ].a[ 1 ] + ( res[ i + 0 ].a[ 2 ] - res[ i + 0 ].a[ 1 ] ) * alpha
+                a1 = res[ i + 1 ].a[ 0 ] + ( res[ i + 1 ].a[ 1 ] - res[ i + 1 ].a[ 0 ] ) * alpha
+                
+                p0 = @_get_proj_arc info, res[ i + 0 ], a0
+                p1 = @_get_proj_arc info, res[ i + 1 ], a1
+                pr = Vec_3.add( Vec_3.mus( 1 - alpha, p0 ), Vec_3.mus( alpha, p1 ) )
+                
+                info.ctx.lineTo pr[ 0 ], pr[ 1 ]
+        
+        # end
+        nr = res.length - 1
+        for n in [ 0 .. 30 ]
+            alpha = n / 30.0
+            ar = res[ nr ].a[ 1 ] + ( res[ nr ].a[ 2 ] - res[ nr ].a[ 1 ] ) * alpha
+            pr = @_get_proj_arc info, res[ nr ], ar
+            info.ctx.lineTo pr[ 0 ], pr[ 1 ]
+        
+        
+        #info.ctx.closePath()
+        info.ctx.stroke()
