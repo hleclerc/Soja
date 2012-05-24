@@ -13,8 +13,10 @@ class Mesh extends Drawable
             
         @add_attr
             warp_by          : new Choice_RestrictedByDim( 0, @displayed_field.lst )
-            warp_factor      : 1
-            
+            warp_factor      : new ConstrainedVal(0, 
+                    min: -1024
+                    max: 1024
+                )
             # geometry
             points           : new Lst_Point # "add_point" can be used to fill the list
             lines            : new Lst
@@ -32,6 +34,8 @@ class Mesh extends Drawable
             _pre_sele_color  : new Color 255, 255, 100
             
         
+#         @warp_factor.delta = () ->
+#             4000
             
         for key, val of params
             this[ key ]?.set? val
@@ -71,7 +75,6 @@ class Mesh extends Drawable
         
         proj = for p, i in @points
 #             if @warp_by.get()
-                #TODO @warp_by.get() must be use to choose between nodal_fields or elementary_fields
 #                 v = Vec_3.add @nodal_fields[ @displayed_field.get() ][ i ].get(), @warp_factor.get() * @nodal_fields[ @displayed_field.get() ][ i ].get()
             info.re_2_sc.proj p.pos.get()
         
