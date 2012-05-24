@@ -85,13 +85,7 @@ class Mesh extends Drawable
         #         if display == "Points"
         @_draw_points info, proj, selected
 
-        if display == "Surface with Edges" or display == "Wireframe"
-            @_draw_edges info, proj
-        
-        
-            
         #         @_draw_polygons info, proj
-        
         
         if @displayed_field.lst.length > 0
             selected_field = @displayed_field.lst[ @displayed_field.num.get() ]
@@ -111,7 +105,11 @@ class Mesh extends Drawable
             #             
             #             for tri, i in @triangles
             #                 @_draw_elementary_triangle info, tri.get(), proj, values[ i ]
-
+        
+        # when mesh is not an element fields nor a nodal fields
+        else
+            if display == "Wireframe" or display == "Surface with Edges"
+                @_draw_edges info, proj
     
     _draw_points: ( info, proj, selected ) ->
         if @points_have_to_be_drawn info
