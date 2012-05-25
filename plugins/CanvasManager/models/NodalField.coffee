@@ -13,8 +13,8 @@ class NodalField extends Model
     toString: ->
         @name.get()
 
-    dim: ->
-        3
+#     dim: ->
+#         3
         
     
     draw: ( info, display_style, triangles, proj, legend) ->

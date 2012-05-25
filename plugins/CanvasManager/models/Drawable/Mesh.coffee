@@ -10,9 +10,10 @@ class Mesh extends Drawable
         @add_attr
             displayed_field  : new Choice( 0, [] )
             displayed_style  : new Choice( 3, [ "Points", "Surface", "Surface with Edges", "Wireframe" ] )
+            _vectorial_field : new Choice( 0, [] )
             
         @add_attr
-            warp_by          : new Choice_RestrictedByDim( 0, @displayed_field.lst )
+            warp_by          : new Choice_RestrictedByDim( 0, @_vectorial_field.lst )
             warp_factor      : new ConstrainedVal(0, 
                     min: -1024
                     max: 1024
@@ -57,6 +58,9 @@ class Mesh extends Drawable
         
     add_field: ( field ) ->
         @displayed_field.lst.push field
+        
+    add_vectorial_field: ( field ) ->
+        @_vectorial_field.lst.push field
             
     z_index: ->
         return 100
@@ -73,41 +77,36 @@ class Mesh extends Drawable
         for item in @_selected
             selected[ item.model_id ] = true
         
-        proj = for p, i in @points
-#             if @warp_by.get()
-#                 v = Vec_3.add @nodal_fields[ @displayed_field.get() ][ i ].get(), @warp_factor.get() * @nodal_fields[ @displayed_field.get() ][ i ].get()
-            info.re_2_sc.proj p.pos.get()
+        # apply warp_factor deformation to points
+        if @warp_by.lst[ @warp_by.num ] != undefined and @warp_by.get().length == 3 and @warp_factor.get() != 0
+            warp_factor = @warp_factor.get()
+            field_data = @warp_by.get()
+            proj = for p, i in @points
+                data = new Vec_3
+                for fd, j in field_data
+                    data[ j ] = fd[ i ]
+                new_pos = Vec_3.add p.pos.get(), Vec_3.mus warp_factor,data
+                info.re_2_sc.proj new_pos
+        else
+            proj = for p, i in @points
+                info.re_2_sc.proj p.pos.get()
         
-        # 
         info.ctx.lineWidth = 1
         info.ctx.fillStyle = "#FFFFFF"
         info.ctx.strokeStyle = info.theme.line.to_hex()
         
         display = @displayed_style.get()
-        #TODO vectorial_field qui comprends une liste de field
+        
         #         if display == "Points"
         @_draw_points info, proj, selected
 
         #         @_draw_polygons info, proj
         
-        if @displayed_field.lst.length > 0
+        # call adapted draw function for color and using gradient
+        if @displayed_field.lst.length
             selected_field = @displayed_field.lst[ @displayed_field.num.get() ]
             @actualise_value_legend selected_field.get()
             selected_field.draw info, @displayed_style.get(), @triangles, proj, @_legend
-            # call adapted draw function for color and using gradient
-            #         if @nodal_fields[ @displayed_field.get() ]?
-            #             values = @nodal_fields[ @displayed_field.get() ].get()
-            #             @actualise_value_legend values
-            #             
-            #             for tri in @triangles
-            #                 @_draw_nodal_triangle info, tri.get(), proj, values
-            #                 
-            #         else if @elementary_fields[ @displayed_field.get() ]?
-            #             values = @elementary_fields[ @displayed_field.get() ].get()
-            #             @actualise_value_legend values
-            #             
-            #             for tri, i in @triangles
-            #                 @_draw_elementary_triangle info, tri.get(), proj, values[ i ]
         
         # when mesh is not an element fields nor a nodal fields
         else

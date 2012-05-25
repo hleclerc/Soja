@@ -14,8 +14,8 @@ class ElementaryField extends Model
     toString: ->
         @name.get()
 
-    dim: ->
-        1
+#     dim: ->
+#         1
     
     draw: ( info, display_style, triangles, proj, legend) ->
         for tri, i in triangles

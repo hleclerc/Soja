@@ -1,6 +1,6 @@
 # Vectorial fields is a list containing differents field
 class VectorialFields extends Model
-    constructor: ( name, vector = new Lst, params = {} ) ->
+    constructor: ( name = "", vector = new Lst, params = {} ) ->
         super()
         
         @add_attr
