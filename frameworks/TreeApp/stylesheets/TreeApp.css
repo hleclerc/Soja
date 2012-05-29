@@ -13,13 +13,14 @@
 }
 .FooterTreeView {
     color: DarkSlateGrey;
+    background-color: WhiteSmoke;
     width: 100%
 }
 .FooterTreeViewIcon {
     cursor : pointer;
     float  :right;
     padding:2px;
-    margin: 3px;
+    margin: 2px;
     margin-left: 1px;
     border:thin solid grey;
     -moz-border-radius   : 3px;
