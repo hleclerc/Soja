@@ -127,17 +127,9 @@ class TreeView extends View
         @linked_id_dom = {}
         pos_y = 0
         
-        # draw header
+        # header title (bad)
         @height_header = @line_height + 3
-        inspector = new_dom_element
-            nodeName  : "div"
-            className : "HeaderTreeView"
-            parentNode: @el
-            txt       : "Scene"
-            style     :
-                height  : @height_header
         pos_y += @height_header
-        @_created_elements.push inspector
         
         @treeContainer = new_dom_element
             nodeName  : "div"
