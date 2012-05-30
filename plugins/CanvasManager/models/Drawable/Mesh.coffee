@@ -121,10 +121,10 @@ class Mesh extends Drawable
         #         for polyg in @polygons
         #             @_draw_polygon info, polyg.get(), proj
         
-        selected_field = @displayed_field.lst[ @displayed_field.num.get() ]
-        console.log selected_field.get()
-        @actualise_value_legend selected_field.get()
-        selected_field.draw info, @displayed_style.get(), @triangles, proj, @_legend
+        #selected_field = @displayed_field.lst[ @displayed_field.num.get() ]
+        #console.log selected_field.get()
+        #@actualise_value_legend selected_field.get()
+        #selected_field.draw info, @displayed_style.get(), @triangles, proj, @_legend
         # call adapted draw function for color and using gradient
         #         if @nodal_fields[ @displayed_field.get() ]?
         #             values = @nodal_fields[ @displayed_field.get() ].get()
