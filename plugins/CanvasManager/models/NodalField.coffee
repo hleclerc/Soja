@@ -104,7 +104,7 @@ class NodalField extends Model
     # drawing gradient depending p0 and p1 in the correct triangle with the correct color
     _draw_gradient_stroke_triangle: ( info, p0, p1, posit, legend ) ->
         info.ctx.beginPath()
-        lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ],  p1[ 0 ], p1[ 1 ]
+        lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ], p1[ 0 ], p1[ 1 ]
         for col in legend.gradient.color_stop
             lineargradient.addColorStop col.position.get(), col.color.to_rgba()
         info.ctx.strokeStyle = lineargradient
@@ -117,19 +117,18 @@ class NodalField extends Model
     # drawing gradient depending p0 and p1 in the correct triangle
     _draw_gradient_fill_triangle: ( info, p0, p1, posit, legend ) ->
         info.ctx.beginPath()
-        lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ],  p1[ 0 ], p1[ 1 ]
+        lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ], p1[ 0 ], p1[ 1 ]
         for col in legend.gradient.color_stop
             lineargradient.addColorStop col.position.get(), col.color.to_rgba()
-            
         fake = false
         if isNaN p0[ 0 ] or isNaN p0[ 1 ] or isNaN p1[ 0 ] or isNaN p1[ 1 ]
             console.error 'isNaN ', p0[ 0 ], p0[ 1 ],  p1[ 0 ], p1[ 1 ]
             fake = true
             info.ctx.strokeStyle = "pink"
-        
-        big = 32000
-        small = -32000
-        
+            
+        big = 100000
+        small = -100000
+            
         if p0[ 0 ] > big or p0[ 1 ] > big or p1[ 0 ] > big or p1[ 1 ] > big
             console.log 'too big ', p0[ 0 ], p0[ 1 ],  p1[ 0 ], p1[ 1 ]
             console.log 'too big ', legend.gradient.color_stop[ 0 ].color.to_rgba(), legend.gradient.color_stop[ 1 ].color.to_rgba()
@@ -141,8 +140,10 @@ class NodalField extends Model
             console.log 'too small ', legend.gradient.color_stop[ 0 ].color.to_rgba(), legend.gradient.color_stop[ 1 ].color.to_rgba()
             info.ctx.strokeStyle = "green"
             fake = true
+            
         if fake != true
             info.ctx.strokeStyle = lineargradient
+
         
         info.ctx.fillStyle = lineargradient
         info.ctx.moveTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
