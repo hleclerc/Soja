@@ -64,10 +64,12 @@ class ElementaryField extends Model
     _draw_elementary_fill_triangle: ( info, position, col ) ->
         info.ctx.beginPath()
         info.ctx.fillStyle = "rgba( " + col[ 0 ] + ", " + col[ 1 ] + ", " + col[ 2 ] + ", " + col[ 3 ] + " ) "
+        info.ctx.strokeStyle = "rgba( " + col[ 0 ] + ", " + col[ 1 ] + ", " + col[ 2 ] + ", " + col[ 3 ] + " ) "
         info.ctx.moveTo( position[ 0 ][ 0 ], position[ 0 ][ 1 ] )
         info.ctx.lineTo( position[ 1 ][ 0 ], position[ 1 ][ 1 ] )
         info.ctx.lineTo( position[ 2 ][ 0 ], position[ 2 ][ 1 ] )
         info.ctx.lineTo( position[ 0 ][ 0 ], position[ 0 ][ 1 ] )
         info.ctx.fill()
+        info.ctx.stroke()
         info.ctx.closePath()
     

@@ -120,8 +120,10 @@ class NodalField extends Model
         for col in legend.gradient.color_stop
             lineargradient.addColorStop col.position.get(), col.color.to_rgba()
         info.ctx.fillStyle = lineargradient
+        info.ctx.strokeStyle = lineargradient
         info.ctx.moveTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
         info.ctx.lineTo( posit[ 1 ][ 0 ], posit[ 1 ][ 1 ] )
         info.ctx.lineTo( posit[ 2 ][ 0 ], posit[ 2 ][ 1 ] )
         info.ctx.lineTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
         info.ctx.fill()
+        info.ctx.stroke()

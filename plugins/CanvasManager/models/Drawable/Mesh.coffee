@@ -8,8 +8,9 @@ class Mesh extends Drawable
         
         
         @add_attr
+            editable_points : new Bool true
             displayed_field  : new Choice( 0, [] )
-            displayed_style  : new Choice( 3, [ "Points", "Surface", "Surface with Edges", "Wireframe" ] )
+            displayed_style  : new Choice( 1, [ "Points", "Surface", "Surface with Edges", "Wireframe" ] )
             
         @add_attr
             warp_by          : new Choice_RestrictedByDim( 0, @displayed_field.lst )
@@ -17,6 +18,7 @@ class Mesh extends Drawable
                 min: -1024
                 max: 1024
             )
+            
             # geometry
             points           : new Lst_Point # "add_point" can be used to fill the list
             lines            : new Lst
@@ -96,8 +98,6 @@ class Mesh extends Drawable
         
         display = @displayed_style.get()
         
-        #         if display == "Points"
-        @_draw_points info, proj, selected
 
         #         @_draw_polygons info, proj
         
@@ -111,6 +111,9 @@ class Mesh extends Drawable
         else
             if display == "Wireframe" or display == "Surface with Edges"
                 @_draw_edges info, proj
+                
+        if display == "Points" or @editable_points.get() == true
+            @_draw_points info, proj, selected
     
     _draw_points: ( info, proj, selected ) ->
         if @points_have_to_be_drawn info
