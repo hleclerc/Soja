@@ -18,6 +18,7 @@ class NodalField extends Model
         
     
     draw: ( info, display_style, triangles, proj, legend) ->
+        console.log '------------------'
         for tri in triangles
             @_draw_nodal_triangle info, display_style, tri.get(), proj, @_data, legend
             
@@ -119,8 +120,31 @@ class NodalField extends Model
         lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ],  p1[ 0 ], p1[ 1 ]
         for col in legend.gradient.color_stop
             lineargradient.addColorStop col.position.get(), col.color.to_rgba()
+            
+        fake = false
+        if isNaN p0[ 0 ] or isNaN p0[ 1 ] or isNaN p1[ 0 ] or isNaN p1[ 1 ]
+            console.error 'isNaN ', p0[ 0 ], p0[ 1 ],  p1[ 0 ], p1[ 1 ]
+            fake = true
+            info.ctx.strokeStyle = "pink"
+        
+        big = 32000
+        small = -32000
+        
+        if p0[ 0 ] > big or p0[ 1 ] > big or p1[ 0 ] > big or p1[ 1 ] > big
+            console.log 'too big ', p0[ 0 ], p0[ 1 ],  p1[ 0 ], p1[ 1 ]
+            console.log 'too big ', legend.gradient.color_stop[ 0 ].color.to_rgba(), legend.gradient.color_stop[ 1 ].color.to_rgba()
+            info.ctx.strokeStyle = "red"
+            fake = true
+            
+        if p0[ 0 ] < small or p0[ 1 ] < small or p1[ 0 ] < small or p1[ 1 ] < small
+            console.log 'too small ', p0[ 0 ], p0[ 1 ],  p1[ 0 ], p1[ 1 ]
+            console.log 'too small ', legend.gradient.color_stop[ 0 ].color.to_rgba(), legend.gradient.color_stop[ 1 ].color.to_rgba()
+            info.ctx.strokeStyle = "green"
+            fake = true
+        if fake != true
+            info.ctx.strokeStyle = lineargradient
+        
         info.ctx.fillStyle = lineargradient
-        info.ctx.strokeStyle = lineargradient
         info.ctx.moveTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
         info.ctx.lineTo( posit[ 1 ][ 0 ], posit[ 1 ][ 1 ] )
         info.ctx.lineTo( posit[ 2 ][ 0 ], posit[ 2 ][ 1 ] )

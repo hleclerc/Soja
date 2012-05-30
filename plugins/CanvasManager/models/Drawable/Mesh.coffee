@@ -443,119 +443,120 @@ class Mesh extends Drawable
                     return [ dx, dy, dz, d / l ]
                     
     get_movable_entities: ( res, info, pos, phase, dry = false ) ->
-        x = pos[ 0 ]
-        y = pos[ 1 ]
-        
-        if phase == 0
-            for p in @points
-                proj = info.re_2_sc.proj p.pos.get()
-                dx = x - proj[ 0 ]
-                dy = y - proj[ 1 ]
-                d = Math.sqrt dx * dx + dy * dy
-                if d <= 10
-                    res.push
-                        prov: this
-                        item: p
-                        dist: d
-
-        if phase == 1
-            proj = for p in @points
-                info.re_2_sc.proj p.pos.get()
-                
-            for li in @lines when li.length == 2
-                P0 = li[ 0 ].get()
-                P1 = li[ 1 ].get()
-                
-                point = @_get_line_inter proj, P0, P1, x, y
-                if point?
-                    P = [
-                        @points[ P0 ].pos[ 0 ].get() + point[ 0 ] * point[ 3 ],
-                        @points[ P0 ].pos[ 1 ].get() + point[ 1 ] * point[ 3 ],
-                        @points[ P0 ].pos[ 2 ].get() + point[ 2 ] * point[ 3 ]
-                    ]
-                
-                    if dry
-                        res.push 
-                            prov: this
-#                             item: new Point P
-                            item: [ li, @points[ P0 ], @points[ P1 ] ]
-                            dist: 0
-                    else
-                        os = @points.length
-
-                        @add_point P
-                            
-                        n = @points[ @points.length-1 ]
-                        ol = P1
-                        li[ 1 ].set os
-                        @lines.push [ os, ol ]
-                        
+        if @editable_points.get() == true
+            x = pos[ 0 ]
+            y = pos[ 1 ]
+            
+            if phase == 0
+                for p in @points
+                    proj = info.re_2_sc.proj p.pos.get()
+                    dx = x - proj[ 0 ]
+                    dy = y - proj[ 1 ]
+                    d = Math.sqrt dx * dx + dy * dy
+                    if d <= 10
                         res.push
                             prov: this
-                            item: n
-                            dist: 0
-                            type: "Mesh"
-                            
-                        break
+                            item: p
+                            dist: d
 
-        #         if phase == 2
-        #             proj = for p in @points
-        #                 info.re_2_sc.proj p.pos.get()
-        #             for li in @lines 
-        #                 if li.length > 2
-        #                     # TODO P0 and P1 should be indices and not value
-        #                     #                     res = for i in [ 0 ... li.length - 2 ]
-        #                     #                         @_get_center_radius proj[ li[ i ] ], proj[ li[ i + 1 ] ], proj[ li[ i + 2 ] ]
-        #                     #                             
-        #                     #                     p = info.re_2_sc.proj li[ 0 ]
-        #                     # #                     console.log p
-        #                     # #                     info.ctx.moveTo p[ 0 ], p[ 1 ]
-        #                     #                     
-        #                     #                     for n in [ 1 .. 30 ]
-        #                     #                         alpha = n / 30.0
-        #                     #                         ar = res[ 0 ].a[ 0 ] + ( res[ 0 ].a[ 1 ] - res[ 0 ].a[ 0 ] ) * alpha
-        #                     #                         pr = @_get_proj_arc info, res[ 0 ], ar
-        #                     #                         P0 =  pr[ 0 ]
-        #                     #                         P1 =  pr[ 1 ]
-        #                     #                         
-        #                     #                         console.log "----"
-        #                     #                         console.log ar
-        #                     #                         console.log pr
-        #                     #                         console.log res
-        # 
-        #                 
-        #                     for l,i in li[ 0 ...li.length - 1]
-        #                         P0 = li[ i ].get()
-        #                         P1 = li[ i + 1 ].get()
-        #                         
-        #                         point = @_get_line_inter proj, P0, P1, x, y
-        #                         
-        #                         if point?
-        #                             os = @points.length
-        #                             
-        #                             @add_point [@points[ P0 ].pos[ 0 ].get() + point[ 0 ] * point[ 3 ],
-        #                                 @points[ P0 ].pos[ 1 ].get() + point[ 1 ] * point[ 3 ],
-        #                                 @points[ P0 ].pos[ 2 ].get() + point[ 2 ] * point[ 3 ]]
-        #                                 
-        #                             n = @points[ @points.length-1 ]
-        #                             
-        #                             index = i + 1 #first position is  at i 0
-        #                             
-        #                             tmp = li.slice(0)
-        #                             for list, j in li
-        #                                 if j == index
-        #                                     li[ j ]._set os
-        #                                 if j > index
-        #                                     li[ j ]._set tmp[j - 1].get()
-        #                             li.push tmp[tmp.length - 1].get()
-        #                             
-        #                             res.push
-        #                                 prov: this
-        #                                 item: n
-        #                                 dist: 0
-        #                                 type: "Mesh"
-        #                             
-        #                             break
+            if phase == 1
+                proj = for p in @points
+                    info.re_2_sc.proj p.pos.get()
+                    
+                for li in @lines when li.length == 2
+                    P0 = li[ 0 ].get()
+                    P1 = li[ 1 ].get()
+                    
+                    point = @_get_line_inter proj, P0, P1, x, y
+                    if point?
+                        P = [
+                            @points[ P0 ].pos[ 0 ].get() + point[ 0 ] * point[ 3 ],
+                            @points[ P0 ].pos[ 1 ].get() + point[ 1 ] * point[ 3 ],
+                            @points[ P0 ].pos[ 2 ].get() + point[ 2 ] * point[ 3 ]
+                        ]
+                    
+                        if dry
+                            res.push 
+                                prov: this
+    #                             item: new Point P
+                                item: [ li, @points[ P0 ], @points[ P1 ] ]
+                                dist: 0
+                        else
+                            os = @points.length
+
+                            @add_point P
+                                
+                            n = @points[ @points.length-1 ]
+                            ol = P1
+                            li[ 1 ].set os
+                            @lines.push [ os, ol ]
+                            
+                            res.push
+                                prov: this
+                                item: n
+                                dist: 0
+                                type: "Mesh"
+                                
+                            break
+
+            #         if phase == 2
+            #             proj = for p in @points
+            #                 info.re_2_sc.proj p.pos.get()
+            #             for li in @lines 
+            #                 if li.length > 2
+            #                     # TODO P0 and P1 should be indices and not value
+            #                     #                     res = for i in [ 0 ... li.length - 2 ]
+            #                     #                         @_get_center_radius proj[ li[ i ] ], proj[ li[ i + 1 ] ], proj[ li[ i + 2 ] ]
+            #                     #                             
+            #                     #                     p = info.re_2_sc.proj li[ 0 ]
+            #                     # #                     console.log p
+            #                     # #                     info.ctx.moveTo p[ 0 ], p[ 1 ]
+            #                     #                     
+            #                     #                     for n in [ 1 .. 30 ]
+            #                     #                         alpha = n / 30.0
+            #                     #                         ar = res[ 0 ].a[ 0 ] + ( res[ 0 ].a[ 1 ] - res[ 0 ].a[ 0 ] ) * alpha
+            #                     #                         pr = @_get_proj_arc info, res[ 0 ], ar
+            #                     #                         P0 =  pr[ 0 ]
+            #                     #                         P1 =  pr[ 1 ]
+            #                     #                         
+            #                     #                         console.log "----"
+            #                     #                         console.log ar
+            #                     #                         console.log pr
+            #                     #                         console.log res
+            # 
+            #                 
+            #                     for l,i in li[ 0 ...li.length - 1]
+            #                         P0 = li[ i ].get()
+            #                         P1 = li[ i + 1 ].get()
+            #                         
+            #                         point = @_get_line_inter proj, P0, P1, x, y
+            #                         
+            #                         if point?
+            #                             os = @points.length
+            #                             
+            #                             @add_point [@points[ P0 ].pos[ 0 ].get() + point[ 0 ] * point[ 3 ],
+            #                                 @points[ P0 ].pos[ 1 ].get() + point[ 1 ] * point[ 3 ],
+            #                                 @points[ P0 ].pos[ 2 ].get() + point[ 2 ] * point[ 3 ]]
+            #                                 
+            #                             n = @points[ @points.length-1 ]
+            #                             
+            #                             index = i + 1 #first position is  at i 0
+            #                             
+            #                             tmp = li.slice(0)
+            #                             for list, j in li
+            #                                 if j == index
+            #                                     li[ j ]._set os
+            #                                 if j > index
+            #                                     li[ j ]._set tmp[j - 1].get()
+            #                             li.push tmp[tmp.length - 1].get()
+            #                             
+            #                             res.push
+            #                                 prov: this
+            #                                 item: n
+            #                                 dist: 0
+            #                                 type: "Mesh"
+            #                             
+            #                             break
                     
 
     update_min_max: ( x_min, x_max ) ->
