@@ -76,7 +76,7 @@ class ModelEditorItem_ConstrainedVal extends ModelEditorItem
         else
             # hum...
             @cur.style.left = 100.0 * ( 200 - 11 ) * @model.ratio() / 200 + "%"
-        
+                
     _on_mouse_down: ( evt, make_off_x = true ) ->
         @old_x = evt.clientX
         if make_off_x

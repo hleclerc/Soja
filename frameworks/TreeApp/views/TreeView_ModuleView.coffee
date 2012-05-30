@@ -15,7 +15,7 @@ class TreeView_ModuleView extends View
                 parentNode: @el
                 style:
                     position: "absolute"
-                    bottom  : 0
+                    top  : 19
                     zIndex : 100
         
         @_render_loc_actions @el, @tree_app

@@ -72,7 +72,7 @@ class TreeApp extends View
     # function that creates a new panel instance.
     _new_panel_instance: ( display_settings, data ) ->
         if data.panel_id == "TreeView"
-            res = new LayoutManagerPanelInstance @el
+            res = new LayoutManagerPanelInstance @el, data, "Scene"
             res.div.className = "PanelInstanceTreeView"
             #res.div.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
             @module_treeview = new TreeView_ModuleView res.div, @data.tree_items, @data.selected_tree_items, @data.visible_tree_items, @data.closed_tree_items, @data.last_canvas_pan, this
@@ -90,7 +90,7 @@ class TreeApp extends View
             return res
             
         if data.panel_id == "EditView"
-            res = new LayoutManagerPanelInstance @el
+            res = new LayoutManagerPanelInstance @el,  data, "Inspector"
             res.div.className = "PanelInstanceEditView"
             #res.div.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
             new EditView res.div, @data, @undo_manager

@@ -10,3 +10,14 @@
     background: black;
     color     : white;
 }
+
+.Title {
+    text-align:center;
+    color     : DarkSlateGrey;
+    background: #bbb;
+    background: -moz-linear-gradient(270deg, #eee, #c6c6c6);
+    background: -webkit-linear-gradient(top, #eee, #c6c6c6);
+    background: -o-linear-gradient(top, #eee, #c6c6c6);
+    background: -ms-linear-gradient(top, #eee, #c6c6c6);
+    background: linear-gradient(top, #eee, #c6c6c6);
+}

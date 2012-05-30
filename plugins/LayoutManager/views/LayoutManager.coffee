@@ -37,8 +37,8 @@ class LayoutManager extends View
             @render()
 
     # function that creates a new panel instance. May be redefined to created useful panels
-    new_panel_instance: ( data ) ->
-        res = new LayoutManagerPanelInstance @el, data
+    new_panel_instance: ( data, title ) ->
+        res = new LayoutManagerPanelInstance @el, data, title
         
         r = Math.floor( Math.random() * 255 )
         g = Math.floor( Math.random() * 255 )

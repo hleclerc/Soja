@@ -115,7 +115,7 @@ class Graph extends Drawable
                 
             if @show_line.get() == true
                 @draw_line info, orig, proj
-            
+                
             if @show_marker.get() == true
                 if @marker.get() == 'bar'
                     @draw_marker_bar info, orig, proj

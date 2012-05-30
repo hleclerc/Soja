@@ -12,6 +12,9 @@ class ModelEditorItem_Choice extends ModelEditorItem
             style:
                 width: @ew + "%"
 
+        @ev?.onmousedown = =>
+            @get_focus()?.set @view_id
+            
     onchange: ->
         if @model.lst.has_been_modified()
             while @select.firstChild?
@@ -30,3 +33,8 @@ class ModelEditorItem_Choice extends ModelEditorItem
         if @model.num.has_been_modified()
             @select.value = @model.num.get()
  
+        if @get_focus()?.has_been_modified()
+            if @get_focus().get() == @view_id
+                setTimeout ( => @select.focus() ), 1
+            else
+                @select.blur()

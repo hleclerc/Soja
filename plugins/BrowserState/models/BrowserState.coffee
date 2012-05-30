@@ -10,7 +10,7 @@ class BrowserState extends Model
             window_size: [ 0, 0 ]
             location:
                 hash       : "" # after the #
-                host       : "" # # the host name and port number.	[www.google.com]:80
+                host       : "" # the host name and port number.	[www.google.com]:80
                 hostname   : "" # the host name (without the port number or square brackets).	www.google.com
                 href       : "" # the entire URL.	http://[www.google.com]:80/search?q=devmo#test
                 pathname   : "" # the path (relative to the host).	/search

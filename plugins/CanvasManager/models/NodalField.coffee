@@ -13,12 +13,11 @@ class NodalField extends Model
     toString: ->
         @name.get()
 
-    dim: ->
-        3
+#     dim: ->
+#         3
         
     
     draw: ( info, display_style, triangles, proj, legend) ->
-        #         console.log 'draw nodal', info, display_style, triangles, proj, legend
         for tri in triangles
             @_draw_nodal_triangle info, display_style, tri.get(), proj, @_data, legend
             
@@ -82,8 +81,37 @@ class NodalField extends Model
         
         if display_style == "Wireframe"
             @_draw_gradient_stroke_triangle info, p0, p1, posit, legend
-        else
+            
+        if display_style == "Surface" or display_style == "Surface with Edges"
             @_draw_gradient_fill_triangle info, p0, p1, posit, legend
+            
+        if display_style == "Surface with Edges"
+            @_draw_edge_triangle info, posit
+            
+    # draw edges of triangle as normal lines
+    _draw_edge_triangle: ( info, posit ) ->
+        info.ctx.beginPath()
+        info.ctx.lineWidth = 1
+        info.ctx.strokeStyle = info.theme.line.to_hex()
+        info.ctx.moveTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
+        info.ctx.lineTo( posit[ 1 ][ 0 ], posit[ 1 ][ 1 ] )
+        info.ctx.lineTo( posit[ 2 ][ 0 ], posit[ 2 ][ 1 ] )
+        info.ctx.lineTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
+        info.ctx.stroke()        
+        info.ctx.closePath() 
+                
+    # drawing gradient depending p0 and p1 in the correct triangle with the correct color
+    _draw_gradient_stroke_triangle: ( info, p0, p1, posit, legend ) ->
+        info.ctx.beginPath()
+        lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ],  p1[ 0 ], p1[ 1 ]
+        for col in legend.gradient.color_stop
+            lineargradient.addColorStop col.position.get(), col.color.to_rgba()
+        info.ctx.strokeStyle = lineargradient
+        info.ctx.moveTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
+        info.ctx.lineTo( posit[ 1 ][ 0 ], posit[ 1 ][ 1 ] )
+        info.ctx.lineTo( posit[ 2 ][ 0 ], posit[ 2 ][ 1 ] )
+        info.ctx.lineTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
+        info.ctx.stroke()
         
     # drawing gradient depending p0 and p1 in the correct triangle
     _draw_gradient_fill_triangle: ( info, p0, p1, posit, legend ) ->
@@ -97,16 +125,3 @@ class NodalField extends Model
         info.ctx.lineTo( posit[ 2 ][ 0 ], posit[ 2 ][ 1 ] )
         info.ctx.lineTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
         info.ctx.fill()
-        
-    # drawing gradient depending p0 and p1 in the correct triangle
-    _draw_gradient_stroke_triangle: ( info, p0, p1, posit, legend ) ->
-        info.ctx.beginPath()
-        lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ],  p1[ 0 ], p1[ 1 ]
-        for col in legend.gradient.color_stop
-            lineargradient.addColorStop col.position.get(), col.color.to_rgba()
-        info.ctx.strokeStyle = lineargradient
-        info.ctx.moveTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
-        info.ctx.lineTo( posit[ 1 ][ 0 ], posit[ 1 ][ 1 ] )
-        info.ctx.lineTo( posit[ 2 ][ 0 ], posit[ 2 ][ 1 ] )
-        info.ctx.lineTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
-        info.ctx.stroke()

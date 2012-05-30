@@ -5,13 +5,6 @@ class EditView extends View
         @model_editors = {}
         @old_divs = []
         
-        inspector = new_dom_element
-            nodeName  : "div"
-            className : "HeaderMainView"
-            parentNode: @div
-            txt       : "Inspector"
-            style     :
-                height  : 19
         
     onchange: ->
         if @app_data.selected_tree_items.has_been_modified
