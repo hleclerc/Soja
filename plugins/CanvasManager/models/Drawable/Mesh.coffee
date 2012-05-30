@@ -42,15 +42,18 @@ class Mesh extends Drawable
             
         if legend? and legend instanceof Legend
             @add_attr
-                _legend: legend
+                legend: legend
         else
             @add_attr
-                _legend: new Legend ""
+                legend: new Legend ""
                 
         # default move scheme
         @move_scheme = MoveScheme_3D
             
     
+    sub_canvas_items: ->
+        [ @legend ]
+        
     #
     add_point: ( pos = [ 0, 0, 0 ] ) ->
         @points.push new Point pos, @move_scheme
@@ -74,7 +77,7 @@ class Mesh extends Drawable
             selected[ item.model_id ] = true
         
         # apply warp_factor deformation to points
-        if @warp_by.lst[ @warp_by.num ] != undefined and @warp_by.get().length == 3 and @warp_factor.get() != 0
+        if @warp_by.lst[ @warp_by.num ] != undefined and @warp_factor.get() != 0
             warp_factor = @warp_factor.get()
             field_data = @warp_by.get()
             proj = for p, i in @points
@@ -102,7 +105,7 @@ class Mesh extends Drawable
         if @displayed_field.lst.length
             selected_field = @displayed_field.lst[ @displayed_field.num.get() ]
             @actualise_value_legend selected_field.get()
-            selected_field.draw info, @displayed_style.get(), @triangles, proj, @_legend
+            selected_field.draw info, @displayed_style.get(), @triangles, proj, @legend
         
         # when mesh is not an element fields nor a nodal fields
         else
@@ -173,42 +176,9 @@ class Mesh extends Drawable
                 @points[ p.get() ].pos.get()
             @_disp_arc_n_points info, point
             
-        # <<<<<<< HEAD
-        #         #         for polyg in @polygons
-        #         #             @_draw_polygon info, polyg.get(), proj
-        #         
-        #         #selected_field = @displayed_field.lst[ @displayed_field.num.get() ]
-        #         #console.log selected_field.get()
-        #         #@actualise_value_legend selected_field.get()
-        #         #selected_field.draw info, @displayed_style.get(), @triangles, proj, @_legend
-        #         # call adapted draw function for color and using gradient
-        #         #         if @nodal_fields[ @displayed_field.get() ]?
-        #         #             values = @nodal_fields[ @displayed_field.get() ].get()
-        #         #             @actualise_value_legend values
-        #         #             
-        #         #             for tri in @triangles
-        #         #                 @_draw_nodal_triangle info, tri.get(), proj, values
-        #         #                 
-        #         #         else if @elementary_fields[ @displayed_field.get() ]?
-        #         #             values = @elementary_fields[ @displayed_field.get() ].get()
-        #         #             @actualise_value_legend values
-        #         #             
-        #         #             for tri, i in @triangles
-        #         #                 @_draw_elementary_triangle info, tri.get(), proj, values[ i ]
-        # 
-        #         # pre selected items
-        #         if @_pre_sele.length
-        #             info.ctx.strokeStyle = @_pre_sele_color.to_hex()
-        #             info.ctx.lineWidth = 1.5
-        #             for item in @_pre_sele when item instanceof Point
-        #                 p = info.re_2_sc.proj item.pos.get()
-        #                 
-        # =======
-            
     _draw_polygons: ( info, proj ) ->
         for polyg in @polygons.get()
             if polyg.length > 0
-                # >>>>>>> bc755b013ee6d95096c8013e7aa2c203d5c3f851
                 info.ctx.beginPath()
                 info.ctx.strokeStyle = info.theme.line.to_hex()
                 info.ctx.fillStyle   = info.theme.line.to_hex()
@@ -229,7 +199,6 @@ class Mesh extends Drawable
                 else
                     info.ctx.fill()
                 info.ctx.closePath()
-    
     
     on_mouse_down: ( cm, evt, pos, b ) ->
         delete @_movable_entity
@@ -611,10 +580,10 @@ class Mesh extends Drawable
         
     actualise_value_legend: ( values ) ->
         max = @get_max values
-        @_legend.max_val.set max
+        @legend.max_val.set max
         
         min = @get_min values
-        @_legend.min_val.set min
+        @legend.min_val.set min
 
     _disp_arc: ( info, P0, P1, P2 ) ->
         # 3D center and radius
