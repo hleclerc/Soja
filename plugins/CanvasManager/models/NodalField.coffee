@@ -63,12 +63,13 @@ class NodalField extends Model
         c = det_c / det
         
         # getting p0
-        if b != 0
-            p0x0 = - a / b
-            p0y0 = 0
-        else if c != 0
-            p0x0 = 0
-            p0y0 = - a / c
+        if b or c
+            if Math.abs( b ) > Math.abs( c )
+                p0x0 = - a / b
+                p0y0 = 0
+            else
+                p0x0 = 0
+                p0y0 = - a / c
         else
             p0x0 = 0
             p0y0 = 0
