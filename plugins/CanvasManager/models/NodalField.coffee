@@ -131,13 +131,11 @@ class NodalField extends Model
             
         if p0[ 0 ] > big or p0[ 1 ] > big or p1[ 0 ] > big or p1[ 1 ] > big
             console.log 'too big ', p0[ 0 ], p0[ 1 ],  p1[ 0 ], p1[ 1 ]
-            console.log 'too big ', legend.gradient.color_stop[ 0 ].color.to_rgba(), legend.gradient.color_stop[ 1 ].color.to_rgba()
             info.ctx.strokeStyle = "red"
             fake = true
             
         if p0[ 0 ] < small or p0[ 1 ] < small or p1[ 0 ] < small or p1[ 1 ] < small
             console.log 'too small ', p0[ 0 ], p0[ 1 ],  p1[ 0 ], p1[ 1 ]
-            console.log 'too small ', legend.gradient.color_stop[ 0 ].color.to_rgba(), legend.gradient.color_stop[ 1 ].color.to_rgba()
             info.ctx.strokeStyle = "green"
             fake = true
             
