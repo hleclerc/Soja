@@ -75,9 +75,14 @@ class NodalField extends Model
         p0 = [ p0x0, p0y0, 0 ]
         
         # getting p1
-        p1ieqz = ( x ) -> x + ( x == 0 )
+        p1ieqz = ( x ) -> x + ( Math.abs( x ) < 1e-16 )
         alpha = 1 / p1ieqz( b * b + c * c )
         p1 = Vec_3.add( p0, Vec_3.mus( alpha, [ b, c, 0 ] ) )
+        
+        #p0[ 0 ] = Math.min( Math.max( p0[ 0 ], -16000 ), 16000 )
+        #p0[ 1 ] = Math.min( Math.max( p0[ 1 ], -16000 ), 16000 )
+        #p1[ 0 ] = Math.min( Math.max( p1[ 0 ], -16000 ), 16000 )
+        #p1[ 1 ] = Math.min( Math.max( p1[ 1 ], -16000 ), 16000 )
         
         if display_style == "Wireframe"
             @_draw_gradient_stroke_triangle info, p0, p1, posit, legend
