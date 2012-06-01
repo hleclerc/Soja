@@ -8,9 +8,9 @@ class Mesh extends Drawable
         
         
         @add_attr
-            editable_points : new Bool true
+            editable_points : new Bool false
             displayed_field  : new Choice( 0, [] )
-            displayed_style  : new Choice( 1, [ "Points", "Surface", "Surface with Edges", "Wireframe" ] )
+            displayed_style  : new Choice( 1, [ "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
             
         @add_attr
             warp_by          : new Choice_RestrictedByDim( 0, @displayed_field.lst )
@@ -86,8 +86,9 @@ class Mesh extends Drawable
                 data = new Vec_3
                 for fd, j in field_data
                     data[ j ] = fd[ i ]
-                new_pos = Vec_3.add p.pos.get(), Vec_3.mus warp_factor,data
+                new_pos = Vec_3.add p.pos.get(), Vec_3.mus warp_factor, data
                 info.re_2_sc.proj new_pos
+                
         else
             proj = for p, i in @points
                 info.re_2_sc.proj p.pos.get()
@@ -109,7 +110,7 @@ class Mesh extends Drawable
         
         # when mesh is not an element fields nor a nodal fields
         else
-            if display == "Wireframe" or display == "Surface with Edges"
+            if display == "Wireframe" or display == "Surface with Edges" or display == "Lines"
                 @_draw_edges info, proj
                 
         if display == "Points" or @editable_points.get() == true

@@ -99,13 +99,14 @@ class TreeView extends View
     #looking for duplication in tree
     _get_color_element: ( info ) ->
         col = "black"
-        c = 0
-        for elem, i in @flat
-            if elem.item.equals info.item
-                c++
-            if c >= 2
-                col = @_get_next_color_element()
-                #TODO need to know if color of duplicate item is already choosen or not
+        # BUG
+        #         c = 0
+        #         for elem, i in @flat
+        #             if elem.item.equals info.item
+        #                 c++
+        #             if c >= 2
+        #                 col = @_get_next_color_element()
+        #                 #TODO need to know if color of duplicate item is already choosen or not
         return col
         
         
@@ -211,7 +212,7 @@ class TreeView extends View
                                 if num + 1 < info.path.length
                                     bar = info.path[ num + 1 ]
                                     n = bar.num_in_flat + @_nb_displayed_children( bar )
-                                @_line_div.style.top  = @line_height * ( n + 1 ) + @height_header
+                                @_line_div.style.top  = @line_height * ( n + 1 ) + @height_header + @height_icon_bar
                                 @_line_div.style.left = @sep_x * ( num + 1 )
                                 @el.appendChild @_line_div
                                 break
