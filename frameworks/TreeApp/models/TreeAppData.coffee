@@ -7,7 +7,7 @@ class TreeAppData extends Model
             # tree
             tree_items         : new Lst # root items 
             selected_tree_items: new Lst # path list
-            visible_tree_items : new Model # for each panel_id
+            visible_tree_items : new Model # panel_id: [ model_1, ... ]
             closed_tree_items  : new Lst
             # canvas
             selected_canvas_pan: new Lst # panel_id of selected panels
