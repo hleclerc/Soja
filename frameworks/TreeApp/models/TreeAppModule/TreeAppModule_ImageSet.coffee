@@ -39,7 +39,11 @@ class TreeAppModule_ImageSet extends TreeAppModule
                     #                     else
                     #                         img = new ImgItem "right.png", app
 #                     @numpic++
-                    img = new ImgItem "composite0"+ @numpic++ +".png", app
+                    if @numpic < 10
+                        img = new ImgItem "composite0"+ @numpic++ +".png", app
+                    else
+                        img = new ImgItem "composite"+ @numpic++ +".png", app
+                        
                 @collection.add_child img
                 
                 app.data.time._max.set app.data.time._max.get() + 1
