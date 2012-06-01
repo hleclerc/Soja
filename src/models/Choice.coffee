@@ -28,7 +28,7 @@ class Choice extends Model
     
     _set: ( value ) ->
         for i, j in @_nlst()
-            if value == i
+            if i.equals value
                 return @num.set j
         @num.set value
 

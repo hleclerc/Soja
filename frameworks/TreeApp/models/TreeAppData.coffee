@@ -7,7 +7,7 @@ class TreeAppData extends Model
             # tree
             tree_items         : new Lst # root items 
             selected_tree_items: new Lst # path list
-            visible_tree_items : new Model # for each panel_id
+            visible_tree_items : new Model # panel_id: [ model_1, ... ]
             closed_tree_items  : new Lst
             # canvas
             selected_canvas_pan: new Lst # panel_id of selected panels
@@ -19,9 +19,6 @@ class TreeAppData extends Model
             focus              : -1
             time               : new ConstrainedVal( 0, { _min: 0, _max: -1, _div: 0 } )
         
-#         bind @focus, =>
-#             console.log @focus.get()
-    
     watch_item: ( item ) ->
         for p in @panel_id_list()
             @visible_tree_items[ p ].push item

@@ -8,7 +8,6 @@ class Mesh extends Drawable
         
         
         @add_attr
-            editable_points : new Bool false
             displayed_field  : new Choice( 0, [] )
             displayed_style  : new Choice( 1, [ "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
             
@@ -18,6 +17,8 @@ class Mesh extends Drawable
                 min: -1024
                 max: 1024
             )
+            
+            editable_points  : true
             
             # geometry
             points           : new Lst_Point # "add_point" can be used to fill the list
