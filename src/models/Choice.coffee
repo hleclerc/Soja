@@ -22,9 +22,10 @@ class Choice extends Model
         @_nlst()[ @num.get() ].get()
 
     equals: ( a ) ->
-        console.log '-------------------------------'
-        console.log a, @num.get(), @_nlst(), @_nlst()[ @num.get() ]
-        @_nlst()[ @num.get() ].equals a
+        if a instanceof Choice
+            super a
+        else
+            @_nlst()[ @num.get() ].equals a
     
     _set: ( value ) ->
         for i, j in @_nlst()
