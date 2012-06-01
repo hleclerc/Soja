@@ -19,9 +19,6 @@ class TreeAppData extends Model
             focus              : -1
             time               : new ConstrainedVal( 0, { _min: 0, _max: -1, _div: 0 } )
         
-#         bind @focus, =>
-#             console.log @focus.get()
-    
     watch_item: ( item ) ->
         for p in @panel_id_list()
             @visible_tree_items[ p ].push item
