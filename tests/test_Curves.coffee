@@ -18,7 +18,7 @@
 # shadow      : boolean which represent if shadow on line must be drawn or not
 # show_marker : boolean which represent if marker must be drawn or not
 # marker      : shape that mark all value : dot, cross, square or bar ( for bar chart )
-# size_marker : indicate size in pixels of marker
+# marker_size : indicate size in pixels of marker
 # marker_color: choose the color of marker (in html way (hexa or string))
 # font_color  : color of font in axis and legend
 # font_size   : font size in pixels
@@ -52,7 +52,7 @@ test_Curves = ->
         marker_color: "#f00"
         line_width  : 3,
         line_color: new Color 75, 150, 175
-        size_marker: 10,
+        marker_size: 10,
         x_axis: 'label X',
         y_axis: 'label Y'
         
@@ -89,7 +89,7 @@ test_Curves = ->
         marker: 'bar',
         marker_color: new Color 255, 0, 0
         shadow: false,
-        size_marker: 2,
+        marker_size: 2,
         show_line: false,
         show_grid: false,
         x_axis: 'Day',

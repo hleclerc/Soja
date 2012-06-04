@@ -6,7 +6,7 @@
 # shadow      : boolean which represent if shadow on line must be drawn or not
 # show_marker : boolean which represent if marker must be drawn or not
 # marker      : shape that mark all value : dot, cross, square or bar ( for bar chart )
-# size_marker : indicate size in pixels of marker
+# marker_size : indicate size in pixels of marker
 # marker_color: choose the color of marker (in html way (hexa or string))
 # font_color  : color of font in axis and legend
 # font_size   : font size in pixels
@@ -28,7 +28,7 @@ class Graph extends Drawable
             shadow           : true
             show_marker      : true
             marker           : new Choice( 0, [ "dot", "square", "cross", "diamond", "bar" ] )
-            size_marker      : new ConstrainedVal( 5, { min: 0, max: 40 } )
+            marker_size      : new ConstrainedVal( 5, { min: 0, max: 40 } )
             marker_color     : new Color 0, 0, 0
             font_color       : new Color 0, 0, 0
             font_size        : new ConstrainedVal( 12, { min: 2, max: 72 } )
@@ -54,7 +54,7 @@ class Graph extends Drawable
         #             line_width       : params.line_width or 1
         #             shadow           : if params.shadow? then params.shadow else true
         #             marker           : params.marker or 'dot'
-        #             size_marker      : params.size_marker or 2
+        #             marker_size      : params.marker_size or 2
         #             marker_color     : params.marker_color or new Color 0, 0, 0
         #             font_color       : params.font_color or new Color 0, 0, 0
         #             x_axis           : params.x_axis or ''
@@ -224,7 +224,7 @@ class Graph extends Drawable
             else
                 info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
             info.ctx.beginPath()
-            info.ctx.arc p[ 0 ], p[ 1 ], @size_marker.get() * 0.5, 0, Math.PI * 2, true
+            info.ctx.arc p[ 0 ], p[ 1 ], @marker_size.get() * 0.5, 0, Math.PI * 2, true
             info.ctx.fill()
         info.ctx.closePath()
         
@@ -236,10 +236,10 @@ class Graph extends Drawable
                 info.ctx.strokeStyle = @legend[ i ] or @marker_color.to_rgba()
                 
             info.ctx.beginPath()
-            info.ctx.moveTo p[ 0 ] - @size_marker.get() * 0.5, p[ 1 ] + @size_marker.get() * 0.5
-            info.ctx.lineTo p[ 0 ] + @size_marker.get() * 0.5, p[ 1 ] - @size_marker.get() * 0.5
-            info.ctx.moveTo p[ 0 ] + @size_marker.get() * 0.5, p[ 1 ] + @size_marker.get() * 0.5
-            info.ctx.lineTo p[ 0 ] - @size_marker.get() * 0.5, p[ 1 ] - @size_marker.get() * 0.5
+            info.ctx.moveTo p[ 0 ] - @marker_size.get() * 0.5, p[ 1 ] + @marker_size.get() * 0.5
+            info.ctx.lineTo p[ 0 ] + @marker_size.get() * 0.5, p[ 1 ] - @marker_size.get() * 0.5
+            info.ctx.moveTo p[ 0 ] + @marker_size.get() * 0.5, p[ 1 ] + @marker_size.get() * 0.5
+            info.ctx.lineTo p[ 0 ] - @marker_size.get() * 0.5, p[ 1 ] - @marker_size.get() * 0.5
             info.ctx.stroke()
         info.ctx.closePath()
         
@@ -250,7 +250,7 @@ class Graph extends Drawable
             else
                 info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
             info.ctx.beginPath()
-            info.ctx.fillRect p[ 0 ] - @size_marker.get() * 0.5 , p[ 1 ] - @size_marker.get() * 0.5 , @size_marker.get(), @size_marker.get()
+            info.ctx.fillRect p[ 0 ] - @marker_size.get() * 0.5 , p[ 1 ] - @marker_size.get() * 0.5 , @marker_size.get(), @marker_size.get()
         info.ctx.closePath()
         
     draw_marker_diamond: ( info, orig, proj ) ->
@@ -260,10 +260,10 @@ class Graph extends Drawable
             else
                 info.ctx.fillStyle = @legend[ i ] or @marker_color.to_rgba()
             info.ctx.beginPath()
-            info.ctx.moveTo p[ 0 ], p[ 1 ] - @size_marker.get()
-            info.ctx.lineTo p[ 0 ] + @size_marker.get() * 0.5, p[ 1 ]
-            info.ctx.lineTo p[ 0 ], p[ 1 ] + @size_marker.get()
-            info.ctx.lineTo p[ 0 ] - + @size_marker.get() * 0.5, p[ 1 ]
+            info.ctx.moveTo p[ 0 ], p[ 1 ] - @marker_size.get()
+            info.ctx.lineTo p[ 0 ] + @marker_size.get() * 0.5, p[ 1 ]
+            info.ctx.lineTo p[ 0 ], p[ 1 ] + @marker_size.get()
+            info.ctx.lineTo p[ 0 ] - + @marker_size.get() * 0.5, p[ 1 ]
             info.ctx.fill()
         info.ctx.closePath()
         
@@ -278,7 +278,7 @@ class Graph extends Drawable
             height = orig[ 1 ] - p[ 1 ]
             
             info.ctx.beginPath()
-            info.ctx.fillRect p[ 0 ], p[ 1 ], @size_marker.get(), height
+            info.ctx.fillRect p[ 0 ], p[ 1 ], @marker_size.get(), height
         info.ctx.closePath()
             
     draw_axis: ( info ) ->
@@ -463,7 +463,7 @@ class Graph extends Drawable
                 dx = x - proj[ 0 ]
                 dy = y - proj[ 1 ]
                 d = Math.sqrt dx * dx + dy * dy
-                if d <= @size_marker.get() * 2
+                if d <= @marker_size.get() * 2
                     res.push
                         item: p
                         dist: d

@@ -49,7 +49,7 @@ class ImgItem extends TreeItem
 # #             bg.gradient.remove_color 1
 #             bg.gradient.remove_color 0
 
-            m = new Graph marker: 'bar', show_line: false, shadow: false, size_marker: 2, font_size: 10
+            m = new Graph marker: 'bar', show_line: false, shadow: false, marker_size: 2, font_size: 10
             for p, i in @img._histo
                 m.points.push [ i , p, 0 ]
             m.build_w2b_legend()

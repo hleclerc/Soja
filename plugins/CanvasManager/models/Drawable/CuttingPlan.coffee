@@ -11,7 +11,7 @@ class CuttingPlan extends Drawable
             _selected : new Lst
             _pre_sele : new Lst
         @b = []
-#         @size_marker = 0.1
+#         @marker_size = 0.1
         
     z_index: ->
         return 1
@@ -96,12 +96,12 @@ class CuttingPlan extends Drawable
         info.ctx.arc proj_pos[ 0 ], proj_pos[ 1 ], 4, 0, Math.PI * 2, true
 
 
-#         marker_top = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get() + @size_marker, @pos.pos[ 2 ].get() ]
-#         marker_bot = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get() - @size_marker, @pos.pos[ 2 ].get() ]
-#         marker_lef = info.re_2_sc.proj [ @pos.pos[ 0 ].get() - @size_marker, @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() ]
-#         marker_rig = info.re_2_sc.proj [ @pos.pos[ 0 ].get() + @size_marker, @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() ]
-#         marker_fro = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() - @size_marker ]
-#         marker_bac = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() + @size_marker ]
+#         marker_top = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get() + @marker_size, @pos.pos[ 2 ].get() ]
+#         marker_bot = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get() - @marker_size, @pos.pos[ 2 ].get() ]
+#         marker_lef = info.re_2_sc.proj [ @pos.pos[ 0 ].get() - @marker_size, @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() ]
+#         marker_rig = info.re_2_sc.proj [ @pos.pos[ 0 ].get() + @marker_size, @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() ]
+#         marker_fro = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() - @marker_size ]
+#         marker_bac = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() + @marker_size ]
 #         info.ctx.moveTo marker_top[ 0 ], marker_top[ 1 ]
 #         info.ctx.lineTo marker_bot[ 0 ], marker_bot[ 1 ]
 #         info.ctx.moveTo marker_lef[ 0 ], marker_lef[ 1 ]
@@ -136,12 +136,12 @@ class CuttingPlan extends Drawable
         x = pos[ 0 ]
         y = pos[ 1 ]
         if phase == 0
-#             marker_top = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get() + @size_marker, @pos.pos[ 2 ].get() ]
-#             marker_bot = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get() - @size_marker, @pos.pos[ 2 ].get() ]
-#             marker_lef = info.re_2_sc.proj [ @pos.pos[ 0 ].get() - @size_marker, @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() ]
-#             marker_rig = info.re_2_sc.proj [ @pos.pos[ 0 ].get() + @size_marker, @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() ]
-#             marker_fro = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() - @size_marker ]
-#             marker_bac = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() + @size_marker ]            
+#             marker_top = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get() + @marker_size, @pos.pos[ 2 ].get() ]
+#             marker_bot = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get() - @marker_size, @pos.pos[ 2 ].get() ]
+#             marker_lef = info.re_2_sc.proj [ @pos.pos[ 0 ].get() - @marker_size, @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() ]
+#             marker_rig = info.re_2_sc.proj [ @pos.pos[ 0 ].get() + @marker_size, @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() ]
+#             marker_fro = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() - @marker_size ]
+#             marker_bac = info.re_2_sc.proj [ @pos.pos[ 0 ].get(), @pos.pos[ 1 ].get(), @pos.pos[ 2 ].get() + @marker_size ]            
 #             if x > marker_lef[ 0 ] and x < marker_rig[ 0 ] and y > marker_top[ 1 ] and y < marker_bot[ 1 ]
 #                 res.push
 #                     item: @pos
