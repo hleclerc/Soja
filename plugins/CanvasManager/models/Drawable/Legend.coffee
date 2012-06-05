@@ -22,7 +22,6 @@ class Legend extends Drawable
         info.h / ( @_height.get() * 1.7 )
     
     draw_text_legend: ( info ) ->
-        
         ratio = @get_ratio info
         height = @_height.get() * ratio
         width = @_width.get() * ratio

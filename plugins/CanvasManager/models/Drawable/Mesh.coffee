@@ -9,7 +9,7 @@ class Mesh extends Drawable
         
         @add_attr
             displayed_field  : new Choice( 0, [] )
-            displayed_style  : new Choice( 1, [ "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
+            displayed_style  : new Choice( 0, [ "Arrow", "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
             
         @add_attr
             warp_by          : new Choice_RestrictedByDim( 0, @displayed_field.lst )
@@ -100,14 +100,32 @@ class Mesh extends Drawable
         
         display = @displayed_style.get()
         
-
         #         @_draw_polygons info, proj
         
         # call adapted draw function for color and using gradient
         if @displayed_field.lst.length
             selected_field = @displayed_field.lst[ @displayed_field.num.get() ]
-            @actualise_value_legend selected_field.get()
-            selected_field.draw info, @displayed_style.get(), @triangles, proj, @legend
+            
+            if selected_field instanceof VectorialField
+                value = []
+                for p, ind in @points
+                    element = new Lst
+                    for data, i in selected_field.get()
+                        element.push data[ ind ]
+                    if element.length == 2
+                        element.push 0
+                    #                     console.log "--------"
+                    #                     console.log element.get()
+                    #                     element = selected_field.get_value_of_fields_at_index ind
+                    #                     if element.length == 2
+                    #                         element.push 0
+                    #                     console.log element.get()
+                    value.push( ( element.get()[ 0 ] + element.get()[ 1 ] + element.get()[ 2 ] ) / 3 )
+                @actualise_value_legend value
+                selected_field.draw info, @displayed_style.get(), @points, value, @legend
+            else # nodal and elementary fields
+                @actualise_value_legend selected_field.get()
+                selected_field.draw info, @displayed_style.get(), @triangles, proj, @legend
         
         # when mesh is not an element fields nor a nodal fields
         else

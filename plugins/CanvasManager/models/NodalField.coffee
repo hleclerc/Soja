@@ -84,16 +84,18 @@ class NodalField extends Model
         #p0[ 1 ] = Math.min( Math.max( p0[ 1 ], -16000 ), 16000 )
         #p1[ 0 ] = Math.min( Math.max( p1[ 0 ], -16000 ), 16000 )
         #p1[ 1 ] = Math.min( Math.max( p1[ 1 ], -16000 ), 16000 )
-        
-        if display_style == "Wireframe"
-            @_draw_gradient_stroke_triangle info, p0, p1, posit, legend
-            
+                    
         if display_style == "Surface" or display_style == "Surface with Edges"
             @_draw_gradient_fill_triangle info, p0, p1, posit, legend
             
         if display_style == "Surface with Edges" or display_style == "Lines"
             @_draw_edge_triangle info, posit
             
+        if display_style == "Wireframe"
+            @_draw_gradient_stroke_triangle info, p0, p1, posit, legend
+    
+
+    
     # draw edges of triangle as normal lines
     _draw_edge_triangle: ( info, posit ) ->
         info.ctx.beginPath()
