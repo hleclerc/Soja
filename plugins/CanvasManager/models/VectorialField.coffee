@@ -98,11 +98,18 @@ class VectorialField extends Model
         info.ctx.stroke()
         
         #drawing arrow
+        info.ctx.fillStyle = "rgba( " + color[ 0 ] + ", " + color[ 1 ] + ", " + color[ 2 ] + ", " + color[ 3 ] + " ) "
         info.ctx.lineWidth = 0.8
+#         info.ctx.moveTo( p1[ 0 ], p1[ 1 ] )
+#         info.ctx.lineTo( arrow_p0[ 0 ], arrow_p0[ 1 ] )
+#         info.ctx.moveTo( p1[ 0 ], p1[ 1 ] )
+#         info.ctx.lineTo( arrow_p1[ 0 ], arrow_p1[ 1 ] )
+        
         info.ctx.moveTo( p1[ 0 ], p1[ 1 ] )
         info.ctx.lineTo( arrow_p0[ 0 ], arrow_p0[ 1 ] )
-        info.ctx.moveTo( p1[ 0 ], p1[ 1 ] )
         info.ctx.lineTo( arrow_p1[ 0 ], arrow_p1[ 1 ] )
+        info.ctx.lineTo( p1[ 0 ], p1[ 1 ] )
         
+        info.ctx.fill()
         info.ctx.stroke()
         info.ctx.closePath() 

@@ -23,17 +23,19 @@ class Choice extends Model
 
     equals: ( a ) ->
         if a instanceof Choice
+            console.log a
             super a
         else
             @_nlst()[ @num.get() ].equals a
     
     _set: ( value ) ->
         #TODO does it work ?
-        # Mmmm IMHO at least this code was written for a purpose, no ?
-        for i, j in @_nlst()
-            # console.log " equals ", i, value
-            if i.equals value
-                return @num.set j
+        #Mmmm IMHO at least this code was written for a purpose, no ?
+#         console.log @_nlst()
+#         for i, j in @_nlst()
+#             console.log " equals ", i, value
+#             if i.equals value
+#                 return @num.set j
         @num.set value
 
     _nlst: ->
