@@ -42,6 +42,7 @@ class VectorialField extends Model
             color = "white"
             
             arrow_reduce = 0.3
+            arrow_width_factor = 0.1
             
             for p, ind in points
                 
@@ -54,9 +55,9 @@ class VectorialField extends Model
                 p0 = p.pos.get()
                 p1 = Vec_3.add( p.pos.get(), element.get() )
                 
-                
                 dist = Vec_3.dist p0, p1
-                dist *= arrow_reduce
+                dist *= arrow_width_factor
+                
                 
                 p_init = []
                 p_init[ 0 ] = p1[ 0 ] - ( p1[ 0 ] - p0[ 0 ] ) * arrow_reduce
@@ -75,6 +76,7 @@ class VectorialField extends Model
                 
                 proj_p0 = info.re_2_sc.proj p0
                 proj_p1 = info.re_2_sc.proj p1
+                
                 arrow_p0 = info.re_2_sc.proj arrow_0
                 arrow_p1 = info.re_2_sc.proj arrow_1
                 
@@ -93,8 +95,10 @@ class VectorialField extends Model
         info.ctx.strokeStyle = "rgba( " + color[ 0 ] + ", " + color[ 1 ] + ", " + color[ 2 ] + ", " + color[ 3 ] + " ) "
         info.ctx.moveTo( p0[ 0 ], p0[ 1 ] )
         info.ctx.lineTo( p1[ 0 ], p1[ 1 ] )
+        info.ctx.stroke()
         
         #drawing arrow
+        info.ctx.lineWidth = 0.8
         info.ctx.moveTo( p1[ 0 ], p1[ 1 ] )
         info.ctx.lineTo( arrow_p0[ 0 ], arrow_p0[ 1 ] )
         info.ctx.moveTo( p1[ 0 ], p1[ 1 ] )
