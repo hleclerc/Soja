@@ -28,10 +28,7 @@ class Choice extends Model
             @_nlst()[ @num.get() ].equals a
     
     _set: ( value ) ->
-        #TODO does it work ?
-        # Mmmm IMHO at least this code was written for a purpose, no ?
         for i, j in @_nlst()
-            # console.log " equals ", i, value
             if i.equals value
                 return @num.set j
         @num.set value

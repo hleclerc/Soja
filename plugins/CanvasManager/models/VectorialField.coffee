@@ -54,29 +54,40 @@ class VectorialField extends Model
                 p0 = p.pos.get()
                 p1 = Vec_3.add( p.pos.get(), element.get() )
                 
-                
-                dist = Vec_3.dist p0, p1
-                dist *= arrow_reduce
-                
-                p_init = []
-                p_init[ 0 ] = p1[ 0 ] - ( p1[ 0 ] - p0[ 0 ] ) * arrow_reduce
-                p_init[ 1 ] = p1[ 1 ] - ( p1[ 1 ] - p0[ 1 ] ) * arrow_reduce
-                
-                alpha = ( p_init[ 1 ] - p1[ 1 ] ) / ( p_init[ 0 ] - p1[ 0 ] )
-                arrow_0 = []
-                arrow_1 = []
-                arrow_0[ 0 ] = -dist * Math.sin( alpha ) + p_init[ 0 ]
-                arrow_0[ 1 ] = dist * Math.cos( alpha ) + p_init[ 1 ]
-                arrow_0[ 2 ] = 0
-                
-                arrow_1[ 0 ] = dist * Math.sin( alpha ) + p_init[ 0 ]
-                arrow_1[ 1 ] = -dist * Math.cos( alpha ) + p_init[ 1 ]
-                arrow_1[ 2 ] = 0
-                
                 proj_p0 = info.re_2_sc.proj p0
                 proj_p1 = info.re_2_sc.proj p1
-                arrow_p0 = info.re_2_sc.proj arrow_0
-                arrow_p1 = info.re_2_sc.proj arrow_1
+                
+                orthogo = [ proj_p0[ 1 ] - proj_p1[ 1 ], proj_p1[ 0 ] - proj_p0[ 0 ] ]
+                
+                arrow_p0 = [
+                    ( 1 - arrow_reduce ) * proj_p1[ 0 ] + arrow_reduce * proj_p0[ 0 ] + arrow_reduce * orthogo[ 0 ],
+                    ( 1 - arrow_reduce ) * proj_p1[ 1 ] + arrow_reduce * proj_p0[ 1 ] + arrow_reduce * orthogo[ 1 ]
+                ]
+                arrow_p1 = [
+                    ( 1 - arrow_reduce ) * proj_p1[ 0 ] + arrow_reduce * proj_p0[ 0 ] - arrow_reduce * orthogo[ 0 ],
+                    ( 1 - arrow_reduce ) * proj_p1[ 1 ] + arrow_reduce * proj_p0[ 1 ] - arrow_reduce * orthogo[ 1 ]
+                ]
+                
+                #                 dist = Vec_3.dist p0, p1
+                #                 dist *= arrow_reduce
+                #                 
+                #                 p_init = []
+                #                 p_init[ 0 ] = p1[ 0 ] - ( p1[ 0 ] - p0[ 0 ] ) * arrow_reduce
+                #                 p_init[ 1 ] = p1[ 1 ] - ( p1[ 1 ] - p0[ 1 ] ) * arrow_reduce
+                #                 
+                #                 alpha = ( p_init[ 1 ] - p1[ 1 ] ) / ( p_init[ 0 ] - p1[ 0 ] )
+                #                 arrow_0 = []
+                #                 arrow_1 = []
+                #                 arrow_0[ 0 ] = -dist * Math.sin( alpha ) + p_init[ 0 ]
+                #                 arrow_0[ 1 ] = dist * Math.cos( alpha ) + p_init[ 1 ]
+                #                 arrow_0[ 2 ] = 0
+                #                 
+                #                 arrow_1[ 0 ] = dist * Math.sin( alpha ) + p_init[ 0 ]
+                #                 arrow_1[ 1 ] = -dist * Math.cos( alpha ) + p_init[ 1 ]
+                #                 arrow_1[ 2 ] = 0
+                #                 
+                #                 arrow_p0 = info.re_2_sc.proj arrow_0
+                #                 arrow_p1 = info.re_2_sc.proj arrow_1
                 
                 max_legend = legend.max_val.get()
                 min_legend = legend.min_val.get()
