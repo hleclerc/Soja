@@ -18,42 +18,39 @@ class PointMesher extends Drawable
 
     
     draw: ( info ) ->
-        draw_point = info.sel_item[ @model_id ]
-        if draw_point
-        
-            # preparation
-            selected = {}
-            for item in @_selected
-                selected[ item.model_id ] = true
-                
-            _pre_sele = {}
-            for item in @_pre_sele
-                _pre_sele[ item.model_id ] = true
-            proj = info.re_2_sc.proj @point.pos.get()
-                
-            # draw points
-            info.ctx.lineWidth   = 1
-            info.ctx.strokeStyle = "#993311"
-            info.ctx.fillStyle = "#553311"
-            if selected[ @point.model_id ]?
-                info.ctx.strokeStyle = "#FF0000"
-            else
-                info.ctx.strokeStyle = "#FFFF00"
+        # preparation
+        selected = {}
+        for item in @_selected
+            selected[ item.model_id ] = true
             
+        _pre_sele = {}
+        for item in @_pre_sele
+            _pre_sele[ item.model_id ] = true
+        proj = info.re_2_sc.proj @point.pos.get()
+            
+        # draw points
+        info.ctx.lineWidth   = 1
+        info.ctx.strokeStyle = "#993311"
+        info.ctx.fillStyle = "#553311"
+        if selected[ @point.model_id ]?
+            info.ctx.strokeStyle = "#FF0000"
+        else
+            info.ctx.strokeStyle = "#FFFF00"
+        
+        info.ctx.beginPath()
+        info.ctx.arc proj[ 0 ], proj[ 1 ], 4, 0, Math.PI * 2, true
+        info.ctx.closePath()
+        info.ctx.fill()
+        info.ctx.stroke()
+            
+        if _pre_sele[ this.model_id ]?
+            info.ctx.fillStyle = "#FFDD22"
             info.ctx.beginPath()
-            info.ctx.arc proj[ 0 ], proj[ 1 ], 4, 0, Math.PI * 2, true
-            info.ctx.closePath()
+            info.ctx.lineWidth = 0.8
+            info.ctx.arc proj[ 0 ], proj[ 1 ], 3, 0, Math.PI * 2, true
             info.ctx.fill()
-            info.ctx.stroke()
-                
-            if _pre_sele[ this.model_id ]?
-                info.ctx.fillStyle = "#FFDD22"
-                info.ctx.beginPath()
-                info.ctx.lineWidth = 0.8
-                info.ctx.arc proj[ 0 ], proj[ 1 ], 3, 0, Math.PI * 2, true
-                info.ctx.fill()
 
-                info.ctx.closePath()
+            info.ctx.closePath()
     
     get_movable_entities: ( res, info, pos, phase ) ->
         x = pos[ 0 ]

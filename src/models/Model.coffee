@@ -191,17 +191,18 @@ class Model
     equals: ( m ) ->
         if this == m
             return true
-        u = {}
-        for key in m._attribute_names
-            val = m[ key ]
-            if not this[ key ]?
-                return false
-            if not this[ key ].equals( val )
-                return false
-            u[ key ] = true
-        for key in @_attribute_names
-            if not u[ key ]?
-                return false
+        if m._attribute_names?
+            u = {}
+            for key in m._attribute_names
+                val = m[ key ]
+                if not this[ key ]?
+                    return false
+                if not this[ key ].equals( val )
+                    return false
+                u[ key ] = true
+            for key in @_attribute_names
+                if not u[ key ]?
+                    return false
         return false
 
     # get first parents that checks func_to_check
