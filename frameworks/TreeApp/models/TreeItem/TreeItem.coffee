@@ -40,17 +40,11 @@ class TreeItem extends Model
         else
             @_output.splice child, 1
         
-
-        
-    # default draw method
     draw: ( info ) ->
-        for i in @sub_canvas_items()
-            i.draw info
+        if @sub_canvas_items?
+            for s in @sub_canvas_items()
+                s.draw info
             
-    # should be redefine in some child
     anim_min_max: ->
-        # do nothing
-        
  
     z_index: ->
-        # do nothing

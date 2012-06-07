@@ -168,7 +168,7 @@ class Img extends Drawable
             x_max[ 2 ] = Math.max x_max[ 2 ], 0
             
     fill_histogram: () ->
-        canvas = document.createElement('canvas')
+        canvas = document.createElement 'canvas'
         canvas.width = @data.rgba.width
         canvas.height = @data.rgba.height
         ctx = canvas.getContext '2d'

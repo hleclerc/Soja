@@ -170,13 +170,13 @@ class CanvasManager extends View
     origin: ->
         @aset @cam.X, [ 1, 0, 0 ]
         @aset @cam.Y, [ 0, 1, 0 ]
-    
+
     # redraw all the scene
     draw: ->
         @_flat = []
         for item in @items
             CanvasManager._get_flat_list @_flat, item
-            
+        
         #
         has_a_background       = false
         has_a_changed_drawable = false
@@ -427,7 +427,7 @@ class CanvasManager extends View
         if item.sub_canvas_items?
             for sub_item in item.sub_canvas_items()
                 CanvasManager._get_flat_list flat, sub_item
-                
+
         if not item.has_nothing_to_draw?()
             flat.push item
 

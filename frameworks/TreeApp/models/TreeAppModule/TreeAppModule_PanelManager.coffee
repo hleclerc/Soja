@@ -134,6 +134,37 @@ class TreeAppModule_PanelManager extends TreeAppModule
                     
             key: [ "Z" ]
                 
+        @actions.push
+            txt: ""
+            key: [ "UpArrow" ]
+            ina: _ina
+            fun: ( evt, app ) =>
+                for inst in app.selected_canvas_inst()
+                    inst.cm.cam.rotate -0.1, 0, 0
+
+        @actions.push
+            txt: ""
+            key: [ "DownArrow" ]
+            ina: _ina
+            fun: ( evt, app ) =>
+                for inst in app.selected_canvas_inst()
+                    inst.cm.cam.rotate 0.1, 0, 0
+
+        @actions.push
+            txt: ""
+            key: [ "LeftArrow" ]
+            ina: _ina
+            fun: ( evt, app ) =>
+                for inst in app.selected_canvas_inst()
+                    inst.cm.cam.rotate 0, -0.1, 0
+                            
+        @actions.push
+            txt: ""
+            key: [ "RightArrow" ]
+            ina: _ina
+            fun: ( evt, app ) =>
+                for inst in app.selected_canvas_inst()
+                    inst.cm.cam.rotate 0, 0.1, 0
     
 
     

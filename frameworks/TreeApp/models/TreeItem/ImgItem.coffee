@@ -13,8 +13,6 @@ class ImgItem extends TreeItem
         @_name.set file.replace( /// ^.*/ ///, "" )
         @_ico.set "img/krita_16.png"
         @_viewable.set true
-        
-    
     
     accept_child: ( ch ) ->
         false
