@@ -34,11 +34,7 @@ class TreeAppModule_TreeView extends TreeAppModule
                         else
                             path[ path.length - 2 ].rem_child m
                             @delete_from_tree app, m
-<<<<<<< HEAD
-                        
-=======
-
->>>>>>> e70f529f462332cdf8879f62f07f6cf3a38b2d82
+                            
         lst_equals = ( a, b ) ->
             if a.length != b.length
                 return false
