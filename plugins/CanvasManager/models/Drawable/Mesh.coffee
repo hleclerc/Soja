@@ -13,7 +13,7 @@ class Mesh extends Drawable
             
         @add_attr
             warp_by          : new Choice_RestrictedByDim( 0, @displayed_field.lst )
-            warp_factor      : new ConstrainedVal( 1, 
+            warp_factor      : new ConstrainedVal( 0, 
                 min: -1024
                 max: 1024
             )
@@ -111,9 +111,11 @@ class Mesh extends Drawable
                 value = []
                 for p, ind in @points
                     element = selected_field.get_value_of_fields_at_index ind
-                    if element.length == 2
-                        element.push 0
-                    value.push( ( element.get()[ 0 ] + element.get()[ 1 ] + element.get()[ 2 ] ) / 3 )
+                    val = 0
+                    for el in element.get()
+                        val += el * el
+                    
+                    value.push Math.sqrt val
                 
                 # Warp is use to multiply
                 if @warp_by.lst[ @warp_by.num ] != undefined and @warp_factor.get() != 0

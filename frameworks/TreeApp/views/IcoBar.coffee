@@ -1,10 +1,12 @@
 #
 class IcoBar extends View
-    constructor: ( @el, @tree_app ) ->
+    constructor: ( @el, @tree_app, loc = false ) ->
         @modules = @tree_app.data.modules
         super @modules
         
         @tree_app.data.focus.bind this
+        
+        @loc = loc
         
         @disp_top  = 0
         @disp_left = 0
@@ -18,8 +20,13 @@ class IcoBar extends View
                 right   : 0
 
     onchange: ->
+        if @loc == true
+            @_render_loc_actions @el, @tree_app
+            return
+            
         @el.appendChild @div
         
+            
         @div.style.top    = @disp_top
         @div.style.left   = @disp_left
         
@@ -42,7 +49,7 @@ class IcoBar extends View
                 
                 parent = icon_top = icon_bot = big_icon = undefined
                 
-                for act, j in m.actions when act.vis != false
+                for act, j in m.actions when act.vis != false and act.loc != true
                     do ( act ) =>
                         siz = act.siz or 1
                         
@@ -335,4 +342,44 @@ class IcoBar extends View
             id         : "id_hidden_icon"
             
         return child_container
-    
+            
+    _render_loc_actions: ( @el, @tree_app ) ->
+        @icon_container = new_dom_element
+                nodeName  : "div"
+                className : "FooterTreeView"
+                parentNode: @el
+            
+        while @icon_container.firstChild?
+            @icon_container.removeChild @icon_container.firstChild
+
+        for m in @modules
+            do ( m ) =>
+                for act, j in m.actions when act.vis != false and act.loc == true and act.dra?( @tree_app )
+                    do ( act ) =>
+                        new_dom_element
+                            nodeName  : "img"
+                            src       : act.ico
+                            className : "FooterTreeViewIcon"
+                            parentNode: @icon_container
+                            alt       : act.txt
+                            title     : act.txt
+                            onclick   : ( evt ) =>
+                                act.fun evt, @tree_app
+
+#             save = new_dom_element
+#                 nodeName  : "img"
+#                 src       : "img/save_24.png"
+#                 className : "FooterTreeViewIcon"
+#                 parentNode: footer
+#                 alt       : "Save"
+#                 title     : "Save"
+#                 onclick   : =>
+#                     for selected_tree_item_path in @selected
+#                         selected_tree_item = selected_tree_item_path[ selected_tree_item_path.length - 1 ]
+#                         console.log "saving : ", selected_tree_item
+#                         if FileSystem?
+#                             fs = FileSystem.get_inst()
+#                             # we should ask for filename and path
+#                             name = "my-item"
+#                             fs.load "/tree_items", ( m, err ) ->
+#                                 m.add_file name, new Path selected_tree_item, info.model_type "TreeItem"

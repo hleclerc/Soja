@@ -7,41 +7,42 @@ class TreeView_ModuleView extends View
         @treeview = new TreeView @el, @roots, @selected, @visible, @closed, @visibility_context
 #         icobar = new IcoBar @el, @tree_app
 
-        @modules = @tree_app.data.modules
-        
-        @icon_container = new_dom_element
-                nodeName  : "div"
-                className : "FooterTreeView"
-                parentNode: @el
-                style:
-                    position: "absolute"
-                    top  : 19
-                    zIndex : 100
-        
-        @_render_loc_actions @el, @tree_app
-        
-    _render_loc_actions: ( @el, @tree_app ) ->
-        @el.appendChild @icon_container
-    
-        while @icon_container.firstChild?
-            @icon_container.removeChild @icon_container.firstChild
-
-        for m in @modules
-            do ( m ) =>
-                for act, j in m.actions when act.vis != false and act.loc == true
-                    do ( act ) =>
-                        delet = new_dom_element
-                            nodeName  : "img"
-                            src       : "img/trash_24.png"
-                            className : "FooterTreeViewIcon"
-                            parentNode: @icon_container
-                            alt       : "Delete"
-                            title     : "Delete"
-                            onclick   : ( evt ) =>
-                                act.fun evt, @tree_app
-                #                 if TreeAppModule_TreeView?
-                #                     console.log TreeAppModule_TreeView
-                #                     TreeAppModule_TreeView.actions[ 0 ].fun evt, TreeApp
+#         @modules = @tree_app.data.modules
+#         
+#         @icon_container = new_dom_element
+#                 nodeName  : "div"
+#                 className : "FooterTreeView"
+#                 parentNode: @el
+#                 style:
+#                     position: "absolute"
+#                     top  : 19
+#                     zIndex : 100
+#         
+#         @_render_loc_actions @el, @tree_app
+#         
+#     _render_loc_actions: ( @el, @tree_app ) ->
+#         @el.appendChild @icon_container
+#     
+#         while @icon_container.firstChild?
+#             @icon_container.removeChild @icon_container.firstChild
+# 
+#         for m in @modules
+#             do ( m ) =>
+#                 for act, j in m.actions when act.vis != false and act.loc == true
+#                     do ( act ) =>
+#                     
+# #                         if act.ico
+# #                             img/krita_24.png
+#                         
+#                         delet = new_dom_element
+#                             nodeName  : "img"
+#                             src       : act.ico
+#                             className : "FooterTreeViewIcon"
+#                             parentNode: @icon_container
+#                             alt       : act.txt
+#                             title     : act.txt
+#                             onclick   : ( evt ) =>
+#                                 act.fun evt, @tree_app
 
 #             save = new_dom_element
 #                 nodeName  : "img"

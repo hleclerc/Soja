@@ -18,8 +18,17 @@ class EditView extends View
                 s = path[ path.length - 1 ]
                 e = @model_editors[ s.model_id ]
                 if not e?
+                        
                     # generic div to contain the model editor and the informations
                     e = new_dom_element()
+                    
+                    if s._can_be_computed? and not g?
+                        g = new_dom_element
+                            parentNode: e
+                            nodeName  : "div"
+                        for v in @app_data._views when v instanceof TreeApp
+                            icobar = new IcoBar g, v, true
+                            break
                     
                     m = new_model_editor
                         el          : e

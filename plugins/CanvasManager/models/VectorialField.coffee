@@ -42,6 +42,7 @@ class VectorialField extends Model
             color = "white"
             
             arrow_reduce = 0.3
+            arrow_width_factor = 0.1
             
             for p, ind in points
                 
@@ -50,44 +51,20 @@ class VectorialField extends Model
                     element.push data.get()[ ind ] * warp_factor
                 if element.length == 2
                     element.push 0
-                    
-                p0 = p.pos.get()
-                p1 = Vec_3.add( p.pos.get(), element.get() )
-                
-                proj_p0 = info.re_2_sc.proj p0
-                proj_p1 = info.re_2_sc.proj p1
+                     
+                proj_p0 = info.re_2_sc.proj p.pos.get()
+                proj_p1 = info.re_2_sc.proj Vec_3.add( p.pos.get(), element.get() )
                 
                 orthogo = [ proj_p0[ 1 ] - proj_p1[ 1 ], proj_p1[ 0 ] - proj_p0[ 0 ] ]
-                
+
                 arrow_p0 = [
-                    ( 1 - arrow_reduce ) * proj_p1[ 0 ] + arrow_reduce * proj_p0[ 0 ] + arrow_reduce * orthogo[ 0 ],
-                    ( 1 - arrow_reduce ) * proj_p1[ 1 ] + arrow_reduce * proj_p0[ 1 ] + arrow_reduce * orthogo[ 1 ]
+                    ( 1 - arrow_reduce ) * proj_p1[ 0 ] + arrow_reduce * proj_p0[ 0 ] + arrow_width_factor * orthogo[ 0 ],
+                    ( 1 - arrow_reduce ) * proj_p1[ 1 ] + arrow_reduce * proj_p0[ 1 ] + arrow_width_factor * orthogo[ 1 ]
                 ]
                 arrow_p1 = [
-                    ( 1 - arrow_reduce ) * proj_p1[ 0 ] + arrow_reduce * proj_p0[ 0 ] - arrow_reduce * orthogo[ 0 ],
-                    ( 1 - arrow_reduce ) * proj_p1[ 1 ] + arrow_reduce * proj_p0[ 1 ] - arrow_reduce * orthogo[ 1 ]
+                    ( 1 - arrow_reduce ) * proj_p1[ 0 ] + arrow_reduce * proj_p0[ 0 ] - arrow_width_factor * orthogo[ 0 ],
+                    ( 1 - arrow_reduce ) * proj_p1[ 1 ] + arrow_reduce * proj_p0[ 1 ] - arrow_width_factor * orthogo[ 1 ]
                 ]
-                
-                #                 dist = Vec_3.dist p0, p1
-                #                 dist *= arrow_reduce
-                #                 
-                #                 p_init = []
-                #                 p_init[ 0 ] = p1[ 0 ] - ( p1[ 0 ] - p0[ 0 ] ) * arrow_reduce
-                #                 p_init[ 1 ] = p1[ 1 ] - ( p1[ 1 ] - p0[ 1 ] ) * arrow_reduce
-                #                 
-                #                 alpha = ( p_init[ 1 ] - p1[ 1 ] ) / ( p_init[ 0 ] - p1[ 0 ] )
-                #                 arrow_0 = []
-                #                 arrow_1 = []
-                #                 arrow_0[ 0 ] = -dist * Math.sin( alpha ) + p_init[ 0 ]
-                #                 arrow_0[ 1 ] = dist * Math.cos( alpha ) + p_init[ 1 ]
-                #                 arrow_0[ 2 ] = 0
-                #                 
-                #                 arrow_1[ 0 ] = dist * Math.sin( alpha ) + p_init[ 0 ]
-                #                 arrow_1[ 1 ] = -dist * Math.cos( alpha ) + p_init[ 1 ]
-                #                 arrow_1[ 2 ] = 0
-                #                 
-                #                 arrow_p0 = info.re_2_sc.proj arrow_0
-                #                 arrow_p1 = info.re_2_sc.proj arrow_1
                 
                 max_legend = legend.max_val.get()
                 min_legend = legend.min_val.get()
@@ -97,19 +74,21 @@ class VectorialField extends Model
                 @_draw_arrow_colored info, proj_p0, proj_p1, arrow_p0, arrow_p1, color
             
     _draw_arrow_colored: ( info, p0, p1, arrow_p0, arrow_p1, color ) ->
-            
-#         console.log p0, p1, arrow_p0, arrow_p1
         info.ctx.beginPath()
         info.ctx.lineWidth = 1
         info.ctx.strokeStyle = "rgba( " + color[ 0 ] + ", " + color[ 1 ] + ", " + color[ 2 ] + ", " + color[ 3 ] + " ) "
         info.ctx.moveTo( p0[ 0 ], p0[ 1 ] )
         info.ctx.lineTo( p1[ 0 ], p1[ 1 ] )
+        info.ctx.stroke()
         
         #drawing arrow
+        info.ctx.fillStyle = "rgba( " + color[ 0 ] + ", " + color[ 1 ] + ", " + color[ 2 ] + ", " + color[ 3 ] + " ) "
+        info.ctx.lineWidth = 0.8        
         info.ctx.moveTo( p1[ 0 ], p1[ 1 ] )
         info.ctx.lineTo( arrow_p0[ 0 ], arrow_p0[ 1 ] )
-        info.ctx.moveTo( p1[ 0 ], p1[ 1 ] )
         info.ctx.lineTo( arrow_p1[ 0 ], arrow_p1[ 1 ] )
-        
+        info.ctx.lineTo( p1[ 0 ], p1[ 1 ] )
+        info.ctx.fill()
         info.ctx.stroke()
+        
         info.ctx.closePath() 
