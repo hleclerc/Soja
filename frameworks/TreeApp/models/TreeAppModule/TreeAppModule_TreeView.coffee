@@ -15,6 +15,7 @@ class TreeAppModule_TreeView extends TreeAppModule
             
         @actions.push
             txt: "Delete current tree item"
+            ico: "img/trash_24.png"
             key: [ "Del" ]
             ina: _ina
             loc: true
@@ -33,8 +34,18 @@ class TreeAppModule_TreeView extends TreeAppModule
                         else
                             path[ path.length - 2 ].rem_child m
                             @delete_from_tree app, m
-                        
-                        
+        @actions.push
+            txt: "Compute"
+            ico: ""
+            ina: _ina
+            #loc: true
+            fun: ( evt, app ) =>
+                for path in app.data.selected_tree_items
+                    if path.length > 1
+                        m = path[ path.length - 1 ]
+                        if m._can_be_computed?
+                            m._can_be_computed.set 1
+
         lst_equals = ( a, b ) ->
             if a.length != b.length
                 return false
