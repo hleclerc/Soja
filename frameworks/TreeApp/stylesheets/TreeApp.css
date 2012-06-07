@@ -18,7 +18,7 @@
 }
 .FooterTreeViewIcon {
     cursor : pointer;
-    float  :right;
+/*     float  :right; */
     padding:2px;
     margin: 2px;
     margin-left: 1px;
