@@ -23,7 +23,6 @@ class Choice extends Model
 
     equals: ( a ) ->
         if a instanceof Choice
-            console.log a
             super a
         else
             @_nlst()[ @num.get() ].equals a

@@ -9,8 +9,8 @@ class PointMesher extends Drawable
             density   : density
             radius    : radius
             # behavior
-            _selected : new Lst # references of selected points
-            _pre_sele : new Lst # references of selected points
+            _selected : new Lst # references of selected point
+            _pre_sele : new Lst # references of selected point
             
             
     z_index: ->
