@@ -1,6 +1,6 @@
 # Tree application
 class TreeApp extends View
-    constructor: ( @el, @data = new TreeAppData ) ->
+    constructor: ( @bel, @data = new TreeAppData ) ->
         super @data
         
         @layouts = {}
@@ -9,8 +9,26 @@ class TreeApp extends View
         @active_key = new Bool true
         
         @undo_manager = new UndoManager @data.tree_items
-        header = document.getElementById('correli_header')
-        @icobar = new IcoBar header, this
+        
+        @he = new_dom_element
+            parentNode: @bel
+            style:
+                position: "absolute"
+                left    : 0
+                right   : 0
+                top     : 0
+                height  : "6.2em"
+            
+        @el = new_dom_element
+            parentNode: @bel
+            style:
+                position: "absolute"
+                left    : 0
+                right   : 0
+                top     : "6.2em"
+                bottom  : 0
+                
+        @icobar = new IcoBar @he, this
         
         document.addEventListener "keydown", ( ( evt ) => @_on_key_down evt ), true
         
@@ -64,7 +82,7 @@ class TreeApp extends View
     # 
     _new_LayoutManager: ( session ) ->
         display_settings = session._children.detect ( x ) -> x instanceof DisplaySettingsItem
-        res = new LayoutManager @el, display_settings._layout, @data.browser_state
+        res = new LayoutManager @el, display_settings._layout
         res.disp_top = @icobar.disp_top + @icobar.height
         res.new_panel_instance = ( data ) => @_new_panel_instance display_settings, data
         return res
@@ -120,7 +138,9 @@ class TreeApp extends View
         
         
         # 
-        @data.visible_tree_items.add_attr data.panel_id, new Lst [ view_item ]
+        if not @data.visible_tree_items[ data.panel_id ]?
+            @data.visible_tree_items.add_attr data.panel_id, new Lst [ view_item ]
+        
         for cm_inst in @selected_canvas_inst()
             for tree_item in @data.visible_tree_items[ cm_inst.view_item._panel_id.get() ]
                 if not ( tree_item instanceof ViewItem )
@@ -192,7 +212,7 @@ class TreeApp extends View
                 for k in a.key
                     if k == cur_key
                         a.fun? evt, this
-                        @cancel_natural_hotkeys evt
+                        @_cancel_natural_hotkeys evt
                         return true
             if a.sub?.act?
                 @_on_key_down_rec a.sub.act, cur_key, evt
@@ -200,7 +220,7 @@ class TreeApp extends View
 
     
     # prevent default browser action being launch by hotkey
-    cancel_natural_hotkeys: ( evt ) ->
+    _cancel_natural_hotkeys: ( evt ) ->
         if not evt
             evt = window.event
         evt.cancelBubble = true

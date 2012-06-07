@@ -42,6 +42,7 @@ class FileSystem
     
     # load object in $path and call $callback with the corresponding ref
     load: ( path, callback ) ->
+        FileSystem._send_chan()
         @send "L #{FileSystem._nb_callbacks} #{encodeURI path} "
         FileSystem._callbacks[ FileSystem._nb_callbacks ] = callback
         FileSystem._nb_callbacks++
@@ -63,6 +64,7 @@ class FileSystem
 
     # load an object using is pointer and call $callback with the corresponding ref
     load_ptr: ( ptr, callback ) ->
+        FileSystem._send_chan()
         @send "l #{FileSystem._nb_callbacks} #{ptr} "
         FileSystem._callbacks[ FileSystem._nb_callbacks ] = callback
         FileSystem._nb_callbacks++
@@ -162,24 +164,35 @@ class FileSystem
         if FileSystem._cur_tmp_server_id % 4 == 0
             FileSystem._cur_tmp_server_id++
         FileSystem._cur_tmp_server_id
-            
+
+    # send changes
+    @_send_chan: ->
+        out = FileSystem._get_chan_data()
+        for k, f of FileSystem._insts
+            f.send out
+        
     # timeout for at least one changed object
     @_timeout_chan_func: ->
-        # get data
+        FileSystem._send_chan()
+        delete FileSystem._timer_chan
+
+    # get data of objects to send
+    @_get_chan_data: ->
         out = { cre: "", mod: "" }
         for n, model of FileSystem._objects_to_send
             model._get_fs_data out
-        
-        # send
-        for k, f of FileSystem._insts
-            f.send out.cre + out.mod
-                
-        #
-        delete FileSystem._timer_chan
         FileSystem._objects_to_send = {}
-
+        
+        out.cre + out.mod
+        
     # 
     @_timeout_send_func: ->
+        # if some model have changed, we have to send the changes now
+        out = FileSystem._get_chan_data()
+        for k, f of FileSystem._insts
+            f._data_to_send += out
+        
+        # send data
         for k, f of FileSystem._insts when f._data_to_send.length
             # if we are waiting for a session id, do not send the data
             # (@responseText will contain another call to @_timeout_send with the session id)
@@ -191,6 +204,9 @@ class FileSystem
                 f._session_num = -1
             else
                 f._data_to_send = "s #{f._session_num} " + f._data_to_send
+
+            # 
+            
                 
             # request
             xhr_object = FileSystem._my_xml_http_request()
@@ -219,6 +235,7 @@ class FileSystem
             #console.log "-> ", f._data_to_send
             f._data_to_send = ""
         #
+        FileSystem._objects_to_send = {}
         delete FileSystem._timer_send
     
     @_my_xml_http_request: ->

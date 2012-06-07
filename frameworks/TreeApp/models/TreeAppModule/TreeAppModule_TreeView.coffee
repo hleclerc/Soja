@@ -4,7 +4,7 @@ class TreeAppModule_TreeView extends TreeAppModule
         super()
         
         @name = 'Tree View'
-        @visible = false
+        # @visible = false
         
         _ina = ( app ) =>
             app.data.focus.get() != app.treeview.view_id
@@ -33,7 +33,6 @@ class TreeAppModule_TreeView extends TreeAppModule
                         else
                             path[ path.length - 2 ].rem_child m
                             @delete_from_tree app, m
-                        
                         
         lst_equals = ( a, b ) ->
             if a.length != b.length

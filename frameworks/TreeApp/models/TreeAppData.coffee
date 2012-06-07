@@ -12,8 +12,6 @@ class TreeAppData extends Model
             # canvas
             selected_canvas_pan: new Lst # panel_id of selected panels
             last_canvas_pan    : new Str #
-            # routes, ...
-            browser_state      : new BrowserState
             # loaded modules
             modules            : new Lst
             focus              : -1
@@ -31,7 +29,7 @@ class TreeAppData extends Model
             if item.equals it
                 @closed_tree_items.splice index, 1        
     
-    new_session: ( name ) ->
+    new_session: ( name = "Session" ) ->
         s = new SessionItem name, this
         @add_session s
         
