@@ -1,6 +1,6 @@
 #
 class Img extends Drawable
-    constructor: ( src, app = undefined, need_fit = true ) ->
+    constructor: ( src = "", app = undefined, need_fit = true ) ->
         super()
         
         @add_attr
@@ -21,7 +21,7 @@ class Img extends Drawable
             @data.buff.onload = onload
             
             if @_histo.length == 0
-                @fill_histogram()
+               @fill_histogram()
             
             if need_fit and app?
                 need_fit = false
@@ -29,7 +29,8 @@ class Img extends Drawable
             
         @data.buff = new Image
         @data.buff.onload = onload
-        @data.buff.src = @src
+        if @src.get().length
+            @data.buff.src = @src
         
     z_index: ->
         return 1
@@ -182,4 +183,5 @@ class Img extends Drawable
         for el, i in data by 4
             if data[ i + 3 ] != 0
                 index = Math.round( ( data[ i ] + data[ i + 1 ] + data[ i + 2 ] ) / 3 )
-                @_histo[ index ]++
+                @_histo[ index ].set @_histo[ index ].get() + 1
+                

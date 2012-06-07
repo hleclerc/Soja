@@ -9,8 +9,9 @@ class ImgItem extends TreeItem
         @add_attr
             img: new Img file, app, @legend
 
-        # default values
-        @_name.set file.replace( /// ^.*/ ///, "" )
+        if file?
+            @_name.set file.replace( /// ^.*/ ///, "" )
+            
         @_ico.set "img/krita_16.png"
         @_viewable.set true
     
@@ -43,9 +44,9 @@ class ImgItem extends TreeItem
                 parentNode: div
                 # style     : { position: "absolute", top: 0, left: 0, width: "70%", bottom: 0 }
 
-#             bg = new Background
-# #             bg.gradient.remove_color 1
-#             bg.gradient.remove_color 0
+            #             bg = new Background
+            # #             bg.gradient.remove_color 1
+            #             bg.gradient.remove_color 0
 
             m = new Graph marker: 'bar', show_line: false, shadow: false, marker_size: 2, font_size: 10
             for p, i in @img._histo
