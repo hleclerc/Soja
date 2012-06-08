@@ -348,6 +348,8 @@ class IcoBar extends View
         return child_container
             
     _render_loc_actions: ( @el, @tree_app ) ->
+        return 
+        
         @icon_container = new_dom_element
             nodeName  : "div"
             className : "FooterTreeView"
