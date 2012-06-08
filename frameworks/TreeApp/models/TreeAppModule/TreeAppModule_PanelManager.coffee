@@ -6,8 +6,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
         @name = 'Windows'
 
         _ina = ( app ) =>
-            app.data.focus.get() != app.selected_canvas_inst()?[ 0 ]?.cm.view_id and 
-            app.data.focus.get() != app.treeview.view_id
+            app.data.focus.get() != app.selected_canvas_inst()?[ 0 ]?.cm.view_id
 
         @actions.push
             ico: "img/vertical_split.png"
