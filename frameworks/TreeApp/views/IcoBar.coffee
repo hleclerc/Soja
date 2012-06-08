@@ -24,6 +24,7 @@ class IcoBar extends View
             style:
                 position: "absolute"
                 right   : 0
+                
     onchange: ->
         if @loc == true
             @_render_loc_actions @el, @tree_app
@@ -348,9 +349,9 @@ class IcoBar extends View
             
     _render_loc_actions: ( @el, @tree_app ) ->
         @icon_container = new_dom_element
-                nodeName  : "div"
-                className : "FooterTreeView"
-                parentNode: @el
+            nodeName  : "div"
+            className : "FooterTreeView"
+            parentNode: @el
             
         while @icon_container.firstChild?
             @icon_container.removeChild @icon_container.firstChild
