@@ -1,12 +1,18 @@
 #
 class IcoBar extends View
-    constructor: ( @el, @tree_app, loc = false ) ->
+    constructor: ( @el, @tree_app, params = {} ) ->
         @modules = @tree_app.data.modules
         super @modules
-        
+                
         @tree_app.data.focus.bind this
+        @loc        = false
+        #TODO use the three next params
+        #@allow_sub  = true
+        #@sub_type   = "all" # which prf
+        #@sub_lvl    = -1 # indicates lvl max of child (-1 mean show everything)
         
-        @loc = loc
+        for key, val of params
+            this[ key ] = val
         
         @disp_top  = 0
         @disp_left = 0
@@ -18,7 +24,6 @@ class IcoBar extends View
             style:
                 position: "absolute"
                 right   : 0
-
     onchange: ->
         if @loc == true
             @_render_loc_actions @el, @tree_app
@@ -35,9 +40,7 @@ class IcoBar extends View
         while @div.firstChild?
             @div.removeChild @div.firstChild
 
-        for c in [ 0 ... @modules.length ]
-            m = @modules[ c ]
-            
+        for m in @modules
             if m.visible? and m.visible == false
                 continue
             

@@ -32,7 +32,7 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
                 if view instanceof TreeApp
                     tree_app = view
             tree_app.data.focus.set @cm.view_id
-                    
+            
             if evt.ctrlKey
                 @app_data.selected_canvas_pan.toggle @view_item._panel_id
             else

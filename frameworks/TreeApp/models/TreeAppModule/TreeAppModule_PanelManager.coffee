@@ -6,8 +6,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
         @name = 'Windows'
 
         _ina = ( app ) =>
-            app.data.focus.get() != app.selected_canvas_inst()?[ 0 ]?.cm.view_id and 
-            app.data.focus.get() != app.treeview.view_id
+            app.data.focus.get() != app.selected_canvas_inst()?[ 0 ]?.cm.view_id
 
         @actions.push
             ico: "img/vertical_split.png"
@@ -134,37 +133,37 @@ class TreeAppModule_PanelManager extends TreeAppModule
                     
             key: [ "Z" ]
                 
-#         @actions.push
-#             txt: ""
-#             key: [ "UpArrow" ]
-#             ina: _ina
-#             fun: ( evt, app ) =>
-#                 for inst in app.selected_canvas_inst()
-#                     inst.cm.cam.rotate -0.1, 0, 0
-# 
-#         @actions.push
-#             txt: ""
-#             key: [ "DownArrow" ]
-#             ina: _ina
-#             fun: ( evt, app ) =>
-#                 for inst in app.selected_canvas_inst()
-#                     inst.cm.cam.rotate 0.1, 0, 0
-# 
-#         @actions.push
-#             txt: ""
-#             key: [ "LeftArrow" ]
-#             ina: _ina
-#             fun: ( evt, app ) =>
-#                 for inst in app.selected_canvas_inst()
-#                     inst.cm.cam.rotate 0, -0.1, 0
-#                             
-#         @actions.push
-#             txt: ""
-#             key: [ "RightArrow" ]
-#             ina: _ina
-#             fun: ( evt, app ) =>
-#                 for inst in app.selected_canvas_inst()
-#                     inst.cm.cam.rotate 0, 0.1, 0
+        @actions.push
+            txt: ""
+            key: [ "UpArrow" ]
+            ina: _ina
+            fun: ( evt, app ) =>
+                for inst in app.selected_canvas_inst()
+                    inst.cm.cam.rotate -0.1, 0, 0
+
+        @actions.push
+            txt: ""
+            key: [ "DownArrow" ]
+            ina: _ina
+            fun: ( evt, app ) =>
+                for inst in app.selected_canvas_inst()
+                    inst.cm.cam.rotate 0.1, 0, 0
+
+        @actions.push
+            txt: ""
+            key: [ "LeftArrow" ]
+            ina: _ina
+            fun: ( evt, app ) =>
+                for inst in app.selected_canvas_inst()
+                    inst.cm.cam.rotate 0, -0.1, 0
+                            
+        @actions.push
+            txt: ""
+            key: [ "RightArrow" ]
+            ina: _ina
+            fun: ( evt, app ) =>
+                for inst in app.selected_canvas_inst()
+                    inst.cm.cam.rotate 0, 0.1, 0
     
 
     

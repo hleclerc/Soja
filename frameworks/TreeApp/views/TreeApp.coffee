@@ -28,7 +28,7 @@ class TreeApp extends View
                 top     : "6.2em"
                 bottom  : 0
                 
-        @icobar = new IcoBar @he, this
+        @icobar = new IcoBar @he, this, allow_sub:false
         
         document.addEventListener "keydown", ( ( evt ) => @_on_key_down evt ), true
         
