@@ -25,12 +25,12 @@ class UndoManager
                     date: Model._counter
                     data: @model.get_state date
                     
-        # snapshot authorization after 250ms of inactivity
+        # snapshot authorization after 750ms of inactivity
         fun = =>
             @snapshotok = true
         if @_timer_snap?
             clearTimeout fun
-        @_timer_snap = setTimeout fun, 250
+        @_timer_snap = setTimeout fun, 750
                     
         
     #
