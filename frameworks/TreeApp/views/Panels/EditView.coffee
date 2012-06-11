@@ -22,13 +22,13 @@ class EditView extends View
                     # generic div to contain the model editor and the informations
                     e = new_dom_element()
                     
-                    if s._can_be_computed?
+                    if s._can_be_computed? and not g?
                         g = new_dom_element
                             parentNode: e
+                            nodeName  : "span"
                         for v in @app_data._views when v instanceof TreeApp
                             icobar = new IcoBar g, v, loc: true
                             break
-                            
                     m = new_model_editor
                         el          : e
                         model       : s

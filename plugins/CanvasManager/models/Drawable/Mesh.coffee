@@ -14,8 +14,8 @@ class Mesh extends Drawable
         @add_attr
             warp_by          : new Choice_RestrictedByDim( 0, @displayed_field.lst )
             warp_factor      : new ConstrainedVal( 0, 
-                min: -1024
-                max: 1024
+                min: 0
+                max: 2048
             )
             
             editable_points  : true

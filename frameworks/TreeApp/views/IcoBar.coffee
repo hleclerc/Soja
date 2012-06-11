@@ -14,16 +14,24 @@ class IcoBar extends View
         for key, val of params
             this[ key ] = val
         
-        @disp_top  = 0
-        @disp_left = 0
-        @height    = 0
-        @height_ico = 24
-        
-        @div = new_dom_element
-            className: "IcoBar"
-            style:
-                position: "absolute"
-                right   : 0
+        if @loc == false
+            @disp_top  = 0
+            @disp_left = 0
+            @height    = 0
+            @height_ico = 24
+            
+            @div = new_dom_element
+                className: "IcoBar"
+                style:
+                    position: "absolute"
+                    right   : 0
+        else
+            @icon_container = new_dom_element
+                    nodeName  : "div"
+                    className : "FooterTreeView"
+                    parentNode: @el
+            
+            
     onchange: ->
         if @loc == true
             @_render_loc_actions @el, @tree_app
@@ -347,11 +355,6 @@ class IcoBar extends View
         return child_container
             
     _render_loc_actions: ( @el, @tree_app ) ->
-        @icon_container = new_dom_element
-                nodeName  : "div"
-                className : "FooterTreeView"
-                parentNode: @el
-            
         while @icon_container.firstChild?
             @icon_container.removeChild @icon_container.firstChild
 

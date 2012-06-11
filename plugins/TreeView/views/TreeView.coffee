@@ -130,7 +130,7 @@ class TreeView extends View
         
         # header title (bad)
         @height_header = @line_height + 3
-        @height_icon_bar = 34
+        @height_icon_bar = 0
         pos_y += @height_header
         pos_y += @height_icon_bar
         

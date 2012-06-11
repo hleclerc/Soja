@@ -103,9 +103,12 @@ class TreeAppModule_PanelManager extends TreeAppModule
             ina: _ina
             fun: ( evt, app ) ->
                 d = app.data.selected_display_settings()
+                console.log d
                 for panel_id in app.data.selected_canvas_pan
+                    console.log panel_id.get(), d._layout.rm_panel panel_id
                     if d._layout.rm_panel panel_id
                         app.data.visible_tree_items.rem_attr panel_id
+                        console.log app.data.visible_tree_items
                 # new selection
                 t = d._layout.panel_id_of_term_panels()
                 app.data.selected_canvas_pan.clear()
