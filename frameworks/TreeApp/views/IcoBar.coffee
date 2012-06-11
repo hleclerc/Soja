@@ -31,7 +31,6 @@ class IcoBar extends View
                     className : "FooterTreeView"
                     parentNode: @el
             
-            
     onchange: ->
         if @loc == true
             @_render_loc_actions @el, @tree_app
