@@ -316,10 +316,17 @@ class Model
     # must return true if data is changed
     _set: ( value ) ->
         change = false
-        
+
+        # rem
         used = {}
-        for key, val of value
+        for key in Model._get_attribute_names()
             used[ key ] = true
+        for key in ( key for key in @_attribute_names when not used[ key ] )
+            change = true
+            @rem_attr key, false
+        
+        # mod / add
+        for key, val of value
             if this[ key ]?
                 if this[ key ].constructor == val.constructor
                     change |= this[ key ].set( val )
@@ -328,14 +335,16 @@ class Model
                     @mod_attr key, val, false
             else
                 @add_attr key, val, false
-            
-        for key in @_attribute_names
-            if not used[ key ]
-                change = true
-                @rem_attr key, false
 
         return change
 
+    @_get_attribute_names: ( m ) ->
+        if m instanceof Model
+            m._attribute_names
+        else
+            for key, val of m
+                key
+        
     # called by set. change_level should not be defined by the user (it permits to != change from child of from this)
     _signal_change: ( change_level = 2 ) ->
         #
@@ -407,8 +416,7 @@ class Model
     _get_flat_model_map: ( map, date ) ->
         map[ @model_id ] = this
         
-        for name in @_attribute_names
-            obj = this[ name ]
+        for name, obj of this when obj instanceof Model
             if not map[ obj.model_id ]?
                 if obj._date_last_modification > date
                     obj._get_flat_model_map map, date

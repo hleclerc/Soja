@@ -80,7 +80,6 @@ class LayoutManagerData extends Model
             ci = pa.children[ nn ].get()
             ci.strength = pa.strength.get()
             
-            pa.set undefined
             pa.set ci
         else
             console.log "TODO"

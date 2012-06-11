@@ -8,7 +8,7 @@ class TreeApp extends View
         
         @active_key = new Bool true
         
-        @undo_manager = new UndoManager @data.tree_items
+        @undo_manager = new UndoManager @data
         
         @he = new_dom_element
             parentNode: @bel
@@ -154,7 +154,7 @@ class TreeApp extends View
         @data.last_canvas_pan.set data.panel_id
         
         # @el.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
-        
+        @undo_manager.snapshot()
         return new CanvasManagerPanelInstance @el, @data, view_item, @undo_manager
         
     _on_key_down: ( evt ) ->

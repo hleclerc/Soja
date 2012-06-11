@@ -300,13 +300,11 @@ class Lst extends Model
         return str.join ","
         
     _set_state: ( str, map ) ->
-        console.log str, map
         l_id = str.split( "," ).filter ( x ) -> x.length
         while @length > l_id.length
             @pop()
         
         for attr in [ 0 ... @length ]
-            console.log map, k_id, l_id, attr
             k_id = l_id[ attr ]
             if map[ k_id ].buff?
                 if map[ k_id ].buff != this[ attr ]

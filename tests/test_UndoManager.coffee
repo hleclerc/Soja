@@ -16,9 +16,9 @@ test_UndoManager = ->
     # data
     m = new Model
         l: [ 666 ]
-        b: 1
-        t: new ConstrainedVal( 1, min: 0, max: 10 )
-        z: "toto"
+        #b: 1
+        #t: new ConstrainedVal( 1, min: 0, max: 10 )
+        #z: "toto"
     
     # undo manager
     a = new UndoManager m
