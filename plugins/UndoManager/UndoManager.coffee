@@ -7,19 +7,9 @@ class UndoManager
         @max_patchs = 20
         @patch_undo = []
         @patch_redo = []
-        
-        UndoManager._inst_chan = this
-    
+            
     #
     snapshot: ->
-        if UndoManager._timer_chan?
-            clearTimeout UndoManager._timer_chan
-        UndoManager._timer_chan = setTimeout UndoManager._timeout_chan_func, 100
-
-    @_timeout_chan_func: ->
-        UndoManager._inst_chan._timeout_chan_func()
-
-    _timeout_chan_func: ->
         date = @_date_last_snapshot()
         
         # if something has changed since previous undo or snapshot
