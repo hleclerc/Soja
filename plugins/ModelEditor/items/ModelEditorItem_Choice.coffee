@@ -7,7 +7,7 @@ class ModelEditorItem_Choice extends ModelEditorItem
             parentNode: @ed
             nodeName  : "select"
             onchange  : =>
-                @get_undo_manager()?.snapshot()
+                @snapshot()
                 @model.set @select.value
             style:
                 width: @ew + "%"

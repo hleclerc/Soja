@@ -7,23 +7,36 @@ class UndoManager
         @max_patchs = 20
         @patch_undo = []
         @patch_redo = []
+        @snapshotok = true
             
     #
-    snapshot: ->
-        date = @_date_last_snapshot()
-        
-        # if something has changed since previous undo or snapshot
-        if @model._date_last_modification > date
-            @patch_redo = []
+    snapshot: ( force = false ) ->
+        if @snapshotok or force
+            @snapshotok = false
             
-            @patch_undo.push
-                date: Model._counter
-                data: @model.get_state date
+            # actual work
+            date = @_date_last_snapshot()
+            
+            # if something has changed since previous undo or snapshot
+            if @model._date_last_modification > date
+                @patch_redo = []
                 
+                @patch_undo.push
+                    date: Model._counter
+                    data: @model.get_state date
+                    
+        # snapshot authorization after 250ms of inactivity
+        fun = =>
+            @snapshotok = true
+        if @_timer_snap?
+            clearTimeout fun
+        @_timer_snap = setTimeout fun, 250
+                    
+        
     #
     undo: ( num = 1 ) ->
         # we make a snapshot for eventual redos
-        @snapshot()
+        @snapshot true
 
         num = Math.min num, @patch_undo.length - 1
         if num > 0

@@ -18,7 +18,7 @@ class ModelEditorItem_CheckBox extends ModelEditorItem
             type      : "checkbox"
             nodeName  : "input"
             onchange  : =>
-                @get_undo_manager()?.snapshot()
+                @snapshot()
                 @model.set @input.checked
 
         

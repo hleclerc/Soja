@@ -68,14 +68,13 @@ class ModelEditorItem extends View
             return @parent.get_justification()
         return true
 
-    #
-    get_undo_manager: ->
+    # helper
+    snapshot: ->
         if @undo_manager?
-            return @undo_manager
-        if @parent?
-            return @parent.get_undo_manager()
-        return undefined
-        
+            @undo_manager.snapshot()
+        else if @parent?
+            @parent.snapshot()
+    
     # attribute name -> display name (defaulting to ModelEditor.trans_name if no parent)
     trans_name: ( name ) ->
         if @parent?

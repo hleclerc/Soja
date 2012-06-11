@@ -23,19 +23,18 @@ class ModelEditorItem_ConstrainedVal extends ModelEditorItem
                 width      : 0.7 * @ew - 0.5 + "%"
                 marginLeft : 0.5 + "%"
                 zIndex     : 1
+                
             onmousedown: ( evt ) =>
-                @get_undo_manager()?.snapshot()
-                @snapshot = 1
+                @snapshot()
                 
                 offset = evt.clientX - get_left( @div ) - @cur.offsetWidth / 2
                 twidth = @div.offsetWidth - @cur.offsetWidth
                 @model.set @model._min.get() + offset * @model.delta() / twidth
                 @off_x = 0
                 @_on_mouse_down evt, false
+                
             onmousewheel: ( evt ) =>
-                if not @snapshot
-                    @snapshot = 1
-                    @get_undo_manager()?.snapshot()
+                @snapshot()
                 
                 if evt.wheelDelta?
                     delta = evt.wheelDelta / 120.0
@@ -81,7 +80,6 @@ class ModelEditorItem_ConstrainedVal extends ModelEditorItem
         @old_x = evt.clientX
         if make_off_x
             @off_x = @old_x - get_left( @cur )
-        @snapshot = 0
         
         document.addEventListener "mousemove", @_drag_evt_func, true
         document.addEventListener "mouseup"  , @_drag_end_func, true
@@ -89,9 +87,7 @@ class ModelEditorItem_ConstrainedVal extends ModelEditorItem
         return false
         
     _drag_evt: ( evt ) =>
-        if not @snapshot
-            @snapshot = 1
-            @get_undo_manager()?.snapshot()
+        @snapshot()
 
         @new_x = evt.clientX
         if @new_x != @old_x

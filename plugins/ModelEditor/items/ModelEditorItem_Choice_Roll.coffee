@@ -10,7 +10,7 @@ class ModelEditorItem_Choice_Roll extends ModelEditorItem
             nodeName  : "span"
             className : "ModelEditorChoiceRoll"
             onclick   : ( evt ) =>
-                @get_undo_manager()?.snapshot()
+                @snapshot()
                 @model.set ( @model.num.get() + 1 ) % @model._nlst().length
                 evt.stopPropagation?()
             style:

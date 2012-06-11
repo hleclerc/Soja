@@ -79,7 +79,6 @@ class PointMesher extends Drawable
                 if res.length
                     res.sort ( a, b ) -> b.dist - a.dist
                     @_movable_entity = res[ 0 ].item
-                    @_may_need_snapshot = true
                     
                     if evt.ctrlKey # add / rem selection
                         @_selected.toggle_ref @_movable_entity
@@ -99,9 +98,7 @@ class PointMesher extends Drawable
                     
     on_mouse_move: ( cm, evt, pos, b, old ) ->
         if b == "LEFT" and @_movable_entity?
-            if @_may_need_snapshot
-                cm.undo_manager?.snapshot()
-                delete @_may_need_snapshot
+            cm.undo_manager?.snapshot()
                 
             p_0 = cm.cam_info.sc_2_rw.pos pos[ 0 ], pos[ 1 ]
             d_0 = cm.cam_info.sc_2_rw.dir pos[ 0 ], pos[ 1 ]

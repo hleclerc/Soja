@@ -5,13 +5,14 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
 
         #
         @cm = new CanvasManager
-            el   : @div
-            cam  : @view_item.cam
-            items: @app_data.visible_tree_items[ @view_item._panel_id ]
-            time : @app_data.time
+            el            : @div
+            cam           : @view_item.cam
+            items         : @app_data.visible_tree_items[ @view_item._panel_id ]
+            time          : @app_data.time
             context_menu  : ( evt, show ) => @_launch_context_menu( evt, show )
             add_transform : ( evt, show ) => @_add_transform_node( evt )
             theme         : @app_data.selected_display_settings().theme
+            undo_manager  : undo_manager
             
         # active_items
         @cm.active_items = =>

@@ -4,7 +4,7 @@ class ModelEditorItem_Bool_Img extends ModelEditorItem
         super params
         
         @ed.onclick = =>
-            @get_undo_manager()?.snapshot()
+            @snapshot()
             @model.toggle()
         
         @span = new_dom_element

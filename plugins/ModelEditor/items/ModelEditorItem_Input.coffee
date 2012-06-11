@@ -10,7 +10,7 @@ class ModelEditorItem_Input extends ModelEditorItem
             style     :
                 width: @ew + "%"
             onchange  : =>
-                @get_undo_manager()?.snapshot()
+                @snapshot()
                 @model.set @input.value
             onfocus   : =>
                 @get_focus()?.set @view_id
