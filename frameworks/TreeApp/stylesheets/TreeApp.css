@@ -9,8 +9,9 @@
 }
 
 .ContainerTreeView {
-    overflow: auto;
+    overflow  : scroll;
 }
+
 .FooterTreeView {
     color: DarkSlateGrey;
     background-color: WhiteSmoke;

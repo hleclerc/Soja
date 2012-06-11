@@ -69,7 +69,6 @@ class LayoutManagerData extends Model
 
     # p may be the panel_id or a point
     rm_panel: ( id ) ->
-        console.log "before", @root.get()
         if not @allow_destruction( id )
             return false
             
@@ -78,15 +77,14 @@ class LayoutManagerData extends Model
         
         if pa.children.length == 2
             nn = 1 * ( pa.children[ 0 ] == ch )
-            
             ci = pa.children[ nn ].get()
             ci.strength = pa.strength.get()
             
+            pa.set undefined
             pa.set ci
         else
             console.log "TODO"
             
-        console.log "after", @root.get()
         return true
 
     # get a list with panel_id of visible panels
