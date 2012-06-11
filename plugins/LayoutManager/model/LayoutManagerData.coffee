@@ -69,6 +69,7 @@ class LayoutManagerData extends Model
 
     # p may be the panel_id or a point
     rm_panel: ( id ) ->
+        console.log "before", JSON.stringify @root.get()
         if not @allow_destruction( id )
             return false
             
@@ -85,6 +86,7 @@ class LayoutManagerData extends Model
         else
             console.log "TODO"
             
+        console.log "after", JSON.stringify @root.get()
         return true
 
     # get a list with panel_id of visible panels
