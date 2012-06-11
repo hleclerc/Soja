@@ -416,7 +416,8 @@ class Model
     _get_flat_model_map: ( map, date ) ->
         map[ @model_id ] = this
         
-        for name, obj of this when obj instanceof Model
+        for name in @_attribute_names
+            obj = this[ name ]
             if not map[ obj.model_id ]?
                 if obj._date_last_modification > date
                     obj._get_flat_model_map map, date
