@@ -229,7 +229,15 @@ class Model
         eval "var __new__ = new #{Model.get_object_class this};"
         __new__.set_attr o
         __new__
-        
+
+    # returns true if change is not "cosmetic"
+    real_change: ->
+        if @has_been_directly_modified()
+            return true
+        for a in @_attribute_names
+            if this[ a ].real_change()
+                return true
+        return false
         
     # modify state according to str. str can be the result of a previous @get_state
     @new_from_state: ( str ) ->

@@ -264,6 +264,15 @@ class Lst extends Model
         for i in [ 0 ... @length ]
             res.push this[ i ].deep_copy()
         res
+
+    # returns true if change is not "cosmetic"
+    real_change: ->
+        if @has_been_directly_modified()
+            return true
+        for a in this
+            if a.real_change()
+                return true
+        return false
         
     #
     _set: ( value ) ->

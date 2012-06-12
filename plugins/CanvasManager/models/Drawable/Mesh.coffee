@@ -13,10 +13,7 @@ class Mesh extends Drawable
             
         @add_attr
             warp_by          : new Choice_RestrictedByDim( 0, @displayed_field.lst )
-            warp_factor      : new ConstrainedVal( 0, 
-                min: 0
-                max: 2048
-            )
+            warp_factor      : new ConstrainedVal( 0, { min: 0, max: 2048 } )
             
             editable_points  : true
             
@@ -26,19 +23,11 @@ class Mesh extends Drawable
             triangles        : new Lst
             polygons         : new Lst
             
-            # fields
-            #elementary_fields: new Model # { field_name: values, ... }
-            #nodal_fields     : new Model # { field_name: values, ... }
-            
             # behavior
             _selected        : new Lst # references of selected points / lines / ...
             _pre_sele        : new Lst # references of selected points / lines / ...
             _selected_color  : new Color 255,   0,   0
             _pre_sele_color  : new Color 255, 255, 100
-            
-        
-#         @warp_factor.delta = () ->
-#             4000
             
         for key, val of params
             this[ key ]?.set? val
@@ -53,6 +42,11 @@ class Mesh extends Drawable
         # default move scheme
         @move_scheme = MoveScheme_3D
             
+    real_change: ->
+        for a in [ @points, @lines, @triangles, @polygons ]
+            if a.real_change()
+                return true
+        false
     
     sub_canvas_items: ->
         [ @legend ]
