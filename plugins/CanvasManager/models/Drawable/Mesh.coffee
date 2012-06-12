@@ -9,7 +9,7 @@ class Mesh extends Drawable
         
         @add_attr
             displayed_field  : new Choice( 0, [] )
-            displayed_style  : new Choice( 0, [ "Arrow", "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
+            displayed_style  : new Choice( 4, [ "Arrow", "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
             
         @add_attr
             warp_by          : new Choice_RestrictedByDim( 0, @displayed_field.lst )

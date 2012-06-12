@@ -4,11 +4,15 @@ class ModelEditorItem_List extends ModelEditorItem
         super params
 
         @lst = []
+        @dst = []
 
     onchange: ->
         if @model.has_been_directly_modified() or @lst.length == 0
             for v in @lst
                 v.destructor()
+            for v in @dst
+                v.parentNode.removeChild v
+                
             @dim = ModelEditorItem_List._rec_dim @model
             if @model.length < 50
                 w = if @dim == 1 then @ew / @model.length else @ew
@@ -20,13 +24,15 @@ class ModelEditorItem_List extends ModelEditorItem
                             model     : i
                             parent    : this
                             item_width: w
+                    @dst = []
                 else
-                    @lst = [
+                    @lst = []
+                    @dst = [
                         new_dom_element
                             parentNode: @ed
                             style     :
-                                width: w + "%"
-                        ]
+                                width: @ew + "%"
+                    ]
                     
                         
                 if @lst.length and @ev?
@@ -42,7 +48,7 @@ class ModelEditorItem_List extends ModelEditorItem
     @_rec_dim: ( model ) ->
         while model.disp_only_in_model_editor?()
             model = model.disp_only_in_model_editor()
-        d = model.dim()
+        d = model.dim true
             
         if d and model[ 0 ]?
             return d + ModelEditorItem_List._rec_dim model[ 0 ]

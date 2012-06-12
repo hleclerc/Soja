@@ -247,7 +247,6 @@ class Lst extends Model
         if index < @length
             @mod_attr index, val
         else if index == @length
-            console.log val
             @push val
     
     # permits to reduce the size (resize is allowed only if we known how to create new items)

@@ -180,12 +180,20 @@ class Model
             @rem_attr r
 
     # dimension of the object -> [] for a scalar, [ length ] for a vector, ...
-    size: ->
+    size: ( for_display = false ) ->
+        if for_display
+            i = 0
+            r = 0
+            for v in @_attribute_names
+                i += v[ 0 ] != "_"
+                r = this[ v ]
+            if i == 1
+                return r.size true
         []
 
     # dimensionnality of the object -> 0 for a scalar, 1 for a vector, ...
-    dim: ->
-        @size().length
+    dim: ( for_display = false ) ->
+        @size( for_display ).length
 
     #
     equals: ( m ) ->
