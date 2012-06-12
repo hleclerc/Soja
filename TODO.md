@@ -1,4 +1,4 @@
-* only one inst of FileSystem (use of filseSystem.)
+* only one inst of FileSystem (use of fileSystem)
 * ModelEditorList supporting dim changes
 * 
 
