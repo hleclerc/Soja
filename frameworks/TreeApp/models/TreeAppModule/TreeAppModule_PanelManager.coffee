@@ -102,6 +102,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
             txt: "Close current view"
             ina: _ina
             fun: ( evt, app ) ->
+                app.undo_manager.snapshot()
                 d = app.data.selected_display_settings()
 #                 console.log d
                 for panel_id in app.data.selected_canvas_pan
@@ -171,6 +172,7 @@ class TreeAppModule_PanelManager extends TreeAppModule
 
     
     split_view: ( evt, app, n ) ->
+        app.undo_manager.snapshot()
         cam = undefined
         child = undefined
         for p in app.data.selected_tree_items

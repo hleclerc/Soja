@@ -12,6 +12,7 @@ class TreeAppModule_ImageSet extends TreeAppModule
             txt: "New Shooting"
             fun: ( evt, app ) =>
                 #
+                app.undo_manager.snapshot()
                 @collection = new ShootingItem app
                 
                 session = app.data.selected_session()
@@ -20,13 +21,13 @@ class TreeAppModule_ImageSet extends TreeAppModule
                 @select_item app, @collection
                 @watch_item app, @collection
                 
-                app.undo_manager.snapshot()
                 
         @actions.push
             ico: "img/add_pic_24.png"
             siz: 1
             txt: "Add Image"
             fun: ( evt, app, img ) =>
+                app.undo_manager.snapshot()
                 @collection = @add_item_depending_selected_tree app, ImgSetItem
                 
                 if not img?
@@ -54,7 +55,6 @@ class TreeAppModule_ImageSet extends TreeAppModule
                     app.data.time.set 0
                     
                 app.fit()
-                app.undo_manager.snapshot()
                 
             key: [ "Shift+A" ]
 
@@ -64,6 +64,7 @@ class TreeAppModule_ImageSet extends TreeAppModule
             txt: "New Collection"
             fun: ( evt, app ) =>
                 #
+                app.undo_manager.snapshot()
                 @collection = new ImgSetItem
                 
                 session = app.data.selected_session()
@@ -71,4 +72,3 @@ class TreeAppModule_ImageSet extends TreeAppModule
                 
                 @unselect_all_item app
                 @select_item app, @collection
-                app.undo_manager.snapshot()

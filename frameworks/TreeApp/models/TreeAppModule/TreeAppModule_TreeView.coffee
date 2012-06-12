@@ -32,6 +32,7 @@ class TreeAppModule_TreeView extends TreeAppModule
                                 if mod instanceof TreeAppModule_PanelManager
                                     mod.actions[ 4 ].fun evt, app
                         else
+                            app.undo_manager.snapshot()
                             path[ path.length - 2 ].rem_child m
                             @delete_from_tree app, m
                             
