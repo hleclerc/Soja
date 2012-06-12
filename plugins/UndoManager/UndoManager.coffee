@@ -64,7 +64,9 @@ class UndoManager
     _set_state_undo_list: ->
         # compute the state using patches from the beginning to the wanted date
         map = {}
+        console.log "yop"
         for p in @patch_undo
+            console.log p.data
             lst = p.data.split "\n"
             lst.shift() # model_id
             for l in lst when l.length
@@ -74,6 +76,8 @@ class UndoManager
                     data: s[ 2 ]
                     buff: undefined
 
+        console.log map
+        
         # change the model
         @model._set_state map[ @model.model_id ].data, map
 

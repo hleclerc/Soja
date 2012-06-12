@@ -13,12 +13,21 @@ class ModelEditorItem_List extends ModelEditorItem
             if @model.length < 50
                 w = if @dim == 1 then @ew / @model.length else @ew
             
-                @lst = for i in @model
-                    new_model_editor
-                        el        : @ed
-                        model     : i
-                        parent    : this
-                        item_width: w
+                if @model.length
+                    @lst = for i in @model
+                        new_model_editor
+                            el        : @ed
+                            model     : i
+                            parent    : this
+                            item_width: w
+                else
+                    @lst = [
+                        new_dom_element
+                            parentNode: @ed
+                            style     :
+                                width: w + "%"
+                        ]
+                    
                         
                 if @lst.length and @ev?
                     @ev.onmousedown = =>

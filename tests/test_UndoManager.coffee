@@ -16,14 +16,17 @@ test_UndoManager = ->
     # data
     m = new Model
         l: [ 666 ]
-        b: 1
-        t: new ConstrainedVal( 1, min: 0, max: 10 )
-        z: "toto"
+        #         b: 1
+        #         t: new ConstrainedVal( 1, min: 0, max: 10 )
+        #         z: "toto"
     
     # undo manager
     a = new UndoManager m
     add_butt "undo", -> a.undo()
     add_butt "redo", -> a.redo()
+    add_butt "crea", ->
+        a.snapshot()
+        m.l.push m.l.length
 
     # view
     new_model_editor el: document.body, model: m, label: "test model", undo_manager: a

@@ -1,3 +1,3 @@
+* only one inst of FileSystem (use of filseSystem.)
+* 
 
-* check rem_attr with ModelEditor
-* str save with spaces
