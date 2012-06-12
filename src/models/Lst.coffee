@@ -315,6 +315,8 @@ class Lst extends Model
         
         for attr in [ 0 ... @length ]
             k_id = l_id[ attr ]
+            if not map[ k_id ]?
+                console.log map, k_id
             if map[ k_id ].buff?
                 if map[ k_id ].buff != this[ attr ]
                     @mod_attr attr, map[ k_id ].buff
