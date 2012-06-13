@@ -100,7 +100,7 @@ class Mesh extends Drawable
         
         display = @displayed_style.get()
         
-        #         @_draw_polygons info, proj
+        @_draw_polygons info, proj
         
         # call adapted draw function for color and using gradient
         if @displayed_field.lst.length
@@ -206,8 +206,8 @@ class Mesh extends Drawable
         for polyg in @polygons.get()
             if polyg.length > 0
                 info.ctx.beginPath()
-                info.ctx.strokeStyle = info.theme.line.to_hex()
-                info.ctx.fillStyle   = info.theme.line.to_hex()
+                info.ctx.strokeStyle = "red"#info.theme.line.to_hex()
+                info.ctx.fillStyle   = 'rgba(200, 200, 125, 100 )'
                 
                 first_point = polyg[ 0 ]
                 pos_first_point = proj[ first_point ]
@@ -221,6 +221,7 @@ class Mesh extends Drawable
                 info.ctx.lineTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
                 
                 if @displayed_style.get() == "Wireframe"
+                    info.ctx.fill()#only for debugging
                     info.ctx.stroke()
                 else
                     info.ctx.fill()
@@ -510,7 +511,24 @@ class Mesh extends Drawable
                             ol = P1
                             li[ 1 ].set os
                             @lines.push [ os, ol ]
-                            
+#                             console.log os, ol, n
+#                             console.log @polygons[ 0 ].get()
+#                             @polygons[ 0 ].insert ol, os
+#                             if ol < @polygons[ 0 ].length - 1
+#                                 tmp = new Lst
+#                                 for j in [ ol ... @polygons[ 0 ].length ]
+#                                     tmp.push @polygons[ 0 ][ j ]
+#                                 console.log tmp.get()
+#                                 
+#                                 @polygons[ 0 ][ ol ].set os
+#                                 for val, i in tmp
+#                                     if @polygons[ 0 ].length <= ol + i + 1
+#                                         @polygons[ 0 ].push tmp[ i ].get() 
+#                                     else
+#                                         @polygons[ 0 ][ ol + i + 1 ].set tmp[ i ].get() 
+#                             else
+#                                 @polygons[ 0 ].push os
+                                
                             res.push
                                 prov: this
                                 item: n

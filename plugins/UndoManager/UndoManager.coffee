@@ -17,9 +17,9 @@ class UndoManager
             # actual work
             date = @_date_last_snapshot()
             
-            console.log "--PATCH--"
+#             console.log "--PATCH--"
             # if something has changed since previous undo or snapshot
-            console.log 'date ' , @model._date_last_modification, date
+#             console.log 'date ' , @model._date_last_modification, date
             if @model._date_last_modification > date
                 @patch_redo = []
                 
@@ -27,7 +27,7 @@ class UndoManager
                     date: Model._counter
                     data: @model.get_state date
             
-            console.log "patch : ", JSON.stringify(@patch_undo, null, "\t")
+#             console.log "patch : ", JSON.stringify(@patch_undo, null, "\t")
         # snapshot authorization after 250ms of inactivity
         if @_timer_snap?
             clearTimeout @_timer_snap
@@ -67,8 +67,8 @@ class UndoManager
     _set_state_undo_list: ->
         # compute the state using patches from the beginning to the wanted date
         map = {}
-        console.log "---Set_state-----"
-        console.log "patch_undo : ", JSON.stringify(@patch_undo, null, "\t")
+#         console.log "---Set_state-----"
+#         console.log "patch_undo : ", JSON.stringify(@patch_undo, null, "\t")
         for p in @patch_undo
             lst = p.data.split "\n"
             lst.shift() # model_id
@@ -79,8 +79,8 @@ class UndoManager
                     data: s[ 2 ]
                     buff: undefined
 
-        console.log "map : ", JSON.stringify(map, null, "\t")
-        console.log "model_id : ", @model.model_id
+#         console.log "map : ", JSON.stringify(map, null, "\t")
+#         console.log "model_id : ", @model.model_id
         
         # change the model
         @model._set_state map[ @model.model_id ].data, map
