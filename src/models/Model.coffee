@@ -180,12 +180,20 @@ class Model
             @rem_attr r
 
     # dimension of the object -> [] for a scalar, [ length ] for a vector, ...
-    size: ->
+    size: ( for_display = false ) ->
+        if for_display
+            i = 0
+            r = 0
+            for v in @_attribute_names
+                i += v[ 0 ] != "_"
+                r = this[ v ]
+            if i == 1
+                return r.size true
         []
 
     # dimensionnality of the object -> 0 for a scalar, 1 for a vector, ...
-    dim: ->
-        @size().length
+    dim: ( for_display = false ) ->
+        @size( for_display ).length
 
     #
     equals: ( m ) ->
@@ -221,7 +229,15 @@ class Model
         eval "var __new__ = new #{Model.get_object_class this};"
         __new__.set_attr o
         __new__
-        
+
+    # returns true if change is not "cosmetic"
+    real_change: ->
+        if @has_been_directly_modified()
+            return true
+        for a in @_attribute_names
+            if this[ a ].real_change()
+                return true
+        return false
         
     # modify state according to str. str can be the result of a previous @get_state
     @new_from_state: ( str ) ->

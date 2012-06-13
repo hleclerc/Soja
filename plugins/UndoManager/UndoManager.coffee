@@ -17,9 +17,11 @@ class UndoManager
             # actual work
             date = @_date_last_snapshot()
             
-#             console.log "--PATCH--"
+
+            #console.log "--PATCH--"
             # if something has changed since previous undo or snapshot
-#             console.log 'date ' , @model._date_last_modification, date
+            #console.log 'date ' , @model._date_last_modification, date
+
             if @model._date_last_modification > date
                 @patch_redo = []
                 
@@ -27,7 +29,9 @@ class UndoManager
                     date: Model._counter
                     data: @model.get_state date
             
-#             console.log "patch : ", JSON.stringify(@patch_undo, null, "\t")
+
+            #console.log "patch : ", JSON.stringify(@patch_undo, null, "\t")
+
         # snapshot authorization after 250ms of inactivity
         if @_timer_snap?
             clearTimeout @_timer_snap

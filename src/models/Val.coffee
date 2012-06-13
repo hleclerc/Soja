@@ -23,6 +23,7 @@ class Val extends Obj
 
     # we do not take _set from Obj because we want a conversion if value is not a number
     _set: ( value ) ->
+        # console.log value
         if typeof value == "string"
             if value.slice( 0, 2 ) == "0x"
                 n = parseInt value, 16
