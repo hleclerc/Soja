@@ -94,7 +94,7 @@ class Mesh extends Drawable
         
         display = @displayed_style.get()
         
-        @_draw_polygons info, proj
+        #@_draw_polygons info, proj
         
         # call adapted draw function for color and using gradient
         if @displayed_field.lst.length
@@ -201,21 +201,25 @@ class Mesh extends Drawable
             if polyg.length > 0
                 info.ctx.beginPath()
                 info.ctx.strokeStyle = "red"#info.theme.line.to_hex()
-                info.ctx.fillStyle   = 'rgba(200, 200, 125, 100 )'
+                info.ctx.fillStyle   = "rgba(200,200,125,100)"#info.theme.line.to_hex()
                 
-                first_point = polyg[ 0 ]
+                
+                first_point = @lines[ polyg[ 0 ] ][ 0 ]
+                
                 pos_first_point = proj[ first_point ]
                 info.ctx.moveTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
                 
-                for line in polyg
-                    pos_p = proj[ line ]
-                    if pos_p?
-                        info.ctx.lineTo( pos_p[ 0 ], pos_p[ 1 ] )
+                for index_line in polyg
+                    for i in [ 1 ...@lines[ index_line ].length ] # don't draw first point (because he is the same as the last line points)
+                        p = @lines[ index_line ][ i ]
+                        pos_p = proj[ p ]
+                        if pos_p?
+                            info.ctx.lineTo( pos_p[ 0 ], pos_p[ 1 ] )
                 # come back to first point
                 info.ctx.lineTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
                 
                 if @displayed_style.get() == "Wireframe"
-                    info.ctx.fill()#only for debugging
+                    info.ctx.fill()#only for debug
                     info.ctx.stroke()
                 else
                     info.ctx.fill()
@@ -353,6 +357,7 @@ class Mesh extends Drawable
                             @lines.push tmpLines
                          
                         @lines.splice( i , 1 )
+                        @polygons[ 0 ].push @lines.length - 1 #MUST BE CHECKED
 
     make_curve_line_from_selected: ( info ) ->
         for i in [ 0 ... @points.length ]
@@ -378,10 +383,11 @@ class Mesh extends Drawable
                 # delete two segment
                 for ind in [0...pointToJoin.length]
                     @lines.splice(pointToJoin[ ind ][ 0 ], 1)
+#                     @polygons[ 0 ].splice pointToJoin[ ind ][ 0 ], 1
                     
                 # make an arc with selectionned point on middle
                 @lines.push [ pointToJoin[ 0 ][ 1 ], index, pointToJoin[ 1 ][ 1 ] ]
-
+                console.log index, pointToJoin
             # case one segment and one arc
             else if lineWithCurve.length == 1 && pointToJoin.length == 1
                     
@@ -432,6 +438,7 @@ class Mesh extends Drawable
                 for ind, i in lineWithCurve[0]
                     @lines.splice(lineWithCurve[0][ ind ] - i, 1)
                 @lines.push newLine
+                
 
     _get_line_inter: ( proj, P0, P1, x, y ) ->
         lg_0 = P0
@@ -504,25 +511,10 @@ class Mesh extends Drawable
                             n = @points[ @points.length-1 ]
                             ol = P1
                             li[ 1 ].set os
+                            
+                            current_line = @lines.length
                             @lines.push [ os, ol ]
-#                             console.log os, ol, n
-#                             console.log @polygons[ 0 ].get()
-#                             @polygons[ 0 ].insert ol, os
-#                             if ol < @polygons[ 0 ].length - 1
-#                                 tmp = new Lst
-#                                 for j in [ ol ... @polygons[ 0 ].length ]
-#                                     tmp.push @polygons[ 0 ][ j ]
-#                                 console.log tmp.get()
-#                                 
-#                                 @polygons[ 0 ][ ol ].set os
-#                                 for val, i in tmp
-#                                     if @polygons[ 0 ].length <= ol + i + 1
-#                                         @polygons[ 0 ].push tmp[ i ].get() 
-#                                     else
-#                                         @polygons[ 0 ][ ol + i + 1 ].set tmp[ i ].get() 
-#                             else
-#                                 @polygons[ 0 ].push os
-                                
+                            @polygons[ 0 ].insert ol, [ current_line ]
                             res.push
                                 prov: this
                                 item: n
