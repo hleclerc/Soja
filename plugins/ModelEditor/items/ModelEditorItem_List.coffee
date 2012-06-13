@@ -32,6 +32,7 @@ class ModelEditorItem_List extends ModelEditorItem
                             parentNode: @ed
                             style     :
                                 width: @ew + "%"
+                                background: "#123456"
                     ]
                     
                         
