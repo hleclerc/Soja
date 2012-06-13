@@ -292,11 +292,13 @@ class Mesh extends Drawable
         #delete every line linked to the point
         if @lines.length > 0
             for i in [@lines.length-1..0]
-                if @lines[i].indexOf(index) != -1
-                    pos = @lines[i].indexOf(index)
-                    if @lines[i].length == 2
-                        unlinkedPoint.push(@lines[i][1-pos].get()) #get the point which is alone
-                        @lines.splice(i,1)
+                if @lines[ i ].indexOf( index ) != -1
+                    pos = @lines[ i ].indexOf( index )
+                    if @lines[ i ].length == 2
+                        unlinkedPoint.push(@lines[ i ][ 1 - pos ].get()) #get the point which is alone
+                        @lines.splice i, 1
+                        @polygons[ 0 ].splice i, 1
+                        @actualise_polygons -1, i
                         
                     else if @lines[i].length >= 3
                         pos = []
@@ -309,14 +311,20 @@ class Mesh extends Drawable
                         for ind in pos
                             if ind != 1
                                 unlinkedPoint.push(@lines[i][1].get())
-                            @lines[i].splice(ind,1)
+                            @lines[ i ].splice ind, 1
+                            @polygons[ 0 ].splice ind, 1
+                            @actualise_polygons -1, ind
                         
                         if @lines[i].length == 3
                             #check if it was a circle and the clicked point was not the point who appear twice
-                            if @lines[i][ 0 ].get() == @lines[i][ 1 ].get() || @lines[i][ 0 ].get() == @lines[i][ 2 ].get()
-                                @lines[i].splice(0,1)
+                            if @lines[ i ][ 0 ].get() == @lines[i][ 1 ].get() || @lines[i][ 0 ].get() == @lines[i][ 2 ].get()
+                                @lines[ i ].splice 0, 1
+                                @polygons[ 0 ].splice 0, 1
+                                @actualise_polygons -1, 0
                             else if @lines[i][ 1 ].get() == @lines[i][ 2 ].get()
-                                @lines[i].splice(1,1)
+                                @lines[ i ].splice 1,1
+                                @polygons[ 0 ].splice 1, 1
+                                @actualise_polygons -1, 1
 
             #relink lonely point
             if unlinkedPoint.length > 0
@@ -324,9 +332,10 @@ class Mesh extends Drawable
                     #                 for j in [0...@lines.length]
                     #                     if @lines[j].indexOf(unlinkedPoint[i]) == -1 || @lines[j].indexOf(unlinkedPoint[i+1]) == -1 #  check if this line already exist or not
                     @lines.push [ unlinkedPoint[ i ], unlinkedPoint[ i + 1 ] ]
+                    @polygons[ 0 ].push @lines.length-1
         
         #delete the point and change index of every line definition
-        @points.splice( index, 1 )
+        @points.splice index, 1
         for i in [ 0...@lines.length ]
             for j in [ 0...@lines[ i ].length ]
                 if @lines[ i ][ j ].get() >= index
@@ -348,6 +357,7 @@ class Mesh extends Drawable
                         if pos > 0
                             tmpLines = @lines[ i ].slice( 0, pos + 1 )
                             @lines.push tmpLines
+                            @polygons[ 0 ].push @lines.length-1
 
                         l = @lines[ i ].length
                         after = l - pos
@@ -355,14 +365,22 @@ class Mesh extends Drawable
                             #after pos
                             tmpLines = @lines[ i ].slice( pos, l )
                             @lines.push tmpLines
+                            @polygons[ 0 ].push @lines.length-1
                          
-                        @lines.splice( i , 1 )
-                        @polygons[ 0 ].push @lines.length - 1 #MUST BE CHECKED
+                        @lines.splice i, 1
+                        @polygons[ 0 ].splice i, 1
+                        @actualise_polygons -1, i
 
     make_curve_line_from_selected: ( info ) ->
         for i in [ 0 ... @points.length ]
             if @_selected.contains_ref @points[ i ]
                 @make_curve_line i
+    
+    #add "value" to all polygons data started at index "index" (use for ex when a line is deleted)
+    actualise_polygons: ( val, index ) ->
+        for polyg in @polygons
+            for i in [ index ... polyg.length ]
+                polyg[ i ].set polyg[ i ].get() + val
 
     make_curve_line: ( index ) ->
         if typeof index == "undefined"
@@ -383,11 +401,13 @@ class Mesh extends Drawable
                 # delete two segment
                 for ind in [0...pointToJoin.length]
                     @lines.splice(pointToJoin[ ind ][ 0 ], 1)
-#                     @polygons[ 0 ].splice pointToJoin[ ind ][ 0 ], 1
+                    @polygons[ 0 ].splice pointToJoin[ ind ][ 0 ], 1
+                    @actualise_polygons -1, pointToJoin[ ind ][ 0 ]
                     
                 # make an arc with selectionned point on middle
                 @lines.push [ pointToJoin[ 0 ][ 1 ], index, pointToJoin[ 1 ][ 1 ] ]
-                console.log index, pointToJoin
+                @polygons[ 0 ].push @lines.length-1
+                
             # case one segment and one arc
             else if lineWithCurve.length == 1 && pointToJoin.length == 1
                     
@@ -398,11 +418,16 @@ class Mesh extends Drawable
             
                 if pos == 0
                     @lines[ lineNumber ].unshift pointToJoin[ 0 ][ 1 ]
+                    @polygons[ 0 ].unshift 0
+                    @actualise_polygons 1, 1
                 else
                     @lines[ lineNumber ].push pointToJoin[ 0 ][ 1 ]
+                    @polygons[ 0 ].push @lines.length-1
                 
                 # delete segment
                 @lines.splice( indexDel, 1)
+                @polygons[ 0 ].splice indexDel, 1
+                @actualise_polygons -1, indexDel
                 #deletion is not actualised
                 
             # case two arc
@@ -437,7 +462,10 @@ class Mesh extends Drawable
                 #delete old arc
                 for ind, i in lineWithCurve[0]
                     @lines.splice(lineWithCurve[0][ ind ] - i, 1)
+                    @polygons[ 0 ].splice lineWithCurve[0][ ind ] - i, 1
+                    @actualise_polygons -1, lineWithCurve[0][ ind ] - i
                 @lines.push newLine
+                @polygons[ 0 ].push @lines.length-1
                 
 
     _get_line_inter: ( proj, P0, P1, x, y ) ->
