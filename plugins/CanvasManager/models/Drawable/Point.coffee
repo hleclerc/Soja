@@ -19,3 +19,6 @@ class Point extends Drawable
     z_index: ->
         100
         
+    size: ( for_display = false ) ->
+        [ 3 ]
+        

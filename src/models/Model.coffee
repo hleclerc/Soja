@@ -181,14 +181,6 @@ class Model
 
     # dimension of the object -> [] for a scalar, [ length ] for a vector, ...
     size: ( for_display = false ) ->
-        if for_display
-            i = 0
-            r = 0
-            for v in @_attribute_names
-                i += v[ 0 ] != "_"
-                r = this[ v ]
-            if i == 1
-                return r.size true
         []
 
     # dimensionnality of the object -> 0 for a scalar, 1 for a vector, ...
@@ -235,6 +227,8 @@ class Model
         if @has_been_directly_modified()
             return true
         for a in @_attribute_names
+            if @cosmetic_attribute? a
+                continue
             if this[ a ].real_change()
                 return true
         return false
