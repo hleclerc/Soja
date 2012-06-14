@@ -22,7 +22,7 @@
     background: linear-gradient(top, #eee, #c6c6c6);
 }
 
-.msg{
+#msg {
     position  : absolute;
     top       : 0;
     text-align: center;
@@ -31,17 +31,17 @@
     font-size : 1.2em;
 }
 
-.msg_info{
+.msg_info {
     color           : lightGrey;
     background-color: black;
     opacity         : 0.8;
 }
-.msg_error{
+.msg_error {
     color           : red;
     background-color: black;
     opacity         : 1;
 }
-.msg_success{
+.msg_success {
     color           : green;
     background-color: #eee;
     opacity         : 1;

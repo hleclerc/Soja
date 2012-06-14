@@ -55,10 +55,14 @@ class CanvasManager extends View
 
         @msg_container = new_dom_element
             nodeName  : "div"
+            id        : "msg"
             parentNode: @el
-            className : "msg msg_success"
             txt : "Message Test"
-            
+        @msg_container.innerHTML = "Other message test"
+        @msg_container.classList.add "msg_success"
+        @msg_container.display = 'block'
+        #timeout to display = 'hidden'
+        
     onchange: ->
         if @need_to_redraw()
             @draw()
