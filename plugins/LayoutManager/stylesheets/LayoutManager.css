@@ -21,3 +21,28 @@
     background: -ms-linear-gradient(top, #eee, #c6c6c6);
     background: linear-gradient(top, #eee, #c6c6c6);
 }
+
+.msg{
+    position  : absolute;
+    top       : 0;
+    text-align: center;
+    z-index   : 0;
+    width     : 100%;
+    font-size : 1.2em;
+}
+
+.msg_info{
+    color           : lightGrey;
+    background-color: black;
+    opacity         : 0.8;
+}
+.msg_error{
+    color           : red;
+    background-color: black;
+    opacity         : 1;
+}
+.msg_success{
+    color           : green;
+    background-color: #eee;
+    opacity         : 1;
+}

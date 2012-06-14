@@ -53,6 +53,12 @@ class CanvasManager extends View
         @click_fun    = [] # called if mouse down and up without move
         @dblclick_fun = []
 
+        @msg_container = new_dom_element
+            nodeName  : "div"
+            parentNode: @el
+            className : "msg msg_success"
+            txt : "Message Test"
+            
     onchange: ->
         if @need_to_redraw()
             @draw()
