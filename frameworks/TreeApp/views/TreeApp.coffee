@@ -32,11 +32,10 @@ class TreeApp extends View
         
         document.addEventListener "keydown", ( ( evt ) => @_on_key_down evt ), true
 
-        
     onchange: ->
         # update layout if current session has changed
         if @treeview?
-            for el in @treeview.flat when el.item._messages?
+            for el in @treeview.flat when el.item?._messages?
                 if el.item._messages.has_been_modified()
                     for message in el.item._messages
                         msg_container = new_dom_element
@@ -48,10 +47,10 @@ class TreeApp extends View
                         msg = new_dom_element
                             nodeName  : "span"
                             id        : "msg_box"
-                            parentNode: @msg_container
-                            txt       : message
+                            parentNode: msg_container
+                            txt       : message.title
                         
-                        msg.classList.add "msg_success"
+                        msg.classList.add "msg_info" # should be remplaced by somthing like message.type msg_info, msg_success or msg_error
                         #@msg_container.display = 'block'
                         #@msg_container.classList.remove "msg_success"
                     

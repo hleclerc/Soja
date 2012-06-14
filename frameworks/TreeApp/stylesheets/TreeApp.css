@@ -51,6 +51,33 @@
     border-radius        : 3px;
 }*/
 
+#msg_container {
+    position  : absolute;
+    top       : 3%;
+    left      : 1%;
+    z-index   : 1;
+    font-size : 1.1em;
+    width     : 99%;
+}
+#msg_box {
+    padding: 3px;
+}
+.msg_info {
+    color           : lightGrey;
+    background-color: black;
+    opacity         : 0.8;
+}
+.msg_error {
+    color           : red;
+    background-color: black;
+    opacity         : 1;
+}
+.msg_success {
+    color           : green;
+    background-color: #eee;
+    opacity         : 1;
+}
+
 .LayoutManager_Border {
     /* opacity   : 0.25; */
     background: #666;

@@ -36,8 +36,7 @@ class Mesh extends Drawable
         # default move scheme
         @move_scheme = MoveScheme_3D
         
-        console.log @visualisation
-            
+
     real_change: ->
         for a in [ @points, @lines, @triangles, @polygons ]
             if a.real_change()
