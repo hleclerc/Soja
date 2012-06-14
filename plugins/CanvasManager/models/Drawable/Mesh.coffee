@@ -6,15 +6,15 @@ class Mesh extends Drawable
     constructor: ( legend = null, params = {} ) ->
         super()
         
+        @add_attr
+            visualisation :
+                displayed_field  : new Choice( 0, [] )
+                displayed_style  : new Choice( 4, [ "Arrow", "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
+                
+        @visualisation.warp_by = new Choice_RestrictedByDim( 0, @visualisation.displayed_field.lst )
+        @visualisation.warp_factor = new ConstrainedVal( 0, { min: 0, max: 2048 } )
         
         @add_attr
-            displayed_field  : new Choice( 0, [] )
-            displayed_style  : new Choice( 4, [ "Arrow", "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
-            
-        @add_attr
-            warp_by          : new Choice_RestrictedByDim( 0, @displayed_field.lst )
-            warp_factor      : new ConstrainedVal( 0, { min: 0, max: 2048 } )
-            
             editable_points  : true
             
             # geometry
@@ -31,13 +31,11 @@ class Mesh extends Drawable
             
         for key, val of params
             this[ key ]?.set? val
-            
+
         if legend? and legend instanceof Legend
-            @add_attr
-                legend: legend
+            @visualisation.legend = legend
         else
-            @add_attr
-                legend: new Legend ""
+            @visualisation.legend = new Legend ""
                 
         # default move scheme
         @move_scheme = MoveScheme_3D
@@ -49,14 +47,14 @@ class Mesh extends Drawable
         false
     
     sub_canvas_items: ->
-        [ @legend ]
+        [ @visualisation.legend ]
         
     #
     add_point: ( pos = [ 0, 0, 0 ] ) ->
         @points.push new Point pos, @move_scheme
         
     add_field: ( field ) ->
-        @displayed_field.lst.push field
+        @visualisation.displayed_field.lst.push field
         
     z_index: ->
         return 100
@@ -74,9 +72,9 @@ class Mesh extends Drawable
             selected[ item.model_id ] = true
         
         # apply warp_factor deformation to points
-        if @warp_by.lst[ @warp_by.num ] != undefined and @warp_factor.get() != 0
-            warp_factor = @warp_factor.get()
-            field_data = @warp_by.get()
+        if @visualisation.warp_by.lst[ @visualisation.warp_by.num ] != undefined and @visualisation.warp_factor.get() != 0
+            warp_factor = @visualisation.warp_factor.get()
+            field_data = @visualisation.warp_by.get()
             proj = for p, i in @points
                 data = new Vec_3
                 for fd, j in field_data
@@ -92,13 +90,13 @@ class Mesh extends Drawable
         info.ctx.fillStyle = "#FFFFFF"
         info.ctx.strokeStyle = info.theme.line.to_hex()
         
-        display = @displayed_style.get()
+        display = @visualisation.displayed_style.get()
         
         #@_draw_polygons info, proj
         
         # call adapted draw function for color and using gradient
-        if @displayed_field.lst.length
-            selected_field = @displayed_field.lst[ @displayed_field.num.get() ]
+        if @visualisation.displayed_field.lst.length
+            selected_field = @visualisation.displayed_field.lst[ @visualisation.displayed_field.num.get() ]
             
             if selected_field instanceof VectorialField
                 # Preparation of value field by selecting each value of fields at an index
@@ -112,17 +110,17 @@ class Mesh extends Drawable
                     value.push Math.sqrt val
                 
                 # Warp is use to multiply
-                if @warp_by.lst[ @warp_by.num ] != undefined and @warp_factor.get() != 0
-                    field_data = @warp_by.get()
-                    warp_factor = @warp_factor.get()
+                if @visualisation.warp_by.lst[ @visualisation.warp_by.num ] != undefined and @visualisation.warp_factor.get() != 0
+                    field_data = @visualisation.warp_by.get()
+                    warp_factor = @visualisation.warp_factor.get()
                 else
                     warp_factor = 1
                     
                 @actualise_value_legend value
-                selected_field.draw info, @displayed_style.get(), @points, value, warp_factor, @legend
+                selected_field.draw info, @visualisation.displayed_style.get(), @points, value, warp_factor, @visualisation.legend
             else # nodal and elementary fields
                 @actualise_value_legend selected_field.get()
-                selected_field.draw info, @displayed_style.get(), @triangles, proj, @legend
+                selected_field.draw info, @visualisation.displayed_style.get(), @triangles, proj, @visualisation.legend
         
         # when mesh is not an element fields nor a nodal fields
         else
@@ -218,7 +216,7 @@ class Mesh extends Drawable
                 # come back to first point
                 info.ctx.lineTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
                 
-                if @displayed_style.get() == "Wireframe"
+                if @visualisation.displayed_style.get() == "Wireframe"
                     info.ctx.fill()#only for debug
                     info.ctx.stroke()
                 else
@@ -636,10 +634,10 @@ class Mesh extends Drawable
         
     actualise_value_legend: ( values ) ->
         max = @get_max values
-        @legend.max_val.set max
+        @visualisation.legend.max_val.set max
         
         min = @get_min values
-        @legend.min_val.set min
+        @visualisation.legend.min_val.set min
 
     _disp_arc: ( info, P0, P1, P2 ) ->
         # 3D center and radius
