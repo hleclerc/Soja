@@ -19,7 +19,10 @@ class Choice extends Model
         true
             
     get: ->
-        @_nlst()[ @num.get() ].get()
+        @_nlst()[ @num.get() ]?.get()
+            
+    toString: ->
+        @_nlst()[ @num.get() ]?.toString()
 
     equals: ( a ) ->
         if a instanceof Choice

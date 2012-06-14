@@ -5,16 +5,20 @@
 class Mesh extends Drawable
     constructor: ( legend = null, params = {} ) ->
         super()
+
+        disp_fields = new Choice( 0, [] )
+            
+        for key, val of params
+            this[ key ]?.set? val
         
         @add_attr
             visualisation :
-                displayed_field  : new Choice( 0, [] )
-                displayed_style  : new Choice( 4, [ "Arrow", "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
-                
-        @visualisation.warp_by = new Choice_RestrictedByDim( 0, @visualisation.displayed_field.lst )
-        @visualisation.warp_factor = new ConstrainedVal( 0, { min: 0, max: 2048 } )
+                displayed_field: disp_fields
+                displayed_style: new Choice( 4, [ "Arrow", "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
+                legend         : ( if legend instanceof Legend then legend else new Legend( disp_fields ) )
+                warp_by        : new Choice_RestrictedByDim( 0, disp_fields.lst )
+                warp_factor    : new ConstrainedVal( 0, { min: 0, max: 2048 } )
         
-        @add_attr
             editable_points  : true
             
             # geometry
@@ -28,17 +32,11 @@ class Mesh extends Drawable
             _pre_sele        : new Lst # references of selected points / lines / ...
             _selected_color  : new Color 255,   0,   0
             _pre_sele_color  : new Color 255, 255, 100
-            
-        for key, val of params
-            this[ key ]?.set? val
-
-        if legend? and legend instanceof Legend
-            @visualisation.legend = legend
-        else
-            @visualisation.legend = new Legend ""
                 
         # default move scheme
         @move_scheme = MoveScheme_3D
+        
+        console.log @visualisation
             
     real_change: ->
         for a in [ @points, @lines, @triangles, @polygons ]
