@@ -54,10 +54,9 @@
 #msg_container {
     position  : absolute;
     top       : 3%;
-    left      : 1%;
+    left      : 20px;
     z-index   : 1;
     font-size : 1.1em;
-    width     : 99%;
 }
 #msg_box {
     padding: 3px;

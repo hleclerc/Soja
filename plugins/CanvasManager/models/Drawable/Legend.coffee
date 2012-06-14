@@ -6,7 +6,7 @@ class Legend extends Drawable
         @add_attr
             show_legend: show_legend
             gradient   : new Gradient
-            title      : title
+            _title      : title
             max_val    : 0
             min_val    : 0
             _width     : 30
@@ -59,7 +59,7 @@ class Legend extends Drawable
             
             info.ctx.font = font_size + "pt Arial"
             info.ctx.textAlign = "center"
-            t = @title.toString()
+            t = @_title.toString()
             if t?
                 info.ctx.fillText( t, pos_x + width * 0.5, pos_y + height + height * 0.2 )
     

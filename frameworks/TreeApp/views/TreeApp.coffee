@@ -31,30 +31,38 @@ class TreeApp extends View
         @icobar = new IcoBar @he, this, allow_sub:false
         
         document.addEventListener "keydown", ( ( evt ) => @_on_key_down evt ), true
+        
+        @msg_container = new_dom_element
+            nodeName  : "div"
+            id        : "msg_container"
+            parentNode: @el
+            txt       : ""
 
     onchange: ->
         # update layout if current session has changed
         if @treeview?
-            for el in @treeview.flat when el.item?._messages?
+            for el in @treeview?.flat when el.item?._messages?
                 if el.item._messages.has_been_modified()
                     for message in el.item._messages
-                        msg_container = new_dom_element
-                            nodeName  : "div"
-                            id        : "msg_container"
-                            parentNode: @el
-                            txt       : ""
-                        
-                        msg = new_dom_element
+                        msg_box = new_dom_element
                             nodeName  : "span"
                             id        : "msg_box"
-                            parentNode: msg_container
-                            txt       : message.title
+                            parentNode: @msg_container
+                            
+                        msg_content = new_dom_element
+                            nodeName  : "span"
+                            parentNode: msg_box
+                            txt       : message.provenance + " : " + message.title
+                        br = new_dom_element
+                            nodeName  : "br"
+                            parentNode: msg_box
+                            
+                        msg_content.classList.add message.type # msg_info, msg_success or msg_error
                         
-                        msg.classList.add "msg_info" # should be remplaced by somthing like message.type msg_info, msg_success or msg_error
-                        #@msg_container.display = 'block'
-                        #@msg_container.classList.remove "msg_success"
+                        
+                        setTimeout ( => @msg_container.removeChild msg_box ), 3000
                     
-                        #timeout to display = 'hidden'
+                    el.item._messages.clear()
                                 
                 
         if @data.selected_tree_items.has_been_modified()
