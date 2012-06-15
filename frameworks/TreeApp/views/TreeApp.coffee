@@ -40,7 +40,7 @@ class TreeApp extends View
 
     onchange: ->
         # update layout if current session has changed
-        if @treeview?
+        if @treeview?.flat?
             for el in @treeview?.flat when el.item?._messages?
                 if el.item._messages.has_been_modified()
                     for message in el.item._messages
