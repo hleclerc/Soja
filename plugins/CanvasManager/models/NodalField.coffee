@@ -6,6 +6,7 @@ class NodalField extends Model
         @add_attr
             name           : name
             _data          : data
+            _time_steps    : [ 0 ]
     
     get: () ->
         @_data.get()
@@ -17,9 +18,20 @@ class NodalField extends Model
         for tri in triangles
             @_draw_nodal_triangle info, display_style, tri.get(), proj, @_data, legend
             
+    anim_min_max: ->
+        ma = 0
+        for t in @_time_steps
+            ma = Math.max ma, t.get()
+        ma
     
     # the trick of this function is that it use only one linear gradient calculate using point value and position
     _draw_nodal_triangle: ( info, display_style, tri, proj, field, legend ) ->
+        offset_data = 0
+        for t, ind in @_time_steps
+            if t.get() >= info.time
+                offset_data = ind * proj.size()
+        console.log ind, @_time_steps.get()
+    
         posit = for i in [ 0 ... 3 ]
             proj[ tri[ i ] ]
                 

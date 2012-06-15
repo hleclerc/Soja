@@ -127,6 +127,14 @@ class Mesh extends Drawable
         if display == "Points" or @editable_points.get() == true
             @_draw_points info, proj, selected
     
+    anim_min_max: ->
+        f = @visualisation.displayed_field.get() 
+        if f?
+            f.anim_min_max()
+        else
+            0
+        
+    
     _draw_points: ( info, proj, selected ) ->
         if @points_have_to_be_drawn info
             color_selected_dot = info.theme.selected_dot.to_hex()

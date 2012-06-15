@@ -43,26 +43,25 @@ class TreeApp extends View
         if @treeview?.flat?
             for el in @treeview.flat when el.item?._messages?
                 if el.item._messages.has_been_modified()
-                    for message in el.item._messages
-                        msg_box = new_dom_element
-                            nodeName  : "span"
-                            id        : "msg_box"
-                            parentNode: @msg_container
+                    for message in el.item._messages when message.has_been_modified()
+                        do ( message ) ->
+                            msg_box = new_dom_element
+                                nodeName  : "span"
+                                id        : "msg_box"
+                                parentNode: @msg_container
+                                
+                            msg_content = new_dom_element
+                                nodeName  : "span"
+                                parentNode: msg_box
+                                txt       : message.provenance + " : " + message.title
+                                
+                            br = new_dom_element
+                                nodeName  : "br"
+                                parentNode: msg_box
+                                
+                            msg_content.classList.add message.type # msg_info, msg_success or msg_error
                             
-                        msg_content = new_dom_element
-                            nodeName  : "span"
-                            parentNode: msg_box
-                            txt       : message.provenance + " : " + message.title
-                        br = new_dom_element
-                            nodeName  : "br"
-                            parentNode: msg_box
-                            
-                        msg_content.classList.add message.type # msg_info, msg_success or msg_error
-                        
-                        
-                        setTimeout ( => @msg_container.removeChild msg_box ), 3000
-                    
-                    el.item._messages.clear()
+                            setTimeout ( => @msg_container.removeChild msg_box ), 3000
                                 
                 
         if @data.selected_tree_items.has_been_modified()
@@ -76,16 +75,14 @@ class TreeApp extends View
                     @cur_session_model_id = session.model_id
             
             
-            #use to add red border on canvas that are selected from the tree (view item)
+            # add red border on canvas that are selected from the tree (view item)
             items = @data.get_selected_tree_items()
             for item in items when item instanceof ViewItem
-                check = true
-                break
-            if check == true
                 @data.selected_canvas_pan.clear()
                 for path in @data.selected_tree_items
                     for it in path when it instanceof ViewItem
                         @data.selected_canvas_pan.push it._panel_id
+                break
             
             
             
