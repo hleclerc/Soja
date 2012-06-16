@@ -1,11 +1,11 @@
 class Point extends Drawable
-    constructor: ( pos, move_scheme = MoveScheme_3D ) ->
+    constructor: ( pos, move_scheme = new MoveScheme_3D ) ->
         super()
         
         @add_attr
             pos: new Vec_3 pos
             
-        @_mv = new move_scheme
+        @_mv = move_scheme
 
     disp_only_in_model_editor: ->
         @pos

@@ -39,16 +39,15 @@ test_CanvasManager = ->
     
     #     m.gradient.add_color [ 0, 0, 0, 255 ], 0
     #     m.gradient.add_color [ 255, 255, 255, 255 ], 1
-    c.active_items = -> [ m ]
+    #c.active_items = -> [ m ]
     c.items.push m
     
     # IMG
-    c.items.push new Img "http://www.tao-yin.com/acupuncture/img/soja_totum1.jpg"
+    # c.items.push new Img "http://www.tao-yin.com/acupuncture/img/soja_totum1.jpg"
     
     # AXES
     c.items.push new Axes
 
-    
     # redraw if window resize
     browser_state = new BrowserState
     browser_state.bind ->

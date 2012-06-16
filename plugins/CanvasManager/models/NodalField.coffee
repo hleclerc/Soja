@@ -83,7 +83,7 @@ class NodalField extends Model
         if display_style == "Surface" or display_style == "Surface with Edges"
             @_draw_gradient_fill_triangle info, p0, p1, posit, legend
             
-        if display_style == "Surface with Edges" or display_style == "Lines"
+        if display_style == "Surface with Edges" or display_style == "Edges"
             @_draw_edge_triangle info, posit
             
         if display_style == "Wireframe"

@@ -34,7 +34,7 @@ class ElementaryField extends Model
         if display_style == "Surface" or display_style == "Surface with Edges"
             @_draw_elementary_fill_triangle info, position, col
             
-        if display_style == "Surface with Edges" or display_style == "Lines"
+        if display_style == "Surface with Edges" or display_style == "Edges"
             @_draw_edge_triangle info, position
             
     # draw edges of triangle as normal lines
