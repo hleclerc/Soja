@@ -25,21 +25,11 @@ test_CanvasManager = ->
     m.add_point [ s, 0, 0 ]
     m.add_point [ s, s, 0 ]
     m.add_point [ 0, s, 0 ]
-    m.lines.push [ 0, 1 ]
-    m.lines.push [ 1, 2, 3 ]
-    m.lines.push [ 3, 0 ]
-    #     m.displayed_field.lst.set [ "", "nodal" ]
-    #     m.displayed_field.set 1
+    m.add_element "Line", [ 0, 1 ]
+    m.add_element "Line", [ 1, 2, 3 ]
+    m.add_element "Line", [ 3, 0 ]
+    m.update_sub_elt()
     
-    #     m.nodal_fields.set
-    #         nodal: [ 1, 0.5, 0 ]
-    # m.lines.push [ 0, 1 ]
-    # m.lines.push [ 1, 3, 2 ]
-    # m.lines.push [ 2, 0 ]
-    
-    #     m.gradient.add_color [ 0, 0, 0, 255 ], 0
-    #     m.gradient.add_color [ 255, 255, 255, 255 ], 1
-    #c.active_items = -> [ m ]
     c.items.push m
     
     # IMG

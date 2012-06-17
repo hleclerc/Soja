@@ -21,7 +21,7 @@ class CanvasManager extends View
         dv "items"                , -> new Lst
         dv "cam"                  , => new Cam @want_aspect_ratio
         dv "allow_gl"             , -> false
-        dv "theme"                , -> new Theme 'original'
+        dv "theme"                , -> new Theme
         dv "time"                 , -> new ConstrainedVal( 0, { min: 0, max: -1, div: 0 } )
         dv "padding_ratio"        , -> 1.5
         dv "constrain_zoom"       , -> false
@@ -289,6 +289,14 @@ class CanvasManager extends View
         @_catch_evt evt        
     
     _mouse_up: ( evt ) ->
+        if not @mouse_has_moved_since_mouse_down
+            for item in @active_items_rec()
+                if item.on_mouse_up_wo_move? this, evt, [ @mouse_x, @mouse_y ], @mouse_b
+                    delete @mouse_b
+                    delete @clk_x
+                    delete @clk_y
+                    return @_catch_evt evt
+                
         @context_menu? evt, @mouse_b == "RIGHT" and not @mouse_has_moved_since_mouse_down            
         delete @mouse_b
         delete @clk_x

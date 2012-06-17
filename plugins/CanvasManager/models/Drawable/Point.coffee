@@ -13,8 +13,8 @@ class Point extends Drawable
     beg_click: ( pos ) ->
         @_mv.beg_click pos
     
-    mov_click: ( selected_entities, pos, p_0, d_0 ) ->
-        @_mv.mov_click selected_entities, pos, p_0, d_0
+    move: ( selected_entities, pos, p_0, d_0 ) ->
+        @_mv.move selected_entities, pos, p_0, d_0
     
     z_index: ->
         100

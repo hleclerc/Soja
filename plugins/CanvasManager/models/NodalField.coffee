@@ -95,7 +95,7 @@ class NodalField extends Model
     _draw_edge_triangle: ( info, posit ) ->
         info.ctx.beginPath()
         info.ctx.lineWidth = 1
-        info.ctx.strokeStyle = info.theme.line.to_hex()
+        info.ctx.strokeStyle = info.theme.line_color.to_hex()
         info.ctx.moveTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
         info.ctx.lineTo( posit[ 1 ][ 0 ], posit[ 1 ][ 1 ] )
         info.ctx.lineTo( posit[ 2 ][ 0 ], posit[ 2 ][ 1 ] )

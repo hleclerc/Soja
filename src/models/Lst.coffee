@@ -188,13 +188,15 @@ class Lst extends Model
     contains_ref: ( v ) ->
         @indexOf_ref( v ) >= 0
 
-    # toggle presence of v
+    # toggle presence of v. return true if added
     toggle: ( v ) ->
         i = @indexOf v
         if i >= 0
             @splice i
+            false
         else
             @push v
+            true
 
     # toggle presence of v, base on ref comparison
     toggle_ref: ( v ) ->
@@ -265,6 +267,10 @@ class Lst extends Model
             res.push this[ i ].deep_copy()
         res
 
+    # last element
+    back: ->
+        @[ @length - 1 ]
+        
     # returns true if change is not "cosmetic"
     real_change: ->
         if @has_been_directly_modified()

@@ -41,7 +41,7 @@ class ElementaryField extends Model
     _draw_edge_triangle: ( info, position ) ->
         info.ctx.beginPath()
         info.ctx.lineWidth = 1
-        info.ctx.strokeStyle = info.theme.line.to_hex()
+        info.ctx.strokeStyle = info.theme.line_color.to_hex()
         info.ctx.moveTo( position[ 0 ][ 0 ], position[ 0 ][ 1 ] )
         info.ctx.lineTo( position[ 1 ][ 0 ], position[ 1 ][ 1 ] )
         info.ctx.lineTo( position[ 2 ][ 0 ], position[ 2 ][ 1 ] )

@@ -11,7 +11,7 @@ class MoveScheme_2D extends Model
     beg_click: ( pos ) ->
         #do nothing
         
-    mov_click: ( selected_entities, pos, P, D ) ->
+    move: ( selected_entities, pos, P, D ) ->
         top = Vec_3.dot Vec_3.sub( @_O , P), @_N
         bot = Vec_3.dot D, @_N
         I = Vec_3.add P, Vec_3.mus( top / bot, D )
