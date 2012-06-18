@@ -37,14 +37,14 @@ class ElementaryField extends Model
         if display_style == "Surface" or display_style == "Surface with Edges"
             @_draw_elementary_fill_triangle info, position, col
             
-        if display_style == "Surface with Edges" or display_style == "Lines"
+        if display_style == "Surface with Edges" or display_style == "Edges"
             @_draw_edge_triangle info, position
             
     # draw edges of triangle as normal lines
     _draw_edge_triangle: ( info, position ) ->
         info.ctx.beginPath()
         info.ctx.lineWidth = 1
-        info.ctx.strokeStyle = info.theme.line.to_hex()
+        info.ctx.strokeStyle = info.theme.line_color.to_hex()
         info.ctx.moveTo( position[ 0 ][ 0 ], position[ 0 ][ 1 ] )
         info.ctx.lineTo( position[ 1 ][ 0 ], position[ 1 ][ 1 ] )
         info.ctx.lineTo( position[ 2 ][ 0 ], position[ 2 ][ 1 ] )

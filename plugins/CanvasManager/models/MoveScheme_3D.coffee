@@ -18,7 +18,7 @@ class MoveScheme_3D extends Model
             @_old_pos.set @_new_pos
             @_old_dir.set @_new_dir
             
-    mov_click: ( selected_entities, pos, p_0, d_0 ) ->
+    move: ( selected_entities, pos, p_0, d_0 ) ->
         # by default, projection of the point to line p_0, d_0
         l_0 = Vec_3.dot( Vec_3.sub( pos.get(), p_0 ), d_0 )
         

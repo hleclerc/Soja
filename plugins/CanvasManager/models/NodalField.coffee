@@ -1,12 +1,11 @@
 # 
 class NodalField extends Model
-    constructor: ( name, data = new Lst, params = {} ) ->
+    constructor: ( name, data = new Lst ) ->
         super()
         
         @add_attr
             name           : name
             _data          : data
-            _time_steps    : [ 0 ]
     
     get: () ->
         @_data.get()
@@ -14,26 +13,16 @@ class NodalField extends Model
     toString: ->
         @name.get()
 
-    draw: ( info, display_style, triangles, proj, legend) ->
+    draw: ( info, display_style, triangles, proj, legend ) ->
         for tri in triangles
             @_draw_nodal_triangle info, display_style, tri.get(), proj, @_data, legend
-            
-    anim_min_max: ->
-        ma = 0
-        for t in @_time_steps
-            ma = Math.max ma, t.get()
-        ma
-        
+
     z_index: () ->
         return 50
-        
+
     # the trick of this function is that it use only one linear gradient calculate using point value and position
     _draw_nodal_triangle: ( info, display_style, tri, proj, field, legend ) ->
-        offset_data = 0
-#         for t, ind in @_time_steps
-#             if t.get() >= info.time
-#                 offset_data = ind * proj.size()
-#         console.log ind, @_time_steps.get()
+
         posit = for i in [ 0 ... 3 ]
             proj[ tri[ i ] ]
                 
@@ -98,7 +87,7 @@ class NodalField extends Model
         if display_style == "Surface" or display_style == "Surface with Edges"
             @_draw_gradient_fill_triangle info, p0, p1, posit, legend
             
-        if display_style == "Surface with Edges" or display_style == "Lines"
+        if display_style == "Surface with Edges" or display_style == "Edges"
             @_draw_edge_triangle info, posit
             
         if display_style == "Wireframe"
@@ -109,7 +98,7 @@ class NodalField extends Model
     _draw_edge_triangle: ( info, posit ) ->
         info.ctx.beginPath()
         info.ctx.lineWidth = 1
-        info.ctx.strokeStyle = info.theme.line.to_hex()
+        info.ctx.strokeStyle = info.theme.line_color.to_hex()
         info.ctx.moveTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
         info.ctx.lineTo( posit[ 1 ][ 0 ], posit[ 1 ][ 1 ] )
         info.ctx.lineTo( posit[ 2 ][ 0 ], posit[ 2 ][ 1 ] )

@@ -5,7 +5,7 @@ class DisplaySettingsItem extends TreeItem
 
         # new attributes
         @add_attr
-            theme: new Theme 'original'
+            theme: new Theme
             
             _layout: new LayoutManagerData layout_manager_data
             

@@ -25,30 +25,26 @@ test_CanvasManager = ->
     m.add_point [ s, 0, 0 ]
     m.add_point [ s, s, 0 ]
     m.add_point [ 0, s, 0 ]
-    m.lines.push [ 0, 1 ]
-    m.lines.push [ 1, 2, 3 ]
-    m.lines.push [ 3, 0 ]
-    #     m.displayed_field.lst.set [ "", "nodal" ]
-    #     m.displayed_field.set 1
+    # m.add_element new Element_Line [ 0, 1 ]
+    # m.add_element new Element_Line [ 3, 0 ]
+    # m.add_element new Element_Arc  [ 1, 2, 3 ]
+    m.add_element new Element_BoundedSurf [
+        { o: +1, e: new Element_Line [ 0, 1 ] }
+        { o: +1, e: new Element_Arc  [ 1, 2, 3 ] }
+        { o: +1, e: new Element_Line [ 3, 0 ] }
+        #{ o: -1, e: new Element_Line [ 3, 2 ] }
+        #{ o: +1, e: new Element_Line [ 3, 0 ] }
+    ]
+    m.visualization.display_style.set "Wireframe"
     
-    #     m.nodal_fields.set
-    #         nodal: [ 1, 0.5, 0 ]
-    # m.lines.push [ 0, 1 ]
-    # m.lines.push [ 1, 3, 2 ]
-    # m.lines.push [ 2, 0 ]
-    
-    #     m.gradient.add_color [ 0, 0, 0, 255 ], 0
-    #     m.gradient.add_color [ 255, 255, 255, 255 ], 1
-    c.active_items = -> [ m ]
     c.items.push m
     
     # IMG
-    c.items.push new Img "http://www.tao-yin.com/acupuncture/img/soja_totum1.jpg"
+    # c.items.push new Img "http://www.tao-yin.com/acupuncture/img/soja_totum1.jpg"
     
     # AXES
     c.items.push new Axes
 
-    
     # redraw if window resize
     browser_state = new BrowserState
     browser_state.bind ->

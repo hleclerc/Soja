@@ -1,57 +1,45 @@
 # This class is use to draw line/dot graph or bar chart
-# params available :
-# _pre_sele_color
-# _selected_color
 class Mesh extends Drawable
-    constructor: ( legend = null, params = {} ) ->
+    constructor: ( params = {} ) ->
         super()
-
-        disp_fields = new Choice( 0, [] )
-            
-        for key, val of params
-            this[ key ]?.set? val
         
         @add_attr
-            visualisation :
-                displayed_field: disp_fields
-                displayed_style: new Choice( 5, [ "Arrow", "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
-                legend         : ( if legend instanceof Legend then legend else new Legend( disp_fields ) )
-                warp_by        : new Choice_RestrictedByDim( 0, disp_fields.lst )
-                warp_factor    : new ConstrainedVal( 0, { min: 0, max: 2048 } )
-        
-            editable_points  : true
+
+            #
+            visualization:
+                display_style: new Choice( 0, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
+                point_edition: true
             
             # geometry
-            points           : new Lst_Point # "add_point" can be used to fill the list
-            lines            : new Lst
-            triangles        : new Lst
-            polygons         : new Lst
+            points  : new Lst_Point # "add_point" can be used to fill the list
+            _elements: [] # list of Element_Triangle, Element_Line, ...
             
-            # behavior
-            _selected        : new Lst # references of selected points / lines / ...
-            _pre_sele        : new Lst # references of selected points / lines / ...
-            _selected_color  : new Color 255,   0,   0
-            _pre_sele_color  : new Color 255, 255, 100
+            # helpers
+            _selected_points: [] # point refs
+            _pelected_points: [] # point refs
                 
         # default move scheme
-        @move_scheme = MoveScheme_3D
+        @move_scheme = new MoveScheme_3D
         
+        # cache
+        @_sub_elements = [] # list of { sub_level: , elem_list: , on_skin: , parent }
+        @_sub_date = -1
+        
+    # add a new node
+    add_point: ( pos = [ 0, 0, 0 ] ) ->
+        res = new Point pos, @move_scheme
+        @points.push res
+        return res
+        
+    # 
+    add_element: ( element ) ->
+        @_elements.push element
 
     real_change: ->
-        for a in [ @points, @lines, @triangles, @polygons ]
+        for a in [ @points, @_elements ]
             if a.real_change()
                 return true
         false
-    
-    sub_canvas_items: ->
-        [ @visualisation.legend ]
-        
-    #
-    add_point: ( pos = [ 0, 0, 0 ] ) ->
-        @points.push new Point pos, @move_scheme
-        
-    add_field: ( field ) ->
-        @visualisation.displayed_field.lst.push field
         
     z_index: ->
         if @visualisation.displayed_field.lst?[ @visualisation.displayed_field.num.get() ]
@@ -59,233 +47,181 @@ class Mesh extends Drawable
         else
             return 100
 
-    points_have_to_be_drawn: ( info ) ->
-        info.sel_item[ @model_id ]
+    draw: ( info ) ->
+        # 2d screen projection
+        proj = for p, i in @points
+            info.re_2_sc.proj p.pos.get()
 
-    draw: ( info, params = {} ) ->
-        if @points.length == 0
-            return
-            
-        # preparation
-        selected = {}
-        for item in @_selected
-            selected[ item.model_id ] = true
-        
-        # apply warp_factor deformation to points
-        if @visualisation.warp_by.lst[ @visualisation.warp_by.num ] != undefined and @visualisation.warp_factor.get() != 0
-            warp_factor = @visualisation.warp_factor.get()
-            field_data = @visualisation.warp_by.get()
-            proj = for p, i in @points
-                data = new Vec_3
-                for fd, j in field_data
-                    data[ j ] = fd[ i ]
-                new_pos = Vec_3.add p.pos.get(), Vec_3.mus warp_factor, data
-                info.re_2_sc.proj new_pos
-                
-        else
-            proj = for p, i in @points
-                info.re_2_sc.proj p.pos.get()
-        
-        info.ctx.lineWidth = 1
-        info.ctx.fillStyle = "#FFFFFF"
-        info.ctx.strokeStyle = info.theme.line.to_hex()
-        
-        display = @visualisation.displayed_style.get()
-        
-        #@_draw_polygons info, proj
-        
-        # call adapted draw function for color and using gradient
-        if @visualisation.displayed_field.lst.length
-            selected_field = @visualisation.displayed_field.lst[ @visualisation.displayed_field.num.get() ]
-            
-            if selected_field instanceof VectorialField
-                # Preparation of value field by selecting each value of fields at an index
-                value = []
-                for p, ind in @points
-                    element = selected_field.get_value_of_fields_at_index ind
-                    val = 0
-                    for el in element.get()
-                        val += el * el
-                    
-                    value.push Math.sqrt val
-                
-                # Warp is use to multiply
-                if @visualisation.warp_by.lst[ @visualisation.warp_by.num ] != undefined and @visualisation.warp_factor.get() != 0
-                    field_data = @visualisation.warp_by.get()
-                    warp_factor = @visualisation.warp_factor.get()
-                else
-                    warp_factor = 1
-                    
-                @actualise_value_legend value
-                selected_field.draw info, @visualisation.displayed_style.get(), @points, value, warp_factor, @visualisation.legend
-            else # nodal and elementary fields
-                @actualise_value_legend selected_field.get()
-                selected_field.draw info, @visualisation.displayed_style.get(), @triangles, proj, @visualisation.legend
-        
-        # when mesh is not an element fields nor a nodal fields
-        else
-            if display == "Wireframe" or display == "Surface with Edges" or display == "Lines"
-                @_draw_edges info, proj
-                
-        if display == "Points" or @editable_points.get() == true
-            @_draw_points info, proj, selected
-    
-    anim_min_max: ->
-        f = @visualisation.displayed_field.get() 
-        if f?
-            f.anim_min_max()
-        else
-            0
-        
-    
-    _draw_points: ( info, proj, selected ) ->
-        if @points_have_to_be_drawn info
-            color_selected_dot = info.theme.selected_dot.to_hex()
-            color_dot          = info.theme.dot.to_hex()
-            for n in [ 0 ... proj.length ]
-                if selected[ @points[ n ].model_id ]?
-                    info.ctx.fillStyle = color_selected_dot
-                else
-                    info.ctx.fillStyle = color_dot
-                
-                p = proj[ n ]
-                info.ctx.beginPath()
-                info.ctx.arc p[ 0 ], p[ 1 ], 4, 0, Math.PI * 2, true
-                info.ctx.fill()
-                info.ctx.stroke()
-            
-            # draw point that are under mouse
-            if @_pre_sele.length
-                info.ctx.strokeStyle = @_pre_sele_color.to_hex()
-                info.ctx.lineWidth = 1.5
-                for item in @_pre_sele when item instanceof Point
-                    p = info.re_2_sc.proj item.pos.get()
-                    
-                    info.ctx.beginPath()
-                    info.ctx.arc p[ 0 ], p[ 1 ], 5, 0, Math.PI * 2, true
-                    info.ctx.stroke()
-                info.ctx.strokeStyle = "#FFFFFF"
-                info.ctx.lineWidth = 1
-    
-    _draw_edges: ( info, proj ) ->
-        info.ctx.strokeStyle = info.theme.line.to_hex()
-        # draw lines
-        for l, j in @lines when l.length == 2
-            info.ctx.beginPath()
-            info.ctx.moveTo proj[ l[ 0 ].get() ][ 0 ], proj[ l[ 0 ].get() ][ 1 ]
-            info.ctx.lineTo proj[ l[ 1 ].get() ][ 0 ], proj[ l[ 1 ].get() ][ 1 ]
-            info.ctx.stroke()
-            
-        # draw lines that are under mouse
-        if @_pre_sele.length
-            info.ctx.strokeStyle = @_pre_sele_color.to_hex()
-            for l in @_pre_sele when l not instanceof Point
-                if l.length == 2
-                    info.ctx.lineWidth = 2
-                    info.ctx.beginPath()
-                    info.ctx.moveTo proj[ l[ 0 ].get() ][ 0 ], proj[ l[ 0 ].get() ][ 1 ]
-                    info.ctx.lineTo proj[ l[ 1 ].get() ][ 0 ], proj[ l[ 1 ].get() ][ 1 ]
-                    info.ctx.stroke()
-                    info.ctx.lineWidth = 1
-            info.ctx.strokeStyle = "#FFFFFF"
+        # elements
+        for el in @_elements
+            el.draw info, this, proj
 
-        # draw arcs
-        for l in @lines when l.length == 3
-            P0 = @points[ l[ 0 ].get() ].pos.get()
-            P1 = @points[ l[ 1 ].get() ].pos.get()
-            P2 = @points[ l[ 2 ].get() ].pos.get()
-            @_disp_arc info, P0, P1, P2
+        # draw points if necessary
+        if @visualization.display_style.equals( "Points" ) or @visualization.point_edition.get()
+            info.theme.points.beg_ctx info
+            for p in proj
+                info.theme.points.draw_proj info, p
+
+        # sub elements
+        @_update_sub_elements()
+        for el in @_sub_elements
+            el.draw info, this, proj, true
             
-        # draw arcs n points
-        for l in @lines when l.length > 3
-            point =  for p in l
-                @points[ p.get() ].pos.get()
-            @_disp_arc_n_points info, point
-            
-    _draw_polygons: ( info, proj ) ->
-        for polyg in @polygons.get()
-            if polyg.length > 0
-                info.ctx.beginPath()
-                info.ctx.strokeStyle = "red"#info.theme.line.to_hex()
-                info.ctx.fillStyle   = "rgba(200,200,125,100)"#info.theme.line.to_hex()
-                
-                
-                first_point = @lines[ polyg[ 0 ] ][ 0 ]
-                
-                pos_first_point = proj[ first_point ]
-                info.ctx.moveTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
-                
-                for index_line in polyg
-                    for i in [ 1 ...@lines[ index_line ].length ] # don't draw first point (because he is the same as the last line points)
-                        p = @lines[ index_line ][ i ]
-                        pos_p = proj[ p ]
-                        if pos_p?
-                            info.ctx.lineTo( pos_p[ 0 ], pos_p[ 1 ] )
-                # come back to first point
-                info.ctx.lineTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
-                
-                if @visualisation.displayed_style.get() == "Wireframe"
-                    info.ctx.fill()#only for debug
-                    info.ctx.stroke()
-                else
-                    info.ctx.fill()
-                info.ctx.closePath()
-    
-    on_mouse_down: ( cm, evt, pos, b ) ->
-        delete @_movable_entity
+        # selected items
+        if @_selected_points.length
+            info.theme.selected_points.beg_ctx info
+            for p in @_selected_points
+                n = info.re_2_sc.proj p.pos.get()
+                info.theme.selected_points.draw_proj info, n
         
-        if b == "LEFT" or b == "RIGHT"
-            # look if there's a movable point under mouse
-            for phase in [ 0 ... 3 ]
-                # closest entity under mouse
-                res = []
-                @get_movable_entities res, cm.cam_info, pos, phase
-                if res.length
-                    res.sort ( a, b ) -> b.dist - a.dist
-                    @_movable_entity = res[ 0 ].item
-                    @_pre_sele.clear()
-                    
-                    if evt.ctrlKey # add / rem selection
-                        @_selected.toggle_ref @_movable_entity
-                        if not @_selected.contains_ref @_movable_entity
-                            delete @_movable_entity
+        # preselected items
+        if @_pelected_points.length
+            info.theme.highlighted_points.beg_ctx info
+            for p in @_pelected_points
+                n = info.re_2_sc.proj p.pos.get()
+                info.theme.highlighted_points.draw_proj info, n
+            
+    
+    on_mouse_down: ( cm, evt, pos, b, old, points_allowed = true ) ->
+        delete @_moving_point
+        if @visualization.point_edition.get()
+            if b == "LEFT" or b == "RIGHT"
+                if points_allowed
+                    # preparation
+                    proj = for p in @points
+                        cm.cam_info.re_2_sc.proj p.pos.get()
+                        
+                    # closest point with dist < 10
+                    best = @_closest_point_closer_than proj, pos, 10
+                    if best >= 0
+                        if evt.ctrlKey # add / rem selection
+                            @_ctrlKey = true
+                            if @_selected_points.toggle_ref @points[ best ]
+                                @_moving_point = @points[ best ]
+                                @_moving_point.beg_click pos
+                        else
+                            @_ctrlKey = false
+                            if not @_selected_points.contains_ref @points[ best ]
+                                @_selected_points.clear()
+                                @_selected_points.set [ @points[ best ] ]
+                            @_moving_point = @points[ best ]
+                            @_moving_point.beg_click pos
+                            
+                        if b == "RIGHT"
+                            return false
+                        return true
                     else
-                        @_selected.clear()
-                        @_selected.push @_movable_entity
-                        @_movable_entity.beg_click pos
+                        @_pelected_points.clear()
                         
-                    if b == "RIGHT"
-                        return false
+                    # something with elements ?
+                    best = dist: 4
+                    for el in @_elements
+                        el.closest_point_closer_than? best, this, proj, cm.cam_info, pos
+                    for el in @_sub_elements
+                        el.closest_point_closer_than? best, this, proj, cm.cam_info, pos
+                    if best.disp?
+                        # _selected_points
+                        np = @points.length
+                        ip = @add_point best.disp
+                        @_selected_points.clear()
+                        @_selected_points.set [ ip ]
+                        @_moving_point = ip
+                        @_moving_point.beg_click pos
                         
-                    return true
+                        # element div
+                        res = []
+                        divisions = {}
+                        for el in @_elements
+                            el.cut_with_point? divisions, best, this, np, ip
+                            if divisions[ el.model_id ]?
+                                for nl in divisions[ el.model_id ]
+                                    res.push nl
+                            else
+                                res.push el
+                        @_elements.clear()
+                        @_elements.set res
+                            
+                        
                     
-        return false
-                    
-    on_mouse_move: ( cm, evt, pos, b, old ) ->
-        if b == "LEFT" and @_movable_entity?
-            cm.undo_manager?.snapshot()
-                
-            p_0 = cm.cam_info.sc_2_rw.pos pos[ 0 ], pos[ 1 ]
-            d_0 = cm.cam_info.sc_2_rw.dir pos[ 0 ], pos[ 1 ]
-            @_movable_entity.mov_click @_selected, @_movable_entity.pos, p_0, d_0
-            
-            return true
-
-        # pre selection
-        for phase in [ 0 ... 3 ]
-            res = []
-            @get_movable_entities res, cm.cam_info, pos, phase, true
-            if res.length
-                res.sort ( a, b ) -> b.dist - a.dist
-                if @_pre_sele.length != 1 or @_pre_sele[ 0 ] != res[ 0 ].item
-                    @_pre_sele.clear()
-                    @_pre_sele.push res[ 0 ].item
-                break
-            else if @_pre_sele.length
-                @_pre_sele.clear()
-    
         return false
         
+    on_mouse_up_wo_move: ( cm, evt, pos, b, points_allowed = true ) ->
+        if @_moving_point? and not @_ctrlKey and @_selected_points.length > 1
+            p = @_selected_points.back()
+            @_selected_points.clear()
+            @_selected_points.set [ p ]
+            return true                    
+            
+    on_mouse_move: ( cm, evt, pos, b, old ) ->
+        if @visualization.point_edition.get()
+            # currently moving something ?
+            if @_moving_point? and b == "LEFT"
+                cm.undo_manager?.snapshot()
+                    
+                p_0 = cm.cam_info.sc_2_rw.pos pos[ 0 ], pos[ 1 ]
+                d_0 = cm.cam_info.sc_2_rw.dir pos[ 0 ], pos[ 1 ]
+                @_moving_point.move @_selected_points, @_moving_point.pos, p_0, d_0
+                return true
+
+            # preparation
+            proj = for p in @points
+                cm.cam_info.re_2_sc.proj p.pos.get()
+                
+            # pre selection of a particular point ?
+            best = @_closest_point_closer_than proj, pos, 10
+            if best >= 0
+                @_pelected_points.clear()
+                @_pelected_points.set [ @points[ best ] ]
+                return true
+                    
+            # else, look in element lists
+            best = dist: 4
+            for el in @_elements
+                el.closest_point_closer_than? best, this, proj, cm.cam_info, pos
+            for el in @_sub_elements
+                el.closest_point_closer_than? best, this, proj, cm.cam_info, pos
+            if best.disp?
+                @_pelected_points.clear()
+                @_pelected_points.set [ new Point best.disp ]
+                return true
+                
+        
+        # nothing to pelect :P
+        @_pelected_points.clear()
+        return false
+    
+    
+    make_curve_line_from_selected: ->
+        for el in @_elements
+            el.make_curve_line_from_selected this, @_selected_points
+        
+    
+    
+    
+    
+    _closest_point_closer_than: ( proj, pos, dist ) ->
+        best = -1
+        for p, n in proj
+            d = Math.sqrt Math.pow( pos[ 0 ] - p[ 0 ], 2 ) + Math.pow( pos[ 1 ] - p[ 1 ], 2 )
+            if dist > d
+                dist = d
+                best = n
+        return best
+    
+    _update_sub_elements: ->
+        if @_sub_date < @_elements._date_last_modification
+            @_sub_date = @_elements._date_last_modification
+    
+            @_sub_elements = []
+            for el in @_elements
+                el.add_sub_element? @_sub_elements
+    
+
+    
+    
+    
+    
+
     delete_selected_point: ( info ) ->
         for i in [ 0 ... @points.length ]
             if @_selected.contains_ref @points[ i ]
@@ -377,10 +313,10 @@ class Mesh extends Drawable
                         @polygons[ 0 ].splice i, 1
                         @actualise_polygons -1, i
 
-    make_curve_line_from_selected: ( info ) ->
-        for i in [ 0 ... @points.length ]
-            if @_selected.contains_ref @points[ i ]
-                @make_curve_line i
+    #     make_curve_line_from_selected: ( info ) ->
+    #         for i in [ 0 ... @points.length ]
+    #             if @_selected.contains_ref @points[ i ]
+    #                 @make_curve_line i
     
     #add "value" to all polygons data started at index "index" (use for ex when a line is deleted)
     actualise_polygons: ( val, index ) ->
@@ -473,308 +409,39 @@ class Mesh extends Drawable
                 @lines.push newLine
                 @polygons[ 0 ].push @lines.length-1
                 
-
-    _get_line_inter: ( proj, P0, P1, x, y ) ->
-        lg_0 = P0
-        lg_1 = P1
-        
-        a = proj[ lg_0 ]
-        b = proj[ lg_1 ]
-        
-        if a[ 0 ] != b[ 0 ] or a[ 1 ] != b[ 1 ]
-            dx = b[ 0 ] - a[ 0 ]
-            dy = b[ 1 ] - a[ 1 ]
-            px = x - a[ 0 ]
-            py = y - a[ 1 ]
-            l = dx * dx + dy * dy
-            d = px * dx + py * dy
-            if d >= 0 and d <= l
-                px = a[ 0 ] + dx * d / l
-                py = a[ 1 ] + dy * d / l
-                if Math.pow( px - x, 2 ) + Math.pow( py - y, 2 ) <= 4 * 4
-                    dx = @points[ lg_1 ].pos[ 0 ].get() - @points[ lg_0 ].pos[ 0 ].get()
-                    dy = @points[ lg_1 ].pos[ 1 ].get() - @points[ lg_0 ].pos[ 1 ].get()
-                    dz = @points[ lg_1 ].pos[ 2 ].get() - @points[ lg_0 ].pos[ 2 ].get()
-                    
-                    return [ dx, dy, dz, d / l ]
-                    
-    get_movable_entities: ( res, info, pos, phase, dry = false ) ->
-        if @editable_points.get() == true
-            x = pos[ 0 ]
-            y = pos[ 1 ]
-            
-            if phase == 0
-                for p in @points
-                    proj = info.re_2_sc.proj p.pos.get()
-                    dx = x - proj[ 0 ]
-                    dy = y - proj[ 1 ]
-                    d = Math.sqrt dx * dx + dy * dy
-                    if d <= 10
-                        res.push
-                            prov: this
-                            item: p
-                            dist: d
-
-            if phase == 1
-                proj = for p in @points
-                    info.re_2_sc.proj p.pos.get()
-                    
-                for li in @lines when li.length == 2
-                    P0 = li[ 0 ].get()
-                    P1 = li[ 1 ].get()
-                    
-                    point = @_get_line_inter proj, P0, P1, x, y
-                    if point?
-                        P = [
-                            @points[ P0 ].pos[ 0 ].get() + point[ 0 ] * point[ 3 ],
-                            @points[ P0 ].pos[ 1 ].get() + point[ 1 ] * point[ 3 ],
-                            @points[ P0 ].pos[ 2 ].get() + point[ 2 ] * point[ 3 ]
-                        ]
-                    
-                        if dry
-                            res.push 
-                                prov: this
-    #                             item: new Point P
-                                item: [ li, @points[ P0 ], @points[ P1 ] ]
-                                dist: 0
-                        else
-                            os = @points.length
-
-                            @add_point P
-                                
-                            n = @points[ @points.length-1 ]
-                            ol = P1
-                            li[ 1 ].set os
-                            
-                            current_line = @lines.length
-                            @lines.push [ os, ol ]
-                            @polygons[ 0 ].insert ol, [ current_line ]
-                            res.push
-                                prov: this
-                                item: n
-                                dist: 0
-                                type: "Mesh"
-                                
-                            break
-
-            #         if phase == 2
-            #             proj = for p in @points
-            #                 info.re_2_sc.proj p.pos.get()
-            #             for li in @lines 
-            #                 if li.length > 2
-            #                     # TODO P0 and P1 should be indices and not value
-            #                     #                     res = for i in [ 0 ... li.length - 2 ]
-            #                     #                         @_get_center_radius proj[ li[ i ] ], proj[ li[ i + 1 ] ], proj[ li[ i + 2 ] ]
-            #                     #                             
-            #                     #                     p = info.re_2_sc.proj li[ 0 ]
-            #                     # #                     console.log p
-            #                     # #                     info.ctx.moveTo p[ 0 ], p[ 1 ]
-            #                     #                     
-            #                     #                     for n in [ 1 .. 30 ]
-            #                     #                         alpha = n / 30.0
-            #                     #                         ar = res[ 0 ].a[ 0 ] + ( res[ 0 ].a[ 1 ] - res[ 0 ].a[ 0 ] ) * alpha
-            #                     #                         pr = @_get_proj_arc info, res[ 0 ], ar
-            #                     #                         P0 =  pr[ 0 ]
-            #                     #                         P1 =  pr[ 1 ]
-            #                     #                         
-            #                     #                         console.log "----"
-            #                     #                         console.log ar
-            #                     #                         console.log pr
-            #                     #                         console.log res
-            # 
-            #                 
-            #                     for l,i in li[ 0 ...li.length - 1]
-            #                         P0 = li[ i ].get()
-            #                         P1 = li[ i + 1 ].get()
-            #                         
-            #                         point = @_get_line_inter proj, P0, P1, x, y
-            #                         
-            #                         if point?
-            #                             os = @points.length
-            #                             
-            #                             @add_point [@points[ P0 ].pos[ 0 ].get() + point[ 0 ] * point[ 3 ],
-            #                                 @points[ P0 ].pos[ 1 ].get() + point[ 1 ] * point[ 3 ],
-            #                                 @points[ P0 ].pos[ 2 ].get() + point[ 2 ] * point[ 3 ]]
-            #                                 
-            #                             n = @points[ @points.length-1 ]
-            #                             
-            #                             index = i + 1 #first position is  at i 0
-            #                             
-            #                             tmp = li.slice(0)
-            #                             for list, j in li
-            #                                 if j == index
-            #                                     li[ j ]._set os
-            #                                 if j > index
-            #                                     li[ j ]._set tmp[j - 1].get()
-            #                             li.push tmp[tmp.length - 1].get()
-            #                             
-            #                             res.push
-            #                                 prov: this
-            #                                 item: n
-            #                                 dist: 0
-            #                                 type: "Mesh"
-            #                             
-            #                             break
-                    
-
     update_min_max: ( x_min, x_max ) ->
         for m in @points
             p = m.pos.get()
             for d in [ 0 ... 3 ]
                 x_min[ d ] = Math.min x_min[ d ], p[ d ]
                 x_max[ d ] = Math.max x_max[ d ], p[ d ]
-
-    get_max: ( l ) ->
-        if l.length > 0
-            max = l[ 0 ]
-        for val, i in l[ 1 ... l.length]
-            if val > max
-                max = val
-        return max
-        
-    get_min: ( l ) ->
-        if l.length > 0
-            min = l[ 0 ]
-        for val, i in l[ 1 ... l.length]
-            if val < min
-                min = val
-        return min
-        
-    actualise_value_legend: ( values ) ->
-        max = @get_max values
-        @visualisation.legend.max_val.set max
-        
-        min = @get_min values
-        @visualisation.legend.min_val.set min
-
-    _disp_arc: ( info, P0, P1, P2 ) ->
-        # 3D center and radius
-        P01 = Vec_3.sub P1, P0
-        P02 = Vec_3.sub P2, P0
-        x1 = Vec_3.len P01
-        P01 = Vec_3.mus 1 / x1, P01
-        x2 = Vec_3.dot P02, P01
-        P02 = Vec_3.sub( P02, Vec_3.mus( x2, P01 ) )
-        y2 = Vec_3.len P02
-        P02 = Vec_3.mus 1 / y2, P02
-        xc = x1 * 0.5
-        yc = ( x2 * x2 + y2 * y2 - x2 * x1 ) / ( 2.0 * y2 )
-        C = Vec_3.add( Vec_3.add( P0, Vec_3.mus( xc, P01 ) ), Vec_3.mus( yc, P02 ) )
-        R = Vec_3.len( Vec_3.sub( P0, C ) )
-
-        a0 = Math.atan2 (  0 - yc ), (  0 - xc )
-        a1 = Math.atan2 (  0 - yc ), ( x1 - xc )
-        a2 = Math.atan2 ( y2 - yc ), ( x2 - xc )
-        
-        ma = 0.5 * ( a0 + a2 )
-        if Math.abs( a1 - ma ) > Math.abs( a0 - ma )
-            if a2 < a0
-                a2 += 2 * Math.PI
-            else
-                a0 += 2 * Math.PI
-        
-        # projection
-        info.ctx.beginPath()
-        n = Math.ceil( Math.abs( a2 - a0 ) / 0.1 )
-        for ai in [ 0 .. n ]
-            a = a0 + ( a2 - a0 ) * ai / n
-            rca = R * Math.cos( a )
-            rsa = R * Math.sin( a )
-            p = info.re_2_sc.proj [
-                C[ 0 ] + rca * P01[ 0 ] + rsa * P02[ 0 ],
-                C[ 1 ] + rca * P01[ 1 ] + rsa * P02[ 1 ],
-                C[ 2 ] + rca * P01[ 2 ] + rsa * P02[ 2 ]
-            ]
             
-            if ai 
-                info.ctx.lineTo p[ 0 ], p[ 1 ]
-            else
-                info.ctx.moveTo p[ 0 ], p[ 1 ]
-        #info.ctx.closePath()
-        info.ctx.stroke()
+    _draw_polygons: ( info, proj ) ->
+        for polyg in @polygons.get()
+            if polyg.length > 0
+                info.ctx.beginPath()
+                info.ctx.strokeStyle = "red"#info.theme.line_color.to_hex()
+                info.ctx.fillStyle   = "rgba(200,200,125,100)"#info.theme.line_color.to_hex()
+                
+                
+                first_point = @lines[ polyg[ 0 ] ][ 0 ]
+                
+                pos_first_point = proj[ first_point ]
+                info.ctx.moveTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
+                
+                for index_line in polyg
+                    for i in [ 1 ...@lines[ index_line ].length ] # don't draw first point (because he is the same as the last line points)
+                        p = @lines[ index_line ][ i ]
+                        pos_p = proj[ p ]
+                        if pos_p?
+                            info.ctx.lineTo( pos_p[ 0 ], pos_p[ 1 ] )
+                # come back to first point
+                info.ctx.lineTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
+                
+                if @visualization.displayed_style.get() == "Wireframe"
+                    info.ctx.fill()#only for debug
+                    info.ctx.stroke()
+                else
+                    info.ctx.fill()
+                info.ctx.closePath()
 
-    _get_center_radius: ( P0, P1, P2) ->
-        P01 = Vec_3.sub P1, P0
-        P02 = Vec_3.sub P2, P0
-        x1 = Vec_3.len P01
-        P01 = Vec_3.mus 1 / x1, P01
-        x2 = Vec_3.dot P02, P01
-        P02 = Vec_3.sub( P02, Vec_3.mus( x2, P01 ) )
-        y2 = Vec_3.len P02
-        P02 = Vec_3.mus 1 / y2, P02
-        xc = x1 * 0.5
-        yc = ( x2 * x2 + y2 * y2 - x2 * x1 ) / ( 2.0 * y2 )
-        C = Vec_3.add( Vec_3.add( P0, Vec_3.mus( xc, P01 ) ), Vec_3.mus( yc, P02 ) )
-        R = Vec_3.len( Vec_3.sub( P0, C ) )
-        
-        a0 = Math.atan2 (  0 - yc ), (  0 - xc )
-        a1 = Math.atan2 (  0 - yc ), ( x1 - xc )
-        a2 = Math.atan2 ( y2 - yc ), ( x2 - xc )
-        
-        ma = 0.5 * ( a0 + a2 )
-        if Math.abs( a1 - ma ) > Math.abs( a0 - ma ) # si a1 n'est pas compris dans l'intervalle
-            if a2 < a0
-                a2 += 2 * Math.PI
-            else
-                a0 += 2 * Math.PI
-                
-        ma = 0.5 * ( a0 + a2 )
-        if Math.abs( a1 - ma ) > Math.abs( a0 - ma ) # si a1 n'est toujours pas compris dans l'intervalle
-            a1 += 2 * Math.PI
-                
-        res =
-            C  : C
-            R  : R
-            a  : [ a0, a1, a2 ]
-            P01: P01
-            P02: P02
-        return res
-        
-    _get_proj_arc: ( info, arc_info, a ) ->
-        rca = arc_info.R * Math.cos( a )
-        rsa = arc_info.R * Math.sin( a )
-        info.re_2_sc.proj [
-            arc_info.C[ 0 ] + rca * arc_info.P01[ 0 ] + rsa * arc_info.P02[ 0 ],
-            arc_info.C[ 1 ] + rca * arc_info.P01[ 1 ] + rsa * arc_info.P02[ 1 ],
-            arc_info.C[ 2 ] + rca * arc_info.P01[ 2 ] + rsa * arc_info.P02[ 2 ]
-        ]
-        
-    _disp_arc_n_points: ( info, point ) ->
-        res = for i in [ 0 ... point.length - 2 ]
-            @_get_center_radius point[ i ], point[ i + 1 ], point[ i + 2 ]
-                
-        info.ctx.beginPath()
-        p = info.re_2_sc.proj point[ 0 ]
-        info.ctx.moveTo p[ 0 ], p[ 1 ]
-
-        # beg
-        for n in [ 1 .. 30 ]
-            alpha = n / 30.0
-            ar = res[ 0 ].a[ 0 ] + ( res[ 0 ].a[ 1 ] - res[ 0 ].a[ 0 ] ) * alpha
-            pr = @_get_proj_arc info, res[ 0 ], ar
-            info.ctx.lineTo pr[ 0 ], pr[ 1 ]
-                
-        # mid
-        for i in [ 0 ... point.length - 3 ]
-            for n in [ 0 ... 30 ]
-                alpha = n / 30.0
-                a0 = res[ i + 0 ].a[ 1 ] + ( res[ i + 0 ].a[ 2 ] - res[ i + 0 ].a[ 1 ] ) * alpha
-                a1 = res[ i + 1 ].a[ 0 ] + ( res[ i + 1 ].a[ 1 ] - res[ i + 1 ].a[ 0 ] ) * alpha
-                
-                p0 = @_get_proj_arc info, res[ i + 0 ], a0
-                p1 = @_get_proj_arc info, res[ i + 1 ], a1
-                pr = Vec_3.add( Vec_3.mus( 1 - alpha, p0 ), Vec_3.mus( alpha, p1 ) )
-                
-                info.ctx.lineTo pr[ 0 ], pr[ 1 ]
-        
-        # end
-        nr = res.length - 1
-        for n in [ 0 .. 30 ]
-            alpha = n / 30.0
-            ar = res[ nr ].a[ 1 ] + ( res[ nr ].a[ 2 ] - res[ nr ].a[ 1 ] ) * alpha
-            pr = @_get_proj_arc info, res[ nr ], ar
-            info.ctx.lineTo pr[ 0 ], pr[ 1 ]
-        
-        
-        #info.ctx.closePath()
-        info.ctx.stroke()

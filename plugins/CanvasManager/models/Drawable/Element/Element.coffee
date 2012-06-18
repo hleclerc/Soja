@@ -1,0 +1,3 @@
+# ancestor for Element_Line, Element_Polygon, ...
+class Element extends Model
+    
