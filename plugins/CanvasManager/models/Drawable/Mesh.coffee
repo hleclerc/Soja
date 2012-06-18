@@ -11,7 +11,7 @@ class Mesh extends Drawable
             
             # geometry
             points  : new Lst_Point # "add_point" can be used to fill the list
-            elements: [] # list of Element_Triangle, Element_Line, ...
+            _elements: [] # list of Element_Triangle, Element_Line, ...
             
             # helpers
             _selected_points: [] # point refs
@@ -32,10 +32,10 @@ class Mesh extends Drawable
         
     # 
     add_element: ( element ) ->
-        @elements.push element
+        @_elements.push element
 
     real_change: ->
-        for a in [ @points, @elements ]
+        for a in [ @points, @_elements ]
             if a.real_change()
                 return true
         false
@@ -48,15 +48,15 @@ class Mesh extends Drawable
         proj = for p, i in @points
             info.re_2_sc.proj p.pos.get()
 
+        # elements
+        for el in @_elements
+            el.draw info, this, proj
+
         # draw points if necessary
         if @visualization.display_style.equals( "Points" ) or @visualization.point_edition.get()
             info.theme.points.beg_ctx info
             for p in proj
                 info.theme.points.draw_proj info, p
-
-        # elements
-        for el in @elements
-            el.draw info, this, proj
 
         # sub elements
         @_update_sub_elements()
@@ -111,7 +111,7 @@ class Mesh extends Drawable
                         
                     # something with elements ?
                     best = dist: 4
-                    for el in @elements
+                    for el in @_elements
                         el.closest_point_closer_than? best, this, proj, cm.cam_info, pos
                     for el in @_sub_elements
                         el.closest_point_closer_than? best, this, proj, cm.cam_info, pos
@@ -127,15 +127,15 @@ class Mesh extends Drawable
                         # element div
                         res = []
                         divisions = {}
-                        for el in @elements
+                        for el in @_elements
                             el.cut_with_point? divisions, best, this, np, ip
                             if divisions[ el.model_id ]?
                                 for nl in divisions[ el.model_id ]
                                     res.push nl
                             else
                                 res.push el
-                        @elements.clear()
-                        @elements.set res
+                        @_elements.clear()
+                        @_elements.set res
                             
                         
                     
@@ -172,7 +172,7 @@ class Mesh extends Drawable
                     
             # else, look in element lists
             best = dist: 4
-            for el in @elements
+            for el in @_elements
                 el.closest_point_closer_than? best, this, proj, cm.cam_info, pos
             for el in @_sub_elements
                 el.closest_point_closer_than? best, this, proj, cm.cam_info, pos
@@ -187,6 +187,14 @@ class Mesh extends Drawable
         return false
     
     
+    make_curve_line_from_selected: ->
+        for el in @_elements
+            el.make_curve_line_from_selected this, @_selected_points
+        
+    
+    
+    
+    
     _closest_point_closer_than: ( proj, pos, dist ) ->
         best = -1
         for p, n in proj
@@ -197,12 +205,14 @@ class Mesh extends Drawable
         return best
     
     _update_sub_elements: ->
-        if @_sub_date < @elements._date_last_modification
-            @_sub_date = @elements._date_last_modification
+        if @_sub_date < @_elements._date_last_modification
+            @_sub_date = @_elements._date_last_modification
     
             @_sub_elements = []
-            for el in @elements
+            for el in @_elements
                 el.add_sub_element? @_sub_elements
+    
+
     
     
     
@@ -299,10 +309,10 @@ class Mesh extends Drawable
                         @polygons[ 0 ].splice i, 1
                         @actualise_polygons -1, i
 
-    make_curve_line_from_selected: ( info ) ->
-        for i in [ 0 ... @points.length ]
-            if @_selected.contains_ref @points[ i ]
-                @make_curve_line i
+    #     make_curve_line_from_selected: ( info ) ->
+    #         for i in [ 0 ... @points.length ]
+    #             if @_selected.contains_ref @points[ i ]
+    #                 @make_curve_line i
     
     #add "value" to all polygons data started at index "index" (use for ex when a line is deleted)
     actualise_polygons: ( val, index ) ->

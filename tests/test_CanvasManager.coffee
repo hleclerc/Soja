@@ -35,6 +35,7 @@ test_CanvasManager = ->
         #{ o: -1, e: new Element_Line [ 3, 2 ] }
         #{ o: +1, e: new Element_Line [ 3, 0 ] }
     ]
+    m.visualization.display_style.set "Wireframe"
     
     c.items.push m
     

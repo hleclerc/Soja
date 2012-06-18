@@ -1,22 +1,20 @@
 # straight line strip
-class Element_Line extends Element
+class Element_Line extends Element_WithIndices
     constructor: ( indices = [] ) ->
-        super()
-        
-        @add_attr
-            indices: indices # point numbers
+        super indices
             
     draw: ( info, mesh, proj, is_a_sub ) ->
-        info.theme.lines.beg_ctx info
-        
-        # straight lines
-        if @indices.length
-            for i in [ 0 ... @indices.length - 1 ]
-                info.theme.lines.draw_straight_proj info, proj[ @indices[ i ].get() ], proj[ @indices[ i + 1 ].get() ]
+        wf = mesh.visualization.display_style.get() in [ "Wireframe", "Surface with Edges" ]
+        if wf or not is_a_sub
+            info.theme.lines.beg_ctx info
+            
+            # straight lines
+            if @indices.length
+                for i in [ 0 ... @indices.length - 1 ]
+                    info.theme.lines.draw_straight_proj info, proj[ @indices[ i ].get() ], proj[ @indices[ i + 1 ].get() ]
 
     contour: ( info, mesh, proj, beg, inversion ) ->
         if @indices.length >= 2
-            console.log inversion
             if inversion
                 for i in [ @indices.length - 2 .. 0 ]
                     info.theme.lines.contour_straight_proj info, proj[ @indices[ i + 1 ].get() ], proj[ @indices[ i ].get() ], beg and i == 0
@@ -67,8 +65,6 @@ class Element_Line extends Element
                     new Element_Line [ @indices[ 0 ].get(), np ]
                     new Element_Line [ np, @indices[ 1 ].get() ]
                 ]
-            
-            
                 
 #             
 #         # arcs

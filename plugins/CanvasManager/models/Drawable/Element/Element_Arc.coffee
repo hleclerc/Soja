@@ -1,11 +1,8 @@
 # arc or succession of inerpolated arcs
 # 
-class Element_Arc extends Element
+class Element_Arc extends Element_WithIndices
     constructor: ( indices ) ->
-        super()
-    
-        @add_attr
-            indices: indices
+        super indices
 
     draw: ( info, mesh, proj, is_a_sub ) ->
         points = for p in @indices
