@@ -11,35 +11,29 @@ class Mesh extends Drawable
             
             # geometry
             points  : new Lst_Point # "add_point" can be used to fill the list
-            elements: [] # list of ElementList
-            _sub_elt: [] # list of { sub_level: , elem_list: , on_skin: , parent }
+            elements: [] # list of Element_Triangle, Element_Line, ...
             
             # helpers
-            _selected_points: [] # indices of selected points / lines / ...
-            _pelected_points: [] # indices of selected points / lines / ...
+            _selected_points: [] # point refs
+            _pelected_points: [] # point refs
                 
         # default move scheme
         @move_scheme = new MoveScheme_3D
         
+        # cache
+        @_sub_elements = [] # list of { sub_level: , elem_list: , on_skin: , parent }
+        @_sub_date = -1
         
     # add a new node
     add_point: ( pos = [ 0, 0, 0 ] ) ->
-        @points.push new Point pos, @move_scheme
+        res = new Point pos, @move_scheme
+        @points.push res
+        return res
         
-    # e.g. "Triangle", [ 0, 10, 1 ] ( "ElementList_#{type}" must be a valid object type
-    # BEWARE: update_sub_elt() must be called after each element addition / removal
-    add_element: ( type, con ) ->
-        l = undefined
-        for el in @elements
-            if el.element_type() == type
-                return el.add_element con
-        eval "var el = new ElementList_#{type};"
-        @elements.push el
-        el.add_element con
-        
-    update_sub_elt: ->
-    
-    
+    # 
+    add_element: ( element ) ->
+        @elements.push element
+
     real_change: ->
         for a in [ @points, @elements ]
             if a.real_change()
@@ -49,96 +43,64 @@ class Mesh extends Drawable
     z_index: ->
         return 100
 
-    draw: ( info, params = {} ) ->
-        if @points.length == 0
-            return
-        
-        # apply warp_factor deformation to points
+    draw: ( info ) ->
+        # 2d screen projection
         proj = for p, i in @points
-                info.re_2_sc.proj p.pos.get()
+            info.re_2_sc.proj p.pos.get()
 
-        #
+        # draw points if necessary
         if @visualization.display_style.equals( "Points" ) or @visualization.point_edition.get()
-            @_draw_points info, proj
-                
+            info.theme.points.beg_ctx info
+            for p in proj
+                info.theme.points.draw_proj info, p
+
+        # elements
         for el in @elements
             el.draw info, this, proj
-                
-        #         info.ctx.lineWidth = 1
-        #         info.ctx.fillStyle = "#FFFFFF"
-        #         info.ctx.strokeStyle = info.theme.line_color.to_hex()
-        #         
-        #         display = @visualization.displayed_style.get()
-        #         
-        #         #@_draw_polygons info, proj
-        #         
-        #         # call adapted draw function for color and using gradient
-        #         if @visualization.displayed_field.lst.length
-        #             selected_field = @visualization.displayed_field.lst[ @visualization.displayed_field.num.get() ]
-        #             
-        #             if selected_field instanceof VectorialField
-        #                 # Preparation of value field by selecting each value of fields at an index
-        #                 value = []
-        #                 for p, ind in @points
-        #                     element = selected_field.get_value_of_fields_at_index ind
-        #                     val = 0
-        #                     for el in element.get()
-        #                         val += el * el
-        #                     
-        #                     value.push Math.sqrt val
-        #                 
-        #                 # Warp is use to multiply
-        #                 if @visualization.warp_by.lst[ @visualization.warp_by.num ] != undefined and @visualization.warp_factor.get() != 0
-        #                     field_data = @visualization.warp_by.get()
-        #                     warp_factor = @visualization.warp_factor.get()
-        #                 else
-        #                     warp_factor = 1
-        #                     
-        #                 @actualise_value_legend value
-        #                 selected_field.draw info, @visualization.displayed_style.get(), @points, value, warp_factor, @visualization.legend
-        #             else # nodal and elementary fields
-        #                 @actualise_value_legend selected_field.get()
-        #                 selected_field.draw info, @visualization.displayed_style.get(), @triangles, proj, @visualization.legend
-        #         
-        #         # when mesh is not an element fields nor a nodal fields
-        #         else
-        #             if display == "Wireframe" or display == "Surface with Edges" or display == "Edges"
-        #                 @_draw_edges info, proj
-        #                 
-        #         if display == "Points" or @editable_points.get() == true
-        #             @_draw_points info, proj, selected
-    
-    anim_min_max: ->
-        f = @visualization.displayed_field.get() 
-        if f?
-            f.anim_min_max()
-        else
-            0
+
+        # sub elements
+        @_update_sub_elements()
+        for el in @_sub_elements
+            el.draw info, this, proj, true
+            
+        # selected items
+        if @_selected_points.length
+            info.theme.selected_points.beg_ctx info
+            for p in @_selected_points
+                n = info.re_2_sc.proj p.pos.get()
+                info.theme.selected_points.draw_proj info, n
+        
+        # preselected items
+        if @_pelected_points.length
+            info.theme.highlighted_points.beg_ctx info
+            for p in @_pelected_points
+                n = info.re_2_sc.proj p.pos.get()
+                info.theme.highlighted_points.draw_proj info, n
+            
     
     on_mouse_down: ( cm, evt, pos, b, old, points_allowed = true ) ->
         delete @_moving_point
         if @visualization.point_edition.get()
             if b == "LEFT" or b == "RIGHT"
                 if points_allowed
-                    # we will need proj
+                    # preparation
                     proj = for p in @points
                         cm.cam_info.re_2_sc.proj p.pos.get()
                         
-                    # a point that can be moved ?
-                    res = @_points_closer_than proj, pos, 10
-                    if res.length
-                        res.sort ( a, b ) -> b.dist - a.dist
-                        
+                    # closest point with dist < 10
+                    best = @_closest_point_closer_than proj, pos, 10
+                    if best >= 0
                         if evt.ctrlKey # add / rem selection
                             @_ctrlKey = true
-                            if @_selected_points.toggle res[ 0 ].num
-                                @_moving_point = res[ 0 ].inst
+                            if @_selected_points.toggle_ref @points[ best ]
+                                @_moving_point = @points[ best ]
                                 @_moving_point.beg_click pos
                         else
                             @_ctrlKey = false
-                            if not @_selected_points.contains res[ 0 ].num
-                                @_selected_points.push res[ 0 ].num
-                            @_moving_point = res[ 0 ].inst
+                            if not @_selected_points.contains_ref @points[ best ]
+                                @_selected_points.clear()
+                                @_selected_points.set [ @points[ best ] ]
+                            @_moving_point = @points[ best ]
                             @_moving_point.beg_click pos
                             
                         if b == "RIGHT"
@@ -148,18 +110,44 @@ class Mesh extends Drawable
                         @_pelected_points.clear()
                         
                     # something with elements ?
+                    best = dist: 4
                     for el in @elements
-                        if el.on_mouse_down_point_edition? this, proj, cm, evt, pos, b, old
-                            return true
-                    
+                        el.closest_point_closer_than? best, this, proj, cm.cam_info, pos
+                    for el in @_sub_elements
+                        el.closest_point_closer_than? best, this, proj, cm.cam_info, pos
+                    if best.disp?
+                        # _selected_points
+                        np = @points.length
+                        ip = @add_point best.disp
+                        @_selected_points.clear()
+                        @_selected_points.set [ ip ]
+                        @_moving_point = ip
+                        @_moving_point.beg_click pos
+                        
+                        # element div
+                        res = []
+                        divisions = {}
+                        for el in @elements
+                            el.cut_with_point? divisions, best, this, np, ip
+                            if divisions[ el.model_id ]?
+                                for nl in divisions[ el.model_id ]
+                                    res.push nl
+                            else
+                                res.push el
+                        @elements.clear()
+                        @elements.set res
+                            
+                        
                     
         return false
         
     on_mouse_up_wo_move: ( cm, evt, pos, b, points_allowed = true ) ->
-        if @_moving_point? and not @_ctrlKey
-            @_selected_points.set [ @_selected_points.back() ]
-            return true
-                    
+        if @_moving_point? and not @_ctrlKey and @_selected_points.length > 1
+            p = @_selected_points.back()
+            @_selected_points.clear()
+            @_selected_points.set [ p ]
+            return true                    
+            
     on_mouse_move: ( cm, evt, pos, b, old ) ->
         if @visualization.point_edition.get()
             # currently moving something ?
@@ -168,31 +156,56 @@ class Mesh extends Drawable
                     
                 p_0 = cm.cam_info.sc_2_rw.pos pos[ 0 ], pos[ 1 ]
                 d_0 = cm.cam_info.sc_2_rw.dir pos[ 0 ], pos[ 1 ]
-                selected_points = ( @points[ i.get() ] for i in @_selected_points )
-                @_moving_point.move selected_points, @_moving_point.pos, p_0, d_0
+                @_moving_point.move @_selected_points, @_moving_point.pos, p_0, d_0
                 return true
 
-            # else, we will need proj
+            # preparation
             proj = for p in @points
                 cm.cam_info.re_2_sc.proj p.pos.get()
                 
             # pre selection of a particular point ?
-            res = @_points_closer_than proj, pos, 10
-            if res.length
-                for el in @elements
-                    el.rem_pelected?()
-                res.sort ( a, b ) -> b.dist - a.dist
-                @_pelected_points.set [ res[ 0 ].num ]
-                return true
-            else
+            best = @_closest_point_closer_than proj, pos, 10
+            if best >= 0
                 @_pelected_points.clear()
-                
+                @_pelected_points.set [ @points[ best ] ]
+                return true
+                    
             # else, look in element lists
+            best = dist: 4
             for el in @elements
-                if el.on_mouse_move_point_edition? this, proj, cm, evt, pos, b, old
-                    return true
+                el.closest_point_closer_than? best, this, proj, cm.cam_info, pos
+            for el in @_sub_elements
+                el.closest_point_closer_than? best, this, proj, cm.cam_info, pos
+            if best.disp?
+                @_pelected_points.clear()
+                @_pelected_points.set [ new Point best.disp ]
+                return true
+                
         
+        # nothing to pelect :P
+        @_pelected_points.clear()
         return false
+    
+    
+    _closest_point_closer_than: ( proj, pos, dist ) ->
+        best = -1
+        for p, n in proj
+            d = Math.sqrt Math.pow( pos[ 0 ] - p[ 0 ], 2 ) + Math.pow( pos[ 1 ] - p[ 1 ], 2 )
+            if dist > d
+                dist = d
+                best = n
+        return best
+    
+    _update_sub_elements: ->
+        if @_sub_date < @elements._date_last_modification
+            @_sub_date = @elements._date_last_modification
+    
+            @_sub_elements = []
+            for el in @elements
+                el.add_sub_element? @_sub_elements
+    
+    
+    
     
 
     delete_selected_point: ( info ) ->
@@ -388,38 +401,6 @@ class Mesh extends Drawable
             for d in [ 0 ... 3 ]
                 x_min[ d ] = Math.min x_min[ d ], p[ d ]
                 x_max[ d ] = Math.max x_max[ d ], p[ d ]
-
-
-    _points_closer_than: ( proj, pos, m ) ->
-        res = []
-        for p, n in proj
-            dx = pos[ 0 ] - p[ 0 ]
-            dy = pos[ 1 ] - p[ 1 ]
-            d = Math.sqrt dx * dx + dy * dy
-            if d <= m
-                res.push
-                    inst: @points[ n ]
-                    dist: d
-                    num : n
-        return res
-                
-    _draw_points: ( info, proj ) ->
-        # draw all the points
-        info.theme.points.prep_ctx info
-        for p in proj
-            info.theme.points.draw_proj info, p
-        
-        # draw point that are under the mouse pointer
-        if @_selected_points.length
-            info.theme.selected_points.prep_ctx info
-            for i in @_selected_points
-                info.theme.selected_points.draw_proj info, proj[ i.get() ]
-        
-        # draw point that are under the mouse pointer
-        if @_pelected_points.length
-            info.theme.highlighted_points.prep_ctx info
-            for i in @_pelected_points
-                info.theme.highlighted_points.draw_proj info, proj[ i.get() ]
             
     _draw_polygons: ( info, proj ) ->
         for polyg in @polygons.get()

@@ -9,10 +9,13 @@ class PointTheme extends Model
             line_color: line_color
             line_width: line_width
             
-    prep_ctx: ( info ) ->
+    beg_ctx: ( info ) ->
         info.ctx.fillStyle   = @color.to_rgba()
         info.ctx.lineWidth   = @line_width.get()
         info.ctx.strokeStyle = @line_color.to_rgba()
+        
+    end_ctx: ( info ) ->
+    
         
     draw_proj: ( info, proj ) ->
         info.ctx.beginPath()

@@ -4,8 +4,9 @@ class Theme extends Model
         super()
         
         @add_attr
-            lines             : new LineTheme(  new Color( 255, 255, 255, 255 ), 1 )
-            points            : new PointTheme( new Color(   0, 255,   0, 255 ), 4, new Color( 255, 255, 255, 255 ), 1 )
+            lines             : new LineTheme( new Color( 255, 255, 255, 255 ), 1 )
+            points            : new PointTheme( new Color( 0, 255, 0, 255 ), 4, new Color( 255, 255, 255, 255 ), 1 )
+            surfaces          : new SurfaceTheme( new Color( 150, 150, 150, 255 ) )
             
             selected_points   : new PointTheme( new Color( 255,   0,   0, 255 ), 4, new Color( 255, 255, 255, 255 ), 1 )
             highlighted_points: new PointTheme( new Color(   0,   0,   0,   0 ), 5, new Color( 255, 255,   0, 255 ), 1 )

@@ -25,10 +25,16 @@ test_CanvasManager = ->
     m.add_point [ s, 0, 0 ]
     m.add_point [ s, s, 0 ]
     m.add_point [ 0, s, 0 ]
-    m.add_element "Line", [ 0, 1 ]
-    m.add_element "Line", [ 1, 2, 3 ]
-    m.add_element "Line", [ 3, 0 ]
-    m.update_sub_elt()
+    # m.add_element new Element_Line [ 0, 1 ]
+    # m.add_element new Element_Line [ 3, 0 ]
+    # m.add_element new Element_Arc  [ 1, 2, 3 ]
+    m.add_element new Element_BoundedSurf [
+        { o: +1, e: new Element_Line [ 0, 1 ] }
+        { o: +1, e: new Element_Arc  [ 1, 2, 3 ] }
+        { o: +1, e: new Element_Line [ 3, 0 ] }
+        #{ o: -1, e: new Element_Line [ 3, 2 ] }
+        #{ o: +1, e: new Element_Line [ 3, 0 ] }
+    ]
     
     c.items.push m
     

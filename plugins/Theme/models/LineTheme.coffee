@@ -7,22 +7,32 @@ class LineTheme extends Model
             color: new Color 255, 255, 255, 255
             width: 1
             
-    prep_ctx: ( info ) ->
+    beg_ctx: ( info ) ->
         info.ctx.lineWidth   = @width.get()
         info.ctx.strokeStyle = @color.to_rgba()
         
+    end_ctx: ( info ) ->
+        
     draw_straight_proj: ( info, p0, p1 ) ->
         info.ctx.beginPath()
-        info.ctx.moveTo p0[ 0 ], p0[ 1 ]
-        info.ctx.lineTo p1[ 0 ], p1[ 1 ]
+        @contour_straight_proj info, p0, p1
         info.ctx.stroke()
         
-    draw_arc: ( info, P0, P1, P2 ) ->
-        cr = @_get_center_radius P0, P1, P2
+    contour_straight_proj: ( info, p0, p1, beg = true ) ->
+        if beg
+            info.ctx.moveTo p0[ 0 ], p0[ 1 ]
+        info.ctx.lineTo p1[ 0 ], p1[ 1 ]
         
+    draw_arc: ( info, P0, P1, P2 ) ->
         info.ctx.beginPath()
+        @contour_arc info, P0, P1, P2
+        info.ctx.stroke()
+
+    contour_arc: ( info, P0, P1, P2, beg = true ) ->
+    
+        cr = @_get_center_radius P0, P1, P2
         n = Math.ceil( Math.abs( cr.a[ 2 ] - cr.a[ 0 ] ) / 0.1 )
-        for ai in [ 0 .. n ]
+        for ai in [ 1 - beg .. n ]
             a = cr.a[ 0 ] + ( cr.a[ 2 ] - cr.a[ 0 ] ) * ai / n
             rca = cr.R * Math.cos( a )
             rsa = cr.R * Math.sin( a )
@@ -32,19 +42,32 @@ class LineTheme extends Model
                 cr.C[ 2 ] + rca * cr.P01[ 2 ] + rsa * cr.P02[ 2 ]
             ]
             
-            if ai 
+            if ai
                 info.ctx.lineTo p[ 0 ], p[ 1 ]
             else
                 info.ctx.moveTo p[ 0 ], p[ 1 ]
-        info.ctx.stroke()
-
+        
     draw_interpolated_arcs: ( info, points ) ->
+        # simplified case
+        if points.length == 3
+            return @draw_arc info, points[ 0 ], points[ 1 ], points[ 2 ]
+    
+        info.ctx.beginPath()
+        @contour_interpolated_arcs info, points
+        info.ctx.stroke()
+    
+    contour_interpolated_arcs: ( info, points, beg = true ) ->
+        # simplified case
+        if points.length == 3
+            return @contour_arc info, points[ 0 ], points[ 1 ], points[ 2 ]
+    
+        # else, get center and radius for each intermediate arc
         res = for i in [ 0 ... points.length - 2 ]
             @_get_center_radius points[ i ], points[ i + 1 ], points[ i + 2 ]
                 
-        info.ctx.beginPath()
         p = info.re_2_sc.proj points[ 0 ]
-        info.ctx.moveTo p[ 0 ], p[ 1 ]
+        if beg
+            info.ctx.moveTo p[ 0 ], p[ 1 ]
 
         # beg
         for n in [ 1 .. 30 ]
@@ -73,8 +96,6 @@ class LineTheme extends Model
             ar = res[ nr ].a[ 1 ] + ( res[ nr ].a[ 2 ] - res[ nr ].a[ 1 ] ) * alpha
             pr = @_get_proj_arc info, res[ nr ], ar
             info.ctx.lineTo pr[ 0 ], pr[ 1 ]
-        
-        info.ctx.stroke()
     
         
         
