@@ -203,8 +203,10 @@ class Lst extends Model
         i = @indexOf_ref v
         if i >= 0
             @splice i
+            false
         else
             @push v
+            true
 
     #return a new lst between begin and end index
     slice: ( begin, end = this.length ) ->
