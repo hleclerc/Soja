@@ -17,6 +17,9 @@ class ElementaryField extends Model
 #     dim: ->
 #         1
     
+    z_index: () ->
+        return 40
+        
     draw: ( info, display_style, triangles, proj, legend) ->
         for tri, i in triangles
             @_draw_elementary_triangle info, display_style, tri.get(), proj, @_data[ i ], legend

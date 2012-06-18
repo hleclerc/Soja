@@ -23,7 +23,10 @@ class NodalField extends Model
         for t in @_time_steps
             ma = Math.max ma, t.get()
         ma
-    
+        
+    z_index: () ->
+        return 50
+        
     # the trick of this function is that it use only one linear gradient calculate using point value and position
     _draw_nodal_triangle: ( info, display_style, tri, proj, field, legend ) ->
         offset_data = 0
@@ -31,7 +34,6 @@ class NodalField extends Model
 #             if t.get() >= info.time
 #                 offset_data = ind * proj.size()
 #         console.log ind, @_time_steps.get()
-    
         posit = for i in [ 0 ... 3 ]
             proj[ tri[ i ] ]
                 
@@ -101,7 +103,6 @@ class NodalField extends Model
             
         if display_style == "Wireframe"
             @_draw_gradient_stroke_triangle info, p0, p1, posit, legend
-    
 
     
     # draw edges of triangle as normal lines

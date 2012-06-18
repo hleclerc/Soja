@@ -14,7 +14,7 @@ class Mesh extends Drawable
         @add_attr
             visualisation :
                 displayed_field: disp_fields
-                displayed_style: new Choice( 4, [ "Arrow", "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
+                displayed_style: new Choice( 5, [ "Arrow", "Points", "Lines", "Surface", "Surface with Edges", "Wireframe" ] )
                 legend         : ( if legend instanceof Legend then legend else new Legend( disp_fields ) )
                 warp_by        : new Choice_RestrictedByDim( 0, disp_fields.lst )
                 warp_factor    : new ConstrainedVal( 0, { min: 0, max: 2048 } )
@@ -54,7 +54,10 @@ class Mesh extends Drawable
         @visualisation.displayed_field.lst.push field
         
     z_index: ->
-        return 100
+        if @visualisation.displayed_field.lst?[ @visualisation.displayed_field.num.get() ]
+            return @visualisation.displayed_field.lst[ @visualisation.displayed_field.num.get() ].z_index()
+        else
+            return 100
 
     points_have_to_be_drawn: ( info ) ->
         info.sel_item[ @model_id ]

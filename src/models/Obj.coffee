@@ -7,7 +7,7 @@ class Obj extends Model
             @_set data
 
     toString: ->
-        @_data.toString()
+        @_data?.toString()
 
     equals: ( obj ) ->
         if obj instanceof Obj

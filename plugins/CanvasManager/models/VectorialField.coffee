@@ -37,6 +37,9 @@ class VectorialField extends Model
                     value.push 0
         return value
     
+    z_index: () ->
+        return 75
+        
     draw: ( info, display_style, points, values, warp_factor = 1, legend ) ->
         if display_style == "Arrow"
             color = "white"

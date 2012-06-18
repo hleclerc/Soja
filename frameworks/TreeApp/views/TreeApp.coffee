@@ -21,6 +21,7 @@ class TreeApp extends View
             
         @el = new_dom_element
             parentNode: @bel
+            id        : "main_window"
             style:
                 position: "absolute"
                 left    : 0

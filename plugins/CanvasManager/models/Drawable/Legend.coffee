@@ -59,7 +59,7 @@ class Legend extends Drawable
             
             info.ctx.font = font_size + "pt Arial"
             info.ctx.textAlign = "center"
-            t = @_title.toString()
+            t = @_title?.toString()
             if t?
                 info.ctx.fillText( t, pos_x + width * 0.5, pos_y + height + height * 0.2 )
     
