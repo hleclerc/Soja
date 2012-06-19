@@ -6,18 +6,13 @@ class Element_WithIndices extends Element
         @add_attr
             indices: indices # point numbers
             
-    points_in: ( mesh, points ) ->
-        for a in @indices
-            for p in points
-                if mesh.points[ a.get() ] == p
+    points_inside: ( tab_ind ) ->
+        for i in tab_ind
+            for a in @indices
+                if a.equals i
                     return true
         return false
         
-    point_in: ( mesh, point ) ->
-        for a in @indices
-            if mesh.points[ a.get() ] == point
-                return true
-        return false
         
     get_point_numbers: ->
         @indices.get()

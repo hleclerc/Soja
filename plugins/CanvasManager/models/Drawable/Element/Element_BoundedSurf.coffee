@@ -52,124 +52,76 @@ class Element_BoundedSurf extends Element
                 res.push b.e
 
     
-    make_curve_line_from_selected: ( mesh, selected_points ) ->
-#         if selected_points?.length and mesh? and @boundaries?
-#             np = []
-#             for point in selected_points
-#                 for b in @boundaries
-#                     if b.e.point_in mesh, point
-#                         np.push b.e.get_point_numbers()
-#                         
-#                 if np.length >= 2
-#                     @make_curve_line np
-#                 np = []
-#                 
-#                 
-#     make_curve_line: ( index ) ->
-#         console.log "-----"
-#         console.log index
-#         index = @_check_continuity index
-#         res = []
-#         waiting_points = []
-#         
-#         if index.length
-#             for ind in index
-#                 for i in ind
-#                     waiting_points.push i
-#             console.log waiting_points
-#             
-#             
-#         if waiting_points.length >= 3
-#             console.log waiting_points
-#             res.push
-#                 o: 1
-#                 e: new Element_Arc waiting_points
-#             waiting_points = []
-#     
-#         console.log @boundaries
-#         @boundaries.push res
-        
-        
-        res = []
-        waiting_points = []
-        for b in @boundaries
-            if b.e.points_in mesh, selected_points
-                np = b.e.get_point_numbers()
-                if b.o < 0
-                    if np.length
-                        for n in np[ np.length - 1 .. waiting_points.length > 0 ]
-                            waiting_points.push n
-                else
-                    # CASE first point is selected (and linked to last point in the shape)
-                    if waiting_points.length and waiting_points[ 0 ] == np[ np.length - 1 ]
-                        waiting_points.unshift np[ 0 ] 
-                    else
-                        for n in np[ waiting_points.length > 0 ... ]
-                            waiting_points.push n
-            else
-                if waiting_points.length >= 3
-                    res.push
-                        o: 1
-                        e: new Element_Arc waiting_points
-                    waiting_points = []
-                res.push b
-    
-        if waiting_points.length >= 3
-            res.push
-                o: 1
-                e: new Element_Arc waiting_points
+    make_curve_line_from_selected: ( selected_points ) ->
+        if selected_points?.length and @boundaries?
+            res = []
             waiting_points = []
-            
-#         console.log res
-        @boundaries.clear()
-        @boundaries.set res
-        
-    break_line_from_selected: ( mesh, selected_points  ) ->
-        waiting_points = []
-        res = []
-        for b in @boundaries
-            if b.e.points_in mesh, selected_points
-                waiting_points = b.e.get_point_numbers()
-                console.log waiting_points, selected_points, @boundaries
-                if waiting_points.length >= 3
-                    for ind in [ 0 ... waiting_points.length - 1 ]
+            for b in @boundaries
+                if b.e.points_inside selected_points
+                    np = b.e.get_point_numbers()
+                    if b.o < 0
+                        if np.length
+                            for n in np[ np.length - 1 .. waiting_points.length > 0 ]
+                                waiting_points.push n
+                    else
+                        # CASE first point is selected (and linked to last point in the shape)
+                        if waiting_points.length and waiting_points[ 0 ] == np[ np.length - 1 ]
+                            waiting_points.unshift np[ 0 ] 
+                        else
+                            for n in np[ waiting_points.length > 0 ... ]
+                                waiting_points.push n
+                else
+                    if waiting_points.length >= 3
                         res.push
                             o: 1
-                            e: new Element_Line [ waiting_points[ ind ], waiting_points[ ind + 1 ] ]
-                        console.log 'new line between : ', [ waiting_points[ ind ], waiting_points[ ind + 1 ] ]
+                            e: new Element_Arc waiting_points
+                        waiting_points = []
+                    res.push b
+        
+            if waiting_points.length >= 3
+                res.push
+                    o: 1
+                    e: new Element_Arc waiting_points
+                waiting_points = []
+                
+            @boundaries.clear()
+            @boundaries.set res
+        
+    break_line_from_selected: ( selected_points  ) ->
+        if selected_points?.length and @boundaries?
+            waiting_points = []
+            res = []
+            for b in @boundaries
+                if b.e.points_inside selected_points
+                    waiting_points = b.e.get_point_numbers()
+                    if waiting_points.length >= 3
+                        for sel in selected_points
+                            pos = waiting_points.indexOf sel
+                            if pos != -1
+                                if pos == 1
+                                    res.push
+                                        o: 1
+                                        e: new Element_Line waiting_points.slice 0, pos + 1
+
+                                if pos >= 2
+                                    res.push
+                                        o: 1
+                                        e: new Element_Arc waiting_points.slice 0 , pos + 1
+
+                                l = waiting_points.length - 1
+                                after = l - pos
+                                if after == 1
+                                    #after pos
+                                    res.push
+                                        o: 1
+                                        e: new Element_Line waiting_points.slice pos, l + 1
+                                if after >= 2
+                                    res.push
+                                        o: 1
+                                        e: new Element_Arc waiting_points.slice pos, l + 1
+                    else
+                        res.push b
                 else
                     res.push b
-            else
-                res.push b
-        console.log res
-        @boundaries.clear()
-        @boundaries.set res
-    
-#         for i in [ 0 ... @points.length ]
-#             if @_selected.contains_ref @points[ i ]
-#                 @break_line i
-#     
-#     break_line: ( index ) ->
-#         if typeof index == "undefined"
-#             return false
-#         if @lines.length > 0
-#             for i in [ @lines.length-1..0 ]
-#                 if @lines[ i ].indexOf(index) != -1
-#                     if @lines[ i ].length >= 3
-#                         pos = @lines[ i ].indexOf index
-#                         if pos > 0
-#                             tmpLines = @lines[ i ].slice( 0, pos + 1 )
-#                             @lines.push tmpLines
-#                             @polygons[ 0 ].push @lines.length-1
-# 
-#                         l = @lines[ i ].length
-#                         after = l - pos
-#                         if after > 0
-#                             #after pos
-#                             tmpLines = @lines[ i ].slice( pos, l )
-#                             @lines.push tmpLines
-#                             @polygons[ 0 ].push @lines.length-1
-#                          
-#                         @lines.splice i, 1
-#                         @polygons[ 0 ].splice i, 1
-#                         @actualise_polygons -1, i
+            @boundaries.clear()
+            @boundaries.set res
