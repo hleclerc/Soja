@@ -51,10 +51,6 @@ class Element_BoundedSurf extends Element
             if b.e not in res
                 res.push b.e
 
-#     #TODO 
-#     _check_continuity: ( index ) ->
-#         console.log index
-#         return index
     
     make_curve_line_from_selected: ( mesh, selected_points ) ->
 #         if selected_points?.length and mesh? and @boundaries?
@@ -104,8 +100,12 @@ class Element_BoundedSurf extends Element
                         for n in np[ np.length - 1 .. waiting_points.length > 0 ]
                             waiting_points.push n
                 else
-                    for n in np[ waiting_points.length > 0 ... ]
-                        waiting_points.push n
+                    # CASE first point is selected (and linked to last point in the shape)
+                    if waiting_points.length and waiting_points[ 0 ] == np[ np.length - 1 ]
+                        waiting_points.unshift np[ 0 ] 
+                    else
+                        for n in np[ waiting_points.length > 0 ... ]
+                            waiting_points.push n
             else
                 if waiting_points.length >= 3
                     res.push
@@ -130,7 +130,7 @@ class Element_BoundedSurf extends Element
         for b in @boundaries
             if b.e.points_in mesh, selected_points
                 waiting_points = b.e.get_point_numbers()
-                console.log waiting_points
+                console.log waiting_points, selected_points, @boundaries
                 if waiting_points.length >= 3
                     for ind in [ 0 ... waiting_points.length - 1 ]
                         res.push
