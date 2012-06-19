@@ -42,10 +42,10 @@ class Mesh extends Drawable
         false
         
     z_index: ->
-        if @visualisation.displayed_field.lst?[ @visualisation.displayed_field.num.get() ]
-            return @visualisation.displayed_field.lst[ @visualisation.displayed_field.num.get() ].z_index()
-        else
-            return 100
+        #         if @visualisation.displayed_field.lst?[ @visualisation.displayed_field.num.get() ]
+        #             return @visualisation.displayed_field.lst[ @visualisation.displayed_field.num.get() ].z_index()
+        #         else
+        return 100
 
     draw: ( info ) ->
         # 2d screen projection
@@ -194,6 +194,10 @@ class Mesh extends Drawable
     make_curve_line_from_selected: ->
         for el in @_elements
             el.make_curve_line_from_selected this, @_selected_points
+            
+    break_line_from_selected: ->
+        for el in @_elements
+            el.break_line_from_selected this, @_selected_points
         
     
     
@@ -217,10 +221,6 @@ class Mesh extends Drawable
                 el.add_sub_element? @_sub_elements
     
 
-    
-    
-    
-    
 
     delete_selected_point: ( info ) ->
         for i in [ 0 ... @points.length ]
@@ -283,35 +283,35 @@ class Mesh extends Drawable
                 if @lines[ i ][ j ].get() >= index
                     @lines[ i ][ j ]._set( @lines[ i ][ j ].get() - 1 )
 
-    break_line_from_selected: ( info ) ->
-        for i in [ 0 ... @points.length ]
-            if @_selected.contains_ref @points[ i ]
-                @break_line i
-    
-    break_line: ( index ) ->
-        if typeof index == "undefined"
-            return false
-        if @lines.length > 0
-            for i in [ @lines.length-1..0 ]
-                if @lines[ i ].indexOf(index) != -1
-                    if @lines[ i ].length >= 3
-                        pos = @lines[ i ].indexOf index
-                        if pos > 0
-                            tmpLines = @lines[ i ].slice( 0, pos + 1 )
-                            @lines.push tmpLines
-                            @polygons[ 0 ].push @lines.length-1
-
-                        l = @lines[ i ].length
-                        after = l - pos
-                        if after > 0
-                            #after pos
-                            tmpLines = @lines[ i ].slice( pos, l )
-                            @lines.push tmpLines
-                            @polygons[ 0 ].push @lines.length-1
-                         
-                        @lines.splice i, 1
-                        @polygons[ 0 ].splice i, 1
-                        @actualise_polygons -1, i
+    #     break_line_from_selected: ( info ) ->
+    #         for i in [ 0 ... @points.length ]
+    #             if @_selected.contains_ref @points[ i ]
+    #                 @break_line i
+    #     
+    #     break_line: ( index ) ->
+    #         if typeof index == "undefined"
+    #             return false
+    #         if @lines.length > 0
+    #             for i in [ @lines.length-1..0 ]
+    #                 if @lines[ i ].indexOf(index) != -1
+    #                     if @lines[ i ].length >= 3
+    #                         pos = @lines[ i ].indexOf index
+    #                         if pos > 0
+    #                             tmpLines = @lines[ i ].slice( 0, pos + 1 )
+    #                             @lines.push tmpLines
+    #                             @polygons[ 0 ].push @lines.length-1
+    # 
+    #                         l = @lines[ i ].length
+    #                         after = l - pos
+    #                         if after > 0
+    #                             #after pos
+    #                             tmpLines = @lines[ i ].slice( pos, l )
+    #                             @lines.push tmpLines
+    #                             @polygons[ 0 ].push @lines.length-1
+    #                          
+    #                         @lines.splice i, 1
+    #                         @polygons[ 0 ].splice i, 1
+    #                         @actualise_polygons -1, i
 
     #     make_curve_line_from_selected: ( info ) ->
     #         for i in [ 0 ... @points.length ]
@@ -324,91 +324,91 @@ class Mesh extends Drawable
             for i in [ index ... polyg.length ]
                 polyg[ i ].set polyg[ i ].get() + val
 
-    make_curve_line: ( index ) ->
-        if typeof index == "undefined"
-            return false
-        if @lines.length > 0
-            pointToJoin = []
-            lineWithCurve = []
-            for i in [ @lines.length-1..0 ]
-                if @lines[ i ].indexOf(index) != -1
-                    pos = @lines[ i ].indexOf index
-                    if @lines[ i ].length == 2
-                        pointToJoin.push [ i, @lines[ i ][ 1 - pos ].get() ]
-                    else
-                        lineWithCurve.push [ i, pos ]
-                        
-            # case two segment
-            if pointToJoin.length == 2
-                # delete two segment
-                for ind in [0...pointToJoin.length]
-                    @lines.splice(pointToJoin[ ind ][ 0 ], 1)
-                    @polygons[ 0 ].splice pointToJoin[ ind ][ 0 ], 1
-                    @actualise_polygons -1, pointToJoin[ ind ][ 0 ]
-                    
-                # make an arc with selectionned point on middle
-                @lines.push [ pointToJoin[ 0 ][ 1 ], index, pointToJoin[ 1 ][ 1 ] ]
-                @polygons[ 0 ].push @lines.length-1
-                
-            # case one segment and one arc
-            else if lineWithCurve.length == 1 && pointToJoin.length == 1
-                    
-                # we need to know if the new point is on the begining of arc or at the end
-                pos = lineWithCurve[ 0 ][ 1 ]
-                lineNumber = lineWithCurve[ 0 ][ 0 ]
-                indexDel = pointToJoin[ 0 ][ 0 ]
-            
-                if pos == 0
-                    @lines[ lineNumber ].unshift pointToJoin[ 0 ][ 1 ]
-                    @polygons[ 0 ].unshift 0
-                    @actualise_polygons 1, 1
-                else
-                    @lines[ lineNumber ].push pointToJoin[ 0 ][ 1 ]
-                    @polygons[ 0 ].push @lines.length-1
-                
-                # delete segment
-                @lines.splice( indexDel, 1)
-                @polygons[ 0 ].splice indexDel, 1
-                @actualise_polygons -1, indexDel
-                #deletion is not actualised
-                
-            # case two arc
-            else if lineWithCurve.length == 2
-                newLine = []
-                #concat two arc
-                
-                lineNumber = lineWithCurve[ 0 ][ 0 ]
-                l = @lines[ lineNumber ].length
-                pos = lineWithCurve[ 0 ][ 1 ]
-                #check if we need to inverse array, for first line default is yes
-                if pos == (l-1)
-                    for el, i in @lines[ lineNumber ]
-                        newLine[ i ] = el
-                    
-                else
-                    for i in [0...@lines[ lineNumber ].length]
-                        newLine[ (l-1)-i ] = @lines[ lineNumber ][ i ]
-                
-                 #check if we need to inverse array, for first line default is no
-                lineNumber = lineWithCurve[ 1 ][ 0 ]
-                l = @lines[ lineNumber ].length
-                pos = lineWithCurve[ 1 ][ 1 ]
-                k = newLine.length - 1 # -1 prevent selected point to be in doublon
-                if pos == (l-1)
-                    for i in [0...@lines[ lineNumber ].length]
-                        newLine[ k + (l-1)-i ] = @lines[ lineNumber ][ i ]
-                else
-                    for el, i in @lines[ lineNumber ]
-                        newLine[ k + i ] = el
-                
-                #delete old arc
-                for ind, i in lineWithCurve[0]
-                    @lines.splice(lineWithCurve[0][ ind ] - i, 1)
-                    @polygons[ 0 ].splice lineWithCurve[0][ ind ] - i, 1
-                    @actualise_polygons -1, lineWithCurve[0][ ind ] - i
-                @lines.push newLine
-                @polygons[ 0 ].push @lines.length-1
-                
+    #     make_curve_line: ( index ) ->
+    #         if typeof index == "undefined"
+    #             return false
+    #         if @lines.length > 0
+    #             pointToJoin = []
+    #             lineWithCurve = []
+    #             for i in [ @lines.length-1..0 ]
+    #                 if @lines[ i ].indexOf(index) != -1
+    #                     pos = @lines[ i ].indexOf index
+    #                     if @lines[ i ].length == 2
+    #                         pointToJoin.push [ i, @lines[ i ][ 1 - pos ].get() ]
+    #                     else
+    #                         lineWithCurve.push [ i, pos ]
+    #                         
+    #             # case two segment
+    #             if pointToJoin.length == 2
+    #                 # delete two segment
+    #                 for ind in [0...pointToJoin.length]
+    #                     @lines.splice(pointToJoin[ ind ][ 0 ], 1)
+    #                     @polygons[ 0 ].splice pointToJoin[ ind ][ 0 ], 1
+    #                     @actualise_polygons -1, pointToJoin[ ind ][ 0 ]
+    #                     
+    #                 # make an arc with selectionned point on middle
+    #                 @lines.push [ pointToJoin[ 0 ][ 1 ], index, pointToJoin[ 1 ][ 1 ] ]
+    #                 @polygons[ 0 ].push @lines.length-1
+    #                 
+    #             # case one segment and one arc
+    #             else if lineWithCurve.length == 1 && pointToJoin.length == 1
+    #                     
+    #                 # we need to know if the new point is on the begining of arc or at the end
+    #                 pos = lineWithCurve[ 0 ][ 1 ]
+    #                 lineNumber = lineWithCurve[ 0 ][ 0 ]
+    #                 indexDel = pointToJoin[ 0 ][ 0 ]
+    #             
+    #                 if pos == 0
+    #                     @lines[ lineNumber ].unshift pointToJoin[ 0 ][ 1 ]
+    #                     @polygons[ 0 ].unshift 0
+    #                     @actualise_polygons 1, 1
+    #                 else
+    #                     @lines[ lineNumber ].push pointToJoin[ 0 ][ 1 ]
+    #                     @polygons[ 0 ].push @lines.length-1
+    #                 
+    #                 # delete segment
+    #                 @lines.splice( indexDel, 1)
+    #                 @polygons[ 0 ].splice indexDel, 1
+    #                 @actualise_polygons -1, indexDel
+    #                 #deletion is not actualised
+    #                 
+    #             # case two arc
+    #             else if lineWithCurve.length == 2
+    #                 newLine = []
+    #                 #concat two arc
+    #                 
+    #                 lineNumber = lineWithCurve[ 0 ][ 0 ]
+    #                 l = @lines[ lineNumber ].length
+    #                 pos = lineWithCurve[ 0 ][ 1 ]
+    #                 #check if we need to inverse array, for first line default is yes
+    #                 if pos == (l-1)
+    #                     for el, i in @lines[ lineNumber ]
+    #                         newLine[ i ] = el
+    #                     
+    #                 else
+    #                     for i in [0...@lines[ lineNumber ].length]
+    #                         newLine[ (l-1)-i ] = @lines[ lineNumber ][ i ]
+    #                 
+    #                  #check if we need to inverse array, for first line default is no
+    #                 lineNumber = lineWithCurve[ 1 ][ 0 ]
+    #                 l = @lines[ lineNumber ].length
+    #                 pos = lineWithCurve[ 1 ][ 1 ]
+    #                 k = newLine.length - 1 # -1 prevent selected point to be in doublon
+    #                 if pos == (l-1)
+    #                     for i in [0...@lines[ lineNumber ].length]
+    #                         newLine[ k + (l-1)-i ] = @lines[ lineNumber ][ i ]
+    #                 else
+    #                     for el, i in @lines[ lineNumber ]
+    #                         newLine[ k + i ] = el
+    #                 
+    #                 #delete old arc
+    #                 for ind, i in lineWithCurve[0]
+    #                     @lines.splice(lineWithCurve[0][ ind ] - i, 1)
+    #                     @polygons[ 0 ].splice lineWithCurve[0][ ind ] - i, 1
+    #                     @actualise_polygons -1, lineWithCurve[0][ ind ] - i
+    #                 @lines.push newLine
+    #                 @polygons[ 0 ].push @lines.length-1
+    #                 
     update_min_max: ( x_min, x_max ) ->
         for m in @points
             p = m.pos.get()
