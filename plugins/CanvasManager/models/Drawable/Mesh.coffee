@@ -11,7 +11,7 @@ class Mesh extends Drawable
                 point_edition: true
             
             # geometry
-            points  : new Lst_Point # "add_point" can be used to fill the list
+            points   : new Lst_Point # "add_point" can be used to fill the list
             _elements: [] # list of Element_Triangle, Element_Line, ...
             
             # helpers
@@ -232,68 +232,77 @@ class Mesh extends Drawable
             for el in @_elements
                 el.add_sub_element? @_sub_elements
     
+    delete_selected_point: ->
+        index_selected_points = @_get_indices_of_selected_points()
+        if index_selected_points != false
+#             for ind in [ @points.length .. 0 ]
+#                 p = @points[ ind ]
+#                 if p in @_selected_points
+#                     @points.splice ind, 1
+            for el in @_elements
+                el.rem_sub_element? index_selected_points
+            @_update_sub_elements()
 
-
-    delete_selected_point: ( info ) ->
-        for i in [ 0 ... @points.length ]
-            if @_selected.contains_ref @points[ i ]
-                @delete_point i
-    
-    delete_point: ( index ) ->
-        if typeof index == "undefined"
-            return false
-        unlinkedPoint = []
-        #delete every line linked to the point
-        if @lines.length > 0
-            for i in [@lines.length-1..0]
-                if @lines[ i ].indexOf( index ) != -1
-                    pos = @lines[ i ].indexOf( index )
-                    if @lines[ i ].length == 2
-                        unlinkedPoint.push(@lines[ i ][ 1 - pos ].get()) #get the point which is alone
-                        @lines.splice i, 1
-                        @polygons[ 0 ].splice i, 1
-                        @actualise_polygons -1, i
-                        
-                    else if @lines[i].length >= 3
-                        pos = []
-                        #search for multiple occurrence of index in current line
-                        #return an array of index
-                        for j, k in @lines[i]
-                            if j.get() == index
-                                pos.push k
-                                
-                        for ind in pos
-                            if ind != 1
-                                unlinkedPoint.push(@lines[i][1].get())
-                            @lines[ i ].splice ind, 1
-                            @polygons[ 0 ].splice ind, 1
-                            @actualise_polygons -1, ind
-                        
-                        if @lines[i].length == 3
-                            #check if it was a circle and the clicked point was not the point who appear twice
-                            if @lines[ i ][ 0 ].get() == @lines[i][ 1 ].get() || @lines[i][ 0 ].get() == @lines[i][ 2 ].get()
-                                @lines[ i ].splice 0, 1
-                                @polygons[ 0 ].splice 0, 1
-                                @actualise_polygons -1, 0
-                            else if @lines[i][ 1 ].get() == @lines[i][ 2 ].get()
-                                @lines[ i ].splice 1,1
-                                @polygons[ 0 ].splice 1, 1
-                                @actualise_polygons -1, 1
-
-            #relink lonely point
-            if unlinkedPoint.length > 0
-                for i in [0...unlinkedPoint.length-1]
-                    #                 for j in [0...@lines.length]
-                    #                     if @lines[j].indexOf(unlinkedPoint[i]) == -1 || @lines[j].indexOf(unlinkedPoint[i+1]) == -1 #  check if this line already exist or not
-                    @lines.push [ unlinkedPoint[ i ], unlinkedPoint[ i + 1 ] ]
-                    @polygons[ 0 ].push @lines.length-1
-        
-        #delete the point and change index of every line definition
-        @points.splice index, 1
-        for i in [ 0...@lines.length ]
-            for j in [ 0...@lines[ i ].length ]
-                if @lines[ i ][ j ].get() >= index
-                    @lines[ i ][ j ]._set( @lines[ i ][ j ].get() - 1 )
+    #     delete_selected_point: ( info ) ->
+    #         for i in [ 0 ... @points.length ]
+    #             if @_selected.contains_ref @points[ i ]
+    #                 @delete_point i
+    #     
+    #     delete_point: ( index ) ->
+    #         if typeof index == "undefined"
+    #             return false
+    #         unlinkedPoint = []
+    #         #delete every line linked to the point
+    #         if @lines.length > 0
+    #             for i in [@lines.length-1..0]
+    #                 if @lines[ i ].indexOf( index ) != -1
+    #                     pos = @lines[ i ].indexOf( index )
+    #                     if @lines[ i ].length == 2
+    #                         unlinkedPoint.push(@lines[ i ][ 1 - pos ].get()) #get the point which is alone
+    #                         @lines.splice i, 1
+    #                         @polygons[ 0 ].splice i, 1
+    #                         @actualise_polygons -1, i
+    #                         
+    #                     else if @lines[i].length >= 3
+    #                         pos = []
+    #                         #search for multiple occurrence of index in current line
+    #                         #return an array of index
+    #                         for j, k in @lines[i]
+    #                             if j.get() == index
+    #                                 pos.push k
+    #                                 
+    #                         for ind in pos
+    #                             if ind != 1
+    #                                 unlinkedPoint.push(@lines[i][1].get())
+    #                             @lines[ i ].splice ind, 1
+    #                             @polygons[ 0 ].splice ind, 1
+    #                             @actualise_polygons -1, ind
+    #                         
+    #                         if @lines[i].length == 3
+    #                             #check if it was a circle and the clicked point was not the point who appear twice
+    #                             if @lines[ i ][ 0 ].get() == @lines[i][ 1 ].get() || @lines[i][ 0 ].get() == @lines[i][ 2 ].get()
+    #                                 @lines[ i ].splice 0, 1
+    #                                 @polygons[ 0 ].splice 0, 1
+    #                                 @actualise_polygons -1, 0
+    #                             else if @lines[i][ 1 ].get() == @lines[i][ 2 ].get()
+    #                                 @lines[ i ].splice 1,1
+    #                                 @polygons[ 0 ].splice 1, 1
+    #                                 @actualise_polygons -1, 1
+    # 
+    #             #relink lonely point
+    #             if unlinkedPoint.length > 0
+    #                 for i in [0...unlinkedPoint.length-1]
+    #                     #                 for j in [0...@lines.length]
+    #                     #                     if @lines[j].indexOf(unlinkedPoint[i]) == -1 || @lines[j].indexOf(unlinkedPoint[i+1]) == -1 #  check if this line already exist or not
+    #                     @lines.push [ unlinkedPoint[ i ], unlinkedPoint[ i + 1 ] ]
+    #                     @polygons[ 0 ].push @lines.length-1
+    #         
+    #         #delete the point and change index of every line definition
+    #         @points.splice index, 1
+    #         for i in [ 0...@lines.length ]
+    #             for j in [ 0...@lines[ i ].length ]
+    #                 if @lines[ i ][ j ].get() >= index
+    #                     @lines[ i ][ j ]._set( @lines[ i ][ j ].get() - 1 )
 
     #     break_line_from_selected: ( info ) ->
     #         for i in [ 0 ... @points.length ]
@@ -331,10 +340,10 @@ class Mesh extends Drawable
     #                 @make_curve_line i
     
     #add "value" to all polygons data started at index "index" (use for ex when a line is deleted)
-    actualise_polygons: ( val, index ) ->
-        for polyg in @polygons
-            for i in [ index ... polyg.length ]
-                polyg[ i ].set polyg[ i ].get() + val
+    #     actualise_polygons: ( val, index ) ->
+    #         for polyg in @polygons
+    #             for i in [ index ... polyg.length ]
+    #                 polyg[ i ].set polyg[ i ].get() + val
 
     #     make_curve_line: ( index ) ->
     #         if typeof index == "undefined"
@@ -428,32 +437,32 @@ class Mesh extends Drawable
                 x_min[ d ] = Math.min x_min[ d ], p[ d ]
                 x_max[ d ] = Math.max x_max[ d ], p[ d ]
             
-    _draw_polygons: ( info, proj ) ->
-        for polyg in @polygons.get()
-            if polyg.length > 0
-                info.ctx.beginPath()
-                info.ctx.strokeStyle = "red"#info.theme.line_color.to_hex()
-                info.ctx.fillStyle   = "rgba(200,200,125,100)"#info.theme.line_color.to_hex()
-                
-                
-                first_point = @lines[ polyg[ 0 ] ][ 0 ]
-                
-                pos_first_point = proj[ first_point ]
-                info.ctx.moveTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
-                
-                for index_line in polyg
-                    for i in [ 1 ...@lines[ index_line ].length ] # don't draw first point (because he is the same as the last line points)
-                        p = @lines[ index_line ][ i ]
-                        pos_p = proj[ p ]
-                        if pos_p?
-                            info.ctx.lineTo( pos_p[ 0 ], pos_p[ 1 ] )
-                # come back to first point
-                info.ctx.lineTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
-                
-                if @visualization.displayed_style.get() == "Wireframe"
-                    info.ctx.fill()#only for debug
-                    info.ctx.stroke()
-                else
-                    info.ctx.fill()
-                info.ctx.closePath()
+    #     _draw_polygons: ( info, proj ) ->
+    #         for polyg in @polygons.get()
+    #             if polyg.length > 0
+    #                 info.ctx.beginPath()
+    #                 info.ctx.strokeStyle = "red"#info.theme.line_color.to_hex()
+    #                 info.ctx.fillStyle   = "rgba(200,200,125,100)"#info.theme.line_color.to_hex()
+    #                 
+    #                 
+    #                 first_point = @lines[ polyg[ 0 ] ][ 0 ]
+    #                 
+    #                 pos_first_point = proj[ first_point ]
+    #                 info.ctx.moveTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
+    #                 
+    #                 for index_line in polyg
+    #                     for i in [ 1 ...@lines[ index_line ].length ] # don't draw first point (because he is the same as the last line points)
+    #                         p = @lines[ index_line ][ i ]
+    #                         pos_p = proj[ p ]
+    #                         if pos_p?
+    #                             info.ctx.lineTo( pos_p[ 0 ], pos_p[ 1 ] )
+    #                 # come back to first point
+    #                 info.ctx.lineTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
+    #                 
+    #                 if @visualization.displayed_style.get() == "Wireframe"
+    #                     info.ctx.fill()#only for debug
+    #                     info.ctx.stroke()
+    #                 else
+    #                     info.ctx.fill()
+    #                 info.ctx.closePath()
 
