@@ -11,19 +11,26 @@ class TypedArray extends Model
         # -> to be defined by children
 
     set_val: ( index, value ) ->
-        if index.length
-            o = 0
-            m = 1
-            for i in [ 0 ... index.length ]
-                o += m * index[ i ]
-                m *= @_size[ i ]
-            index = o
-        console.log "ind", index
-        @_data[ index ] = value
+        index = @_get_index index
+        if @_data[ index ] != value
+            @_data[ index ] = value
+            @_signal_change()
+        
         
     toString: ->
-        
-        @_data?.toString()
+        m = 1
+        res = ""
+        l = for s in @_size
+            o = m
+            m *= s
+            o
+        for v, i in @_data
+            res += v
+            for j in [ l.length - 1 .. 0 ]
+                if i % l[ j ] == l[ j ] - 1
+                    res += [ " ", "\n", "\n\n" ][ j ]
+                    break
+        return res
 
     equals: ( obj ) ->
         if obj instanceof TypedArray
@@ -35,11 +42,21 @@ class TypedArray extends Model
             return @_data == obj._data
         return @_data == obj
 
-    get: ( val )->
-        if val?
-            @_data[ val ]
+    get: ( index )->
+        if index?
+            @_data[ @_get_index index ]
         else
             @_data
+
+    _get_index: ( index ) ->
+        if index.length
+            o = 0
+            m = 1
+            for i in [ 0 ... index.length ]
+                o += m * index[ i ]
+                m *= @_size[ i ]
+            return o
+        return index
 
     _get_fs_data: ( out ) ->
         FileSystem.set_server_id_if_necessary out, this

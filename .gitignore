@@ -1,0 +1,10 @@
+*~
+*.o
+*.a
+gen/
+.gen/
+.kdev4/
+ext/
+*.db
+compilations/
+*.pyc
