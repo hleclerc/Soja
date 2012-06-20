@@ -32,9 +32,4 @@ class Obj extends Model
 
     _set_state: ( str, map ) ->
         @set str
-
-    _get_patch: ( o, path ) ->
-        if o != @_data
-            return "SET " + path + " " + @_data
-        return ""
         

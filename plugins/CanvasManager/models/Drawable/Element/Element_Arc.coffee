@@ -5,9 +5,11 @@ class Element_Arc extends Element_WithIndices
         super indices
 
     draw: ( info, mesh, proj, is_a_sub ) ->
-        points = for p in @indices
-            mesh.points[ p.get() ].pos.get()
-        info.theme.lines.draw_interpolated_arcs info, points
+        wf = mesh.visualization.display_style.get() in [ "Wireframe", "Surface with Edges" ]
+        if wf or not is_a_sub
+            points = for p in @indices
+                mesh.points[ p.get() ].pos.get()
+            info.theme.lines.draw_interpolated_arcs info, points
 
     contour: ( info, mesh, proj, beg, inversion ) ->
         points = if inversion

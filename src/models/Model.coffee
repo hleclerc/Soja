@@ -45,7 +45,7 @@ class Model
     #  view.destructor will be called if this is destroyed.
     #  ...
     #  can be seen as a bind with an object
-    # onchange_construction true means that onchange will be automatically called after after the bind
+    # onchange_construction true means that onchange will be automatically called after the bind
     bind: ( f, onchange_construction = true ) ->
         if f instanceof View
             @_views.push f
@@ -295,31 +295,6 @@ class Model
             FileSystem.set_server_id_if_necessary out, obj
             name + ":" + obj._server_id
         out.mod += "C #{@_server_id} #{str.join ","} "
-        
-    # may be redefined
-    # make instructions to go from $o to $this
-    _get_patch: ( o, path ) ->
-        res = ""
-
-        # REM_ATTR
-        ohis = {}
-        for spl in o.split ","
-            inr = spl.split ":"
-            attr = inr[ 0 ]
-            ohis[ attr ] = parseInt inr[ 1 ]
-            if not @[ attr ]?
-                res += "REM_ATTR " + path + " " + attr + "\n"
-        
-        # ADD_ATTR
-        for attr in @_attribute_names
-            obj = this[ attr ]
-            if not ohis[ attr ]?
-                res += "ADD_ATTR " + path + " " + attr + " " + obj.model_id + "\n"
-            else if ohis[ attr ] != obj.model_id
-                console.log ohis[ attr ], obj.model_id
-                res += "MOD_ATTR " + path + " " + attr + " " + obj.model_id + "\n"
-                
-        return res
         
     # may be redefined.
     # by default, add attributes using keys and values (and remove old unused values)

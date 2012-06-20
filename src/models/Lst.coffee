@@ -351,8 +351,3 @@ class Lst extends Model
             console.error "resizing a static array (type #{Model.get_object_class this}) is forbidden"
             return true
         return false
-
-    _get_patch: ( o, path ) ->
-        #if o != @data
-        #    return "SET " + path + " " + @data
-        return ""
