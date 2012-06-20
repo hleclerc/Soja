@@ -58,6 +58,7 @@ class Element_BoundedSurf extends Element
             for points in unlinked_points
                 for p in points
                     unlinked_point_lst.push p
+            #TODO, it always should be lines between 2 unlinked_points array
             if unlinked_point_lst.length == 2
                 res =
                     o: 1
@@ -81,28 +82,29 @@ class Element_BoundedSurf extends Element
                 if b.e.points_inside selected_points
                     waiting_points = b.e.get_point_numbers()
                     pos = waiting_points.indexOf selected_points[ 0 ]
-                    console.log waiting_points, pos
+                    #console.log waiting_points, pos
                     if waiting_points.length == 2
                         unlinked_points.push [ b.e.indices[ 1 - pos ] ] #get the point which is alone
                         new_res = @_link_elements unlinked_points
                         if new_res != false
                             res.push new_res
                             unlinked_points = []
-                            console.log res
                     else if waiting_points.length == 3
-                        unlinked_points.push @boundaries[ i ][ 1 - pos ].get() #get the point which is alone
+                        bef = b.e.indices.slice 0, pos
+                        aft = b.e.indices.slice pos + 1, b.e.indices.length
+                        #console.log bef, aft
+                        unlinked_points.push bef
+                        unlinked_points.push aft
                         new_res = @_link_elements unlinked_points
                         if new_res != false
                             res.push new_res
                             unlinked_points = []
-                        
                     
                     else
                         res.push b
                 else
                     res.push b
                 
-            console.log res
             @boundaries.clear()
             @boundaries.set res
                 
@@ -141,7 +143,7 @@ class Element_BoundedSurf extends Element
             for b in @boundaries
                 if b.e.points_inside selected_points
                     np = b.e.get_point_numbers()
-                    console.log "np ", np
+                    #console.log "np ", np
                     if b.o < 0
                         if np.length
                             for n in np[ np.length - 1 .. waiting_points.length > 0 ]
@@ -158,7 +160,7 @@ class Element_BoundedSurf extends Element
                             for n in np[ waiting_points.length > 0 ... ]
                                 waiting_points.push n
                         
-                    console.log "wait ", waiting_points
+                    #console.log "wait ", waiting_points
                 else
                     if waiting_points.length >= 3
                         res.push
@@ -173,23 +175,23 @@ class Element_BoundedSurf extends Element
                     e: new Element_Arc waiting_points
                 waiting_points = []
                 
-            console.log res
+            #console.log res
             @boundaries.clear()
             @boundaries.set res
         
     break_line_from_selected: ( selected_points  ) ->
-        console.log selected_points
+        #console.log selected_points
         if selected_points?.length and @boundaries?
             waiting_points = []
             res = []
             for b in @boundaries
                 if b.e.points_inside selected_points
                     waiting_points = b.e.get_point_numbers()
-                    console.log waiting_points
+                    #console.log waiting_points
                     if waiting_points.length >= 3
                         for sel in selected_points
                             pos = waiting_points.indexOf sel
-                            console.log pos
+                            #console.log pos
                             if pos != -1
                                 if pos == 1
                                     res.push
@@ -216,6 +218,6 @@ class Element_BoundedSurf extends Element
                         res.push b
                 else
                     res.push b
-            console.log res
+            #console.log res
             @boundaries.clear()
             @boundaries.set res
