@@ -50,7 +50,91 @@ class Element_BoundedSurf extends Element
         for b in @boundaries
             if b.e not in res
                 res.push b.e
-
+    
+    # function check if unlinked_points is an array containing 2 array, if so it concatenate every array and return it as an element
+    _link_elements: ( unlinked_points ) ->
+        if unlinked_points.length == 2 
+            unlinked_point_lst = []
+            for points in unlinked_points
+                for p in points
+                    unlinked_point_lst.push p
+            #TODO, it always should be lines between 2 unlinked_points array
+            if unlinked_point_lst.length == 2
+                res =
+                    o: 1
+                    e: new Element_Line unlinked_point_lst
+                return res
+            if unlinked_point_lst.length >= 3
+                res =
+                    o: 1
+                    e: new Element_Arc unlinked_point_lst
+                return res
+        return false
+    
+    
+    #    
+    rem_sub_element: ( selected_points ) ->
+        if selected_points?.length and @boundaries?
+            res = []
+            unlinked_points = []
+            for b, i in @boundaries
+                waiting_points  = []
+                if b.e.points_inside selected_points
+                    waiting_points = b.e.get_point_numbers()
+                    pos = waiting_points.indexOf selected_points[ 0 ]
+                    #console.log waiting_points, pos
+                    if waiting_points.length == 2
+                        unlinked_points.push [ b.e.indices[ 1 - pos ] ] #get the point which is alone
+                        new_res = @_link_elements unlinked_points
+                        if new_res != false
+                            res.push new_res
+                            unlinked_points = []
+                    else if waiting_points.length == 3
+                        bef = b.e.indices.slice 0, pos
+                        aft = b.e.indices.slice pos + 1, b.e.indices.length
+                        #console.log bef, aft
+                        unlinked_points.push bef
+                        unlinked_points.push aft
+                        new_res = @_link_elements unlinked_points
+                        if new_res != false
+                            res.push new_res
+                            unlinked_points = []
+                    
+                    else
+                        res.push b
+                else
+                    res.push b
+                
+            @boundaries.clear()
+            @boundaries.set res
+                
+                        
+    #                 else if @lines[i].length >= 3
+    #                     pos = []
+    #                     #search for multiple occurrence of index in current line
+    #                     #return an array of index
+    #                     for j, k in @lines[i]
+    #                         if j.get() == index
+    #                             pos.push k
+    #                             
+    #                     for ind in pos
+    #                         if ind != 1
+    #                             unlinkedPoint.push(@lines[i][1].get())
+    #                         @lines[ i ].splice ind, 1
+    #                         @polygons[ 0 ].splice ind, 1
+    #                         @actualise_polygons -1, ind
+    #                     
+    #                     if @lines[i].length == 3
+    #                         #check if it was a circle and the clicked point was not the point who appear twice
+    #                         if @lines[ i ][ 0 ].get() == @lines[i][ 1 ].get() || @lines[i][ 0 ].get() == @lines[i][ 2 ].get()
+    #                             @lines[ i ].splice 0, 1
+    #                             @polygons[ 0 ].splice 0, 1
+    #                             @actualise_polygons -1, 0
+    #                         else if @lines[i][ 1 ].get() == @lines[i][ 2 ].get()
+    #                             @lines[ i ].splice 1,1
+    #                             @polygons[ 0 ].splice 1, 1
+    #                             @actualise_polygons -1, 1
+                    
     
     make_curve_line_from_selected: ( selected_points ) ->
         if selected_points?.length and @boundaries?
@@ -59,6 +143,7 @@ class Element_BoundedSurf extends Element
             for b in @boundaries
                 if b.e.points_inside selected_points
                     np = b.e.get_point_numbers()
+                    #console.log "np ", np
                     if b.o < 0
                         if np.length
                             for n in np[ np.length - 1 .. waiting_points.length > 0 ]
@@ -66,10 +151,16 @@ class Element_BoundedSurf extends Element
                     else
                         # CASE first point is selected (and linked to last point in the shape)
                         if waiting_points.length and waiting_points[ 0 ] == np[ np.length - 1 ]
-                            waiting_points.unshift np[ 0 ] 
+                            tmp_array = []
+                            for n, i in np[ 0 ... np.length - 1 ]
+                                tmp_array.push n
+                            waiting_points = tmp_array.concat waiting_points
+                            
                         else
                             for n in np[ waiting_points.length > 0 ... ]
                                 waiting_points.push n
+                        
+                    #console.log "wait ", waiting_points
                 else
                     if waiting_points.length >= 3
                         res.push
@@ -84,19 +175,23 @@ class Element_BoundedSurf extends Element
                     e: new Element_Arc waiting_points
                 waiting_points = []
                 
+            #console.log res
             @boundaries.clear()
             @boundaries.set res
         
     break_line_from_selected: ( selected_points  ) ->
+        #console.log selected_points
         if selected_points?.length and @boundaries?
             waiting_points = []
             res = []
             for b in @boundaries
                 if b.e.points_inside selected_points
                     waiting_points = b.e.get_point_numbers()
+                    #console.log waiting_points
                     if waiting_points.length >= 3
                         for sel in selected_points
                             pos = waiting_points.indexOf sel
+                            #console.log pos
                             if pos != -1
                                 if pos == 1
                                     res.push
@@ -123,5 +218,6 @@ class Element_BoundedSurf extends Element
                         res.push b
                 else
                     res.push b
+            #console.log res
             @boundaries.clear()
             @boundaries.set res
