@@ -213,26 +213,29 @@ class Mesh extends Drawable
     delete_selected_point: ->
         index_selected_points = @_get_indices_of_selected_points()
         if index_selected_points.length
+            # old indices -> new indices
             n_array = ( i for i in [ 0 ...  @points.length ] )
             for i in index_selected_points
                 n_array[ i ] = -1
                 for j in [ i + 1 ... @points.length ]
-                    n_array[ i ] -= 1
-                    
-        
+                    n_array[ j ] -= 1
+            console.log n_array
+
+            # new elements
             for el in @_elements
                 el.rem_sub_element? index_selected_points
-                
-            #                 
-            #             for ind in [ @points.length - 1 .. 0 ]
-            #                 p = @points[ ind ]
-            #                 console.log p, 'sel ', @_selected_points
-            #                 if p in @_selected_points
-            #                     @_selected_points.remove_ref p
-            #                     @_pelected_points.remove_ref p
-            #                     @points.splice ind, 1
-            #                     
-            #             @_update_sub_elements()
+
+            #
+            for ind in [ index_selected_points.length - 1 .. 0 ]
+                p = @points[ ind ]
+                @_selected_points.remove_ref p
+                @_pelected_points.remove_ref p
+                @points.splice ind, 1
+
+            # new indices
+            done = {}
+            for el in @_elements
+                el.update_indices? done, n_array
 
     #add "val" to all value in the array started at index "index" (use for ex when a point is deleted)
     _actualise_indices: ( array, val, index = 0 ) ->
@@ -242,8 +245,8 @@ class Mesh extends Drawable
     
     _get_indices_of_selected_points: ->
         index_selected_points = []
-        for sel_point in @_selected_points
-            for point, j in @points
+        for point, j in @points
+            for sel_point in @_selected_points
                 if point == sel_point
                     index_selected_points.push j
         return index_selected_points

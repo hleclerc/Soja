@@ -16,6 +16,9 @@ class Element_BoundedSurf extends Element
                     
             info.theme.surfaces.end_ctx info
             
+    update_indices: ( done, n_array ) ->
+        for b in @boundaries
+            b.update_indices? done, n_array
 
     closest_point_closer_than: ( best, mesh, proj, info, pos ) ->
         undefined

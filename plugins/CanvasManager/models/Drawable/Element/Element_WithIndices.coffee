@@ -16,3 +16,9 @@ class Element_WithIndices extends Element
         
     get_point_numbers: ->
         @indices.get()
+            
+    update_indices: ( done, n_array ) ->
+        if not done[ @model_id ]?
+            done[ @model_id ] = true
+            for v in @indices
+                v.set n_array[ v.get() ]
