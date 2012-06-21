@@ -212,23 +212,27 @@ class Mesh extends Drawable
     
     delete_selected_point: ->
         index_selected_points = @_get_indices_of_selected_points()
-        if index_selected_points != false
+        if index_selected_points.length
+            n_array = ( i for i in [ 0 ...  @points.length ] )
+            for i in index_selected_points
+                n_array[ i ] = -1
+                for j in [ i + 1 ... @points.length ]
+                    n_array[ i ] -= 1
+                    
+        
             for el in @_elements
                 el.rem_sub_element? index_selected_points
-            for ind in [ @points.length - 1 .. 0 ]
-                p = @points[ ind ]
-                console.log p, 'sel ', @_selected_points
-                if p in @_selected_points
-                    #remove point from selected list
-                    i_sel = @_selected_points.indexOf p
-                    @_selected_points.splice i_sel, 1
-                    #remove point from pre_selected list
-                    i_pre = @_pelected_points.indexOf p
-                    if i_pre != -1
-                        @_pelected_points.splice i_pre, 1
-                    #remove point
-                    @points.splice ind, 1
-            @_update_sub_elements()
+                
+            #                 
+            #             for ind in [ @points.length - 1 .. 0 ]
+            #                 p = @points[ ind ]
+            #                 console.log p, 'sel ', @_selected_points
+            #                 if p in @_selected_points
+            #                     @_selected_points.remove_ref p
+            #                     @_pelected_points.remove_ref p
+            #                     @points.splice ind, 1
+            #                     
+            #             @_update_sub_elements()
 
     #add "val" to all value in the array started at index "index" (use for ex when a point is deleted)
     _actualise_indices: ( array, val, index = 0 ) ->
@@ -237,14 +241,12 @@ class Mesh extends Drawable
                 array[ ind ].set array[ ind ].get() + val
     
     _get_indices_of_selected_points: ->
-        if @_selected_points.length
-            index_selected_points = []
-            for sel_point, i in @_selected_points
-                for point, j in @points
-                    if point.equals sel_point
-                        index_selected_points[ i ] = j
-            return index_selected_points
-        return false
+        index_selected_points = []
+        for sel_point in @_selected_points
+            for point, j in @points
+                if point == sel_point
+                    index_selected_points.push j
+        return index_selected_points
         
     _update_sub_elements: ->
         if @_sub_date < @_elements._date_last_modification
