@@ -19,14 +19,30 @@ class ModelEditorItem_TypedArray extends ModelEditorItem
             
     onchange: ->
         # @color_selector.style.background = @model.to_hex()
-#         d = @model.dim()
-#         if d >= 2
-#             @container.style.width "100%"
-#             
-#         w = if @dim == 1 then @ew / @model.length else @ew
-            
+        if @model.has_been_directly_modified()
+            d = @model.size()
+#             console.log d
+#             w = if d == 1 then @ew / @model.get().length else @ew
+            if @model.get().length
+                @el = for i in @model.get()
+#                     new_model_editor
+#                         el        : @el
+#                         model     : i
+#                         parent    : @line
+#                         item_width: @ew
+                        
+                    new_dom_element
+                        parentNode: @ed
+                        nodeName  : "span"
+                        style     :
+                            display: "inline-block"
+                            width  : @ew + "%"
+                        txt       : i
+                         
+                if @model.get().length and @line?
+                    @line.onmousedown = =>
+                        @get_focus()?.set @model[ 0 ].view_id
 
 # 
 ModelEditor.default_types.push ( model ) ->
-    console.log model
     ModelEditorItem_TypedArray if model instanceof TypedArray

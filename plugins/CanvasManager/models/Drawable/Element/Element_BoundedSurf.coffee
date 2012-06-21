@@ -124,34 +124,6 @@ class Element_BoundedSurf extends Element
                 
             @boundaries.clear()
             @boundaries.set res
-                
-                        
-    #                 else if @lines[i].length >= 3
-    #                     pos = []
-    #                     #search for multiple occurrence of index in current line
-    #                     #return an array of index
-    #                     for j, k in @lines[i]
-    #                         if j.get() == index
-    #                             pos.push k
-    #                             
-    #                     for ind in pos
-    #                         if ind != 1
-    #                             unlinkedPoint.push(@lines[i][1].get())
-    #                         @lines[ i ].splice ind, 1
-    #                         @polygons[ 0 ].splice ind, 1
-    #                         @actualise_polygons -1, ind
-    #                     
-    #                     if @lines[i].length == 3
-    #                         #check if it was a circle and the clicked point was not the point who appear twice
-    #                         if @lines[ i ][ 0 ].get() == @lines[i][ 1 ].get() || @lines[i][ 0 ].get() == @lines[i][ 2 ].get()
-    #                             @lines[ i ].splice 0, 1
-    #                             @polygons[ 0 ].splice 0, 1
-    #                             @actualise_polygons -1, 0
-    #                         else if @lines[i][ 1 ].get() == @lines[i][ 2 ].get()
-    #                             @lines[ i ].splice 1,1
-    #                             @polygons[ 0 ].splice 1, 1
-    #                             @actualise_polygons -1, 1
-                    
     
     make_curve_line_from_selected: ( selected_points ) ->
         if selected_points?.length and @boundaries?

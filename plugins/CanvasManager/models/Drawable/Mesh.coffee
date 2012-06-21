@@ -219,7 +219,6 @@ class Mesh extends Drawable
                 n_array[ i ] = -1
                 for j in [ i + 1 ... @points.length ]
                     n_array[ j ] -= 1
-            console.log n_array
 
             # new elements
             for el in @_elements

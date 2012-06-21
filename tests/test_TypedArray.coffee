@@ -23,5 +23,7 @@ test_TypedArray = ->
         m1: a
         m2: 10
     
-    new_model_editor el: document.body, model: m
+    editor = new_model_editor el: document.body, model: m
+    
+    editor.default_types.push ( model ) -> ModelEditorItem_TypedArray       if model instanceof TypedArray
     
