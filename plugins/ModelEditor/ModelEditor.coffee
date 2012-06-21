@@ -9,7 +9,7 @@ class ModelEditor # extends View
         ( model ) -> ModelEditorItem_Button         if model instanceof Button
         ( model ) -> ModelEditorItem_ConstrainedVal if model instanceof ConstrainedVal
         ( model ) -> ModelEditorItem_Input          if model instanceof Obj
-        ( model ) -> ModelEditorItem_List           if model.dim() # Tensor
+        ( model ) -> ModelEditorItem_Lst            if model.dim() # Tensor
     ]
 
     # attribute name -> display name

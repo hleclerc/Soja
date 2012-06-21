@@ -10,12 +10,26 @@ class TypedArray extends Model
     base_type: ->
         # -> to be defined by children
 
+    dim: ->
+        @_size.length
+
+    size: ( d ) ->
+        if d?
+            @_size[ d ]
+        else
+            @_size
+        
     set_val: ( index, value ) ->
         index = @_get_index index
         if @_data[ index ] != value
             @_data[ index ] = value
             @_signal_change()
         
+    nb_items: ->
+        tot = @_size[ 0 ] or 0
+        for i in @_size[ 1 ... ]
+            tot *= i
+        tot
         
     toString: ->
         m = 1
@@ -60,11 +74,27 @@ class TypedArray extends Model
 
     _get_fs_data: ( out ) ->
         FileSystem.set_server_id_if_necessary out, this
-        out.mod += "C #{@_server_id} #{@toString()} "
+        out.mod += "C #{@_server_id} #{@_get_state()} "
             
     _get_state: ->
-        @_data
+        res = ""
+        res += @_size.length
+        for s in @_size
+            res += "," + s
+        for d in @_data
+            res += "," + d
+        return res
 
     _set_state: ( str, map ) ->
-        @set str
+        l = str.split ","
+        s = parseInt l[ 0 ]
+        @_size = for v in [ 0 ... s ]
+            parseInt l[ v + 1 ]
         
+        B = @base_type()
+        n = @nb_items()
+        @_data = new B n
+        for v in [ 0 ... n ]
+            @_data[ v ] = parseFloat l[ s + 1 + v ]
+            
+            
