@@ -191,6 +191,12 @@ class Mesh extends Drawable
         return false
     
     
+    update_min_max: ( x_min, x_max ) ->
+        for m in @points
+            p = m.pos.get()
+            for d in [ 0 ... 3 ]
+                x_min[ d ] = Math.min x_min[ d ], p[ d ]
+                x_max[ d ] = Math.max x_max[ d ], p[ d ]
     
     make_curve_line_from_selected: ->
         index_selected_points = @_get_indices_of_selected_points()
@@ -204,6 +210,32 @@ class Mesh extends Drawable
             for el in @_elements
                 el.break_line_from_selected index_selected_points
     
+    delete_selected_point: ->
+        index_selected_points = @_get_indices_of_selected_points()
+        if index_selected_points != false
+            for el in @_elements
+                el.rem_sub_element? index_selected_points
+            for ind in [ @points.length - 1 .. 0 ]
+                p = @points[ ind ]
+                console.log p, 'sel ', @_selected_points
+                if p in @_selected_points
+                    #remove point from selected list
+                    i_sel = @_selected_points.indexOf p
+                    @_selected_points.splice i_sel, 1
+                    #remove point from pre_selected list
+                    i_pre = @_pelected_points.indexOf p
+                    if i_pre != -1
+                        @_pelected_points.splice i_pre, 1
+                    #remove point
+                    @points.splice ind, 1
+            @_update_sub_elements()
+
+    #add "val" to all value in the array started at index "index" (use for ex when a point is deleted)
+    _actualise_indices: ( array, val, index = 0 ) ->
+        if array.length and val != 0 and index >= 0 and index <= array.length - 1
+            for ind in array[ index ... array.length ]
+                array[ ind ].set array[ ind ].get() + val
+    
     _get_indices_of_selected_points: ->
         if @_selected_points.length
             index_selected_points = []
@@ -213,7 +245,14 @@ class Mesh extends Drawable
                         index_selected_points[ i ] = j
             return index_selected_points
         return false
+        
+    _update_sub_elements: ->
+        if @_sub_date < @_elements._date_last_modification
+            @_sub_date = @_elements._date_last_modification
     
+            @_sub_elements = []
+            for el in @_elements
+                el.add_sub_element? @_sub_elements
     
     _closest_point_closer_than: ( proj, pos, dist ) ->
         best = -1
@@ -223,26 +262,7 @@ class Mesh extends Drawable
                 dist = d
                 best = n
         return best
-    
-    _update_sub_elements: ->
-        if @_sub_date < @_elements._date_last_modification
-            @_sub_date = @_elements._date_last_modification
-    
-            @_sub_elements = []
-            for el in @_elements
-                el.add_sub_element? @_sub_elements
-    
-    delete_selected_point: ->
-        index_selected_points = @_get_indices_of_selected_points()
-        if index_selected_points != false
-#             for ind in [ @points.length .. 0 ]
-#                 p = @points[ ind ]
-#                 if p in @_selected_points
-#                     @points.splice ind, 1
-            for el in @_elements
-                el.rem_sub_element? index_selected_points
-            @_update_sub_elements()
-
+        
     #     delete_selected_point: ( info ) ->
     #         for i in [ 0 ... @points.length ]
     #             if @_selected.contains_ref @points[ i ]
@@ -430,12 +450,6 @@ class Mesh extends Drawable
     #                 @lines.push newLine
     #                 @polygons[ 0 ].push @lines.length-1
     #                 
-    update_min_max: ( x_min, x_max ) ->
-        for m in @points
-            p = m.pos.get()
-            for d in [ 0 ... 3 ]
-                x_min[ d ] = Math.min x_min[ d ], p[ d ]
-                x_max[ d ] = Math.max x_max[ d ], p[ d ]
             
     #     _draw_polygons: ( info, proj ) ->
     #         for polyg in @polygons.get()

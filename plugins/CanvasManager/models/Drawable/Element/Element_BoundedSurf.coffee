@@ -94,7 +94,6 @@ class Element_BoundedSurf extends Element
                         bef = b.e.indices.slice 0, pos
                         aft = b.e.indices.slice pos + 1, b.e.indices.length
                         
-                        
                         if pos == 0
                             unlinked_points.push aft
                         else if pos == b.e.indices.length - 1
