@@ -59,6 +59,7 @@ class Element_BoundedSurf extends Element
                 for p in points
                     unlinked_point_lst.push p
             #TODO, it always should be lines between 2 unlinked_points array
+            console.log unlinked_point_lst
             if unlinked_point_lst.length == 2
                 res =
                     o: 1
@@ -89,17 +90,31 @@ class Element_BoundedSurf extends Element
                         if new_res != false
                             res.push new_res
                             unlinked_points = []
-                    else if waiting_points.length == 3
+                    else if waiting_points.length >= 3
                         bef = b.e.indices.slice 0, pos
                         aft = b.e.indices.slice pos + 1, b.e.indices.length
-                        #console.log bef, aft
-                        unlinked_points.push bef
-                        unlinked_points.push aft
+                        
+                        
+                        if pos == 0
+                            unlinked_points.push aft
+                        else if pos == b.e.indices.length - 1
+                            unlinked_points.push bef
                         new_res = @_link_elements unlinked_points
                         if new_res != false
                             res.push new_res
                             unlinked_points = []
-                    
+                        
+                        #link eventual points that were around deleted points
+                        if ( waiting_points.length - 1 ) == 2
+                            res.push
+                                o: 1
+                                e: new Element_Line bef.concat aft
+                            
+                        else if ( waiting_points.length - 1 ) >= 3
+                            res.push
+                                o: 1
+                                e: new Element_Arc bef.concat aft
+                                
                     else
                         res.push b
                 else

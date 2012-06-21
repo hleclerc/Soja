@@ -218,7 +218,16 @@ class Lst extends Model
         for i in [ begin ... end ]
             tab.push @[ i ].get()
         return tab
-
+        
+    #return list with new_tab after
+    concat: ( new_tab, force = false ) ->
+        if @_static_size_check force
+            return
+        if new_tab.length
+            for el in new_tab
+                this.push el
+            return this
+        
     # remove n items from index
     splice: ( index, n = 1 ) ->
         if @_static_size_check false
