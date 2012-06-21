@@ -10,6 +10,7 @@
 # lib Animation.js
 # lib Theme.js
 # lib FileSystem.js
+# lib TypedArray.js
 test_FileSystem = ->
     FileSystem._disp = true
     fs = new FileSystem
@@ -41,11 +42,12 @@ test_FileSystem = ->
         #         add_ifn "lst", -> [ 1, 2 ]
         #         add_ifn "col", -> new Color
         
-        add_ifn "poi", ->
-            r = new Lst_Point
-            r.push [1,2,3]
-            r
         #         add_ifn "bol", -> new Bool
+        
+        add_ifn "arr", ->
+            res = new TypedArray_Float64 [ 2, 3 ]
+            res.set_val [ 0, 0 ], 1
+            res
 
 #     #
 #     cpt = 0

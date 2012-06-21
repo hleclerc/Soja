@@ -13,10 +13,4 @@ class TypedArray_Float64 extends TypedArray
 
     deep_copy: ->
         new TypedArray_Float64 @_data, @_size
-
-    _set: ( value ) ->
-        if @_data != value
-            @_data = new Float64Array value
-            return true
-        return false
     

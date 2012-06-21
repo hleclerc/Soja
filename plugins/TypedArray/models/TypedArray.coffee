@@ -62,6 +62,20 @@ class TypedArray extends Model
         else
             @_data
 
+    _set: ( str ) ->
+        if typeof( str ) == "string"
+            # TODO optimize
+            @_set_state str, {}
+            return true
+            
+        if @_data != value or @_size.length != 1 or @_size[ 0 ] != value.length
+            B = @base_type()
+            @_data = new B value
+            @_size = [ value.length ]
+            return true
+        return false
+        
+            
     _get_index: ( index ) ->
         if index.length
             o = 0

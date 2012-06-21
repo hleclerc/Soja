@@ -4,10 +4,10 @@
 # lib ModelEditor.css
 # lib TypedArray.js
 test_TypedArray = ->
-    a = new TypedArray_Float64 [ 3, 5 ]
+    a = new TypedArray_Float64 [ 3, 2 ]
     
     a.set_val [ 1, 0 ], 2
-    a.set_val [ 0, 1 ], 5
+    a.set_val [ 0, 1 ], 1
     
     #     console.log a.toString()
     #     console.log a.get()
@@ -19,11 +19,7 @@ test_TypedArray = ->
     #     console.log a.get_state()
     #     console.log a.toString()
     
-    m = new Model
-        m1: a
-        m2: 10
+    new_model_editor el: document.body, model: a
+    new_model_editor el: document.body, model: a
     
-    editor = new_model_editor el: document.body, model: m
-    
-    editor.default_types.push ( model ) -> ModelEditorItem_TypedArray       if model instanceof TypedArray
     
