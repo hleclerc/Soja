@@ -225,13 +225,12 @@ class Mesh extends Drawable
             for el in @_elements
                 el.rem_sub_element? index_selected_points
 
-            #
-            for ind in [ index_selected_points.length - 1 .. 0 ]
+            for ind in index_selected_points[ index_selected_points.length - 1 .. 0 ]
                 p = @points[ ind ]
                 @_selected_points.remove_ref p
                 @_pelected_points.remove_ref p
                 @points.splice ind, 1
-
+            
             # new indices
             done = {}
             for el in @_elements
