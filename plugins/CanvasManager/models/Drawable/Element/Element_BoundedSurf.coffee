@@ -133,7 +133,7 @@ class Element_BoundedSurf extends Element
                 for b in @boundaries
                     if sel_point in b.e.get_point_numbers()
                         np = b.e.get_point_numbers()
-                        #console.log "np ", np
+                        console.log "np ", np
                         if b.o < 0
                             if np.length
                                 for n in np[ np.length - 1 .. waiting_points.length > 0 ]
@@ -150,7 +150,7 @@ class Element_BoundedSurf extends Element
                                 for n in np[ waiting_points.length > 0 ... ]
                                     waiting_points.push n
                             
-                        #console.log "wait ", waiting_points
+                        console.log "wait ", waiting_points
                     else
                         if waiting_points.length >= 3
                             res.push
@@ -165,7 +165,7 @@ class Element_BoundedSurf extends Element
                         e: new Element_Arc waiting_points
                     waiting_points = []
                     
-                #console.log res
+                console.log res
                 @boundaries.clear()
                 @boundaries.set res
         
