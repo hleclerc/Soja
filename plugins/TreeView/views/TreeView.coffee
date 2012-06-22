@@ -211,7 +211,7 @@ class TreeView extends View
                                 # but if tries to insert into th the children of par if possible
                                 if num + 1 < info.path.length
                                     bar = info.path[ num + 1 ]
-                                    n = bar.num_in_flat + @_nb_displayed_children( bar )
+                                    n = bar.num_in_flat + @_nb_display_children( bar )
                                 @_line_div.style.top  = @line_height * ( n + 1 ) + @height_header + @height_icon_bar
                                 @_line_div.style.left = @sep_x * ( num + 1 )
                                 @el.appendChild @_line_div
@@ -443,10 +443,10 @@ class TreeView extends View
                     return true
         return false
 
-    _nb_displayed_children: ( info ) ->
+    _nb_display_children: ( info ) ->
         res = 0
         for c in info.children
-            res += 1 + @_nb_displayed_children( c )
+            res += 1 + @_nb_display_children( c )
         return res
         
     _accept_child: ( parent, source ) ->

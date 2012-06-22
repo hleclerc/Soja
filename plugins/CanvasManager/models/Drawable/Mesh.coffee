@@ -42,8 +42,8 @@ class Mesh extends Drawable
         false
         
     z_index: ->
-        #         if @visualisation.displayed_field.lst?[ @visualisation.displayed_field.num.get() ]
-        #             return @visualisation.displayed_field.lst[ @visualisation.displayed_field.num.get() ].z_index()
+        #         if @visualisation.display_field.lst?[ @visualisation.display_field.num.get() ]
+        #             return @visualisation.display_field.lst[ @visualisation.display_field.num.get() ].z_index()
         #         else
         return 100
 
@@ -476,7 +476,7 @@ class Mesh extends Drawable
     #                 # come back to first point
     #                 info.ctx.lineTo( pos_first_point[ 0 ], pos_first_point[ 1 ] )
     #                 
-    #                 if @visualization.displayed_style.get() == "Wireframe"
+    #                 if @visualization.display_style.get() == "Wireframe"
     #                     info.ctx.fill()#only for debug
     #                     info.ctx.stroke()
     #                 else
