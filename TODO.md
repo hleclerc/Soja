@@ -14,7 +14,7 @@ API changes
 * preview thumbnail of pictures in browser
 * bug boundary picking no more work since introduction of element
 * display notice
-
+* problem : transformable points are no longer movable
 
 
 

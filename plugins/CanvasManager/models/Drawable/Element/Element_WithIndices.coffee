@@ -13,7 +13,6 @@ class Element_WithIndices extends Element
                     return true
         return false
         
-        
     get_point_numbers: ->
         @indices.get()
             

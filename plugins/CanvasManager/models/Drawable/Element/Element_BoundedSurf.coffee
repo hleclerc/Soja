@@ -77,15 +77,15 @@ class Element_BoundedSurf extends Element
     
     
     #    
-    rem_sub_element: ( selected_points ) ->
-        if selected_points?.length and @boundaries?
+    rem_sub_element: ( sel_point ) ->
+        if @boundaries?
             res = []
             unlinked_points = []
             for b, i in @boundaries
                 waiting_points  = []
-                if b.e.points_inside selected_points
+                if sel_point in b.e.get_point_numbers()
                     waiting_points = b.e.get_point_numbers()
-                    pos = waiting_points.indexOf selected_points[ 0 ]
+                    pos = waiting_points.indexOf sel_point
                     #console.log waiting_points, pos
                     if waiting_points.length == 2
                         unlinked_points.push [ b.e.indices[ 1 - pos ] ] #get the point which is alone
@@ -127,86 +127,88 @@ class Element_BoundedSurf extends Element
     
     make_curve_line_from_selected: ( selected_points ) ->
         if selected_points?.length and @boundaries?
-            res = []
-            waiting_points = []
-            for b in @boundaries
-                if b.e.points_inside selected_points
-                    np = b.e.get_point_numbers()
-                    #console.log "np ", np
-                    if b.o < 0
-                        if np.length
-                            for n in np[ np.length - 1 .. waiting_points.length > 0 ]
-                                waiting_points.push n
-                    else
-                        # CASE first point is selected (and linked to last point in the shape)
-                        if waiting_points.length and waiting_points[ 0 ] == np[ np.length - 1 ]
-                            tmp_array = []
-                            for n, i in np[ 0 ... np.length - 1 ]
-                                tmp_array.push n
-                            waiting_points = tmp_array.concat waiting_points
-                            
-                        else
-                            for n in np[ waiting_points.length > 0 ... ]
-                                waiting_points.push n
-                        
-                    #console.log "wait ", waiting_points
-                else
-                    if waiting_points.length >= 3
-                        res.push
-                            o: 1
-                            e: new Element_Arc waiting_points
-                        waiting_points = []
-                    res.push b
-        
-            if waiting_points.length >= 3
-                res.push
-                    o: 1
-                    e: new Element_Arc waiting_points
+            for sel_point in selected_points
+                res = []
                 waiting_points = []
-                
-            #console.log res
-            @boundaries.clear()
-            @boundaries.set res
+                for b in @boundaries
+                    if sel_point in b.e.get_point_numbers()
+                        np = b.e.get_point_numbers()
+                        #console.log "np ", np
+                        if b.o < 0
+                            if np.length
+                                for n in np[ np.length - 1 .. waiting_points.length > 0 ]
+                                    waiting_points.push n
+                        else
+                            # CASE first point is selected (and linked to last point in the shape)
+                            if waiting_points.length and waiting_points[ 0 ] == np[ np.length - 1 ]
+                                tmp_array = []
+                                for n, i in np[ 0 ... np.length - 1 ]
+                                    tmp_array.push n
+                                waiting_points = tmp_array.concat waiting_points
+                                
+                            else
+                                for n in np[ waiting_points.length > 0 ... ]
+                                    waiting_points.push n
+                            
+                        #console.log "wait ", waiting_points
+                    else
+                        if waiting_points.length >= 3
+                            res.push
+                                o: 1
+                                e: new Element_Arc waiting_points
+                            waiting_points = []
+                        res.push b
+            
+                if waiting_points.length >= 3
+                    res.push
+                        o: 1
+                        e: new Element_Arc waiting_points
+                    waiting_points = []
+                    
+                #console.log res
+                @boundaries.clear()
+                @boundaries.set res
         
     break_line_from_selected: ( selected_points  ) ->
         #console.log selected_points
         if selected_points?.length and @boundaries?
-            waiting_points = []
-            res = []
-            for b in @boundaries
-                if b.e.points_inside selected_points
-                    waiting_points = b.e.get_point_numbers()
-                    #console.log waiting_points
-                    if waiting_points.length >= 3
-                        for sel in selected_points
-                            pos = waiting_points.indexOf sel
-                            #console.log pos
-                            if pos != -1
-                                if pos == 1
-                                    res.push
-                                        o: 1
-                                        e: new Element_Line waiting_points.slice 0, pos + 1
+            for sel_point in selected_points
+                waiting_points = []
+                res = []
+                for b in @boundaries
+                    if sel_point in b.e.get_point_numbers()
+                        waiting_points = b.e.get_point_numbers()
+                        #console.log waiting_points
+                        if waiting_points.length >= 3
+                            for sel in selected_points
+                                pos = waiting_points.indexOf sel
+                                #console.log pos
+                                if pos != -1
+                                    if pos == 1
+                                        res.push
+                                            o: 1
+                                            e: new Element_Line waiting_points.slice 0, pos + 1
 
-                                if pos >= 2
-                                    res.push
-                                        o: 1
-                                        e: new Element_Arc waiting_points.slice 0 , pos + 1
+                                    if pos >= 2
+                                        res.push
+                                            o: 1
+                                            e: new Element_Arc waiting_points.slice 0 , pos + 1
 
-                                l = waiting_points.length - 1
-                                after = l - pos
-                                if after == 1
-                                    #after pos
-                                    res.push
-                                        o: 1
-                                        e: new Element_Line waiting_points.slice pos, l + 1
-                                if after >= 2
-                                    res.push
-                                        o: 1
-                                        e: new Element_Arc waiting_points.slice pos, l + 1
+                                    l = waiting_points.length - 1
+                                    after = l - pos
+                                    if after == 1
+                                        #after pos
+                                        res.push
+                                            o: 1
+                                            e: new Element_Line waiting_points.slice pos, l + 1
+                                    if after >= 2
+                                        res.push
+                                            o: 1
+                                            e: new Element_Arc waiting_points.slice pos, l + 1
+                        else
+                            res.push b
                     else
                         res.push b
-                else
-                    res.push b
-            #console.log res
-            @boundaries.clear()
-            @boundaries.set res
+                #console.log res
+                @boundaries.clear()
+                @boundaries.set res

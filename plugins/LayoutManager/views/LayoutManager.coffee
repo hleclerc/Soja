@@ -144,7 +144,7 @@ class LayoutManager extends View
         
         @message.firstChild.nodeValue = msg
         
-    # suppression of the message display by set_message
+    # suppression of the message displayed by set_message
     del_message: () ->
         if @message? and @message.parentNode == @el
             @el.removeChild @message

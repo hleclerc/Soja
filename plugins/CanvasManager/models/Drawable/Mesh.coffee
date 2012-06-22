@@ -212,6 +212,7 @@ class Mesh extends Drawable
     
     delete_selected_point: ->
         index_selected_points = @_get_indices_of_selected_points()
+    
         if index_selected_points.length
             # old indices -> new indices
             n_array = ( i for i in [ 0 ...  @points.length ] )
@@ -220,9 +221,10 @@ class Mesh extends Drawable
                 for j in [ i + 1 ... @points.length ]
                     n_array[ j ] -= 1
 
-            # new elements
-            for el in @_elements
-                el.rem_sub_element? index_selected_points
+            for ind_sel_point in index_selected_points
+                # new elements
+                for el in @_elements
+                    el.rem_sub_element? ind_sel_point
 
             for ind in index_selected_points[ index_selected_points.length - 1 .. 0 ]
                 p = @points[ ind ]
