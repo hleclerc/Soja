@@ -205,7 +205,7 @@ class CuttingPlan extends Drawable
                 
             p_0 = cm.cam_info.sc_2_rw.pos pos[ 0 ], pos[ 1 ]
             d_0 = cm.cam_info.sc_2_rw.dir pos[ 0 ], pos[ 1 ]
-            @_movable_entity.mov_click @_selected, @_movable_entity.pos, p_0, d_0
+            @_movable_entity.move @_selected, @_movable_entity.pos, p_0, d_0
             
             return true
 
