@@ -7,7 +7,7 @@ class Legend extends Drawable
             show_legend: show_legend
             gradient   : new Gradient
             _title      : title
-            max_val    : 0
+            max_val    : 1
             min_val    : 0
             _width     : 30
             _height    : 300

@@ -35,6 +35,9 @@ class Mesh extends Drawable
     add_element: ( element ) ->
         @_elements.push element
 
+    nb_points: ->
+        @points.length
+        
     real_change: ->
         for a in [ @points, @_elements ]
             if a.real_change()

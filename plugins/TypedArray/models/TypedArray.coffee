@@ -62,6 +62,19 @@ class TypedArray extends Model
         else
             @_data
 
+    resize: ( new_size ) ->
+        tot = 1
+        for s in new_size
+            tot *= s
+            
+        B = @base_type()
+        n = new B tot
+        n.set @_data
+        @_data = n
+        @_size = new_size
+        @_signal_change()
+        
+            
     _set: ( str ) ->
         if typeof( str ) == "string"
             # TODO optimize

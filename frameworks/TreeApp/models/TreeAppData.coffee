@@ -93,15 +93,6 @@ class TreeAppData extends Model
         visited = {}
         @_get_child_of_type_rec res, visited, item, type
         return res
-        
-    _get_child_of_type_rec: ( res, visited, item, type ) ->
-        if not visited[ item.model_id ]?
-            visited[ item.model_id ] = true
-            if item instanceof type
-                res.push item
-            if item._children?
-                for ch in item._children
-                    @_get_child_of_type_rec res, visited, ch, type
                     
     # return item selected (not the path)
     get_selected_tree_items: ->
@@ -140,3 +131,13 @@ class TreeAppData extends Model
             path.push child
             @get_root_path_rec path, item, child, res
             path.pop()
+        
+    _get_child_of_type_rec: ( res, visited, item, type ) ->
+        if not visited[ item.model_id ]?
+            visited[ item.model_id ] = true
+            if item instanceof type
+                res.push item
+            if item._children?
+                for ch in item._children
+                    @_get_child_of_type_rec res, visited, ch, type
+            
