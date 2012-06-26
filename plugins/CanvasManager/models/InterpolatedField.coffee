@@ -10,11 +10,16 @@ class InterpolatedField extends Model
     toString: ->
         @name.get()
 
-    draw: ( info, display_style, triangles, proj, legend ) ->
+    draw: ( info, proj ) ->
         # TODO other axes
+        console.log 'drawing interpolated field at time ', info.time
         for t, n in @data
-            if t.pos.axe_value.get() >= info.time
-                return t.pos.field.draw info, display_style, triangles, proj, legend
+            if t.pos.axe_name.get().toLowerCase() == "time"
+                if t.pos.axe_value.get() >= info.time
+                    console.log t.pos.field
+                    return t.pos.field.draw info, proj
         if @data.length
-            @data[ 0 ].field.draw info, display_style, triangles, proj, legend
+            @data[ 0 ].field.draw info, proj
     
+    z_index: () ->
+        return 50

@@ -109,6 +109,65 @@ class Img extends Drawable
             #             else
             @_draw_persp_rec info
 
+        
+    update_min_max: ( x_min, x_max ) ->
+        if @data.rgba?
+            for d in [ 0 ... 3 ]
+                x_min[ d ] = Math.min x_min[ d ], 0
+            x_max[ 0 ] = Math.max x_max[ 0 ], @data.rgba.width
+            x_max[ 1 ] = Math.max x_max[ 1 ], @data.rgba.height
+            x_max[ 2 ] = Math.max x_max[ 2 ], 0
+            
+    fill_histogram: () ->
+        canvas = document.createElement 'canvas'
+        canvas.width = @data.rgba.width
+        canvas.height = @data.rgba.height
+        ctx = canvas.getContext '2d'
+        ctx.drawImage @data.rgba, 0, 0, @data.rgba.width, @data.rgba.height
+        canvasData = ctx.getImageData 0, 0, @data.rgba.width, @data.rgba.height
+        data = canvasData.data
+        
+        for i in [ 0 .. 255 ]
+            @_histo.push 0
+            
+        for el, i in data by 4
+            if data[ i + 3 ] != 0
+                index = Math.round( ( data[ i ] + data[ i + 1 ] + data[ i + 2 ] ) / 3 )
+                @_histo[ index ].set @_histo[ index ].get() + 1
+                
+
+    information: ( div ) ->
+        if not @cm?
+            @txt = new_dom_element
+                parentNode: div
+                
+            d = new_dom_element
+                parentNode: div
+                # style     : { position: "absolute", top: 0, left: 0, width: "70%", bottom: 0 }
+
+            #             bg = new Background
+            # #             bg.gradient.remove_color 1
+            #             bg.gradient.remove_color 0
+
+            m = new Graph marker: 'bar', show_line: false, shadow: false, marker_size: 2, font_size: 10
+            for p, i in @_histo
+                m.points.push [ i , p, 0 ]
+            m.build_w2b_legend()
+            
+            @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.4, constrain_zoom: 'x'
+            @cm.cam.threeD.set false
+            
+#             @cm.items.push bg
+            @cm.items.push m
+            @cm.fit()
+
+        @txt.innerHTML = "
+            #{@src} <br>
+            Height : #{@data.rgba.height}px <br>
+            Width  : #{@data.rgba.width}px <br>
+        "
+
+        @cm.draw()
 
     _draw_persp_rec: ( info, xmin = 0, ymin = 0, xmax = 1, ymax = 1, rec = 0 ) ->
         w = @data.rgba.width
@@ -159,29 +218,3 @@ class Img extends Drawable
         info.ctx.transform 1, 0, 0, -1, 0, 0
         info.ctx.drawImage @data.rgba, sx, sy, dx, dy, 0, 0, dx, dy
         info.ctx.restore()
-        
-    update_min_max: ( x_min, x_max ) ->
-        if @data.rgba?
-            for d in [ 0 ... 3 ]
-                x_min[ d ] = Math.min x_min[ d ], 0
-            x_max[ 0 ] = Math.max x_max[ 0 ], @data.rgba.width
-            x_max[ 1 ] = Math.max x_max[ 1 ], @data.rgba.height
-            x_max[ 2 ] = Math.max x_max[ 2 ], 0
-            
-    fill_histogram: () ->
-        canvas = document.createElement 'canvas'
-        canvas.width = @data.rgba.width
-        canvas.height = @data.rgba.height
-        ctx = canvas.getContext '2d'
-        ctx.drawImage @data.rgba, 0, 0, @data.rgba.width, @data.rgba.height
-        canvasData = ctx.getImageData 0, 0, @data.rgba.width, @data.rgba.height
-        data = canvasData.data
-        
-        for i in [ 0 .. 255 ]
-            @_histo.push 0
-            
-        for el, i in data by 4
-            if data[ i + 3 ] != 0
-                index = Math.round( ( data[ i ] + data[ i + 1 ] + data[ i + 2 ] ) / 3 )
-                @_histo[ index ].set @_histo[ index ].get() + 1
-                

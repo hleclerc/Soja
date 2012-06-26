@@ -24,7 +24,7 @@ class Theme extends Model
             #             selected_dot_color              : new Color 255,   0,   0, 255
             #             pre_selected_dot_color          : new Color 255,   0,   0, 255
             #             pre_selected_dot_line_width     : 1.5
-            #             gradient_legend                 : new Gradient
+            gradient_legend  : new Gradient
             
-        #@gradient_legend.add_color [ 255,255,255, 255 ], 0
-        #@gradient_legend.add_color [   0,  0,  0, 255 ], 1
+        @gradient_legend.add_color [ 255,255,255, 255 ], 0
+        @gradient_legend.add_color [   0,  0,  0, 255 ], 1

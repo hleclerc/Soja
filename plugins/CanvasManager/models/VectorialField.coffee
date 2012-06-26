@@ -1,5 +1,5 @@
 # Vectorial fields is a list containing differents field
-class VectorialField extends Model
+class VectorialField extends Drawable
     constructor: ( name = "", vector = new Lst, params = {} ) ->
         super()
         
