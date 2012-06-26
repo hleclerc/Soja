@@ -35,9 +35,9 @@ class EditView extends View
                         model       : s
                         undo_manager: @undo_manager
                         focus       : @app_data.focus
-
+                    
                     # information div
-                    if s.information?
+                    if s.img?.information? #bad, should remove img and use sub_canvas_item
                         f = new_dom_element
                             nodeName  : "fieldset"
                             parentNode: e
@@ -49,7 +49,7 @@ class EditView extends View
                             
                         d = new_dom_element parentNode: f
                         s.bind ->
-                            s.information d
+                            s.img?.information d
                         
                     @model_editors[ s.model_id ] = o
                     

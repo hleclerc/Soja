@@ -5,8 +5,8 @@ class ImageField extends Drawable
                 
         @add_attr
             name : name         
+            img  : new Img path
             visualization:
-                img          : new Img path
                 legend       : new Legend( name )
             
     
@@ -14,8 +14,8 @@ class ImageField extends Drawable
         @name.get()
         
     draw: ( info, proj ) ->
-        if @visualization.img?
-            @visualization.img.draw info
+        if @img?
+            @img.draw info
         if @visualization.legend?
             @visualization.legend.max_val.set 255
             @visualization.legend.min_val.set 0

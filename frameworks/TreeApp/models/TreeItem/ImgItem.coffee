@@ -35,39 +35,3 @@ class ImgItem extends TreeItem
         info.model_type = "Img"
         info.icon = "picture"
         
-    information: ( div ) ->
-        if not @cm?
-            @txt = new_dom_element
-                parentNode: div
-                
-            d = new_dom_element
-                parentNode: div
-                # style     : { position: "absolute", top: 0, left: 0, width: "70%", bottom: 0 }
-
-            #             bg = new Background
-            # #             bg.gradient.remove_color 1
-            #             bg.gradient.remove_color 0
-
-            m = new Graph marker: 'bar', show_line: false, shadow: false, marker_size: 2, font_size: 10
-            for p, i in @img._histo
-                m.points.push [ i , p, 0 ]
-            m.build_w2b_legend()
-            
-            @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.4, constrain_zoom: 'x'
-            @cm.cam.threeD.set false
-            
-#             @cm.items.push bg
-            @cm.items.push m
-            @cm.fit()
-
-        @txt.innerHTML = "
-            #{@img.src} <br>
-            Height : #{@img.data.rgba.height}px <br>
-            Width  : #{@img.data.rgba.width}px <br>
-        "
-
-        @cm.draw()
-
-
-            
-            

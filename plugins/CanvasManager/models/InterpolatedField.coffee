@@ -16,7 +16,10 @@ class InterpolatedField extends Model
         for t, n in @data
             if t.pos.axe_name.get().toLowerCase() == "time"
                 if t.pos.axe_value.get() >= info.time
+                    console.log t.pos.field
                     return t.pos.field.draw info, proj
         if @data.length
             @data[ 0 ].field.draw info, proj
     
+    z_index: () ->
+        return 50

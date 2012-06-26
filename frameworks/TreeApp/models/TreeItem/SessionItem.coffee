@@ -10,7 +10,7 @@ class SessionItem extends TreeItem
             _selected_canvas_pan: new Lst # panel_id of selected panels
             _last_canvas_pan    : new Str #
             _modules            : new Lst
-            time                : new ConstrainedVal( 0, { _min: 0, _max: -1, _div: 0 } )
+            time                : app_data?.time or new ConstrainedVal( 0, { _min: 0, _max: -1, _div: 0 } )
         
         
         @_name._set name
@@ -30,4 +30,3 @@ class SessionItem extends TreeItem
     accept_child: ( ch ) ->
         true
         
-    
