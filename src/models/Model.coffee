@@ -127,7 +127,7 @@ class Model
                 this[ n ] = p
             else
                 if this[ n ]?
-                    console.error "attribute #{n} already exists #{Model.get_object_class this}"
+                    console.error "attribute #{n} already exists in #{Model.get_object_class this}"
                 p = Model.conv p
                 
                 if this not in p._parents
@@ -140,7 +140,7 @@ class Model
             
         # else, asuming { name_1: instance_1, name_2: instance_2, ... }
         else
-            for key, val of n
+            for key, val of n when val?
                 @add_attr key, val, signal_change
             
 

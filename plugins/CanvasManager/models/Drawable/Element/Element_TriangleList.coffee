@@ -1,31 +1,31 @@
 # 
 class Element_TriangleList extends Element
-    constructor: ( points = new TypedArray_Float64 [ 0, 3 ] )->
+    constructor: ( points = new TypedArray_Float64 [ 3, 0 ] )->
         super()
         
         @add_attr
-            indices: new TypedArray_Int32 [ 0, 3 ]
+            indices: new TypedArray_Int32 [ 3, 0 ]
             
     draw: ( info, mesh, proj, is_a_sub ) ->
         if mesh.visualization.display_style.get() in [ "Surface" ]
-            info.theme.surfaces.beg_ctx info
-            
-            info.theme.surfaces.draw info, =>
-                for i in [ 0 ... @indices.size( 0 ) ]
-                    info.ctx.moveTo proj[ @indices.get [ i, 0 ] ][ 0 ], proj[ @indices.get [ i, 0 ] ][ 1 ]
-                    info.ctx.lineTo proj[ @indices.get [ i, 1 ] ][ 0 ], proj[ @indices.get [ i, 1 ] ][ 1 ]
-                    info.ctx.lineTo proj[ @indices.get [ i, 2 ] ][ 0 ], proj[ @indices.get [ i, 2 ] ][ 1 ]
-                    info.ctx.lineTo proj[ @indices.get [ i, 0 ] ][ 0 ], proj[ @indices.get [ i, 0 ] ][ 1 ]
+            for i in [ 0 ... @indices.size( 1 ) ]
+                info.theme.surfaces.beg_ctx info
+                
+                info.theme.surfaces.draw info, =>
+                    info.ctx.moveTo proj[ @indices.get [ 0, i ] ][ 0 ], proj[ @indices.get [ 0, i ] ][ 1 ]
+                    info.ctx.lineTo proj[ @indices.get [ 1, i ] ][ 0 ], proj[ @indices.get [ 1, i ] ][ 1 ]
+                    info.ctx.lineTo proj[ @indices.get [ 2, i ] ][ 0 ], proj[ @indices.get [ 2, i ] ][ 1 ]
+                    info.ctx.lineTo proj[ @indices.get [ 0, i ] ][ 0 ], proj[ @indices.get [ 0, i ] ][ 1 ]
 
-            info.theme.surfaces.end_ctx info
+                info.theme.surfaces.end_ctx info
             
     # the trick of this function is that it use only one linear gradient calculate using point value and position
     draw_nodal_field: ( info, proj, field, display_style, legend ) ->
-        for num_triangle in [ 0 ... @indices.size( 0 ) ]
+        for num_triangle in [ 0 ... @indices.size( 1 ) ]
             tri = [
-                @indices.get [ num_triangle, 0 ]
-                @indices.get [ num_triangle, 1 ]
-                @indices.get [ num_triangle, 2 ]
+                @indices.get [ 0, num_triangle ]
+                @indices.get [ 1, num_triangle ]
+                @indices.get [ 2, num_triangle ]
             ]
             
                     
@@ -35,6 +35,9 @@ class Element_TriangleList extends Element
                 field.get tri[ 2 ]
             ]
                 
+            console.log proj
+            console.log tri
+            
             posit = for i in [ 0 ... 3 ]
                 proj[ tri[ i ] ]
                 
