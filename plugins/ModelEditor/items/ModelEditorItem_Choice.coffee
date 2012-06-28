@@ -21,7 +21,7 @@ class ModelEditorItem_Choice extends ModelEditorItem
                 @ed.style.display = 'none'
                 return
             else
-                @ed.style.display = 'block'
+                @ed.style.display = ''
                 
             while @select.firstChild?
                 @select.removeChild @select.firstChild

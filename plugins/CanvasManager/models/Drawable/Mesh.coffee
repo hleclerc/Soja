@@ -51,38 +51,39 @@ class Mesh extends Drawable
         return 100
 
     draw: ( info ) ->
-        # 2d screen projection
-        proj = for p, i in @points
-            info.re_2_sc.proj p.pos.get()
+        if @points?.length
+            # 2d screen projection
+            proj = for p, i in @points
+                info.re_2_sc.proj p.pos.get()
 
-        # elements
-        for el in @_elements
-            el.draw info, this, proj
+            # elements
+            for el in @_elements
+                el.draw info, this, proj
 
-        # draw points if necessary
-        if @visualization.display_style.equals( "Points" ) or @visualization.point_edition.get()
-            info.theme.points.beg_ctx info
-            for p in proj
-                info.theme.points.draw_proj info, p
+            # draw points if necessary
+            if @visualization.display_style.equals( "Points" ) or @visualization.point_edition.get()
+                info.theme.points.beg_ctx info
+                for p in proj
+                    info.theme.points.draw_proj info, p
 
-        # sub elements
-        @_update_sub_elements()
-        for el in @_sub_elements
-            el.draw info, this, proj, true
+            # sub elements
+            @_update_sub_elements()
+            for el in @_sub_elements
+                el.draw info, this, proj, true
+                
+            # selected items
+            if @_selected_points.length
+                info.theme.selected_points.beg_ctx info
+                for p in @_selected_points
+                    n = info.re_2_sc.proj p.pos.get()
+                    info.theme.selected_points.draw_proj info, n
             
-        # selected items
-        if @_selected_points.length
-            info.theme.selected_points.beg_ctx info
-            for p in @_selected_points
-                n = info.re_2_sc.proj p.pos.get()
-                info.theme.selected_points.draw_proj info, n
-        
-        # preselected items
-        if @_pelected_points.length
-            info.theme.highlighted_points.beg_ctx info
-            for p in @_pelected_points
-                n = info.re_2_sc.proj p.pos.get()
-                info.theme.highlighted_points.draw_proj info, n
+            # preselected items
+            if @_pelected_points.length
+                info.theme.highlighted_points.beg_ctx info
+                for p in @_pelected_points
+                    n = info.re_2_sc.proj p.pos.get()
+                    info.theme.highlighted_points.draw_proj info, n
             
     
     on_mouse_down: ( cm, evt, pos, b, old, points_allowed = true ) ->
