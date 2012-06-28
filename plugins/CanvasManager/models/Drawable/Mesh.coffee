@@ -3,14 +3,14 @@ class Mesh extends Drawable
     constructor: ( params = {} ) ->
         super()
         
-        for key, val of params
-            this[ key ]?.set? val
-            
+#         for key, val of params
+#             this[ key ]?.set? val
+        
         @add_attr
             #
             visualization:
                 display_style: new Choice( 0, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
-                point_edition: ( if not params.editable? true )
+                point_edition: ( if not params.editable? then true else undefined )
             
             # geometry
             points   : new Lst_Point # "add_point" can be used to fill the list
@@ -65,7 +65,7 @@ class Mesh extends Drawable
 
             # draw points if necessary
             if @visualization.display_style.equals( "Points" ) or @visualization.point_edition?.get()
-                if not @visualization.point_edition?.get()
+                if not @visualization.point_edition?.get() or not info.sel_item[ @model_id ]?
                     info.theme.points.beg_ctx info
                 else
                     info.theme.editable_points.beg_ctx info
