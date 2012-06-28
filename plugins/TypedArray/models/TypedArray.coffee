@@ -1,11 +1,24 @@
 # Used by TypedArray_...
 #
 class TypedArray extends Model
-    constructor: ( data, size ) ->
+    # size can be 
+    #  - a number
+    #  - a list of number
+    constructor: ( size, data ) ->
         super()
-        
-        @_data = data
+
+        # size
+        if not size?
+            size = []
+        if not size.length
+            size = [ size ]
         @_size = size
+        
+        # data
+        if not data?
+            B = @base_type()
+            data = new B @nb_items()
+        @_data = data
 
     base_type: ->
         # -> to be defined by children

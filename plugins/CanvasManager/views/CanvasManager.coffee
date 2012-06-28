@@ -201,7 +201,10 @@ class CanvasManager extends View
         #
         @_mk_cam_info()
         #sort object depending on z_index (a greater z_index is in front of an element with a lower z_index)
-        @_flat.sort ( a, b ) -> a.z_index() - b.z_index()
+        @_flat.sort ( a, b ) ->
+            if not a.z_index? or not b.z_index?
+                console.log a, b
+            a.z_index() - b.z_index()
         for item in @_flat
             item.draw @cam_info
 

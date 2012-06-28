@@ -1,15 +1,12 @@
 #
 #
 class TypedArray_Int32 extends TypedArray
-    constructor: ( size = [] ) ->
-        tot = size[ 0 ] or 0
-        for i in size[ 1 ... ]
-            tot *= i
-        
-        super new Int32Array( tot ), size
+    constructor: ( size = [], data ) ->
+        super size, data
         
     base_type: ->
         Int32Array
 
     deep_copy: ->
-        new TypedArray_Int32 @_data, @_size
+        new TypedArray_Int32 @_size, @_data
+        

@@ -4,8 +4,14 @@ class ElementaryField extends Model
         super()
         
         @add_attr
-            name            : name
-            _data           : data
+            _mesh: mesh
+            _data: data
+            
+    get_drawing_parameters: ( model ) ->
+        model.mod_attr
+            visualization:
+                display_style: new Choice( 0, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
+                legend       : new Legend( "todo" )
     
     
     get: () ->
@@ -13,16 +19,14 @@ class ElementaryField extends Model
     
     toString: ->
         @name.get()
-
-#     dim: ->
-#         1
     
     z_index: () ->
         return 40
         
-    draw: ( info, display_style, triangles, proj, legend) ->
-        for tri, i in triangles
-            @_draw_elementary_triangle info, display_style, tri.get(), proj, @_data[ i ], legend
+    draw: ( info, parameters ) ->
+        if parameters.visualization?
+            for tri, i in triangles
+                @_draw_elementary_triangle info, display_style, tri.get(), proj, @_data[ i ], legend
     
     _draw_elementary_triangle: ( info, display_style, tri, proj, value, legend ) ->
         position = for i in [ 0 ... 3 ]

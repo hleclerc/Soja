@@ -5,3 +5,6 @@ class Drawable extends Model
     update_min_max: ( x_min, x_max ) ->
  
     get_movable_entities: ( res, info, phase ) ->
+    
+    z_index: ->
+        0

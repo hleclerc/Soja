@@ -18,11 +18,14 @@ class Choice extends Model
     filter: ( obj ) ->
         true
             
+    item: ->
+        @_nlst()[ @num.get() ]
+            
     get: ->
-        @_nlst()[ @num.get() ]?.get()
+        @item()?.get()
             
     toString: ->
-        @_nlst()[ @num.get() ]?.toString()
+        @item()?.toString()
 
     equals: ( a ) ->
         if a instanceof Choice

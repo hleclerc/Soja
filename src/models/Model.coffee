@@ -311,7 +311,7 @@ class Model
             @rem_attr key, false
         
         # mod / add
-        for key, val of value
+        for key, val of value when val?
             if this[ key ]?
                 if this[ key ].constructor == val.constructor
                     change |= this[ key ].set( val )

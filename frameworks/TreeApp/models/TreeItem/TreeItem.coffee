@@ -48,3 +48,5 @@ class TreeItem extends Model
     anim_min_max: ->
  
     z_index: ->
+        0
+        

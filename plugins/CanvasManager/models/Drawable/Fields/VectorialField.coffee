@@ -4,15 +4,17 @@ class VectorialField extends Drawable
         super()
         
         @add_attr
-            name        : name
             _vector     : vector
     
+            
+    get_drawing_parameters: ( model ) ->
+        if @_vector.length
+            @_vector[ 0 ].get_drawing_parameters model
+            model.visualization.add_attr
+                norm: new Choice( 0, [ "norm_2" ] )
     
-    get: () ->
+    get: ->
         return @_vector.get()
-    
-    toString: ->
-        @name.get()
 
     dim: ->
         if @_vector

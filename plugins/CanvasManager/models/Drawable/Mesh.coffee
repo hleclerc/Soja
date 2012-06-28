@@ -8,7 +8,7 @@ class Mesh extends Drawable
             #
             visualization:
                 display_style: new Choice( 0, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
-                point_edition: true
+                point_edition: ( if not params.no_edition then true )
             
             # geometry
             points   : new Lst_Point # "add_point" can be used to fill the list
