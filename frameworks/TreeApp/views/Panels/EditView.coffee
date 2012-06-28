@@ -21,7 +21,7 @@ class EditView extends View
                     # generic div to contain the model editor and the informations
                     o = new_dom_element()
                             
-                    if s._can_be_computed? and not @div_icobar[ s.model_id ]?
+                    if s instanceof TreeItem_Computable and not @div_icobar[ s.model_id ]?
                         @div_icobar[ s.model_id ] = new_dom_element
                             parentNode: o
                         for v in @app_data._views when v instanceof TreeApp

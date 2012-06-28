@@ -21,6 +21,12 @@ class Val extends Obj
     deep_copy: ->
         new Val @_data
 
+    #
+    add: ( v ) ->
+        if v
+            @_data += v
+            @_signal_change()
+        
     # we do not take _set from Obj because we want a conversion if value is not a number
     _set: ( value ) ->
         # console.log value

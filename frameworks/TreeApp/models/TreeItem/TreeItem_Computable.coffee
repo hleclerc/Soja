@@ -5,18 +5,22 @@ class TreeItem_Computable extends TreeItem
         
         # attributes
         @add_attr
-            _can_be_computed: 3 # 0 / 1 / 2 / 3 respectively uncheck / manually computable / auto-computable which is calculated / auto-computable who needs to be calculated
-            _messages       : []
+            _computation_req_date: 0 # request date
+            _computation_rep_date: 0 # response date (filled by the server)
+            _computation_mode    : 2 # 2 -> auto. 1 -> do it. 0 -> stop
+            _messages            : []
 
+        # incrementation of _computation_req_date each time there's a "real" change
         @bind =>
             if @real_change()
-                if @_can_be_computed.has_been_modified()
-                    return
-                if @_can_be_computed.get() == 0
-                    @_can_be_computed.set 1
-                if @_can_be_computed.get() == 2
-                    @_can_be_computed.set 3
+                @_computation_req_date.add 1
 
     cosmetic_attribute: ( name ) ->
-        name in [ "_can_be_computed", "_messages" ]
+        name in [ "_computation_req_date", "_computation_rep_date", "_messages" ]
+
+    nothing_to_do: ->
+        @_computation_req_date.get() == @_computation_rep_date.get()
+
+    manual_mode: ->
+        @_computation_mode.get() in [ 0, 1 ]
         
