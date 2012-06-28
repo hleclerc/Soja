@@ -64,42 +64,41 @@ class Mesh extends Drawable
                 el.draw info, this, proj
 
             # draw points if necessary
-            draw = false
-            
-            if @visualization.display_style.equals( "Points" )                     # in every case when display style equals points
-                info.theme.points.beg_ctx info
-                draw = true
-            if @visualization.point_edition?.get() and info.sel_item[ @model_id ]? # when meshitem is selected and if points are editable
-                if @visualization.point_edition.get()                              # when editable point is set on true
-                    info.theme.editable_points.beg_ctx info
-                    draw = true
-                else
-                    info.theme.points.beg_ctx info                                 # else fallback to classic point
-                    draw = true
-            if draw
+            draw_points = false
+            if @visualization.point_edition?.get() and info.sel_item[ @model_id ]? # when this is selected and points are editable
+                # std points
+                info.theme.editable_points.beg_ctx info
                 for p in proj
                     info.theme.points.draw_proj info, p
+                info.theme.editable_points.end_ctx info
+                
+                # selected points
+                if @_selected_points.length
+                    info.theme.selected_points.beg_ctx info
+                    for p in @_selected_points
+                        n = info.re_2_sc.proj p.pos.get()
+                        info.theme.selected_points.draw_proj info, n
+                    info.theme.selected_points.end_ctx info
+                
+                # preselected points
+                if @_pelected_points.length
+                    info.theme.highlighted_points.beg_ctx info
+                    for p in @_pelected_points
+                        n = info.re_2_sc.proj p.pos.get()
+                        info.theme.highlighted_points.draw_proj info, n
+                    info.theme.highlighted_points.end_ctx info
+                
+            else if @visualization.display_style.equals "Points"
+                info.theme.points.beg_ctx info
+                for p in proj
+                    info.theme.points.draw_proj info, p
+                info.theme.points.end_ctx info
                     
 
             # sub elements
             @_update_sub_elements()
             for el in @_sub_elements
                 el.draw info, this, proj, true
-                
-            if @visualization.point_edition?.get()
-                # selected items
-                if @_selected_points.length
-                    info.theme.selected_points.beg_ctx info
-                    for p in @_selected_points
-                        n = info.re_2_sc.proj p.pos.get()
-                        info.theme.selected_points.draw_proj info, n
-                
-                # preselected items
-                if @_pelected_points.length
-                    info.theme.highlighted_points.beg_ctx info
-                    for p in @_pelected_points
-                        n = info.re_2_sc.proj p.pos.get()
-                        info.theme.highlighted_points.draw_proj info, n
             
     
     on_mouse_down: ( cm, evt, pos, b, old, points_allowed = true ) ->
