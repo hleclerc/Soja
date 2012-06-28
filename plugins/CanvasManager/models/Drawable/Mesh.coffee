@@ -64,14 +64,22 @@ class Mesh extends Drawable
                 el.draw info, this, proj
 
             # draw points if necessary
-            if @visualization.display_style.equals( "Points" ) or @visualization.point_edition?.get()
-                if not @visualization.point_edition?.get() or not info.sel_item[ @model_id ]?
-                    info.theme.points.beg_ctx info
-                else
+            draw = false
+            
+            if @visualization.display_style.equals( "Points" )                     # in every case when display style equals points
+                info.theme.points.beg_ctx info
+                draw = true
+            if @visualization.point_edition?.get() and info.sel_item[ @model_id ]? # when meshitem is selected and if points are editable
+                if @visualization.point_edition.get()                              # when editable point is set on true
                     info.theme.editable_points.beg_ctx info
-                    
+                    draw = true
+                else
+                    info.theme.points.beg_ctx info                                 # else fallback to classic point
+                    draw = true
+            if draw
                 for p in proj
                     info.theme.points.draw_proj info, p
+                    
 
             # sub elements
             @_update_sub_elements()
