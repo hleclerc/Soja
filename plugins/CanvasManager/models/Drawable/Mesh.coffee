@@ -205,14 +205,16 @@ class Mesh extends Drawable
     make_curve_line_from_selected: ->
         index_selected_points = @_get_indices_of_selected_points()
         if index_selected_points != false
-            for el in @_elements
-                el.make_curve_line_from_selected index_selected_points
+            for sel_point in index_selected_points
+                for el in @_elements
+                    el.make_curve_line_from_selected sel_point
 
     break_line_from_selected: ->
         index_selected_points = @_get_indices_of_selected_points()
         if index_selected_points != false
-            for el in @_elements
-                el.break_line_from_selected index_selected_points
+            for sel_point in index_selected_points
+                for el in @_elements
+                    el.break_line_from_selected sel_point
     
     delete_selected_point: ->
         index_selected_points = @_get_indices_of_selected_points()
