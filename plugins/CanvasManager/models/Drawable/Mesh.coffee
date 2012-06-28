@@ -3,12 +3,14 @@ class Mesh extends Drawable
     constructor: ( params = {} ) ->
         super()
         
+#         for key, val of params
+#             this[ key ]?.set? val
+        
         @add_attr
-
             #
             visualization:
                 display_style: new Choice( 0, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
-                point_edition: ( if not params.no_edition then true )
+                point_edition: ( if not params.not_editable then true )
             
             # geometry
             points   : new Lst_Point # "add_point" can be used to fill the list
@@ -17,7 +19,8 @@ class Mesh extends Drawable
             # helpers
             _selected_points: [] # point refs
             _pelected_points: [] # point refs
-                
+        
+            
         # default move scheme
         @move_scheme = new MoveScheme_3D
         
@@ -51,43 +54,49 @@ class Mesh extends Drawable
         return 100
 
     draw: ( info ) ->
-        # 2d screen projection
-        proj = for p, i in @points
-            info.re_2_sc.proj p.pos.get()
+        if @points?.length
+            # 2d screen projection
+            proj = for p, i in @points
+                info.re_2_sc.proj p.pos.get()
 
-        # elements
-        for el in @_elements
-            el.draw info, this, proj
+            # elements
+            for el in @_elements
+                el.draw info, this, proj
 
-        # draw points if necessary
-        if @visualization.display_style.equals( "Points" ) or @visualization.point_edition.get()
-            info.theme.points.beg_ctx info
-            for p in proj
-                info.theme.points.draw_proj info, p
+            # draw points if necessary
+            if @visualization.display_style.equals( "Points" ) or @visualization.point_edition?.get()
+                if not @visualization.point_edition?.get() or not info.sel_item[ @model_id ]?
+                    info.theme.points.beg_ctx info
+                else
+                    info.theme.editable_points.beg_ctx info
+                    
+                for p in proj
+                    info.theme.points.draw_proj info, p
 
-        # sub elements
-        @_update_sub_elements()
-        for el in @_sub_elements
-            el.draw info, this, proj, true
-            
-        # selected items
-        if @_selected_points.length
-            info.theme.selected_points.beg_ctx info
-            for p in @_selected_points
-                n = info.re_2_sc.proj p.pos.get()
-                info.theme.selected_points.draw_proj info, n
-        
-        # preselected items
-        if @_pelected_points.length
-            info.theme.highlighted_points.beg_ctx info
-            for p in @_pelected_points
-                n = info.re_2_sc.proj p.pos.get()
-                info.theme.highlighted_points.draw_proj info, n
+            # sub elements
+            @_update_sub_elements()
+            for el in @_sub_elements
+                el.draw info, this, proj, true
+                
+            if @visualization.point_edition?.get()
+                # selected items
+                if @_selected_points.length
+                    info.theme.selected_points.beg_ctx info
+                    for p in @_selected_points
+                        n = info.re_2_sc.proj p.pos.get()
+                        info.theme.selected_points.draw_proj info, n
+                
+                # preselected items
+                if @_pelected_points.length
+                    info.theme.highlighted_points.beg_ctx info
+                    for p in @_pelected_points
+                        n = info.re_2_sc.proj p.pos.get()
+                        info.theme.highlighted_points.draw_proj info, n
             
     
     on_mouse_down: ( cm, evt, pos, b, old, points_allowed = true ) ->
         delete @_moving_point
-        if @visualization.point_edition.get()
+        if @visualization.point_edition?.get()
             if b == "LEFT" or b == "RIGHT"
                 if points_allowed
                     # preparation
@@ -156,7 +165,7 @@ class Mesh extends Drawable
             return true                    
             
     on_mouse_move: ( cm, evt, pos, b, old ) ->
-        if @visualization.point_edition.get()
+        if @visualization.point_edition?.get()
             # currently moving something ?
             if @_moving_point? and b == "LEFT"
                 cm.undo_manager?.snapshot()
@@ -204,14 +213,16 @@ class Mesh extends Drawable
     make_curve_line_from_selected: ->
         index_selected_points = @_get_indices_of_selected_points()
         if index_selected_points != false
-            for el in @_elements
-                el.make_curve_line_from_selected index_selected_points
+            for sel_point in index_selected_points
+                for el in @_elements
+                    el.make_curve_line_from_selected sel_point
 
     break_line_from_selected: ->
         index_selected_points = @_get_indices_of_selected_points()
         if index_selected_points != false
-            for el in @_elements
-                el.break_line_from_selected index_selected_points
+            for sel_point in index_selected_points
+                for el in @_elements
+                    el.break_line_from_selected sel_point
     
     delete_selected_point: ->
         index_selected_points = @_get_indices_of_selected_points()

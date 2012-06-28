@@ -1,6 +1,6 @@
 # 
 class PointTheme extends Model
-    constructor: ( color = new Color( 0, 255, 0, 255 ), width = 5, line_color = new Color( 200, 200, 200, 255 ), line_width = 1 )  ->
+    constructor: ( color = new Color( 255, 255, 255, 255 ), width = 5, line_color = new Color( 200, 200, 200, 255 ), line_width = 1 )  ->
         super()
         
         @add_attr
