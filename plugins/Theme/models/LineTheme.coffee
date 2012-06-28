@@ -13,6 +13,7 @@ class LineTheme extends Model
         
     end_ctx: ( info ) ->
         
+    # draw a straight line between two points expressed in screen coordinates
     draw_straight_proj: ( info, p0, p1 ) ->
         info.ctx.beginPath()
         @contour_straight_proj info, p0, p1

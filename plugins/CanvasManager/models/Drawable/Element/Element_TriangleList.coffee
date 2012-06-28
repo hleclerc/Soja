@@ -7,7 +7,7 @@ class Element_TriangleList extends Element
             indices: new TypedArray_Int32 [ 3, 0 ]
             
     draw: ( info, mesh, proj, is_a_sub ) ->
-        if mesh.visualization.display_style.get() in [ "Surface" ]
+        if mesh.visualization.display_style.get() in [ "Surface", "Surface with Edges" ]
             for i in [ 0 ... @indices.size( 1 ) ]
                 info.theme.surfaces.beg_ctx info
                 
@@ -18,7 +18,19 @@ class Element_TriangleList extends Element
                     info.ctx.lineTo proj[ @indices.get [ 0, i ] ][ 0 ], proj[ @indices.get [ 0, i ] ][ 1 ]
 
                 info.theme.surfaces.end_ctx info
+
+        if mesh.visualization.display_style.get() in [ "Wireframe", "Surface with Edges" ]
+            info.theme.lines.beg_ctx info
             
+            for i in [ 0 ... @indices.size( 1 ) ]
+                p = for j in [ 0 ... 3 ]
+                    proj[ @indices.get [ j, i ] ]
+                info.theme.lines.draw_straight_proj info, p[ 0 ], p[ 1 ]
+                info.theme.lines.draw_straight_proj info, p[ 1 ], p[ 2 ]
+                info.theme.lines.draw_straight_proj info, p[ 2 ], p[ 0 ]
+
+            info.theme.lines.end_ctx info
+                
     # the trick of this function is that it use only one linear gradient calculate using point value and position
     draw_nodal_field: ( info, proj, field, display_style, legend ) ->
         for num_triangle in [ 0 ... @indices.size( 1 ) ]
