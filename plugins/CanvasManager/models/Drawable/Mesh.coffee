@@ -9,7 +9,7 @@ class Mesh extends Drawable
         @add_attr
             #
             visualization:
-                display_style: new Choice( 0, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
+                display_style: new Choice( 1, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
                 point_edition: ( if not params.not_editable then true )
             
             # geometry

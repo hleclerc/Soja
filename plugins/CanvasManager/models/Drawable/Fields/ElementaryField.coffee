@@ -9,7 +9,7 @@ class ElementaryField extends Model
             
     get_drawing_parameters: ( model ) ->
         model.mod_attr
-            visualization:
+            drawing_parameters:
                 display_style: new Choice( 0, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
                 legend       : new Legend( "todo" )
     
@@ -26,7 +26,7 @@ class ElementaryField extends Model
     draw: ( info, parameters ) ->
         if parameters.visualization?
             for tri, i in triangles
-                @_draw_elementary_triangle info, display_style, tri.get(), proj, @_data[ i ], legend
+                @_draw_elementary_triangle info, parameters, tri.get(), proj, @_data[ i ], legend
     
     _draw_elementary_triangle: ( info, display_style, tri, proj, value, legend ) ->
         position = for i in [ 0 ... 3 ]

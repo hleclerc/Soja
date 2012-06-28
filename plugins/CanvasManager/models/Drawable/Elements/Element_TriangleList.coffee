@@ -47,9 +47,6 @@ class Element_TriangleList extends Element
                 field.get tri[ 2 ]
             ]
                 
-            console.log proj
-            console.log tri
-            
             posit = for i in [ 0 ... 3 ]
                 proj[ tri[ i ] ]
                 

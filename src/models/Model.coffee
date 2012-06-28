@@ -224,7 +224,7 @@ class Model
 
     # returns true if change is not "cosmetic"
     real_change: ->
-        if @has_been_directly_modified()
+        if @has_been_directly_modified() and not @_attribute_names.length
             return true
         for a in @_attribute_names
             if @cosmetic_attribute? a

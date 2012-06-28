@@ -6,15 +6,17 @@ class ParametrizedDrawable extends Drawable
         super()
         
         @add_attr
-            # parameters: ... -> filled after
+            # drawing_parameters: ... -> filled after
             data: data
 
     draw: ( info ) ->
         @_udpate_parameters_if_necessary()
-        @data.draw info, this
+        @data.draw info, @drawing_parameters
             
     _udpate_parameters_if_necessary: ->
-        if not @parameters?
+        if not @drawing_parameters?
             @data.get_drawing_parameters this
         
+    z_index: ->
+        @data.z_index()
     

@@ -8,9 +8,9 @@ class NodalField extends Model
             _data: new TypedArray_Float64( mesh?.nb_points?() )
             
     get_drawing_parameters: ( model ) ->
-        model.mod_attr
-            visualization:
-                display_style: new Choice( 0, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
+        model.add_attr
+            drawing_parameters:
+                display_style: new Choice( 2, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
                 legend       : new Legend( "todo" )
             
     
@@ -18,14 +18,13 @@ class NodalField extends Model
         @name.get()
 
     draw: ( info, parameters ) ->
-        console.log parameters
-        if parameters.visualization?
+        if parameters?
             proj = for p, i in @_mesh.points
                 info.re_2_sc.proj p.pos.get()
-        
-            @actualise_value_legend @_data.get(), parameters.visualization.legend
+
+            @actualise_value_legend @_data.get(), parameters.legend
             for el in @_mesh._elements
-                el.draw_nodal_field? info, proj, @_data, @visualization.display_style.get(), @visualization.legend
+                el.draw_nodal_field? info, proj, @_data, parameters.display_style.get(), parameters.legend
 
     z_index: ->
         return 50

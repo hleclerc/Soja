@@ -21,5 +21,8 @@ class InterpolatedField extends Model
             @data[ 0 ].field.draw info, parameters
     
     z_index: ->
-        return 50
-        
+        if @data.length
+            @data[ 0 ].field.z_index()
+        else
+            0
+            

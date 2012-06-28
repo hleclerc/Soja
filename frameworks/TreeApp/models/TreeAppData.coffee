@@ -15,7 +15,7 @@ class TreeAppData extends Model
             # loaded modules
             modules            : new Lst
             focus              : -1
-            time               : new ConstrainedVal( 0, { _min: 0, _max: -1, _div: 0 } )
+            time               : new ConstrainedVal( 0, { _min: 0, _max: 2, _div: 0 } )
         
     watch_item: ( item ) ->
         for p in @panel_id_list()
