@@ -1,13 +1,16 @@
 # This class is use to draw line/dot graph or bar chart
 class Mesh extends Drawable
-    constructor: ( editable = true, params = {} ) ->
+    constructor: ( params = {} ) ->
         super()
         
+        for key, val of params
+            this[ key ]?.set? val
+            
         @add_attr
-
             #
             visualization:
                 display_style: new Choice( 0, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
+                point_edition: ( if not params.editable? true )
             
             # geometry
             points   : new Lst_Point # "add_point" can be used to fill the list
@@ -16,12 +19,7 @@ class Mesh extends Drawable
             # helpers
             _selected_points: [] # point refs
             _pelected_points: [] # point refs
-                
         
-#         if editable
-#             @add_attr visualization.point_edition
-#             @visualization.add_attr point_edition
-#             @visualization.point_edition = true
             
         # default move scheme
         @move_scheme = new MoveScheme_3D
@@ -67,7 +65,11 @@ class Mesh extends Drawable
 
             # draw points if necessary
             if @visualization.display_style.equals( "Points" ) or @visualization.point_edition?.get()
-                info.theme.points.beg_ctx info
+                if not @visualization.point_edition?.get()
+                    info.theme.points.beg_ctx info
+                else
+                    info.theme.editable_points.beg_ctx info
+                    
                 for p in proj
                     info.theme.points.draw_proj info, p
 
@@ -76,24 +78,25 @@ class Mesh extends Drawable
             for el in @_sub_elements
                 el.draw info, this, proj, true
                 
-            # selected items
-            if @_selected_points.length
-                info.theme.selected_points.beg_ctx info
-                for p in @_selected_points
-                    n = info.re_2_sc.proj p.pos.get()
-                    info.theme.selected_points.draw_proj info, n
-            
-            # preselected items
-            if @_pelected_points.length
-                info.theme.highlighted_points.beg_ctx info
-                for p in @_pelected_points
-                    n = info.re_2_sc.proj p.pos.get()
-                    info.theme.highlighted_points.draw_proj info, n
+            if @visualization.point_edition?.get()
+                # selected items
+                if @_selected_points.length
+                    info.theme.selected_points.beg_ctx info
+                    for p in @_selected_points
+                        n = info.re_2_sc.proj p.pos.get()
+                        info.theme.selected_points.draw_proj info, n
+                
+                # preselected items
+                if @_pelected_points.length
+                    info.theme.highlighted_points.beg_ctx info
+                    for p in @_pelected_points
+                        n = info.re_2_sc.proj p.pos.get()
+                        info.theme.highlighted_points.draw_proj info, n
             
     
     on_mouse_down: ( cm, evt, pos, b, old, points_allowed = true ) ->
         delete @_moving_point
-        if @visualization.point_edition.get()
+        if @visualization.point_edition?.get()
             if b == "LEFT" or b == "RIGHT"
                 if points_allowed
                     # preparation
@@ -162,7 +165,7 @@ class Mesh extends Drawable
             return true                    
             
     on_mouse_move: ( cm, evt, pos, b, old ) ->
-        if @visualization.point_edition.get()
+        if @visualization.point_edition?.get()
             # currently moving something ?
             if @_moving_point? and b == "LEFT"
                 cm.undo_manager?.snapshot()
