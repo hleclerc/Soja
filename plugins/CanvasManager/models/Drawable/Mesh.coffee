@@ -1,6 +1,6 @@
 # This class is use to draw line/dot graph or bar chart
 class Mesh extends Drawable
-    constructor: ( params = {} ) ->
+    constructor: ( editable = true, params = {} ) ->
         super()
         
         @add_attr
@@ -8,7 +8,6 @@ class Mesh extends Drawable
             #
             visualization:
                 display_style: new Choice( 0, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
-                point_edition: true
             
             # geometry
             points   : new Lst_Point # "add_point" can be used to fill the list
@@ -18,6 +17,12 @@ class Mesh extends Drawable
             _selected_points: [] # point refs
             _pelected_points: [] # point refs
                 
+        
+#         if editable
+#             @add_attr visualization.point_edition
+#             @visualization.add_attr point_edition
+#             @visualization.point_edition = true
+            
         # default move scheme
         @move_scheme = new MoveScheme_3D
         
@@ -61,7 +66,7 @@ class Mesh extends Drawable
                 el.draw info, this, proj
 
             # draw points if necessary
-            if @visualization.display_style.equals( "Points" ) or @visualization.point_edition.get()
+            if @visualization.display_style.equals( "Points" ) or @visualization.point_edition?.get()
                 info.theme.points.beg_ctx info
                 for p in proj
                     info.theme.points.draw_proj info, p
