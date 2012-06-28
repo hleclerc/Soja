@@ -8,6 +8,7 @@ class SurfaceTheme extends Model
 
     beg_ctx: ( info ) ->
         info.ctx.fillStyle = @color.to_rgba()
+        info.ctx.strokeStyle = @color.to_rgba()
         
     end_ctx: ( info ) ->
         
@@ -15,6 +16,7 @@ class SurfaceTheme extends Model
         info.ctx.beginPath()
         func info
         info.ctx.fill()
+        info.ctx.stroke()
         
     
         
