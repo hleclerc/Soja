@@ -12,6 +12,7 @@ API changes
 * preview thumbnail of pictures in browser
 * bug boundary picking no more work since introduction of element (because it still use mesh.lines to pick)
 * display notice
+* Point Mesher infinite loop when moving
 
 
 ---Fixed---
