@@ -87,7 +87,7 @@ class PointMesher extends Drawable
                     else
                         @_selected.clear()
                         @_selected.push @_movable_entity
-#                         @_movable_entity.beg_click pos
+                        @_movable_entity.beg_click pos
                         
                     if b == "RIGHT"
                         return false
