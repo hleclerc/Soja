@@ -60,24 +60,26 @@ class Transform extends Drawable
                     info.ctx.closePath()
     
     get_movable_entities: ( res, info, pos, phase ) ->
-        x = pos[ 0 ]
-        y = pos[ 1 ]
-        if phase == 0
-            for p, i in @cur_points
-                proj = info.re_2_sc.proj p.pos.get()
-                dx = x - proj[ 0 ]
-                dy = y - proj[ 1 ]
-                d = Math.sqrt dx * dx + dy * dy
-                if d <= 10
-                    res.push
-                        item: p
-                        dist: d
-                        type: "Transform"
-                    if @lock?.get() == false
+        draw_point = info.sel_item[ @model_id ]
+        if @cur_points.length && draw_point
+            x = pos[ 0 ]
+            y = pos[ 1 ]
+            if phase == 0
+                for p, i in @cur_points
+                    proj = info.re_2_sc.proj p.pos.get()
+                    dx = x - proj[ 0 ]
+                    dy = y - proj[ 1 ]
+                    d = Math.sqrt dx * dx + dy * dy
+                    if d <= 10
                         res.push
-                            item: @old_points[ i ]
+                            item: p
                             dist: d
                             type: "Transform"
+                        if @lock?.get() == false
+                            res.push
+                                item: @old_points[ i ]
+                                dist: d
+                                type: "Transform"
                 
                         
     on_mouse_down: ( cm, evt, pos, b ) ->

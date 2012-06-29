@@ -4,7 +4,8 @@
 class ModelEditor # extends View
     #
     @default_types: [
-        ( model ) -> ModelEditorItem_CheckBox       if model instanceof Bool
+        ( model ) -> ModelEditorItem_Bool_Img       if model instanceof Bool
+#         ( model ) -> ModelEditorItem_Choice_Roll    if model instanceof Choice
         ( model ) -> ModelEditorItem_Choice         if model instanceof Choice
         ( model ) -> ModelEditorItem_Button         if model instanceof Button
         ( model ) -> ModelEditorItem_ConstrainedVal if model instanceof ConstrainedVal
