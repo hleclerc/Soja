@@ -13,6 +13,10 @@ class TreeItem_Computable extends TreeItem
         # incrementation of _computation_req_date each time there's a "real" change
         @bind =>
             if @real_change()
+                if @_computation_req_date.has_been_modified() # in this round
+                    return
+                if @_computation_rep_date.has_been_modified() # in this round
+                    return
                 @_computation_req_date.add 1
 
     cosmetic_attribute: ( name ) ->
