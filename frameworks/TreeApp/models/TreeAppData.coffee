@@ -49,7 +49,7 @@ class TreeAppData extends Model
             } ]
         s._children.push d
         
-        s
+        return s
         
     add_session: ( session ) ->
         @tree_items.push session
@@ -69,14 +69,27 @@ class TreeAppData extends Model
     #
     panel_id_list: ->
         d = @selected_display_settings()
-        d._layout.panel_id_of_term_panels().filter ( x ) -> x not in [ "TreeView", "EditView" ]
+        d._layout.panel_id_of_term_panels().filter ( x ) -> x not in [ "EditView", "TreeView" ]
+    
+    #
+    rm_selected_panels: ->
+        d = @selected_display_settings()
+        for panel_id in @selected_canvas_pan
+            if d._layout.rm_panel panel_id
+                @visible_tree_items.rem_attr panel_id.get()
+        # new selection
+        for t in @panel_id_list()
+            @selected_canvas_pan.clear()
+            @selected_canvas_pan.push t
+            @last_canvas_pan.set t
+            break
     
     # return selected cam
     get_current_cam: ->
         panel_id = @last_canvas_pan.get()
-        for i in [0...@selected_display_settings()._children.length]
-            if @selected_display_settings()._children[i]._panel_id.get() == panel_id
-                return @selected_display_settings()._children[i].cam
+        for i in [ 0 ... @selected_display_settings()._children.length ]
+            if @selected_display_settings()._children[ i ]._panel_id.get() == panel_id
+                return @selected_display_settings()._children[ i ].cam
 
     # return true if tree item $item is selected or has a selected child
     has_a_selected_child: ( item ) ->

@@ -135,32 +135,6 @@ class IcoBar extends View
         return key
     
     
-    _select_icon_type_rec: ( act, parent, size, prf = '' ) ->
-        key = @key_as_string act
-#         console.log act.txt, parent
-        if act.sub? and act.sub.prf? and act.sub.act?
-            if act.sub.prf == "list" 
-                must_draw_item = false
-                act.fun = ( evt, app ) ->
-                    act.sub.act[ 0 ].fun evt, app
-                container = @create_list_menu act, parent, key, size
-            else if act.sub.prf == "menu" 
-                container = @create_hierarchical_menu act.sub, parent, key
-                must_draw_item = false
-                @draw_item act, parent, key, size, prf
-                act.fun = ( evt, app ) ->
-                    container.classList.toggle "block"
-        
-        else if act.vis != false and must_draw_item != false
-            container = @draw_item act, parent, key, size, prf
-            
-        if act.sub?.act?
-            for ac, i in act.sub.act
-                @_select_icon_type_rec ac, container, size, act.sub.prf
-
-            return true
-        return false
-    
     display_child_menu_container: ( evt, val ) ->
         if val == 1
             containers = document.getElementsByClassName("menu_container")
@@ -353,6 +327,33 @@ class IcoBar extends View
             
         return child_container
             
+    
+    _select_icon_type_rec: ( act, parent, size, prf = '' ) ->
+        key = @key_as_string act
+#         console.log act.txt, parent
+        if act.sub? and act.sub.prf? and act.sub.act?
+            if act.sub.prf == "list" 
+                must_draw_item = false
+                act.fun = ( evt, app ) ->
+                    act.sub.act[ 0 ].fun evt, app
+                container = @create_list_menu act, parent, key, size
+            else if act.sub.prf == "menu" 
+                container = @create_hierarchical_menu act.sub, parent, key
+                must_draw_item = false
+                @draw_item act, parent, key, size, prf
+                act.fun = ( evt, app ) ->
+                    container.classList.toggle "block"
+        
+        else if act.vis != false and must_draw_item != false
+            container = @draw_item act, parent, key, size, prf
+            
+        if act.sub?.act?
+            for ac, i in act.sub.act
+                @_select_icon_type_rec ac, container, size, act.sub.prf
+
+            return true
+        return false
+        
     _render_loc_actions: ( @el, @tree_app ) ->
         while @icon_container.firstChild?
             @icon_container.removeChild @icon_container.firstChild

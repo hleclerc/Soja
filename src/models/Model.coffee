@@ -304,7 +304,7 @@ class Model
 
         # rem
         used = {}
-        for key in Model._get_attribute_names()
+        for key in Model._get_attribute_names value
             used[ key ] = true
         for key in ( key for key in @_attribute_names when not used[ key ] )
             change = true

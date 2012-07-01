@@ -36,13 +36,14 @@ test_FileSystem = ->
                 b.add_attr name, obj
                 
         console.log dir.get()
-        #         add_ifn "val", -> 10
-        #         add_ifn "con", -> new ConstrainedVal 0, { min:0, max:100 }
-        #         add_ifn "str", -> "txt"
-        #         add_ifn "lst", -> [ 1, 2 ]
-        #         add_ifn "col", -> new Color
         
-        #         add_ifn "bol", -> new Bool
+        add_ifn "val", -> 10
+        add_ifn "con", -> new ConstrainedVal 0, { min:0, max:100 }
+        add_ifn "str", -> "txt"
+        add_ifn "lst", -> [ 1, 2 ]
+        add_ifn "col", -> new Color
+
+        add_ifn "bol", -> new Bool
         
         add_ifn "arr", ->
             res = new TypedArray_Float64 [ 2, 3 ]
