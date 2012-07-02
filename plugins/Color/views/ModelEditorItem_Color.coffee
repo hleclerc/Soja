@@ -33,4 +33,4 @@ class ModelEditorItem_Color extends ModelEditorItem
         @color_selector.style.background = @model.to_hex()
 
 # 
-ModelEditor.default_types.push ( model ) -> ModelEditorItem_Color if model instanceof Color
+ModelEditorItem.default_types.push ( model ) -> ModelEditorItem_Color if model instanceof Color

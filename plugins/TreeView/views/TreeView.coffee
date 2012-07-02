@@ -39,10 +39,6 @@ class TreeView extends View
         # used to link model_id of tree item to dom
         @linked_id_dom = {}
         
-    @default_types: [
-        # 0 is in directory
-    ]
-        
     # may be redefined depending on how the user want to construct the graph. Return the children of item
     get_children_of: ( item ) ->
         item._children

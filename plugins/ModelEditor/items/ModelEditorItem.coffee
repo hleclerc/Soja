@@ -1,9 +1,18 @@
 #
 class ModelEditorItem extends View
+    @default_types: [
+        ( model ) -> ModelEditorItem_CheckBox       if model instanceof Bool
+        ( model ) -> ModelEditorItem_Choice         if model instanceof Choice
+        ( model ) -> ModelEditorItem_Button         if model instanceof Button
+        ( model ) -> ModelEditorItem_ConstrainedVal if model instanceof ConstrainedVal
+        ( model ) -> ModelEditorItem_Input          if model instanceof Obj
+        ( model ) -> ModelEditorItem_Lst            if model.dim() # Tensor
+    ]
+    
     # el is a div, specific for this
     constructor: ( params ) ->
         super params.model
-        
+
         @default_types = []
         for key, val of params
             this[ key ] = val
@@ -48,19 +57,6 @@ class ModelEditorItem extends View
         @get_property "label_ratio", 0.35
 
     #
-    get_item_type_for: ( model ) ->
-        # inst
-        for t in @default_types
-            r = t model
-            if r?
-                return r
-        # parent
-        if @parent?
-            return @parent.get_item_type_for model
-        # global
-        return ModelEditor.get_item_type_for model
-
-    #
     get_justification: ->
         if @justification?
             return @justification
@@ -74,13 +70,24 @@ class ModelEditorItem extends View
             @undo_manager.snapshot()
         else if @parent?
             @parent.snapshot()
+
+    # call trans_name unless there is a specification in model.get_model_editor_parameters
+    get_display_name: ( model, name ) ->
+        if model.get_model_editor_parameters?
+            res = ModelEditorItem._get_model_editor_parameters model
+            if res.display_name[ name ]?
+                return res.display_name[ name ]
+        return @trans_name name
     
-    # attribute name -> display name (defaulting to ModelEditor.trans_name if no parent)
+    # attribute name -> display name (defaulting to ModelEditor.trans_name if no parent). May be redefined
     trans_name: ( name ) ->
         if @parent?
             return @parent.trans_name name
-        return ModelEditor.trans_name name
-
+        #
+        r = /\_/g
+        res = name.replace r, " "
+        return res[ 0 ].toUpperCase() + res[ 1... ]
+        
     # updates
     #  @ce -> main created element (used for destructor)
     #  @ew -> edit width (width in percent of edit div avec the label)
@@ -89,21 +96,6 @@ class ModelEditorItem extends View
         if @label?
             # inline label ?
             if @ok_for_label()
-                #                 @ce = new_dom_element
-                #                     parentNode : @el
-                #                     nodeName   : "label"
-                # 
-                #                 new_dom_element
-                #                     parentNode : @ce
-                #                     nodeName   : "span"
-                #                     innerHTML  : @label
-                #                     style      :
-                #                         display : "inline-block"
-                #                         width   : @get_item_width() * @get_label_ratio() + "%"
-                #  
-                #                 @ew = @get_item_width() * ( 1.0 - @get_label_ratio() )
-                #                 @ed = @ce
-
                 @ce = new_dom_element
                     parentNode : @el
                     nodeName   : "span"
@@ -166,4 +158,34 @@ class ModelEditorItem extends View
     
     ok_for_label: ->
         true
+    
+    @_get_model_editor_parameters: ( model ) ->
+        res =
+            display_name: {}
+            model_editor: {}
+        model.get_model_editor_parameters res    
+        return res    
+
+    #
+    @get_item_type_for: ( params ) ->
+        #
+        it = params.item_type
+        if it?
+            return it
+            
+        #
+        if params.name? and params.parent?.model.get_model_editor_parameters?
+            res = ModelEditorItem._get_model_editor_parameters params.parent.model
+            if res.model_editor[ params.name ]?
+                return res.model_editor[ params.name ]
+            
+        # global default types
+        for t in ModelEditorItem.default_types
+            r = t params.model
+            if r?
+                return r
+                
+        # default type
+        return ModelEditorItem_Aggregate
+    
     

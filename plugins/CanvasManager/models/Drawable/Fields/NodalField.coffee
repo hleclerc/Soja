@@ -55,3 +55,4 @@ class NodalField extends Model
             if val < min
                 min = val
         return min
+        

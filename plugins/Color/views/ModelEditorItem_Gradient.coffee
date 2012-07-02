@@ -39,5 +39,5 @@ class ModelEditorItem_Gradient extends ModelEditorItem
         ctx.fillRect 0, 0, @canvas.width, @canvas.height
         
 # 
-ModelEditor.default_types.push ( model ) -> ModelEditorItem_Gradient if model instanceof Gradient
+ModelEditorItem.default_types.push ( model ) -> ModelEditorItem_Gradient if model instanceof Gradient
         
