@@ -18,7 +18,7 @@ class InterpolatedField extends Model
                 if t.pos[ 0 ].axe_value.get() >= info.time
                     return t.field.draw info, parameters
         if @_data.length
-            @_data[ 0 ].field.draw info, parameters
+            @_data[ @_data.length - 1 ].field.draw info, parameters
     
     z_index: ->
         if @_data.length
