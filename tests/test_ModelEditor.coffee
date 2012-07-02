@@ -44,8 +44,8 @@ test_ModelEditor = ->
     model.simple_aggregate.gradient.add_color [ 255,255,255, 255 ], 0
     model.simple_aggregate.gradient.add_color [   0,  0,  0, 255 ], 1
     
-    omodel = model.deep_copy()
-    editor = new_model_editor el: docbod, model: omodel, focus: focus
+    #omodel = model.deep_copy()
+    editor = new_model_editor el: docbod, model: model, focus: focus
     
     # view with
     editor = new_model_editor el: docbod, model: model, focus: focus

@@ -113,4 +113,4 @@ class ModelEditorItem_TextAreaLanguage extends ModelEditorItem
         @model.set changed_string
         @code_mirror.setValue changed_string
 # 
-ModelEditor.default_types.push ( model ) -> ModelEditorItem_TextAreaLanguage if model instanceof StrLanguage
+ModelEditorItem.default_types.push ( model ) -> ModelEditorItem_TextAreaLanguage if model instanceof StrLanguage

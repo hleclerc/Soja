@@ -23,8 +23,9 @@ class ModelEditorItem_Aggregate extends ModelEditorItem
                     edit: new_model_editor
                         el    : @ed
                         model : @model[ name ]
-                        label : @trans_name( name )
+                        label : @get_display_name( @model, name )
                         parent: this
+                        name  : name
                     span: if @get_justification() then new_dom_element( parentNode: @ed, nodeName  : "span" ) else undefined
                 
         # justification

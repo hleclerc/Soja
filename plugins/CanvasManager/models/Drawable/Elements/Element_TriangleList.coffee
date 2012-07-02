@@ -39,24 +39,18 @@ class Element_TriangleList extends Element
                 @indices.get [ 1, num_triangle ]
                 @indices.get [ 2, num_triangle ]
             ]
-            
                     
-            vals = [
-                field.get tri[ 0 ]
-                field.get tri[ 1 ]
-                field.get tri[ 2 ]
-            ]
+            max_legend = legend.max_val.get()
+            min_legend = legend.min_val.get()
+                
+            c = max_legend - min_legend + ( max_legend == min_legend )
+            vals = for i in [ 0 ... 3 ]
+                ( field.get( tri[ i ] ) - min_legend ) / c
                 
             posit = for i in [ 0 ... 3 ]
                 proj[ tri[ i ] ]
                 
                     
-            max_legend = legend.max_val.get()
-            min_legend = legend.min_val.get()
-            
-            for val, i in vals
-                vals[ i ] = ( max_legend - val ) / ( max_legend - min_legend )
-                
             # position of every point
             x0 = posit[ 0 ][ 0 ]
             y0 = posit[ 0 ][ 1 ]
@@ -69,6 +63,7 @@ class Element_TriangleList extends Element
             
             mat_pos = [ [ 1, x0, y0 ], [ 1, x1, y1 ], [ 1, x2, y2 ] ]
             det = Vec_3.determinant mat_pos
+            det += det == 0
             
             mat_a = [ [ vals[ 0 ], x0, y0 ], [ vals[ 1 ], x1, y1 ], [ vals[ 2 ], x2, y2 ] ]
             det_a = Vec_3.determinant mat_a
@@ -81,6 +76,9 @@ class Element_TriangleList extends Element
             mat_c = [ [ 1, x0, vals[ 0 ] ], [ 1, x1, vals[ 1 ] ], [ 1, x2, vals[ 2 ] ] ]
             det_c = Vec_3.determinant mat_c
             c = det_c / det
+                
+            if isNaN b
+                console.log vals, field.get( tri[ 0 ] ), field, tri, min_legend, max_legend
             
             # getting p0
             if b or c
@@ -139,6 +137,8 @@ class Element_TriangleList extends Element
     # drawing gradient depending p0 and p1 in the correct triangle
     _draw_gradient_fill_triangle: ( info, p0, p1, posit, legend ) ->
         info.ctx.beginPath()
+        if isNaN( p0[ 0 ] ) or isNaN( p0[ 1 ] ) or isNaN( p1[ 0 ] ) or isNaN( p1[ 1 ] )
+            return
         lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ], p1[ 0 ], p1[ 1 ]
         for col in legend.gradient.color_stop
             lineargradient.addColorStop col.position.get(), col.color.to_rgba()

@@ -150,7 +150,7 @@ class IcoBar extends View
         if act.vis != false
             if prf? and prf == "menu"
                 if act.mod?
-                    editor = new_model_editor el: parent, model: act.mod, item_width: 85
+                    editor = new_model_editor el: parent, model: act.mod( @tree_app ), item_width: 85
                     s = parent
                 else
                     # element who have child
@@ -228,7 +228,7 @@ class IcoBar extends View
             
             #icon who need a model_editor item
             else if act.mod?
-                editor = new_model_editor el: parent, model: act.mod, item_width: 85
+                editor = new_model_editor el: parent, model: act.mod( @tree_app ), item_width: 85
                 s = parent
                 
             else if act.txt?
@@ -291,7 +291,7 @@ class IcoBar extends View
                     act.sub.act[ 0 ]?.fun evt, @tree_app
         #icon who need a model_editor item
         else if act.mod?
-            editor = new_model_editor el: click_container, model: act.mod, item_width: 85
+            editor = new_model_editor el: click_container, model: act.mod( @tree_app ), item_width: 85
             
         else if act.txt?
             new_dom_element

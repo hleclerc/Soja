@@ -646,4 +646,4 @@ class ModelEditorItem_Directory extends ModelEditorItem
         ModelEditorItem_Directory._action_list[ model_type ].push fun
 
 # registering
-ModelEditor.default_types.unshift ( model ) -> ModelEditorItem_Directory if model instanceof Directory
+ModelEditorItem.default_types.unshift ( model ) -> ModelEditorItem_Directory if model instanceof Directory
