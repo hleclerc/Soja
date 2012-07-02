@@ -60,5 +60,5 @@ class ModelEditorItem_TypedArray extends ModelEditorItem
             
 
 # 
-ModelEditor.default_types.unshift ( model ) ->
+ModelEditorItem.default_types.unshift ( model ) ->
     ModelEditorItem_TypedArray if model instanceof TypedArray

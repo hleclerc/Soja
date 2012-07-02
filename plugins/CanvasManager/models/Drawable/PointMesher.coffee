@@ -128,7 +128,7 @@ class PointMesher extends Drawable
                 
         else if @_pre_sele.length
             @_pre_sele.clear()
-    
+        
         return false
         
     # onmousemove func

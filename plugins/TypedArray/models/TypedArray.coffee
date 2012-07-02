@@ -130,7 +130,7 @@ class TypedArray extends Model
         s = parseInt l[ 0 ]
         @_size = for v in [ 0 ... s ]
             parseInt l[ v + 1 ]
-        
+            
         B = @base_type()
         n = @nb_items()
         @_data = new B n
