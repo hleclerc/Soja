@@ -53,7 +53,9 @@ class Element_BoundedSurf extends Element
         for b in @boundaries
             if b.e not in res
                 res.push b.e
-    
+
+
+
     # function check if unlinked_points is an array containing 2 array, if so it concatenate every array and return it as an element
     _link_elements: ( unlinked_points ) ->
         if unlinked_points.length == 2 
@@ -74,8 +76,8 @@ class Element_BoundedSurf extends Element
                     e: new Element_Arc unlinked_point_lst
                 return res
         return false
-    
-    
+
+
     #    
     rem_sub_element: ( sel_point ) ->
         if @boundaries?
@@ -124,6 +126,79 @@ class Element_BoundedSurf extends Element
                 
             @boundaries.clear()
             @boundaries.set res
+            
+            
+            
+#     # function check if unlinked_points is an array containing 2 array, if so it concatenate every array and return it as an element
+#     _link_elements: ( unlinked_points ) ->
+#         if unlinked_points.length == 2 
+#             unlinked_point_lst = []
+#             for points in unlinked_points
+#                 for p in points
+#                     unlinked_point_lst.push p
+#             #TODO, it always should be lines between 2 unlinked_points array
+#             console.log unlinked_point_lst
+#             if unlinked_point_lst.length == 2
+#                 res =
+#                     o: 1
+#                     e: new Element_Line unlinked_point_lst
+#                 return res
+#             if unlinked_point_lst.length >= 3
+#                 res =
+#                     o: 1
+#                     e: new Element_Arc unlinked_point_lst
+#                 return res
+#         return false
+#     
+#     
+#     #    
+#     rem_sub_element: ( sel_point ) ->
+#         if @boundaries?
+#             res = []
+#             unlinked_points = []
+#             for b, i in @boundaries
+#                 waiting_points  = []
+#                 if sel_point in b.e.get_point_numbers()
+#                     waiting_points = b.e.get_point_numbers()
+#                     pos = waiting_points.indexOf sel_point
+#                     #console.log waiting_points, pos
+#                     if waiting_points.length == 2
+#                         unlinked_points.push [ b.e.indices[ 1 - pos ] ] #get the point which is alone
+#                         new_res = @_link_elements unlinked_points
+#                         if new_res != false
+#                             res.push new_res
+#                             unlinked_points = []
+#                     else if waiting_points.length >= 3
+#                         bef = b.e.indices.slice 0, pos
+#                         aft = b.e.indices.slice pos + 1, b.e.indices.length
+#                         
+#                         if pos == 0
+#                             unlinked_points.push aft
+#                         else if pos == b.e.indices.length - 1
+#                             unlinked_points.push bef
+#                         new_res = @_link_elements unlinked_points
+#                         if new_res != false
+#                             res.push new_res
+#                             unlinked_points = []
+#                         
+#                         #link eventual points that were around deleted points
+#                         if ( waiting_points.length - 1 ) == 2
+#                             res.push
+#                                 o: 1
+#                                 e: new Element_Line bef.concat aft
+#                             
+#                         else if ( waiting_points.length - 1 ) >= 3
+#                             res.push
+#                                 o: 1
+#                                 e: new Element_Arc bef.concat aft
+#                                 
+#                     else
+#                         res.push b
+#                 else
+#                     res.push b
+#                 
+#             @boundaries.clear()
+#             @boundaries.set res
     
     make_curve_line_from_selected: ( sel_point ) ->
         if sel_point? and @boundaries?
