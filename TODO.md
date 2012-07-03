@@ -7,12 +7,10 @@ API changes
 * 
 
 
-* continue work on time_steps to display every correlation results
 * return the type of clicked point for contextual menu
 * preview thumbnail of pictures in browser
 * bug boundary picking no more work since introduction of element (because it still use mesh.lines to pick)
 * display notice
-* Point Mesher infinite loop when moving
 
 
 ---Fixed---
@@ -21,3 +19,5 @@ API changes
 * displayed_style -> display_style (english)
 * in sketch module, remove the @sketch from global variables
 * problem : transformable points are no longer movable
+* Point Mesher infinite loop when moving
+* continue work on time_steps to display every correlation results
