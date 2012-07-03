@@ -11,7 +11,7 @@ class ParametrizedDrawable extends Drawable
 
     draw: ( info, additionnal_parameters ) ->
         @_udpate_parameters_if_necessary()
-        @data.draw info, @drawing_parameters
+        @data.draw info, @drawing_parameters, additionnal_parameters
         
     disp_only_in_model_editor: ->
         @drawing_parameters
