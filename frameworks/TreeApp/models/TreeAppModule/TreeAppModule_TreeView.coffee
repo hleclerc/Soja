@@ -105,9 +105,9 @@ class TreeAppModule_TreeView extends TreeAppModule
                 # Show/hide items
                 path_items = app.data.selected_tree_items
                 for path_item in path_items
-                    item = path_item[ path_item.length - 1]
-                    if item._viewable?.get() == 1
-                        for p in app.data.panel_id_list()
+                    item = path_item[ path_item.length - 1 ]
+                    if item._viewable?.get()
+                        for p in app.data.selected_canvas_pan
                             app.data.visible_tree_items[ p ].toggle item
                         
     delete_from_tree: ( app,  item ) =>

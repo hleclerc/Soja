@@ -9,14 +9,17 @@ class ParametrizedDrawable extends Drawable
             # drawing_parameters: ... -> filled after
             data: data
 
-    draw: ( info ) ->
+    draw: ( info, additionnal_parameters ) ->
         @_udpate_parameters_if_necessary()
-        @data.draw info, @drawing_parameters
+        @data.draw info, @drawing_parameters, additionnal_parameters
+        
+    disp_only_in_model_editor: ->
+        @drawing_parameters
+        
+    z_index: ->
+        @data.z_index()
             
     _udpate_parameters_if_necessary: ->
         if not @drawing_parameters?
             @data.get_drawing_parameters this
-        
-    z_index: ->
-        @data.z_index()
     

@@ -25,6 +25,12 @@ class NodalField extends Model
             @actualise_value_legend @_data.get(), parameters.legend
             for el in @_mesh._elements
                 el.draw_nodal_field? info, proj, @_data, parameters.display_style.get(), parameters.legend
+                
+    sub_canvas_items: ->
+        if @drawing_parameters?
+            [ @drawing_parameters.legend ]
+        else
+            []
 
     z_index: ->
         return 50

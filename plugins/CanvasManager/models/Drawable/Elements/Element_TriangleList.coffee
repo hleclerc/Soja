@@ -77,9 +77,6 @@ class Element_TriangleList extends Element
             det_c = Vec_3.determinant mat_c
             c = det_c / det
                 
-            if isNaN b
-                console.log vals, field.get( tri[ 0 ] ), field, tri, min_legend, max_legend
-            
             # getting p0
             if b or c
                 if Math.abs( b ) > Math.abs( c )

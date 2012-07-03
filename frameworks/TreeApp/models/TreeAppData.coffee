@@ -15,7 +15,7 @@ class TreeAppData extends Model
             # loaded modules
             modules            : new Lst
             focus              : -1
-            time               : new ConstrainedVal( 0, { _min: 0, _max: 2, _div: 0 } )
+            time               : new ConstrainedVal( 0, { min: 0, max: 2, div: 0 } )
         
     watch_item: ( item ) ->
         for p in @panel_id_list()
@@ -75,14 +75,24 @@ class TreeAppData extends Model
     rm_selected_panels: ->
         d = @selected_display_settings()
         for panel_id in @selected_canvas_pan
-            if d._layout.rm_panel panel_id
-                @visible_tree_items.rem_attr panel_id.get()
-        # new selection
-        for t in @panel_id_list()
-            @selected_canvas_pan.clear()
-            @selected_canvas_pan.push t
-            @last_canvas_pan.set t
-            break
+            d._layout.rm_panel panel_id
+    
+    # removed 
+    # d -> DisplaySettingsItem
+    update_associated_layout_data: ( d ) ->
+        pil = d._layout.panel_id_of_term_panels()
+        
+        for key in ( key for key in @visible_tree_items._attribute_names when key not in pil )
+            @visible_tree_items.rem_attr key
+            
+        for key in ( key for key in @selected_canvas_pan when key not in pil )
+            @selected_canvas_pan.remove key
+        if not @selected_canvas_pan.length
+            @selected_canvas_pan.push pil[ 0 ]
+        
+        if @last_canvas_pan not in pil
+            @last_canvas_pan.set pil[ 0 ]
+            
     
     # return selected cam
     get_current_cam: ->
