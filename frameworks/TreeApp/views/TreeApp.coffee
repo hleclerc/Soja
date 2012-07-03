@@ -174,7 +174,7 @@ class TreeApp extends View
             @data.visible_tree_items.add_attr data.panel_id, new Lst [ view_item ]
  
             # copy visible objects
-            for id in @data.panel_id_list() when id != @data.last_canvas_pan.get()
+            for id in @data.panel_id_list() when @data.visible_tree_items[ id ].length >= 2
                 for tree_item in @data.visible_tree_items[ id ]
                     if not ( tree_item instanceof ViewItem )
                         @data.visible_tree_items[ data.panel_id ].push tree_item
