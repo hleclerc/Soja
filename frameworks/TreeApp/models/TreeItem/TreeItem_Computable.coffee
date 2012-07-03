@@ -5,8 +5,8 @@ class TreeItem_Computable extends TreeItem
         
         # attributes
         @add_attr
-            _computation_req_date: 1 # request date
-            _computation_rep_date: 0 # response date (filled by the server)
+            _computation_req_date: 1 # request date (updated by the @bind hereafter)
+            _computation_rep_date: 0 # response date (updated by the server after each computation)
             _computation_mode    : 2 # 2 -> auto. 1 -> do it. 0 -> stop
             _messages            : []
 
