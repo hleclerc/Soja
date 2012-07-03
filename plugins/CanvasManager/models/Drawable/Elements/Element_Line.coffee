@@ -12,6 +12,7 @@ class Element_Line extends Element_WithIndices
             if @indices.length
                 for i in [ 0 ... @indices.length - 1 ]
                     info.theme.lines.draw_straight_proj info, proj[ @indices[ i ].get() ], proj[ @indices[ i + 1 ].get() ]
+            info.theme.lines.end_ctx info
 
     contour: ( info, mesh, proj, beg, inversion ) ->
         if @indices.length >= 2

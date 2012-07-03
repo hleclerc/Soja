@@ -259,36 +259,6 @@ class Mesh extends Drawable
                 done = {}
                 for el in @_elements
                     el.update_indices? done, n_array
-
-                
-                
-#     delete_selected_point: ->
-#         index_selected_points = @_get_indices_of_selected_points()
-#     
-#         if index_selected_points != false
-#             # old indices -> new indices
-#             n_array = ( i for i in [ 0 ...  @points.length ] )
-#             for i in index_selected_points
-#                 n_array[ i ] = -1
-#                 for j in [ i + 1 ... @points.length ]
-#                     n_array[ j ] -= 1
-# 
-#             for ind_sel_point in index_selected_points
-#                 # new elements
-#                 for el in @_elements
-#                     el.rem_sub_element? ind_sel_point
-# 
-#             for ind in index_selected_points[ index_selected_points.length - 1 .. 0 ]
-#                 p = @points[ ind ]
-#                 @_selected_points.remove_ref p
-#                 @_pelected_points.remove_ref p
-#                 @points.splice ind, 1
-#             
-#             # new indices
-#             done = {}
-#             for el in @_elements
-#                 el.update_indices? done, n_array
-
                 
                 
     #add "val" to all value in the array started at index "index" (use for ex when a point is deleted)

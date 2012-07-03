@@ -58,23 +58,11 @@ class Element_BoundedSurf extends Element
 
     # function check if unlinked_points is an array containing 2 array, if so it concatenate every array and return it as an element
     _link_elements: ( unlinked_points ) ->
-        if unlinked_points.length == 2 
-            unlinked_point_lst = []
-            for points in unlinked_points
-                for p in points
-                    unlinked_point_lst.push p
-            #TODO, it always should be lines between 2 unlinked_points array
-            console.log unlinked_point_lst
-            if unlinked_point_lst.length == 2
-                res =
-                    o: 1
-                    e: new Element_Line unlinked_point_lst
-                return res
-            if unlinked_point_lst.length >= 3
-                res =
-                    o: 1
-                    e: new Element_Arc unlinked_point_lst
-                return res
+        if unlinked_points.length == 2
+            res =
+                o: 1
+                e: new Element_Line unlinked_points
+            return res
         return false
 
 
@@ -90,7 +78,7 @@ class Element_BoundedSurf extends Element
                     pos = waiting_points.indexOf sel_point
                     #console.log waiting_points, pos
                     if waiting_points.length == 2
-                        unlinked_points.push [ b.e.indices[ 1 - pos ] ] #get the point which is alone
+                        unlinked_points.push b.e.indices[ 1 - pos ] #get the point which is alone
                         new_res = @_link_elements unlinked_points
                         if new_res != false
                             res.push new_res
@@ -100,30 +88,30 @@ class Element_BoundedSurf extends Element
                         aft = b.e.indices.slice pos + 1, b.e.indices.length
                         
                         if pos == 0
-                            unlinked_points.push aft
+                            unlinked_points.push aft[ 0 ].get()
                         else if pos == b.e.indices.length - 1
-                            unlinked_points.push bef
+                            unlinked_points.push bef[ bef.length - 1 ].get()
                         new_res = @_link_elements unlinked_points
                         if new_res != false
                             res.push new_res
                             unlinked_points = []
                         
+                        
                         #link eventual points that were around deleted points
                         if ( waiting_points.length - 1 ) == 2
                             res.push
                                 o: 1
-                                e: new Element_Line bef.concat aft
+                                e: new Element_Line bef.get().concat aft.get()
                             
                         else if ( waiting_points.length - 1 ) >= 3
                             res.push
                                 o: 1
-                                e: new Element_Arc bef.concat aft
+                                e: new Element_Arc bef.get().concat aft.get()
                                 
                     else
                         res.push b
                 else
                     res.push b
-                
             @boundaries.clear()
             @boundaries.set res
             
