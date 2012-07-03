@@ -6,7 +6,7 @@ class FileSystem
     # when object are saved, their _server_id is assigned to a tmp value
     @_cur_tmp_server_id = 0
     @_sig_server = true # if changes has to be sent
-    @_disp = true
+    @_disp = false
     
     # data are sent after a timeout (and are concatened before)
     @_objects_to_send = {}

@@ -40,7 +40,7 @@ class TreeApp extends View
             txt       : ""
 
     onchange: ->
-        # update layout if current session has changed
+        # messages
         if @treeview?.flat?
             for el in @treeview.flat when el.item?._messages?
                 if el.item._messages.has_been_modified()
@@ -65,6 +65,7 @@ class TreeApp extends View
                             setTimeout ( => @msg_container.removeChild msg_box ), 3000
                                 
                 
+        # update layout if current session has changed
         if @data.selected_tree_items.has_been_modified()
             session = @data.selected_session()
             if session?
@@ -75,16 +76,19 @@ class TreeApp extends View
                     @layouts[ session.model_id ].show()
                     @cur_session_model_id = session.model_id
             
-            
-            # add red border on canvas that are selected from the tree (view item)
-            items = @data.get_selected_tree_items()
-            for item in items when item instanceof ViewItem
-                @data.selected_canvas_pan.clear()
-                for path in @data.selected_tree_items
-                    for it in path when it instanceof ViewItem
-                        @data.selected_canvas_pan.push it._panel_id
-                break
-            
+            #             # add red border on canvas that are selected from the tree (view item)
+            #             items = @data.get_selected_tree_items()
+            #             for item in items when item instanceof ViewItem
+            #                 @data.selected_canvas_pan.clear()
+            #                 for path in @data.selected_tree_items
+            #                     for it in path when it instanceof ViewItem
+            #                         @data.selected_canvas_pan.push it._panel_id
+            #                 break
+    
+        # rm data associated with panel instances when deleted
+        d = @data.selected_display_settings()
+        if d._layout.has_been_modified()
+            @data.update_associated_layout_data d
             
             
     # return selected CanvasManagerPanelInstance from current session
@@ -125,10 +129,10 @@ class TreeApp extends View
             @treeview = @module_treeview.treeview # new TreeView res.div, @data.tree_items, @data.selected_tree_items, @data.visible_tree_items, @data.closed_tree_items, @data.last_canvas_pan
 
             res.treeview = @module_treeview.treeview            
-#             @treeview.treeContainer.onmousedown = =>
-#                 console.log 'fde', this
-#                 @data.focus.set @module_treeview.treeview.view_id
-#                 return true
+            #             @treeview.treeContainer.onmousedown = =>
+            #                 console.log 'fde', this
+            #                 @data.focus.set @module_treeview.treeview.view_id
+            #                 return true
             
             res.div.onmousedown = =>
                 @data.focus.set @module_treeview.treeview.view_id
@@ -168,17 +172,18 @@ class TreeApp extends View
         # 
         if not @data.visible_tree_items[ data.panel_id ]?
             @data.visible_tree_items.add_attr data.panel_id, new Lst [ view_item ]
-        
-        for cm_inst in @selected_canvas_inst()
-            for tree_item in @data.visible_tree_items[ cm_inst.view_item._panel_id.get() ]
-                if not ( tree_item instanceof ViewItem )
-                    @data.visible_tree_items[ data.panel_id ].push tree_item
-            view_item.cam.set cm_inst.cm.cam.get()
-            break
+ 
+            # copy visible objects
+            for id in @data.panel_id_list() when id != @data.last_canvas_pan.get()
+                for tree_item in @data.visible_tree_items[ id ]
+                    if not ( tree_item instanceof ViewItem )
+                        @data.visible_tree_items[ data.panel_id ].push tree_item
+                break
         
         # add a CanvasManager
         # @model.tree.visibility_context.set data.panel_id
-        @data.selected_canvas_pan.set [ data.panel_id ]
+        @data.selected_canvas_pan.clear()
+        @data.selected_canvas_pan.push data.panel_id
         @data.last_canvas_pan.set data.panel_id
         
         # @el.addEventListener "click", ( ( evt ) => @selected_view = data.panel_id )
