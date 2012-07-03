@@ -8,6 +8,7 @@ class ModelEditorItem_ChoiceWithEditableItems extends ModelEditorItem
             el        : @ed
             model     : @model
             parent    : this
+            item_width: @ew
             item_type : ModelEditorItem_Choice
 
         @editdiv = new_dom_element
@@ -33,6 +34,6 @@ class ModelEditorItem_ChoiceWithEditableItems extends ModelEditorItem
                 e.ed.style.display = ( if @model.num.get() == i then "block" else "none" )
                 
 
-    ok_for_label: ->
-        false
+    #     ok_for_label: ->
+    #         false
             

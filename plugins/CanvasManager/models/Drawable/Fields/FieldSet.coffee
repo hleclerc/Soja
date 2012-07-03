@@ -1,18 +1,26 @@
 #
-class FieldSet extends Model
+class FieldSet extends Drawable
     constructor: ->
         super()
         
         @add_attr
-            color_by: new Choice # list of NamedParametrizedDrawable containing fields
-            warp_by : new Choice # list of NamedParametrizedDrawable containing nD fields
+            color_by   : new Choice # list of NamedParametrizedDrawable containing fields
+            warp_by    : new Choice # list of NamedParametrizedDrawable containing nD fields
+            warp_factor: 0 # 
+            color_map  : new Gradient
         
     get_model_editor_parameters: ( res ) ->
         res.model_editor[ "color_by" ] = ModelEditorItem_ChoiceWithEditableItems
-        res.model_editor[ "warp_by" ] = ModelEditorItem_ChoiceWithEditableItems
+        # res.model_editor[ "warp_by" ] = ModelEditorItem_ChoiceWithEditableItems
             
     draw: ( info ) ->
-        f = @color_by.get()
-        if f
-            f.draw info, @warp_by.get()
-            
+        f = @color_by.item()
+        if f?
+            f.draw info,
+                warp_by    : @warp_by.item().data
+                warp_factor: @warp_factor.get()
+                color_map  : @color_map
+
+    z_index: ->
+        50
+        

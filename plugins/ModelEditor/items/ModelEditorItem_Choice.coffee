@@ -17,11 +17,11 @@ class ModelEditorItem_Choice extends ModelEditorItem
             
     onchange: ->
         if @model.lst.has_been_modified()
-            if @model.lst.length == 0
-                @ed.style.display = 'none'
-                return
-            else
-                @ed.style.display = ''
+            #             if @model.lst.length == 0
+            #                 @ed.style.display = 'none'
+            #                 return
+            #             else
+            #                 @ed.style.display = ''
                 
             while @select.firstChild?
                 @select.removeChild @select.firstChild

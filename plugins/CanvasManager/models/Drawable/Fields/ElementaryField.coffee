@@ -23,7 +23,7 @@ class ElementaryField extends Model
     z_index: () ->
         return 40
         
-    draw: ( info, parameters ) ->
+    draw: ( info, parameters, additionnal_parameters ) ->
         if parameters.visualization?
             for tri, i in triangles
                 @_draw_elementary_triangle info, parameters, tri.get(), proj, @_data[ i ], legend

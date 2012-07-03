@@ -13,9 +13,24 @@ class VectorialField extends Drawable
             model.visualization.add_attr
                 norm: new Choice( 0, [ "norm_2" ] )
     
-    get: ->
-        return @_vector.get()
+    get: ( a, b ) ->
+        if a?
+            if b?
+                @_vector[ a ].get b
+            else
+                @_vector[ a ].get()
+        else
+            @_vector.get()
 
+    # get vector for component i ()
+    get_val: ( info, i, n = 3 ) ->
+        for j in [ 0 ... n ]
+            if j < @_vector.length
+                @_vector[ j ].get_val info, i
+            else
+                0
+        
+            
     dim: ->
         if @_vector
             return @_vector.length
