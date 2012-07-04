@@ -15,8 +15,7 @@ API changes
 * add a picture to tree from browser no matter which way ( drag and drop or copy cut etc.)
 * organize compute icon in editview to be visualizable and usable
 * add a way to launch computable in the treeview (apply on every child)
-* use treeAppModule_Computable to launch computable on every item (also use hotkeys like ctrl+B to build or something like that)
-* legend should be fit manually by users
+* legend should be fittable manually by users
 * use same legend for every interpolated fields
 * test orientation for elements
 
@@ -29,3 +28,4 @@ API changes
 * Point Mesher infinite loop when moving
 * continue work on time_steps to display every correlation results
 * preview thumbnail of pictures in browser
+* use treeAppModule_Computable to launch computable on every item (also use hotkeys like ctrl+B to build or something like that)
