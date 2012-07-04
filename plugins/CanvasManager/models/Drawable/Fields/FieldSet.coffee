@@ -7,7 +7,7 @@ class FieldSet extends Drawable
             color_by   : new Choice # list of NamedParametrizedDrawable containing fields
             warp_by    : new Choice # list of NamedParametrizedDrawable containing nD fields
             warp_factor: 0 # 
-            color_map  : new Gradient
+            # gradient  : new Gradient
         
     get_model_editor_parameters: ( res ) ->
         res.model_editor[ "color_by" ] = ModelEditorItem_ChoiceWithEditableItems
@@ -19,7 +19,7 @@ class FieldSet extends Drawable
             f.draw info,
                 warp_by    : @warp_by.item().data
                 warp_factor: @warp_factor.get()
-                color_map  : @color_map
+                # gradient   : @gradient
 
     z_index: ->
         50

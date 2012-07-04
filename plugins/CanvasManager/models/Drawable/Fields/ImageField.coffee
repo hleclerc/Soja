@@ -5,21 +5,30 @@ class ImageField extends Drawable
                 
         @add_attr
             name : name         
-            img  : new Img path
-            visualization:
-                legend       : new Legend( name )
+            src  : ""
             
+        @rgba = new Image
+        @rgba.onload = =>
+            @_signal_change()
+            
+        @src.bind =>
+            if @src.length
+                @rgba.src = @src.get()
+
+    get_drawing_parameters: ( model ) ->
+        model.add_attr
+            drawing_parameters:
+                _legend: new Legend( "todo" )
+                
+        model.drawing_parameters.add_attr
+            gradient     : model.drawing_parameters._legend.gradient
     
     toString: ->
         @name.get()
         
-    draw: ( info, proj ) ->
-        if @img?
-            @img.draw info
-        if @visualization.legend?
-            @visualization.legend.max_val.set 255
-            @visualization.legend.min_val.set 0
-            @visualization.legend.draw info
+    draw: ( info ) ->
+        if @rgba.height
+            Img._draw_persp_rec info, @rgba, 0, 0, [ 0, @rgba.height, 0 ], [ 1, 0, 0 ], [ 0, -1, 0 ], [ 0, 0, 1 ]
             
     z_index: () ->
         return 50

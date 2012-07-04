@@ -36,12 +36,19 @@ class Img extends Drawable
         return 1
         
     draw: ( info ) ->
+        if @src.has_been_modified() or @data.begl
+            @data.begl = false
+            @data.buff.src = @src.get()
+        
+        if not @data.rgba?
+            return false
+        
         # preparation
-        @X = [ 1, 0, 0 ]
-        @Y = [ 0, 1, 0 ]
-        @Z = [ 0, 0, 1 ]
-        @O = [ 0, 0, 0 ]
-        if info.shoot_cam? and @data.rgba?.width
+        @X = [ 1,                 0,  0 ]
+        @Y = [ 0,                -1,  0 ]
+        @Z = [ 0,                 0, -1 ]
+        @O = [ 0, @data.rgba.height,  0 ]
+        if info.shoot_cam?
             # base
             w = @data.rgba.width
             h = @data.rgba.height
@@ -86,16 +93,6 @@ class Img extends Drawable
             @X = Vec_3.mus 1 / w, Vec_3.sub dX, @O
             @Y = Vec_3.mus 1 / h, Vec_3.sub dY, @O
             @Z = Vec_3.nor Vec_3.cro @X, @Y
-
-
-
-        # 
-        if @src.has_been_modified() or @data.begl
-            @data.begl = false
-            @data.buff.src = @src.get()
-        
-        if not @data.rgba?
-            return false
             
         # flat image
         if @data.zmin == @data.zmax
@@ -107,7 +104,7 @@ class Img extends Drawable
             #                 b = info.re_2_sc.proj [ w, h, @data.zmin ]
             #                 info.ctx.drawImage @data.rgba, a[ 0 ], a[ 1 ], b[ 0 ] - a[ 0 ], b[ 1 ] - a[ 1 ]
             #             else
-            @_draw_persp_rec info
+            Img._draw_persp_rec info, @data.rgba, @data.zmin, @data.zmax, @O, @X, @Y, @Z
 
         
     update_min_max: ( x_min, x_max ) ->
@@ -169,14 +166,14 @@ class Img extends Drawable
 
         @cm.draw()
 
-    _draw_persp_rec: ( info, xmin = 0, ymin = 0, xmax = 1, ymax = 1, rec = 0 ) ->
-        w = @data.rgba.width
-        h = @data.rgba.height
+    @_draw_persp_rec: ( info, rgba, zmin, zmax, O, X, Y, Z, xmin = 0, ymin = 0, xmax = 1, ymax = 1, rec = 0 ) ->
+        w = rgba.width
+        h = rgba.height
         
-        a = info.re_2_sc.proj Vec_3.add( @O, Vec_3.add( Vec_3.add( Vec_3.mus( w * xmin, @X ), Vec_3.mus( h * ymin, @Y ) ), Vec_3.mus( @data.zmin, @Z ) ) )
-        b = info.re_2_sc.proj Vec_3.add( @O, Vec_3.add( Vec_3.add( Vec_3.mus( w * xmax, @X ), Vec_3.mus( h * ymax, @Y ) ), Vec_3.mus( @data.zmin, @Z ) ) )
-        c = info.re_2_sc.proj Vec_3.add( @O, Vec_3.add( Vec_3.add( Vec_3.mus( w * xmax, @X ), Vec_3.mus( h * ymin, @Y ) ), Vec_3.mus( @data.zmin, @Z ) ) )
-        d = info.re_2_sc.proj Vec_3.add( @O, Vec_3.add( Vec_3.add( Vec_3.mus( w * xmin, @X ), Vec_3.mus( h * ymax, @Y ) ), Vec_3.mus( @data.zmin, @Z ) ) )
+        a = info.re_2_sc.proj Vec_3.add( O, Vec_3.add( Vec_3.add( Vec_3.mus( w * xmin, X ), Vec_3.mus( h * ymin, Y ) ), Vec_3.mus( zmin, Z ) ) )
+        b = info.re_2_sc.proj Vec_3.add( O, Vec_3.add( Vec_3.add( Vec_3.mus( w * xmax, X ), Vec_3.mus( h * ymax, Y ) ), Vec_3.mus( zmin, Z ) ) )
+        c = info.re_2_sc.proj Vec_3.add( O, Vec_3.add( Vec_3.add( Vec_3.mus( w * xmax, X ), Vec_3.mus( h * ymin, Y ) ), Vec_3.mus( zmin, Z ) ) )
+        d = info.re_2_sc.proj Vec_3.add( O, Vec_3.add( Vec_3.add( Vec_3.mus( w * xmin, X ), Vec_3.mus( h * ymax, Y ) ), Vec_3.mus( zmin, Z ) ) )
         
         if a[ 0 ] >= info.w and b[ 0 ] >= info.w and c[ 0 ] >= info.w and d[ 0 ] >= info.w
             return true
@@ -195,16 +192,16 @@ class Img extends Drawable
             ym_0 = cb * ymin + ca * ymax
             xm_1 = ca * xmin + cb * xmax
             ym_1 = ca * ymin + cb * ymax
-            @_draw_persp_rec info, xmin, ymin, xm_0, ym_0, rec + 1
-            @_draw_persp_rec info, xm_1, ymin, xmax, ym_0, rec + 1
-            @_draw_persp_rec info, xmin, ym_1, xm_0, ymax, rec + 1
-            @_draw_persp_rec info, xm_1, ym_1, xmax, ymax, rec + 1
+            Img._draw_persp_rec info, rgba, zmin, zmax, O, X, Y, Z, xmin, ymin, xm_0, ym_0, rec + 1
+            Img._draw_persp_rec info, rgba, zmin, zmax, O, X, Y, Z, xm_1, ymin, xmax, ym_0, rec + 1
+            Img._draw_persp_rec info, rgba, zmin, zmax, O, X, Y, Z, xmin, ym_1, xm_0, ymax, rec + 1
+            Img._draw_persp_rec info, rgba, zmin, zmax, O, X, Y, Z, xm_1, ym_1, xmax, ymax, rec + 1
             return true
             
         # if xmin == 0 and ymin == 0
         # console.log rec, Math.sqrt( Math.pow( r[ 0 ] - b[ 0 ], 2 ) + Math.pow( r[ 1 ] - b[ 1 ], 2 ) )
         sx = Math.ceil w * xmin
-        sy = Math.ceil h * ( 1 - ymax )
+        sy = Math.ceil h * (    1 - ymax )
         dx = Math.ceil w * ( xmax - xmin )
         dy = Math.ceil h * ( ymax - ymin )
         dx = Math.min dx, w - sx
@@ -216,5 +213,6 @@ class Img extends Drawable
         info.ctx.save()
         info.ctx.setTransform x[ 0 ], x[ 1 ], y[ 0 ], y[ 1 ], d[ 0 ], d[ 1 ]
         info.ctx.transform 1, 0, 0, -1, 0, 0
-        info.ctx.drawImage @data.rgba, sx, sy, dx, dy, 0, 0, dx, dy
+        info.ctx.drawImage rgba, sx, sy, dx, dy, 0, 0, dx, dy
         info.ctx.restore()
+        
