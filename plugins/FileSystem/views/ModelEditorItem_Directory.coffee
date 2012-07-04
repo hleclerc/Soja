@@ -517,19 +517,27 @@ class ModelEditorItem_Directory extends ModelEditorItem
                             
                 # show correct icon/preview
                 if elem._info.img?
-                    @picture = new_dom_element
+                    picture_container = new_dom_element
                         parentNode: file_container
-                        className : "picture"
-                        nodeName  : "img"
-                        src       : elem._info.img.get()
-                        alt       : elem.name.get()
-                        title     : elem.name.get()
+                        nodeName  : "span"
                         ondblclick: ( evt ) =>
                             @open sorted[ i ], @path()
                             @cancel_natural_hotkeys evt
                         style:
                             maxWidth: 128
                             height  : 128
+                            display : "inline-block"
+                            
+                    @picture = new_dom_element
+                        parentNode: picture_container
+                        className : "picture"
+                        nodeName  : "img"
+                        src       : elem._info.img.get()
+                        alt       : elem.name.get()
+                        title     : elem.name.get()
+                        style:
+                            maxWidth : 128
+                            maxHeight: 128
                             
                             
                 else if elem._info.icon?

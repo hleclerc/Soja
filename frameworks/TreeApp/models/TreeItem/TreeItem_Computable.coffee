@@ -9,9 +9,15 @@ class TreeItem_Computable extends TreeItem
             _computation_rep_date: 0 # response date (updated by the server after each computation)
             _computation_mode    : 2 # 2 -> auto. 1 -> do it. 0 -> stop
             _messages            : []
+            auto_compute         : true
 
         # incrementation of _computation_req_date each time there's a "real" change
         @bind =>
+            if @auto_compute.has_been_modified()
+                @_computation_mode.set @auto_compute.get() * 2
+            else if @_computation_mode.has_been_modified()
+                @auto_compute.set (if @_computation_mode then true else false)                
+                
             if @real_change()
                 if @_computation_req_date.has_been_modified() # in this round
                     return

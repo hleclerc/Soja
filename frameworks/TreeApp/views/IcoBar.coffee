@@ -360,7 +360,7 @@ class IcoBar extends View
 
         for m in @modules
             do ( m ) =>
-                for act, j in m.actions when act.vis != false and act.loc == true and act.dra?( @tree_app )
+                for act, j in m.actions when act.vis != false and act.loc == true
                     do ( act ) =>
                         new_dom_element
                             nodeName  : "img"
