@@ -15,12 +15,14 @@ class File extends Model
 
         #
         @add_attr
-            name: name
-            _ptr: new Ptr ptr_or_model
+            name : name
+            _ptr : new Ptr ptr_or_model
             _info: cp_info
-            # -> img : "data/base64...."
-            # -> icon: "toto"
-            # -> model_type: "Directory"...
+                # -> img : "data/base64...."
+                # -> icon: "toto"
+                # -> model_type: "Directory"...
+                # -> remaining
+                # -> to_upload
 
     load: ( callback ) ->
         @_ptr.load callback

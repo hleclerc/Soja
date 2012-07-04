@@ -26,8 +26,10 @@ class FileSystem
     @_ptr_to_update = {} # Ptr objects that need an update, associated with @_tmp_objects
     @_tmp_objects = {} # objects waiting for a real _server_id
     @_objects = {} # _server_id -> object
+    
+    @url_com = "/sceen/_" # 
 
-    constructor: ( @url_prefix = "sceen/", @url = "/#{@url_prefix}cmd" ) ->
+    constructor: ->
         # default values
         @_data_to_send    = ""
         @_session_num     = -2 # -1 means that we are waiting for a session id after a first request.
@@ -78,7 +80,7 @@ class FileSystem
     # send a request for a "push" channel
     make_channel: ->
         xhr_object = FileSystem._my_xml_http_request()
-        xhr_object.open 'GET', "/#{@url_prefix}_?s=#{@_session_num}", true
+        xhr_object.open 'GET', FileSystem.url_com + "?s=#{@_session_num}", true
         xhr_object.onreadystatechange = ->
             if @readyState == 4 and @status == 200
                 if FileSystem._disp
@@ -146,7 +148,7 @@ class FileSystem
             # send the file
             fs = FileSystem.get_inst()
             xhr_object = FileSystem._my_xml_http_request()
-            xhr_object.open 'PUT', "/#{@url_prefix}_?s=#{fs._session_num}&p=#{tmp._server_id}", true
+            xhr_object.open 'PUT', FileSystem.url_com + "?s=#{fs._session_num}&p=#{tmp._server_id}", true
             xhr_object.onreadystatechange = ->
                 if @readyState == 4 and @status == 200
                     _w = ( sid, obj ) ->
@@ -210,7 +212,7 @@ class FileSystem
                 
             # request
             xhr_object = FileSystem._my_xml_http_request()
-            xhr_object.open 'POST', f.url, true
+            xhr_object.open 'POST', FileSystem.url_com, true
             xhr_object.onreadystatechange = ->
                 if @readyState == 4 and @status == 200
                     if FileSystem._disp
