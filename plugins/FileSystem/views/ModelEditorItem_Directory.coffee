@@ -527,8 +527,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         ondblclick: ( evt ) =>
                             @open sorted[ i ], @path()
                             @cancel_natural_hotkeys evt
-                        width     : 128
-                        height    : 128
+                        style:
+                            maxWidth: 128
+                            height  : 128
                             
                             
                 else if elem._info.icon?
