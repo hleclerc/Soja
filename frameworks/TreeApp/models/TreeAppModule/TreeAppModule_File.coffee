@@ -16,6 +16,45 @@ class TreeAppModule_File extends TreeAppModule
             txt: "Open"
             ina: _ina
             fun: ( evt, app ) =>
+                
+                @content = new_dom_element
+                    className : "browse_container"
+                    id        : "id_browse_container"
+                
+                if FileSystem? and FileSystem.get_inst()?
+                    fs = FileSystem.get_inst()
+                else
+                    fs = new FileSystem
+                    FileSystem._disp = false
+                
+                d = "/home/monkey/sessions"
+                fs.load_or_make_dir d, ( session_dir, err ) =>
+                    #                     clear_page()
+
+                    item_cp = new ModelEditorItem_Directory
+                        el    : @content
+                        model : session_dir
+                    
+
+
+                    #                     # RELOAD
+                    #                     ModelEditorItem_Directory.add_action "Session", ( file, path, browser ) ->
+                    #                         clear_page()
+                    #                         window.location = "#" + encodeURI( "#{d}/#{file.name.get()}" )
+            
+                p = new_popup "Browse Session", event : evt, width : 70, child: @content, onclose: =>
+                    @onPopupClose( app )
+                app.active_key.set false
+                
+#             key: [ "Shift+O" ]
+
+
+        @actions.push
+            ico: "img/orange_folder.png"
+            siz: 2
+            txt: "Open in Tree"
+            ina: _ina
+            fun: ( evt, app ) =>
                 @d = new_dom_element
                     className : "browse_container"
                     id        : "id_browse_container"

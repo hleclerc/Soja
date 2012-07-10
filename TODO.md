@@ -11,13 +11,13 @@ API changes
 * bug boundary picking no more work since introduction of element (because it still use mesh.lines to pick)
 * display notice
 * save tree item
-* fix ambiguous open and import in tree browser
 * add a picture to tree from browser no matter which way ( drag and drop or copy cut etc.)
 * organize compute icon in editview to be visualizable and usable
 * add a way to launch computable in the treeview (apply on every child)
 * legend should be fittable manually by users
 * use same legend for every interpolated fields
 * test orientation for elements
+
 
 ---Fixed---
 * Global messages (see TreeItem_Computable)
@@ -29,3 +29,4 @@ API changes
 * continue work on time_steps to display every correlation results
 * preview thumbnail of pictures in browser
 * use treeAppModule_Computable to launch computable on every item (also use hotkeys like ctrl+B to build or something like that)
+* fix ambiguous open and import in tree browser
