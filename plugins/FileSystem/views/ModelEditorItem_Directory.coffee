@@ -460,6 +460,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
                             @drag_source.push i
                         
                         evt.dataTransfer.effectAllowed = if evt.ctrlKey then "copy" else "move"
+                        console.log @drag_source.get(), @selected_file
+                        evt.dataTransfer.setData 'text/plain', @selected_file.get()
+                        
                         
                     ondragover: ( evt ) =>
                         return false

@@ -88,6 +88,7 @@ class TreeAppModule_File extends TreeAppModule
                         if TreeAppModule_ImageSet? and app?                            
                             # Check if file is an ImgItem, otherwise, try to build it
                             if file not instanceof ImgItem
+                                console.log file
                                 if file instanceof Img
                                     file = new ImgItem img, app
                                 else if file instanceof File
@@ -102,7 +103,23 @@ class TreeAppModule_File extends TreeAppModule
                             for m in @modules
                                 if m instanceof TreeAppModule_ImageSet
                                     m.actions[ 1 ].fun evt, app, file
+                                    
+                                    
+                    ModelEditorItem_Directory.add_action "Path", ( file, path, browser ) ->
+                        console.log file, path
+                        if FileSystem? and FileSystem.get_inst()?
+                            fs = FileSystem.get_inst()
+                            fs.load path, ( m, err ) =>
+                                console.log "''", m
+                                #if name end like a picture (png, jpg, tiff etc)
+                                file = new ImgItem "/sceen/_?u=" + m._server_id, app
 
+                                @modules = app.data.modules
+                                for m in @modules
+                                    if m instanceof TreeAppModule_ImageSet
+                                        m.actions[ 1 ].fun evt, app, file
+                                    
+                                    
                     item_cp = new ModelEditorItem_Directory
                         el    : @d
                         model : d

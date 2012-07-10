@@ -222,10 +222,29 @@ class TreeView extends View
                         return false
         
                     ondrop : ( evt ) =>
-                        #TODO how to not put 0
 #                         r = TreeView.default_types[ 0 ]
 #                         r evt, info
+                        console.log evt, evt.dataTransfer.files, info
                         
+                        
+                        #External drag and drop
+                        if typeof files == "undefined" #Drag and drop
+                            evt.stopPropagation()
+                            evt.returnValue = false
+                            evt.preventDefault()
+                            files = evt.dataTransfer.files
+                        if evt.dataTransfer.files.length > 0
+                            for file in files 
+                                format = file.type.indexOf "image"
+                                console.log "TODO, need to create an Img who contains a Path"
+                                if format isnt -1
+                                    pic = new ImgItem file.name
+                                    accept_child = info.item.accept_child pic
+                                    if accept_child == true
+                                        info.item.add_child pic
+                                        info.item.img_collection.push pic
+
+
                         for num in [ info.path.length - 1 .. 0 ]
                             par = info.path[ num ]
                             if @_accept_child par, @drag_info
