@@ -16,7 +16,7 @@ class TreeItem_Computable extends TreeItem
             if @auto_compute.has_been_modified()
                 @_computation_mode.set @auto_compute.get() * 2
             else if @_computation_mode.has_been_modified()
-                @auto_compute.set (if @_computation_mode then true else false)                
+                @auto_compute.set @_computation_mode.get()                
                 
             if @real_change()
                 if @_computation_req_date.has_been_modified() # in this round
