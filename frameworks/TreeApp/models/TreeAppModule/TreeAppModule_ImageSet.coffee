@@ -39,13 +39,16 @@ class TreeAppModule_ImageSet extends TreeAppModule
                     #                     else
                     #                         img = new ImgItem "right.png", app
 #                     @numpic++
-                    if @numpic < 10
-                        img = new ImgItem "composite0" +  @numpic++ + ".png", app
-                        # @numpic+=9
-                    else
-                        img = new ImgItem "composite" + @numpic++ + ".png", app
+                    FileSystem.get_inst().load "/home/monkey/sessions/spirale.jpg", ( m, err ) =>
+                        img = new ImgItem "/sceen/_?u=" + m._server_id, app
+                        @collection.add_child img
+                    #                     if @numpic < 10
+                    #                         img = new ImgItem "composite0" +  @numpic++ + ".png", app
+                    #                         # @numpic+=9
+                    #                     else
+                    #                         img = new ImgItem "composite" + @numpic++ + ".png", app
 
-                @collection.add_child img
+                #                 @collection.add_child img
                 
                 app.data.time._max.set app.data.time._max.get() + 1
                 app.data.time._div.set app.data.time._max.get()

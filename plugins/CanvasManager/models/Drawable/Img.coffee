@@ -30,7 +30,7 @@ class Img extends Drawable
         @data.buff = new Image
         @data.buff.onload = onload
         if @src.get().length
-            @data.buff.src = @src
+            @data.buff.src = @src.get()
         
     z_index: ->
         return 1
