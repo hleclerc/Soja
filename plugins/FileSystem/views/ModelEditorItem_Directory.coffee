@@ -558,6 +558,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         src       : "img/unknown.png"
                         alt       : ""
                         title     : "" 
+                        ondblclick: ( evt ) =>
+                            @open sorted[ i ], @path()
+                            @cancel_natural_hotkeys evt
                         
                 # stext write percent uploading
                 stext = ""

@@ -69,6 +69,7 @@ class TreeAppModule_File extends TreeAppModule
                 fs.load_or_make_dir "/home/monkey/test_browser", ( d, err ) =>
                     t = new Directory
                     d.add_file "Result", t
+                    d.add_file "composite01.png", ( new Img 'composite01.png' ), model_type: "Img"
                     t.add_file "Steel", ( new Directory )
                     t.add_file "Steel", ( new Lst [ 1, 2 ] )
                     d.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
@@ -83,8 +84,20 @@ class TreeAppModule_File extends TreeAppModule
                                     m.actions[ 4 ].fun evt, app, file
                                     
                     ModelEditorItem_Directory.add_action "Img", ( file, path, browser ) ->
-                        console.log "open img"
-                        if TreeAppModule_ImageSet? and app?
+                        console.log "open img"                        
+                        if TreeAppModule_ImageSet? and app?                            
+                            # Check if file is an ImgItem, otherwise, try to build it
+                            if file not instanceof ImgItem
+                                if file instanceof Img
+                                    file = new ImgItem img, app
+                                else if file instanceof File
+                                    if FileSystem? and FileSystem.get_inst()?
+                                        fs = FileSystem.get_inst()
+                                        fs.load img, ( m, err ) ->
+                                            file = file#TODO, use ptr to build real ImgItem
+                                else
+                                    return                                    
+                                    
                             @modules = app.data.modules
                             for m in @modules
                                 if m instanceof TreeAppModule_ImageSet
