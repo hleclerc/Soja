@@ -29,7 +29,6 @@ class TreeAppModule_ImageSet extends TreeAppModule
             fun: ( evt, app, img ) =>
                 app.undo_manager.snapshot()
                 @collection = @add_item_depending_selected_tree app, ImgSetItem
-                
                 if not img?
 #                     tab = [ "explo_dz.png", "explo_in.png", "explo_re.png" ]
 #                     console.log @numpic
@@ -45,7 +44,7 @@ class TreeAppModule_ImageSet extends TreeAppModule
                         # @numpic+=9
                     else
                         img = new ImgItem "composite" + @numpic++ + ".png", app
-                        
+
                 @collection.add_child img
                 
                 app.data.time._max.set app.data.time._max.get() + 1
