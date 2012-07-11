@@ -28,6 +28,17 @@
     width      : 16;
     height     : 16;
 }
+.TreeComputableItem {
+    background : transparent url( 'img/compute-on.png' );
+    width      : 16;
+    height     : 16;
+}
+
+.TreeComputedItem {
+    background : transparent url( 'img/compute-off.png' );
+    width      : 16;
+    height     : 16;
+}
 
 /* data:image/png;base64, */
 .TreeIcon_tree_cnt     { background: transparent url( 'img/tree_cnt.png'     ); }

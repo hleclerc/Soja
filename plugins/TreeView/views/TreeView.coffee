@@ -64,6 +64,9 @@ class TreeView extends View
     get_viewable_of: ( item ) ->
         return item._viewable
 
+    get_computable_of: ( item ) ->
+        return item.auto_compute
+        
     # may be redefined depending on how the user want to display items. Return the children of item
     get_name_of: ( item ) ->
         return item._name
@@ -366,7 +369,27 @@ class TreeView extends View
             name.style.textAlign = "right"
             name.style.right = "20px"
                 
-                
+        # computable
+        if @get_computable_of( info.item )?
+            if info.item._computation_mode.get() == true
+                classTitle = "TreeComputedItem"
+            else
+                if info.item._computation_state.get() == true
+                    classTitle = "TreeComputedItem"
+                else
+                    classTitle = "TreeComputableItem"
+            new_dom_element
+                parentNode : div
+                className  : @css_prefix + classTitle
+                onmousedown: ( evt ) =>
+                    if info.item._computation_mode.get() == false and info.item._computation_state.get() == false
+                        info.item._computation_state.set true
+                style      :
+                    position: "absolute"
+                    top     : 0
+                    right   : 22
+                    
+        
         # visibility
         if @get_viewable_of( info.item )?.toBoolean()
             new_dom_element

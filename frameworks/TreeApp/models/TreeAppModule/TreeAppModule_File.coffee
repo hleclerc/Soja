@@ -11,7 +11,7 @@ class TreeAppModule_File extends TreeAppModule
             app.data.focus.get() != app.treeview.view_id
             
         @actions.push
-            ico: "img/orange_folder.png"
+            #ico: "img/orange_folder.png"
             siz: 2
             txt: "Open"
             ina: _ina
@@ -50,7 +50,7 @@ class TreeAppModule_File extends TreeAppModule
 
 
         @actions.push
-            ico: "img/orange_folder.png"
+            #ico: "img/orange_folder.png"
             siz: 2
             txt: "Open in Tree"
             ina: _ina

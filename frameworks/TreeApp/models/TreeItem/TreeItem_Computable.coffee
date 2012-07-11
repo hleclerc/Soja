@@ -34,4 +34,4 @@ class TreeItem_Computable extends TreeItem
         @_computation_req_date.get() == @_computation_rep_date.get()
 
     manual_mode: ->
-        @_computation_mode.get()       
+        @_computation_mode.get()
