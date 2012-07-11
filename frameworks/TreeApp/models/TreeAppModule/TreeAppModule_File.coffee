@@ -106,12 +106,14 @@ class TreeAppModule_File extends TreeAppModule
                                     
                                     
                     ModelEditorItem_Directory.add_action "Path", ( file, path, browser ) ->
-                        console.log file, path
+                        file.load ( m, err ) =>
+                            @path = m
                         if FileSystem? and FileSystem.get_inst()?
                             fs = FileSystem.get_inst()
-                            fs.load path, ( m, err ) =>
-                                console.log "''", m
-                                #if name end like a picture (png, jpg, tiff etc)
+                            console.log file, @path
+                            #if name end like a picture (png, jpg, tiff etc)
+                            fs.load @path, ( m, err ) =>
+                                console.log "->", m
                                 file = new ImgItem "/sceen/_?u=" + m._server_id, app
 
                                 @modules = app.data.modules
