@@ -15,7 +15,7 @@ class NodalField extends Model
         model.drawing_parameters.add_attr
             display_style: new Choice( 2, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
             gradient     : model.drawing_parameters._legend.gradient
-             legend       : model.drawing_parameters._legend
+            legend       : model.drawing_parameters._legend
             
     
     toString: ->

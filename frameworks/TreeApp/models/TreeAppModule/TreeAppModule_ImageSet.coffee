@@ -50,7 +50,7 @@ class TreeAppModule_ImageSet extends TreeAppModule
                     
                 @collection.add_child img
                 
-                app.data.time._max.set app.data.time._max.get() + 1
+                app.data.time._max.set (if @collection._children.length - 1 > 0 then @collection._children.length - 1 else 0 )
                 app.data.time._div.set app.data.time._max.get()
                 
                 #by default, show only the first
