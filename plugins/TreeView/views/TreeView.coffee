@@ -64,6 +64,9 @@ class TreeView extends View
     get_viewable_of: ( item ) ->
         return item._viewable
 
+    get_computable_of: ( item ) ->
+        return item.auto_compute
+        
     # may be redefined depending on how the user want to display items. Return the children of item
     get_name_of: ( item ) ->
         return item._name
@@ -222,10 +225,29 @@ class TreeView extends View
                         return false
         
                     ondrop : ( evt ) =>
-                        #TODO how to not put 0
 #                         r = TreeView.default_types[ 0 ]
 #                         r evt, info
+                        console.log evt, evt.dataTransfer.files, info
                         
+                        
+                        #External drag and drop
+                        if typeof files == "undefined" #Drag and drop
+                            evt.stopPropagation()
+                            evt.returnValue = false
+                            evt.preventDefault()
+                            files = evt.dataTransfer.files
+                        if evt.dataTransfer.files.length > 0
+                            for file in files 
+                                format = file.type.indexOf "image"
+                                console.log "TODO, need to create an Img who contains a Path"
+                                if format isnt -1
+                                    pic = new ImgItem file.name
+                                    accept_child = info.item.accept_child pic
+                                    if accept_child == true
+                                        info.item.add_child pic
+                                        info.item.img_collection.push pic
+
+
                         for num in [ info.path.length - 1 .. 0 ]
                             par = info.path[ num ]
                             if @_accept_child par, @drag_info
@@ -347,7 +369,30 @@ class TreeView extends View
             name.style.textAlign = "right"
             name.style.right = "20px"
                 
-                
+        # computable
+        if @get_computable_of( info.item )?
+            if info.item._computation_mode.get() == true
+                if info.item._computation_state.get() == true
+                    classTitle = "TreeAutoComputedItem"
+                else
+                    classTitle = "TreeAutoComputableItem"
+            else
+                if info.item._computation_state.get() == true
+                    classTitle = "TreeComputedItem"
+                else
+                    classTitle = "TreeComputableItem"
+            new_dom_element
+                parentNode : div
+                className  : @css_prefix + classTitle
+                onmousedown: ( evt ) =>
+                    if info.item._computation_mode.get() == false and info.item._computation_state.get() == false
+                        info.item._computation_state.set true
+                style      :
+                    position: "absolute"
+                    top     : 0
+                    right   : 22
+                    
+        
         # visibility
         if @get_viewable_of( info.item )?.toBoolean()
             new_dom_element

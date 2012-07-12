@@ -109,7 +109,29 @@ class TreeAppModule_TreeView extends TreeAppModule
                     if item._viewable?.get()
                         for p in app.data.selected_canvas_pan
                             app.data.visible_tree_items[ p ].toggle item
-                        
+                            
+                            
+                            
+                            
+        @actions.push
+            txt: "Save"
+            key: [ "" ]
+            ina: _ina
+            ico: "img/save_24.png"
+            loc: true
+            fun: ( evt, app ) =>
+                items = app.data.selected_tree_items
+                for path_item in items
+                    item = path_item[ path_item.length - 1 ]
+                    console.log "saving : ", item
+                    if FileSystem? and FileSystem.get_inst()?
+                        fs = FileSystem.get_inst()
+                        # we should ask for filename and path
+                        name = item.to_string()
+                        fs.load_or_make_dir "/home/monkey/test_browser", ( d, err ) =>
+                            d.add_file name, item, model_type: "TreeItem"
+
+                            
     delete_from_tree: ( app,  item ) =>
         #delete children
         for c in item._children

@@ -50,9 +50,9 @@ class File extends Model
 #                     accept_child = info.item.accept_child pic
 #                     if accept_child == true
 #                         info.item.add_child pic
-# #                         info.item.img_collection.push pic
+#                         info.item.img_collection.push pic
 #                         
-# #             @sendFiles()
+#             @sendFiles()
 # TreeView.default_types.push ( evt, info ) -> 
 #     d = new Directory
 #     d.drop evt, info

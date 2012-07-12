@@ -11,7 +11,7 @@ class TreeAppModule_File extends TreeAppModule
             app.data.focus.get() != app.treeview.view_id
             
         @actions.push
-            ico: "img/orange_folder.png"
+            #ico: "img/orange_folder.png"
             siz: 2
             txt: "Open"
             ina: _ina
@@ -50,7 +50,7 @@ class TreeAppModule_File extends TreeAppModule
 
 
         @actions.push
-            ico: "img/orange_folder.png"
+            #ico: "img/orange_folder.png"
             siz: 2
             txt: "Open in Tree"
             ina: _ina
@@ -88,6 +88,7 @@ class TreeAppModule_File extends TreeAppModule
                         if TreeAppModule_ImageSet? and app?                            
                             # Check if file is an ImgItem, otherwise, try to build it
                             if file not instanceof ImgItem
+                                console.log file
                                 if file instanceof Img
                                     file = new ImgItem img, app
                                 else if file instanceof File
@@ -102,7 +103,18 @@ class TreeAppModule_File extends TreeAppModule
                             for m in @modules
                                 if m instanceof TreeAppModule_ImageSet
                                     m.actions[ 1 ].fun evt, app, file
-
+                                    
+                                    
+                    ModelEditorItem_Directory.add_action "Path", ( file, path, browser ) ->
+                        file.load ( m, err ) =>
+#                             #if name end like a picture (png, jpg, tiff etc)
+                            img_item = new ImgItem "/sceen/_?u=" + m._server_id, app
+                            img_item._name.set file.name
+                            @modules = app.data.modules
+                            for m in @modules
+                                if m instanceof TreeAppModule_ImageSet
+                                    m.actions[ 1 ].fun evt, app, img_item
+                                    
                     item_cp = new ModelEditorItem_Directory
                         el    : @d
                         model : d
