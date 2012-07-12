@@ -372,7 +372,10 @@ class TreeView extends View
         # computable
         if @get_computable_of( info.item )?
             if info.item._computation_mode.get() == true
-                classTitle = "TreeComputedItem"
+                if info.item._computation_state.get() == true
+                    classTitle = "TreeAutoComputedItem"
+                else
+                    classTitle = "TreeAutoComputableItem"
             else
                 if info.item._computation_state.get() == true
                     classTitle = "TreeComputedItem"

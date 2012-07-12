@@ -127,10 +127,9 @@ class TreeAppModule_TreeView extends TreeAppModule
                     if FileSystem? and FileSystem.get_inst()?
                         fs = FileSystem.get_inst()
                         # we should ask for filename and path
-                        name = "my-item"
-                        fs.load "/tree_items", ( m, err ) ->
-                            console.log m, err
-                            m.add_file name, new Path item, info.model_type "TreeItem"
+                        name = item.to_string()
+                        fs.load_or_make_dir "/home/monkey/test_browser", ( d, err ) =>
+                            d.add_file name, new Path item, model_type: "TreeItem"
 
                             
     delete_from_tree: ( app,  item ) =>
