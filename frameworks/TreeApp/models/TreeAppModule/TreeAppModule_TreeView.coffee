@@ -129,7 +129,7 @@ class TreeAppModule_TreeView extends TreeAppModule
                         # we should ask for filename and path
                         name = item.to_string()
                         fs.load_or_make_dir "/home/monkey/test_browser", ( d, err ) =>
-                            d.add_file name, new Path item, model_type: "TreeItem"
+                            d.add_file name, item, model_type: "TreeItem"
 
                             
     delete_from_tree: ( app,  item ) =>
