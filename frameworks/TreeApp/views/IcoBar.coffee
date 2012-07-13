@@ -362,13 +362,14 @@ class IcoBar extends View
             do ( m ) =>
                 for act, j in m.actions when act.vis != false and act.loc == true
                     do ( act ) =>
-                        new_dom_element
-                            nodeName  : "img"
-                            src       : act.ico
-                            className : "FooterTreeViewIcon"
-                            parentNode: @icon_container
-                            alt       : act.txt
-                            title     : act.txt
-                            onclick   : ( evt ) =>
-                                act.fun evt, @tree_app
-
+                        console.log act.ina?( @tree_app )# TODO, should use display block-inline/none
+                        if not act.ina?( @tree_app )
+                            new_dom_element
+                                nodeName  : "img"
+                                src       : act.ico
+                                className : "FooterTreeViewIcon"
+                                parentNode: @icon_container
+                                alt       : act.txt
+                                title     : act.txt
+                                onclick   : ( evt ) =>
+                                    act.fun evt, @tree_app
