@@ -25,10 +25,11 @@ class InterpolatedField extends Model
             f.get_val info, i
 
     draw: ( info, parameters, additionnal_parameters ) ->
-        parameters_actualised_legend = @actualise_value_legend_all_fields parameters
+        if parameters.legend.auto_fit.get() == true
+            parameters = @actualise_value_legend_all_fields parameters
         f = @get_sub_field info
         if f?
-            f.draw info, parameters_actualised_legend, additionnal_parameters
+            f.draw info, parameters, additionnal_parameters
     
     z_index: ->
         if @_data.length
