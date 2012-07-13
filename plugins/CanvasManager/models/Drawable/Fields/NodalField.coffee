@@ -24,9 +24,9 @@ class NodalField extends Model
     draw: ( info, parameters, additionnal_parameters ) ->
         if parameters?
             # projection points
-            proj = if additionnal_parameters?.warp_by?
+
+            proj = if additionnal_parameters?.warp_by? and @_mesh.points.length == additionnal_parameters.warp_by._vector[ 0 ]?._data[ 0 ]?.field?._data.size()?[ 0 ]
                 for p, i in @_mesh.points
-                    #console.log Vec_3.add p.pos.get(), Vec_3.mus( additionnal_parameters.warp_factor, additionnal_parameters.warp_by.get_val( info, i ) )
                     info.re_2_sc.proj Vec_3.add p.pos.get(), Vec_3.mus( additionnal_parameters.warp_factor, additionnal_parameters.warp_by.get_val( info, i, 3 ) )
             else
                 for p, i in @_mesh.points

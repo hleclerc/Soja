@@ -42,10 +42,18 @@ class Element_TriangleList extends Element
                 @indices.get [ 2, num_triangle ]
             ]
                     
+            vals = [
+                field.get tri[ 0 ]
+                field.get tri[ 1 ]
+                field.get tri[ 2 ]
+            ]                
+
+            for val, i in vals
+                vals[ i ] = ( max_legend - val ) / ( max_legend - min_legend )
                 
-            c = max_legend - min_legend + ( max_legend == min_legend )
-            vals = for i in [ 0 ... 3 ]
-                ( field.get( tri[ i ] ) - min_legend ) / c
+            #             c = max_legend - min_legend + ( max_legend == min_legend )
+            #             vals = for i in [ 0 ... 3 ]
+            #                 ( field.get( tri[ i ] ) - min_legend ) / c
             
             posit = for i in [ 0 ... 3 ]
                 proj[ tri[ i ] ]
@@ -64,6 +72,8 @@ class Element_TriangleList extends Element
             mat_pos = [ [ 1, x0, y0 ], [ 1, x1, y1 ], [ 1, x2, y2 ] ]
             det = Vec_3.determinant mat_pos
             det += det == 0
+            #             if isNaN det
+            #                 console.log proj, tri
             
             mat_a = [ [ vals[ 0 ], x0, y0 ], [ vals[ 1 ], x1, y1 ], [ vals[ 2 ], x2, y2 ] ]
             det_a = Vec_3.determinant mat_a
@@ -95,11 +105,12 @@ class Element_TriangleList extends Element
             p1ieqz = ( x ) -> x + ( Math.abs( x ) < 1e-16 )
             alpha = 1 / p1ieqz( b * b + c * c )
             p1 = Vec_3.add( p0, Vec_3.mus( alpha, [ b, c, 0 ] ) )
-            
-            p0[ 0 ] = Math.min( Math.max( p0[ 0 ], -16000 ), 16000 )
-            p0[ 1 ] = Math.min( Math.max( p0[ 1 ], -16000 ), 16000 )
-            p1[ 0 ] = Math.min( Math.max( p1[ 0 ], -16000 ), 16000 )
-            p1[ 1 ] = Math.min( Math.max( p1[ 1 ], -16000 ), 16000 )
+            #             if isNaN( p0[ 0 ] ) or isNaN( p0[ 1 ] ) or isNaN( p1[ 0 ] ) or isNaN( p1[ 1 ] )
+            #                 console.log mat_pos
+            #             p0[ 0 ] = Math.min( Math.max( p0[ 0 ], -16000 ), 16000 )
+            #             p0[ 1 ] = Math.min( Math.max( p0[ 1 ], -16000 ), 16000 )
+            #             p1[ 0 ] = Math.min( Math.max( p1[ 0 ], -16000 ), 16000 )
+            #             p1[ 1 ] = Math.min( Math.max( p1[ 1 ], -16000 ), 16000 )
                         
             if display_style == "Surface" or display_style == "Surface with Edges"
                 @_draw_gradient_fill_triangle info, p0, p1, posit, legend
@@ -135,7 +146,6 @@ class Element_TriangleList extends Element
     _draw_gradient_fill_triangle: ( info, p0, p1, posit, legend ) ->
         info.ctx.beginPath()
         if isNaN( p0[ 0 ] ) or isNaN( p0[ 1 ] ) or isNaN( p1[ 0 ] ) or isNaN( p1[ 1 ] )
-            console.log p0, p1, legend
             return
         lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ], p1[ 0 ], p1[ 1 ]
         for col in legend.gradient.color_stop
