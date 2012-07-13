@@ -25,13 +25,29 @@ class InterpolatedField extends Model
             f.get_val info, i
 
     draw: ( info, parameters, additionnal_parameters ) ->
+        parameters_actualised_legend = @actualise_value_legend_all_fields parameters
         f = @get_sub_field info
         if f?
-            f.draw info, parameters, additionnal_parameters
+            f.draw info, parameters_actualised_legend, additionnal_parameters
     
     z_index: ->
         if @_data.length
             @_data[ 0 ].field.z_index()
         else
             0
-            
+
+
+    actualise_value_legend_all_fields: ( parameters ) ->
+        max = -Infinity
+        min = Infinity
+        for interpo_field in @_data
+            field = interpo_field.field
+            maxus = field.get_max_data()
+            minus = field.get_min_data()
+            if minus < min
+                min = minus
+            if maxus > max
+                max = maxus
+        parameters.legend.min_val.set min
+        parameters.legend.max_val.set max
+        return parameters
