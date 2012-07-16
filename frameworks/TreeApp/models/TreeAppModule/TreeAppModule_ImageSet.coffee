@@ -44,13 +44,13 @@ class TreeAppModule_ImageSet extends TreeAppModule
                 
                     if @numpic < 10
                         img = new ImgItem "composite0" +  @numpic++ + ".png", app
-                        # @numpic+=9
+                        @numpic+=9
                     else
                         img = new ImgItem "composite" + @numpic++ + ".png", app
                     
                 @collection.add_child img
                 
-                app.data.time._max.set app.data.time._max.get() + 1
+                app.data.time._max.set (if @collection._children.length - 1 > 0 then @collection._children.length - 1 else 0 )
                 app.data.time._div.set app.data.time._max.get()
                 
                 #by default, show only the first

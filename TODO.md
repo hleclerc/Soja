@@ -11,8 +11,6 @@ API changes
 * bug boundary picking no more work since introduction of element (because it still use mesh.lines to pick)
 * display notice
 * organize compute icon in editview to be visualizable and usable
-* legend should be fittable manually by users
-* use same legend for every interpolated fields
 * test orientation for elements
 
 
@@ -30,3 +28,5 @@ API changes
 * add a way to launch computable in the treeview
 * save tree item
 * add a picture to tree from browser no matter which way ( drag and drop or copy cut etc.)
+* use same legend for every interpolated fields
+* legend should be fittable manually by users

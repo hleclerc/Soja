@@ -44,10 +44,10 @@ class Img extends Drawable
             return false
         
         # preparation
-        @X = [ 1,                 0,  0 ]
-        @Y = [ 0,                -1,  0 ]
-        @Z = [ 0,                 0, -1 ]
-        @O = [ 0, @data.rgba.height,  0 ]
+        @X = [ 1, 0,  0 ]
+        @Y = [ 0, 1,  0 ]
+        @Z = [ 0, 0, -1 ]
+        @O = [ 0, 0,  0 ]
         if info.shoot_cam?
             # base
             w = @data.rgba.width
