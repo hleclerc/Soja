@@ -10,7 +10,6 @@ API changes
 * return the type of clicked point for contextual menu
 * bug boundary picking no more work since introduction of element (because it still use mesh.lines to pick)
 * display notice
-* organize compute icon in editview to be visualizable and usable
 * test orientation for elements
 
 
@@ -30,3 +29,4 @@ API changes
 * add a picture to tree from browser no matter which way ( drag and drop or copy cut etc.)
 * use same legend for every interpolated fields
 * legend should be fittable manually by users
+* organize compute icon in editview to be visualizable and usable
