@@ -50,3 +50,6 @@ class TreeItem extends Model
     z_index: ->
         0
         
+    to_string: ->
+        @_name.get()
+        

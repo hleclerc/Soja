@@ -362,30 +362,14 @@ class IcoBar extends View
             do ( m ) =>
                 for act, j in m.actions when act.vis != false and act.loc == true
                     do ( act ) =>
-                        new_dom_element
-                            nodeName  : "img"
-                            src       : act.ico
-                            className : "FooterTreeViewIcon"
-                            parentNode: @icon_container
-                            alt       : act.txt
-                            title     : act.txt
-                            onclick   : ( evt ) =>
-                                act.fun evt, @tree_app
-
-#             save = new_dom_element
-#                 nodeName  : "img"
-#                 src       : "img/save_24.png"
-#                 className : "FooterTreeViewIcon"
-#                 parentNode: footer
-#                 alt       : "Save"
-#                 title     : "Save"
-#                 onclick   : =>
-#                     for selected_tree_item_path in @selected
-#                         selected_tree_item = selected_tree_item_path[ selected_tree_item_path.length - 1 ]
-#                         console.log "saving : ", selected_tree_item
-#                         if FileSystem?
-#                             fs = FileSystem.get_inst()
-#                             # we should ask for filename and path
-#                             name = "my-item"
-#                             fs.load "/tree_items", ( m, err ) ->
-#                                 m.add_file name, new Path selected_tree_item, info.model_type "TreeItem"
+                        console.log act.ina?( @tree_app )# TODO, should use display block-inline/none
+                        if not act.ina?( @tree_app )
+                            new_dom_element
+                                nodeName  : "img"
+                                src       : act.ico
+                                className : "FooterTreeViewIcon"
+                                parentNode: @icon_container
+                                alt       : act.txt
+                                title     : act.txt
+                                onclick   : ( evt ) =>
+                                    act.fun evt, @tree_app

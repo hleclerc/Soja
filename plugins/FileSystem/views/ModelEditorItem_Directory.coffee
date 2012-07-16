@@ -460,6 +460,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
                             @drag_source.push i
                         
                         evt.dataTransfer.effectAllowed = if evt.ctrlKey then "copy" else "move"
+                        console.log @drag_source.get(), @selected_file
+                        evt.dataTransfer.setData 'text/plain', @selected_file.get()
+                        
                         
                     ondragover: ( evt ) =>
                         return false
@@ -558,6 +561,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         src       : "img/unknown.png"
                         alt       : ""
                         title     : "" 
+                        ondblclick: ( evt ) =>
+                            @open sorted[ i ], @path()
+                            @cancel_natural_hotkeys evt
                         
                 # stext write percent uploading
                 stext = ""

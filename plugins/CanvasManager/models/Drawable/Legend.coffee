@@ -1,12 +1,13 @@
 #
 class Legend extends Drawable
-    constructor: ( title = "", show_legend = true )->
+    constructor: ( title = "", show_legend = true, auto_fit = true )->
         super()
         
         @add_attr
             show_legend: show_legend
             gradient   : new Gradient
-            _title      : title
+            _title     : title
+            auto_fit   : auto_fit
             max_val    : 1
             min_val    : 0
             _width     : 30

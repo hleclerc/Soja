@@ -42,7 +42,7 @@ class FileSystem
         @send "S #{@_num_inst} "
         
     
-    # load object in $path and call $callback with the corresponding ref
+    # load object in $path and call $callback with the corresponding model ref
     load: ( path, callback ) ->
         FileSystem._send_chan()
         @send "L #{FileSystem._nb_callbacks} #{encodeURI path} "

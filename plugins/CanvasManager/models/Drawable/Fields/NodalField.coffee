@@ -16,7 +16,6 @@ class NodalField extends Model
             display_style: new Choice( 2, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
             gradient     : model.drawing_parameters._legend.gradient
             legend       : model.drawing_parameters._legend
-            
     
     toString: ->
         @name.get()
@@ -24,16 +23,15 @@ class NodalField extends Model
     draw: ( info, parameters, additionnal_parameters ) ->
         if parameters?
             # projection points
-            proj = if additionnal_parameters?.warp_by?
+
+            proj = if additionnal_parameters?.warp_by? and @_mesh.points.length == additionnal_parameters.warp_by._vector[ 0 ]?._data[ 0 ]?.field?._data.size()?[ 0 ]
                 for p, i in @_mesh.points
-                    #console.log Vec_3.add p.pos.get(), Vec_3.mus( additionnal_parameters.warp_factor, additionnal_parameters.warp_by.get_val( info, i ) )
                     info.re_2_sc.proj Vec_3.add p.pos.get(), Vec_3.mus( additionnal_parameters.warp_factor, additionnal_parameters.warp_by.get_val( info, i, 3 ) )
             else
                 for p, i in @_mesh.points
                     info.re_2_sc.proj p.pos.get()
 
-            #
-            @actualise_value_legend @_data.get(), parameters._legend
+            #             @actualise_value_legend parameters._legend
             for el in @_mesh._elements
                 el.draw_nodal_field? info, proj, @_data, parameters.display_style.get(), parameters._legend
                 
@@ -49,13 +47,18 @@ class NodalField extends Model
     get_val: ( info, i ) ->
         @_data.get i
     
-    actualise_value_legend: ( values, legend ) ->
-        max = @_get_max values
-        legend.max_val.set max
+#     actualise_value_legend: ( legend ) ->
+#         min = @get_min_data()
+#         legend.min_val.set min
+#         
+#         max = @get_max_data()
+#         legend.max_val.set max
+#         
+    get_min_data: ->
+        @_get_min @_data.get()
         
-        min = @_get_min values
-        legend.min_val.set min
-        
+    get_max_data: ->
+        @_get_max @_data.get()
         
     _get_max: ( l ) ->
         if l.length > 0

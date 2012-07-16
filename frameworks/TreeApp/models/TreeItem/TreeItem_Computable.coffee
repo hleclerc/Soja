@@ -8,13 +8,18 @@ class TreeItem_Computable extends TreeItem
             _computation_req_date: 1 # request date (updated by the @bind hereafter)
             _computation_rep_date: 0 # response date (updated by the server after each computation)
             _computation_mode    : true # true -> auto. false -> manual
-            _computation_state   : true # (it mean there is something to do), true -> do it. false -> stop
+            _computation_state   : false # (it mean there is something to do), true -> do it. false -> stop
             _messages            : []
         @add_attr
             auto_compute         : @_computation_mode
 
         # incrementation of _computation_req_date each time there's a "real" change
         @bind =>
+            #             if @auto_compute.has_been_modified()
+            #                 @_computation_mode.set @auto_compute.get() * 2
+            #             else if @_computation_mode.has_been_modified()
+            #                 @auto_compute.set @_computation_mode.get()                
+            #                 
             if @real_change()
                 if @_computation_req_date.has_been_modified() # in this round
                     return
@@ -29,4 +34,4 @@ class TreeItem_Computable extends TreeItem
         @_computation_req_date.get() == @_computation_rep_date.get()
 
     manual_mode: ->
-        @_computation_mode.get()       
+        @_computation_mode.get()
