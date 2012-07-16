@@ -32,7 +32,6 @@ class IcoBar extends View
                     parentNode: @el
             
     onchange: ->
-        console.log 'toto'
         if @loc == true
             @_render_loc_actions @el, @tree_app
             return
@@ -363,8 +362,6 @@ class IcoBar extends View
             do ( m ) =>
                 for act, j in m.actions when act.loc == true
                     do ( act ) =>
-                        console.log act.ina?( @tree_app ), act.txt
-
                         de = new_dom_element
                             nodeName  : "img"
                             src       : act.ico
@@ -377,15 +374,13 @@ class IcoBar extends View
                             #style     :
                             #    display : vis
                             
-                        console.log act.bnd? and act.vis?
                         if act.bnd? and act.vis?
-                            console.log "yo??"
                             # TODO PERF
                             act.bnd( @tree_app.data ).bind =>
-                                console.log "yop", act.vis( @tree_app )
                                 if act.vis @tree_app
                                     de.style.display = "none"
                                 else
                                     de.style.display = "inline-block"
+                                    
 #                         if not act.ina?( @tree_app )
                             
