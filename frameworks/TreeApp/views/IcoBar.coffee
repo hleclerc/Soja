@@ -32,6 +32,7 @@ class IcoBar extends View
                     parentNode: @el
             
     onchange: ->
+        console.log 'toto'
         if @loc == true
             @_render_loc_actions @el, @tree_app
             return
@@ -362,14 +363,20 @@ class IcoBar extends View
             do ( m ) =>
                 for act, j in m.actions when act.vis != false and act.loc == true
                     do ( act ) =>
-                        console.log act.ina?( @tree_app )# TODO, should use display block-inline/none
-                        if not act.ina?( @tree_app )
-                            new_dom_element
-                                nodeName  : "img"
-                                src       : act.ico
-                                className : "FooterTreeViewIcon"
-                                parentNode: @icon_container
-                                alt       : act.txt
-                                title     : act.txt
-                                onclick   : ( evt ) =>
-                                    act.fun evt, @tree_app
+                        console.log act.ina?( @tree_app ), act.txt
+                        if act.ina?( @tree_app )
+                            vis = "none"
+                        else
+                            vis = "inline-block"
+#                         if not act.ina?( @tree_app )
+                        new_dom_element
+                            nodeName  : "img"
+                            src       : act.ico
+                            className : "FooterTreeViewIcon"
+                            parentNode: @icon_container
+                            alt       : act.txt
+                            title     : act.txt
+                            onclick   : ( evt ) =>
+                                act.fun evt, @tree_app
+                            style     :
+                                display : vis
