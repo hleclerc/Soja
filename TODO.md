@@ -10,6 +10,10 @@ API changes
 * return the type of clicked point for contextual menu
 * display notice
 * test orientation for elements
+* Bug in input, return, arrow and others keyboard touch don't work
+* Color map is reset after each correlation, it should not change
+* Y is in the wrong side for correlation result
+* Allow user to save a png of his current window
 
 
 ---Fixed---
