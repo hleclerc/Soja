@@ -20,6 +20,8 @@ class Mesh extends Drawable
             _selected_points: [] # point refs
             _pelected_points: [] # point refs
         
+            _selected_elements: [] # elements refs
+            _pelected_elements: [] # elements refs
             
         # default move scheme
         @move_scheme = new MoveScheme_3D
@@ -99,6 +101,16 @@ class Mesh extends Drawable
             @_update_sub_elements()
             for el in @_sub_elements
                 el.draw info, this, proj, true
+                
+            # selected elements
+            if @_selected_elements.length
+                for el in @_pelected_points
+                    el.draw info, this, proj, true, info.theme.selected_elements
+                
+            # pre selected elements
+            if @_pelected_elements.length
+                for el in @_pelected_elements
+                    el.draw info, this, proj, true, info.theme.highlighted_elements
             
     
     on_mouse_down: ( cm, evt, pos, b, old, points_allowed = true ) ->
