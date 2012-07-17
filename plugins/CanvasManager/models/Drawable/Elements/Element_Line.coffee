@@ -3,16 +3,16 @@ class Element_Line extends Element_WithIndices
     constructor: ( indices = [] ) ->
         super indices
             
-    draw: ( info, mesh, proj, is_a_sub ) ->
+    draw: ( info, mesh, proj, is_a_sub, theme = info.theme.lines ) ->
         wf = mesh.visualization.display_style.get() in [ "Wireframe", "Surface with Edges" ]
         if wf or not is_a_sub
-            info.theme.lines.beg_ctx info
+            theme.beg_ctx info
             
             # straight lines
             if @indices.length
                 for i in [ 0 ... @indices.length - 1 ]
                     info.theme.lines.draw_straight_proj info, proj[ @indices[ i ].get() ], proj[ @indices[ i + 1 ].get() ]
-            info.theme.lines.end_ctx info
+            theme.end_ctx info
 
     contour: ( info, mesh, proj, beg, inversion ) ->
         if @indices.length >= 2

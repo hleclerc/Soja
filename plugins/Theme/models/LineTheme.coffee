@@ -1,11 +1,11 @@
 # 
 class LineTheme extends Model
-    constructor: ->
+    constructor: ( color = new Color(255, 255, 255, 255), width = 1) ->
         super()
         
         @add_attr
-            color: new Color 255, 255, 255, 255
-            width: 1
+            color: color
+            width: width
             
     beg_ctx: ( info ) ->
         info.ctx.lineWidth   = @width.get()

@@ -17,7 +17,8 @@ class Theme extends Model
             constrain_boundary_strain       : new LineTheme( new Color 200, 100, 100, 255, 1 )  
             constrain_boundary_pressure     : new LineTheme( new Color  50,   0,   0, 255, 1 )
             free_boundary                   : new LineTheme( new Color   0, 122,   0, 255, 1 )
-#             pre_selected_dot_line_width     : new LineTheme( new Color( 255, 255, 255, 255 ), 1.5 )
+            
+            pre_selected_boundary_width     : 1.5
             
             gradient_legend  : new Gradient
             
