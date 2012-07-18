@@ -51,7 +51,7 @@ class Element_Line extends Element_WithIndices
                             best.dist = dist
                             best.inst = this
                             best.indi = i
-                            best.curv = r
+                            best.curv = r # curvilinear abscissa
                             best.disp = [
                                 P0[ 0 ] * ( 1 - r ) + P1[ 0 ] * r
                                 P0[ 1 ] * ( 1 - r ) + P1[ 1 ] * r
