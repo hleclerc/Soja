@@ -409,7 +409,7 @@ class TreeView extends View
         if @get_viewable_of( info.item )?.toBoolean()
             new_dom_element
                 parentNode : div
-                className  : if info.item in @visible[ @visibility_context.get() ] then @css_prefix + "TreeVisibleItem" else @css_prefix + "TreeHiddenItem"
+                className  : if info.item in @visible[ @visibility_context.get() ] then @css_prefix + "TreeVisibleItem" else if @selected.contains info.item_path then @css_prefix + "TreeSelectedItem" else @css_prefix + "TreeHiddenItem"
                 onmousedown: ( evt ) =>
                     #if not info.get "user_cannot_change_visibility"
                     if info.item._allow_vmod? == false or info.item._allow_vmod.get()
