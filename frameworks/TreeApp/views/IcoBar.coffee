@@ -25,15 +25,15 @@ class IcoBar extends View
                 style:
                     position: "absolute"
                     right   : 0
-        else
-            @icon_container = new_dom_element
-                    nodeName  : "div"
-                    className : "FooterTreeView"
-                    parentNode: @el
+
+        @icon_container = new_dom_element
+                nodeName  : "div"
+                className : "FooterTreeView"
+                parentNode: @el
             
     onchange: ->
+        @_render_loc_actions @tree_app
         if @loc == true
-            @_render_loc_actions @el, @tree_app
             return
             
         @el.appendChild @div
@@ -354,10 +354,10 @@ class IcoBar extends View
             return true
         return false
         
-    _render_loc_actions: ( @el, @tree_app ) ->
+    _render_loc_actions: ( @tree_app ) ->
         while @icon_container.firstChild?
             @icon_container.removeChild @icon_container.firstChild
-
+        console.log 'loc'
         for m in @modules
             do ( m ) =>
                 for act, j in m.actions when act.loc == true
@@ -371,16 +371,16 @@ class IcoBar extends View
                             title     : act.txt
                             onclick   : ( evt ) =>
                                 act.fun evt, @tree_app
-                            #style     :
-                            #    display : vis
-                            
-                        if act.bnd? and act.vis?
+                        
+                        if @bnd and act.bnd? and act.vis?
                             # TODO PERF
                             act.bnd( @tree_app.data ).bind =>
                                 if act.vis @tree_app
                                     de.style.display = "none"
                                 else
                                     de.style.display = "inline-block"
-                                    
+                        else if not @bnd and act.bnd?
+                            de.style.display = "none"
+                            
 #                         if not act.ina?( @tree_app )
                             
