@@ -262,6 +262,13 @@ class Mesh extends Drawable
                 for el in @_elements
                     el.rem_sub_element? sel_point
                     
+                # delete elements containing points
+                cm = app_data = undefined
+                for pzi in cm._flat when pzi instanceof PickedZoneItem
+                    for el in pzi.picked_element.element
+                        if el.model_id == p.model_id
+                            app_data.delete_from_tree pzi
+                    
                 # delete points
                 @_selected_points.remove_ref p
                 @_pelected_points.remove_ref p

@@ -13,7 +13,6 @@ class EditView extends View
             for d in @old_divs
                 @div.removeChild d
             @old_divs = []
-
             for path in @app_data.selected_tree_items
                 s = path[ path.length - 1 ]
                 o = @model_editors[ s.model_id ]
@@ -21,11 +20,14 @@ class EditView extends View
                     # generic div to contain the model editor and the informations
                     o = new_dom_element()
                             
-                    if s instanceof TreeItem_Computable and not @div_icobar[ s.model_id ]?
+                    if not @div_icobar[ s.model_id ]?
                         @div_icobar[ s.model_id ] = new_dom_element
                             parentNode: o
                         for v in @app_data._views when v instanceof TreeApp
-                            icobar = new IcoBar @div_icobar[ s.model_id ], v, loc: true
+                            if s instanceof TreeItem_Computable
+                                icobar = new IcoBar @div_icobar[ s.model_id ], v, bnd: true, loc: true
+                            else
+                                icobar = new IcoBar @div_icobar[ s.model_id ], v, bnd: false, loc: true
                             break
                     e = new_dom_element
                         parentNode: o
