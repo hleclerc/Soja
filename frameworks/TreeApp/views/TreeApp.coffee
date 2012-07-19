@@ -45,7 +45,7 @@ class TreeApp extends View
             for el in @treeview.flat when el.item?._messages?
                 if el.item._messages.has_been_modified()
                     for message in el.item._messages when message.has_been_modified()
-                        do ( message ) ->
+                        do ( message ) =>
                             msg_box = new_dom_element
                                 nodeName  : "span"
                                 id        : "msg_box"
