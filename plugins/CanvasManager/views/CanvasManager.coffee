@@ -1,7 +1,7 @@
 #
 class CanvasManager extends View
     # mandatory params :
-    #  - el; laceholder
+    #  - el; placeholder
     #  - items:
     # optionnal params :
     #  - undo_manager
@@ -53,6 +53,15 @@ class CanvasManager extends View
         @click_fun    = [] # called if mouse down and up without move
         @dblclick_fun = []
 
+        
+    # return a list of items which can take events
+    # BEWARE: may be surdefined (as e.g. in CanvasManagerPanelInstance)
+    active_items: ->
+        @items
+
+    selected_items: ->
+        []
+        
     onchange: ->
         if @need_to_redraw()
             @draw()
@@ -64,8 +73,17 @@ class CanvasManager extends View
         return true if @time.has_been_modified?()
 
         # if list of active_items has changed (not regarding the objects themselves)
-        str_sel = ""
+        str_act = ""
         for s in @active_items()
+            if not s.has_nothing_to_draw?()
+                str_act += " " + s.model_id
+        if @_old_str_act != str_act
+            @_old_str_act = str_act
+            return true
+
+        # if list of active_items has changed (not regarding the objects themselves)
+        str_sel = ""
+        for s in @selected_items()
             if not s.has_nothing_to_draw?()
                 str_sel += " " + s.model_id
         if @_old_str_sel != str_sel
@@ -74,7 +92,7 @@ class CanvasManager extends View
             
         # all objects and sub objects
         flat = []
-        for item in @items
+        for item in @active_items()
             CanvasManager._get_flat_list flat, item
         for f in flat
             if f.has_been_modified?()
@@ -95,7 +113,7 @@ class CanvasManager extends View
                     
         x_min = [ +1e40, +1e40, +1e40 ]
         x_max = [ -1e40, -1e40, -1e40 ]
-        for item in @items
+        for item in @active_items()
             get_min_max item, x_min, x_max
         if x_min[ 0 ] == +1e40
             return [ [ -1, -1, -1 ], [ 1, 1, 1 ] ]
@@ -174,7 +192,7 @@ class CanvasManager extends View
     # redraw all the scene
     draw: ->
         @_flat = []
-        for item in @items
+        for item in @active_items()
             CanvasManager._get_flat_list @_flat, item
         
         #
@@ -211,11 +229,6 @@ class CanvasManager extends View
     resize: ( w, h ) ->
         @canvas.width  = w
         @canvas.height = h
-        
-    # return a list of items which can take events
-    # BEWARE: may be surdefined (as e.g. in CanvasManagerPanelInstance)
-    active_items: ->
-        @items
         
     active_items_rec: ( l = @active_items() ) ->
         res = []
@@ -414,8 +427,8 @@ class CanvasManager extends View
         h = @canvas.height
         
         i = {}
-        for item in @active_items_rec()
-            CanvasManager._get_active_items_in_an_hash_table_rec i, item
+        for item in @selected_items?()
+            CanvasManager._get_items_in_an_hash_table_rec i, item
             
         @cam_info =
             w        : w
@@ -442,8 +455,8 @@ class CanvasManager extends View
             flat.push item
 
     # fill an hash table with id of selected items
-    @_get_active_items_in_an_hash_table_rec: ( i, item ) ->
+    @_get_items_in_an_hash_table_rec: ( i, item ) ->
         i[ item.model_id ] = true
         if item.sub_canvas_items?
             for n in item.sub_canvas_items()
-                CanvasManager._get_active_items_in_an_hash_table_rec i, n
+                CanvasManager._get_items_in_an_hash_table_rec i, n

@@ -44,7 +44,7 @@ class TreeAppModule_ImageSet extends TreeAppModule
                 
                     if @numpic < 10
                         img = new ImgItem "composite0" +  @numpic++ + ".png", app
-                        @numpic+=9
+                        # @numpic += 9
                     else
                         img = new ImgItem "composite" + @numpic++ + ".png", app
                     
