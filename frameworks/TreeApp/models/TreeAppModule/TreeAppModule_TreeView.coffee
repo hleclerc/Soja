@@ -132,22 +132,9 @@ class TreeAppModule_TreeView extends TreeAppModule
                         else
                             app.undo_manager.snapshot()
                             path[ path.length - 2 ].rem_child m
-                            @delete_from_tree app, m
+                            app.data.delete_from_tree m
+                            app.data.selected_tree_items.clear()
                             
-    delete_from_tree: ( app,  item ) =>
-        #delete children
-        for c in item._children
-            if c._children.length > 0
-                @delete_from_tree app, c
-            app.data.closed_tree_items.remove c
-            for p in app.data.panel_id_list()
-                app.data.visible_tree_items[ p ].remove c
-        
-        #delete item
-        app.data.closed_tree_items.remove item
-        for p in app.data.panel_id_list()
-            app.data.visible_tree_items[ p ].remove item
-        app.data.selected_tree_items.clear()
         
     is_close: ( app, item ) ->
         for closed_item_path in app.data.closed_tree_items

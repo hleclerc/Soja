@@ -357,7 +357,6 @@ class IcoBar extends View
     _render_loc_actions: ( @tree_app ) ->
         while @icon_container.firstChild?
             @icon_container.removeChild @icon_container.firstChild
-        console.log 'loc'
         for m in @modules
             do ( m ) =>
                 for act, j in m.actions when act.loc == true

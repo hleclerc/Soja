@@ -155,6 +155,24 @@ class TreeAppData extends Model
             @get_root_path_rec path, item, child, res
             path.pop()
         
+    delete_from_tree: ( item ) ->
+        # delete children
+        for c in item._children
+            if c._children.length > 0
+                @delete_from_tree app, c
+            item.rem_child c
+            @closed_tree_items.remove c
+            for p in @panel_id_list()
+                @visible_tree_items[ p ].remove c
+        
+        # delete item
+        path = @get_root_path item
+        parent = path[ 0 ][ path[ 0 ].length - 2 ]
+        parent.rem_child item
+        @closed_tree_items.remove item
+        for p in @panel_id_list()
+            @visible_tree_items[ p ].remove item
+    
     _get_child_of_type_rec: ( res, visited, item, type ) ->
         if not visited[ item.model_id ]?
             visited[ item.model_id ] = true

@@ -25,10 +25,8 @@ class EditView extends View
                             parentNode: o
                         for v in @app_data._views when v instanceof TreeApp
                             if s instanceof TreeItem_Computable
-                                console.log s, 'computable'
                                 icobar = new IcoBar @div_icobar[ s.model_id ], v, bnd: true, loc: true
                             else
-                                console.log s, 'else'
                                 icobar = new IcoBar @div_icobar[ s.model_id ], v, bnd: false, loc: true
                             break
                     e = new_dom_element
