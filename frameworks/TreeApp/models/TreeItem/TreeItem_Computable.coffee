@@ -28,7 +28,7 @@ class TreeItem_Computable extends TreeItem
                 @_computation_req_date.add 1
 
     cosmetic_attribute: ( name ) ->
-        name in [ "_computation_req_date", "_computation_rep_date", "_messages" ]
+        name in [ "_computation_req_date", "_computation_rep_date", "_computation_mode", "_computation_state", "_messages" ]
 
     nothing_to_do: ->
         @_computation_req_date.get() == @_computation_rep_date.get()

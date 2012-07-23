@@ -25,7 +25,7 @@ class InterpolatedField extends Model
             f.get_val info, i
 
     draw: ( info, parameters, additionnal_parameters ) ->
-        if parameters?.legend?.auto_fit?.get()
+        if parameters?._legend?.auto_fit?.get()
             @actualise_value_legend_all_fields parameters
             
         f = @get_sub_field info
@@ -57,5 +57,5 @@ class InterpolatedField extends Model
                 min = minus
             if maxus > max
                 max = maxus
-        parameters.legend.min_val.set min
-        parameters.legend.max_val.set max
+        parameters._legend.min_val.set min
+        parameters._legend.max_val.set max
