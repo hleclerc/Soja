@@ -38,6 +38,7 @@ class NodalField extends Model
             parameters._legend.draw info
                 
     sub_canvas_items: ->
+        console.log @drawing_parameters
         if @drawing_parameters?
             [ @drawing_parameters._legend ]
         else

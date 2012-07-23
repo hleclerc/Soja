@@ -43,7 +43,8 @@ class InterpolatedField extends Model
             @_data[ 0 ].field.z_index()
         else
             0
-
+    sub_canvas_items: ->
+        console.log 'interpolated sub canvas'
 
     actualise_value_legend_all_fields: ( parameters ) ->
         max = -Infinity
