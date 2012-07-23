@@ -166,7 +166,7 @@ class TreeAppData extends Model
                 @visible_tree_items[ p ].remove c
         
         # delete item
-        path = @get_root_path item
+        path = item._parents #TODO get_root_path return an empty path, ._parents seems correct but this method need to be tested
         parent = path[ 0 ][ path[ 0 ].length - 2 ]
         parent.rem_child item
         @closed_tree_items.remove item
