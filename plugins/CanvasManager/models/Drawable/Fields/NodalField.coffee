@@ -36,6 +36,7 @@ class NodalField extends Model
                 el.draw_nodal_field? info, proj, @_data, parameters.display_style.get(), parameters._legend
                 
     sub_canvas_items: ->
+        console.log @drawing_parameters
         if @drawing_parameters?
             [ @drawing_parameters._legend ]
         else

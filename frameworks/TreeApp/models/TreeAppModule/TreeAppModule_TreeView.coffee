@@ -14,7 +14,6 @@ class TreeAppModule_TreeView extends TreeAppModule
             app.data.focus.get() != app.treeview.view_id
             
         
-                            
         lst_equals = ( a, b ) ->
             if a.length != b.length
                 return false
@@ -88,8 +87,6 @@ class TreeAppModule_TreeView extends TreeAppModule
                     if item._viewable?.get()
                         for p in app.data.selected_canvas_pan
                             app.data.visible_tree_items[ p ].toggle item
-                            
-                            
                             
                             
         @actions.push
