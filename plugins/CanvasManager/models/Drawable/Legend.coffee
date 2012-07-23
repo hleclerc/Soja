@@ -39,7 +39,7 @@ class Legend extends Drawable
         for c_s in @gradient.color_stop
             pos = c_s.position.get()
             val = ( @max_val.get() - @min_val.get() ) * ( 1 - c_s.position.get() ) + @min_val.get()
-            info.ctx.fillText( val.toFixed( 1 ), pos_x - 8, pos_y + 7 + pos * height )
+            info.ctx.fillText( val.toFixed( 4 ), pos_x - 8, pos_y + 7 + pos * height )
     
     draw: ( info ) ->
         if @show_legend.get() == true
