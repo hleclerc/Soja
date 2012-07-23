@@ -31,6 +31,12 @@ class InterpolatedField extends Model
         f = @get_sub_field info
         if f?
             f.draw info, parameters, additionnal_parameters
+                
+    sub_canvas_items: ( additionnal_parameters ) ->
+        if @_data.length
+            @_data[ 0 ].field.sub_canvas_items additionnal_parameters
+        else
+            []
     
     z_index: ->
         if @_data.length
