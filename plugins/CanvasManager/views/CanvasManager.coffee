@@ -56,9 +56,11 @@ class CanvasManager extends View
         
     # return a list of items which can take events
     # BEWARE: may be surdefined (as e.g. in CanvasManagerPanelInstance)
+    # active items is a list of items which are displayed in the canvas
     active_items: ->
         @items
-
+        
+    # selected items is a list of items which are selected in the three
     selected_items: ->
         []
         
@@ -239,6 +241,14 @@ class CanvasManager extends View
                     res.push sub_item
         res
         
+    selected_items_rec: ( l = @selected_items() ) ->
+        res = []
+        for item in l
+            res.push item
+            if item.sub_canvas_items?
+                for sub_item in @selected_items_rec item.sub_canvas_items()
+                    res.push sub_item
+        res
     # 
     _catch_evt: ( evt ) ->
         evt.preventDefault?()
@@ -251,7 +261,7 @@ class CanvasManager extends View
         @mouse_x = evt.clientX - get_left( @canvas )
         @mouse_y = evt.clientY - get_top ( @canvas )
         
-        for item in @active_items_rec()
+        for item in @selected_items_rec()
             if item.on_dbl_click? this, evt, [ @mouse_x, @mouse_y ], @mouse_b
                 return @_catch_evt evt
                 
@@ -284,7 +294,7 @@ class CanvasManager extends View
         @mouse_y = evt.clientY - get_top ( @canvas )
         
         # click_fun from selected items
-        for item in @active_items_rec()
+        for item in @selected_items_rec()
             if item.on_mouse_down? this, evt, [ @mouse_x, @mouse_y ], @mouse_b
                 return @_catch_evt evt
 
@@ -305,7 +315,7 @@ class CanvasManager extends View
     
     _mouse_up: ( evt ) ->
         if not @mouse_has_moved_since_mouse_down
-            for item in @active_items_rec()
+            for item in @selected_items_rec()
                 if item.on_mouse_up_wo_move? this, evt, [ @mouse_x, @mouse_y ], @mouse_b
                     delete @mouse_b
                     delete @clk_x
@@ -338,7 +348,7 @@ class CanvasManager extends View
             delta = - evt.detail / 3.0
 
         # 
-        for item in @active_items_rec()
+        for item in @selected_items_rec()
             if item.on_mouse_wheel? this, evt, [ @mouse_x, @mouse_y ], @mouse_b, delta
                 return @_catch_evt evt
 
@@ -369,7 +379,7 @@ class CanvasManager extends View
             @mouse_y = @rea_y
         
         # click_fun from selected items
-        for item in @active_items_rec()
+        for item in @selected_items_rec()
             if item.on_mouse_move? this, evt, [ @mouse_x, @mouse_y ], @mouse_b, [ old_x, old_y ]
                 return @_catch_evt evt
 
