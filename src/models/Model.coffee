@@ -233,6 +233,9 @@ class Model
                 return true
         return false
         
+    cosmetic_attribute: ( name ) ->
+        false
+    
     # modify state according to str. str can be the result of a previous @get_state
     @new_from_state: ( str ) ->
         map = {}

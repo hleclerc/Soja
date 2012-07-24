@@ -25,15 +25,15 @@ class IcoBar extends View
                 style:
                     position: "absolute"
                     right   : 0
-        else
-            @icon_container = new_dom_element
-                    nodeName  : "div"
-                    className : "FooterTreeView"
-                    parentNode: @el
+
+        @icon_container = new_dom_element
+                nodeName  : "div"
+                className : "FooterTreeView"
+                parentNode: @el
             
     onchange: ->
+        @_render_loc_actions @tree_app
         if @loc == true
-            @_render_loc_actions @el, @tree_app
             return
             
         @el.appendChild @div
@@ -354,22 +354,32 @@ class IcoBar extends View
             return true
         return false
         
-    _render_loc_actions: ( @el, @tree_app ) ->
+    _render_loc_actions: ( @tree_app ) ->
         while @icon_container.firstChild?
             @icon_container.removeChild @icon_container.firstChild
-
         for m in @modules
             do ( m ) =>
-                for act, j in m.actions when act.vis != false and act.loc == true
+                for act, j in m.actions when act.loc == true
                     do ( act ) =>
-                        console.log act.ina?( @tree_app )# TODO, should use display block-inline/none
-                        if not act.ina?( @tree_app )
-                            new_dom_element
-                                nodeName  : "img"
-                                src       : act.ico
-                                className : "FooterTreeViewIcon"
-                                parentNode: @icon_container
-                                alt       : act.txt
-                                title     : act.txt
-                                onclick   : ( evt ) =>
-                                    act.fun evt, @tree_app
+                        de = new_dom_element
+                            nodeName  : "img"
+                            src       : act.ico
+                            className : "FooterTreeViewIcon"
+                            parentNode: @icon_container
+                            alt       : act.txt
+                            title     : act.txt
+                            onclick   : ( evt ) =>
+                                act.fun evt, @tree_app
+                        
+                        if @bnd and act.bnd? and act.vis?
+                            # TODO PERF
+                            act.bnd( @tree_app.data ).bind =>
+                                if act.vis @tree_app
+                                    de.style.display = "none"
+                                else
+                                    de.style.display = "inline-block"
+                        else if not @bnd and act.bnd?
+                            de.style.display = "none"
+                            
+#                         if not act.ina?( @tree_app )
+                            

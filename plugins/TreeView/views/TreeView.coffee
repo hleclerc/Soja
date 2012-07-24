@@ -227,10 +227,21 @@ class TreeView extends View
                     ondrop : ( evt ) =>
 #                         r = TreeView.default_types[ 0 ]
 #                         r evt, info
+
+                                    
+                                    
                         console.log evt, evt.dataTransfer.files, info
+#                         # Drop of file from browser to tree
+#                         file.load ( m, err ) =>
+# #                             #if name end like a picture (png, jpg, tiff etc)
+#                             img_item = new ImgItem "/sceen/_?u=" + m._server_id, app
+#                             img_item._name.set file.name
+#                             @modules = app.data.modules
+#                             for m in @modules
+#                                 if m instanceof TreeAppModule_ImageSet
+#                                     m.actions[ 1 ].fun evt, app, img_item
                         
-                        
-                        #External drag and drop
+                        # External drag and drop
                         if typeof files == "undefined" #Drag and drop
                             evt.stopPropagation()
                             evt.returnValue = false
@@ -248,6 +259,7 @@ class TreeView extends View
                                         info.item.img_collection.push pic
 
 
+                        # Internal drop when moving item
                         for num in [ info.path.length - 1 .. 0 ]
                             par = info.path[ num ]
                             if @_accept_child par, @drag_info
@@ -397,7 +409,7 @@ class TreeView extends View
         if @get_viewable_of( info.item )?.toBoolean()
             new_dom_element
                 parentNode : div
-                className  : if info.item in @visible[ @visibility_context.get() ] then @css_prefix + "TreeVisibleItem" else @css_prefix + "TreeHiddenItem"
+                className  : if info.item in @visible[ @visibility_context.get() ] then @css_prefix + "TreeVisibleItem" else if @selected.contains info.item_path then @css_prefix + "TreeSelectedItem" else @css_prefix + "TreeHiddenItem"
                 onmousedown: ( evt ) =>
                     #if not info.get "user_cannot_change_visibility"
                     if info.item._allow_vmod? == false or info.item._allow_vmod.get()

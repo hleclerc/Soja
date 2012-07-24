@@ -25,18 +25,26 @@ class InterpolatedField extends Model
             f.get_val info, i
 
     draw: ( info, parameters, additionnal_parameters ) ->
-        if parameters.legend.auto_fit.get() == true
-            parameters = @actualise_value_legend_all_fields parameters
+        if parameters?._legend?.auto_fit?.get()
+            @actualise_value_legend_all_fields parameters
+            
         f = @get_sub_field info
         if f?
             f.draw info, parameters, additionnal_parameters
+                
+    sub_canvas_items: ( additionnal_parameters ) ->
+        if @_data.length
+            @_data[ 0 ].field.sub_canvas_items additionnal_parameters
+        else
+            []
     
     z_index: ->
         if @_data.length
             @_data[ 0 ].field.z_index()
         else
             0
-
+    sub_canvas_items: ->
+        console.log 'interpolated sub canvas'
 
     actualise_value_legend_all_fields: ( parameters ) ->
         max = -Infinity
@@ -49,6 +57,5 @@ class InterpolatedField extends Model
                 min = minus
             if maxus > max
                 max = maxus
-        parameters.legend.min_val.set min
-        parameters.legend.max_val.set max
-        return parameters
+        parameters._legend.min_val.set min
+        parameters._legend.max_val.set max

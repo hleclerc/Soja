@@ -13,29 +13,7 @@ class TreeAppModule_TreeView extends TreeAppModule
             app.data.focus.get() != app.selected_canvas_inst()?[ 0 ]?.cm.view_id and 
             app.data.focus.get() != app.treeview.view_id
             
-        @actions.push
-            txt: "Delete current tree item"
-            ico: "img/trash_24.png"
-            key: [ "Del" ]
-            ina: _ina
-            loc: true
-            fun: ( evt, app ) =>
-                for path in app.data.selected_tree_items
-                    #prevent deleting root item (session)
-                    if path.length > 1
-                        m = path[ path.length - 1 ]
-                        if m instanceof DisplaySettingsItem #prevent deleting display settings item
-                            return true
-                        else if m instanceof ViewItem
-                            modules = app.data.modules
-                            for mod in modules 
-                                if mod instanceof TreeAppModule_PanelManager
-                                    mod.actions[ 4 ].fun evt, app
-                        else
-                            app.undo_manager.snapshot()
-                            path[ path.length - 2 ].rem_child m
-                            @delete_from_tree app, m
-                            
+        
         lst_equals = ( a, b ) ->
             if a.length != b.length
                 return false
@@ -111,8 +89,6 @@ class TreeAppModule_TreeView extends TreeAppModule
                             app.data.visible_tree_items[ p ].toggle item
                             
                             
-                            
-                            
         @actions.push
             txt: "Save"
             key: [ "" ]
@@ -130,22 +106,32 @@ class TreeAppModule_TreeView extends TreeAppModule
                         name = item.to_string()
                         fs.load_or_make_dir "/home/monkey/test_browser", ( d, err ) =>
                             d.add_file name, item, model_type: "TreeItem"
-
                             
-    delete_from_tree: ( app,  item ) =>
-        #delete children
-        for c in item._children
-            if c._children.length > 0
-                @delete_from_tree app, c
-            app.data.closed_tree_items.remove c
-            for p in app.data.panel_id_list()
-                app.data.visible_tree_items[ p ].remove c
-        
-        #delete item
-        app.data.closed_tree_items.remove item
-        for p in app.data.panel_id_list()
-            app.data.visible_tree_items[ p ].remove item
-        app.data.selected_tree_items.clear()
+                            
+        @actions.push
+            txt: "Delete current tree item"
+            ico: "img/trash_24.png"
+            key: [ "Del" ]
+            ina: _ina
+            loc: true
+            fun: ( evt, app ) =>
+                for path in app.data.selected_tree_items
+                    #prevent deleting root item (session)
+                    if path.length > 1
+                        m = path[ path.length - 1 ]
+                        if m instanceof DisplaySettingsItem #prevent deleting display settings item
+                            return true
+                        else if m instanceof ViewItem
+                            modules = app.data.modules
+                            for mod in modules 
+                                if mod instanceof TreeAppModule_PanelManager
+                                    mod.actions[ 4 ].fun evt, app
+                        else
+                            app.undo_manager.snapshot()
+                            path[ path.length - 2 ].rem_child m
+                            app.data.delete_from_tree m
+                            app.data.selected_tree_items.clear()
+                            
         
     is_close: ( app, item ) ->
         for closed_item_path in app.data.closed_tree_items

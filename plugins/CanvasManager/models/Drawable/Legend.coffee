@@ -8,7 +8,7 @@ class Legend extends Drawable
             gradient   : new Gradient
             _title     : title
             auto_fit   : auto_fit
-            max_val    : 1
+            max_val    : -1
             min_val    : 0
             _width     : 30
             _height    : 300
@@ -16,9 +16,12 @@ class Legend extends Drawable
         @gradient.add_color [ 255,255,255, 255 ], 0
         @gradient.add_color [   0,  0,  0, 255 ], 1
         
-    z_index: () ->
+    z_index: ->
         return 1000
-    
+
+    is_correct: ->
+        @max_val.get() >= @min_val.get()
+        
     get_ratio: ( info ) ->
         info.h / ( @_height.get() * 1.7 )
     
@@ -36,7 +39,7 @@ class Legend extends Drawable
         for c_s in @gradient.color_stop
             pos = c_s.position.get()
             val = ( @max_val.get() - @min_val.get() ) * ( 1 - c_s.position.get() ) + @min_val.get()
-            info.ctx.fillText( val.toFixed( 1 ), pos_x - 8, pos_y + 7 + pos * height )
+            info.ctx.fillText( val.toFixed( 4 ), pos_x - 8, pos_y + 7 + pos * height )
     
     draw: ( info ) ->
         if @show_legend.get() == true

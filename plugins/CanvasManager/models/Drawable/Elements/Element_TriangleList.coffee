@@ -35,6 +35,8 @@ class Element_TriangleList extends Element
     draw_nodal_field: ( info, proj, field, display_style, legend ) ->
         max_legend = legend.max_val.get()
         min_legend = legend.min_val.get()
+        div_legend = max_legend - min_legend
+        div_legend = 1 / ( div_legend + ( div_legend == 0 ) )
         for num_triangle in [ 0 ... @indices.size( 1 ) ]
             tri = [
                 @indices.get [ 0, num_triangle ]
@@ -49,7 +51,7 @@ class Element_TriangleList extends Element
             ]                
 
             for val, i in vals
-                vals[ i ] = ( max_legend - val ) / ( max_legend - min_legend )
+                vals[ i ] = ( max_legend - val ) * div_legend
                 
             #             c = max_legend - min_legend + ( max_legend == min_legend )
             #             vals = for i in [ 0 ... 3 ]

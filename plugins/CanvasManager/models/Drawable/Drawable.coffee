@@ -8,3 +8,6 @@ class Drawable extends Model
     
     z_index: ->
         0
+        
+    sub_canvas_items: ->
+        []

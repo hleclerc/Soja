@@ -134,37 +134,38 @@ class Img extends Drawable
                 
 
     information: ( div ) ->
-        if not @cm?
-            @txt = new_dom_element
-                parentNode: div
+        if @data.rgba?.height?
+            if not @cm?
+                @txt = new_dom_element
+                    parentNode: div
+                    
+                d = new_dom_element
+                    parentNode: div
+                    # style     : { position: "absolute", top: 0, left: 0, width: "70%", bottom: 0 }
+
+                #             bg = new Background
+                # #             bg.gradient.remove_color 1
+                #             bg.gradient.remove_color 0
+
+                m = new Graph marker: 'bar', show_line: false, shadow: false, marker_size: 2, font_size: 10
+                for p, i in @_histo
+                    m.points.push [ i , p, 0 ]
+                m.build_w2b_legend()
                 
-            d = new_dom_element
-                parentNode: div
-                # style     : { position: "absolute", top: 0, left: 0, width: "70%", bottom: 0 }
+                @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.4, constrain_zoom: 'x'
+                @cm.cam.threeD.set false
+                
+                # @cm.items.push bg
+                @cm.items.push m
+                @cm.fit()
 
-            #             bg = new Background
-            # #             bg.gradient.remove_color 1
-            #             bg.gradient.remove_color 0
+            @txt.innerHTML = "
+                #{@src} <br>
+                Height : #{@data.rgba.height}px <br>
+                Width  : #{@data.rgba.width}px <br>
+            "
 
-            m = new Graph marker: 'bar', show_line: false, shadow: false, marker_size: 2, font_size: 10
-            for p, i in @_histo
-                m.points.push [ i , p, 0 ]
-            m.build_w2b_legend()
-            
-            @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.4, constrain_zoom: 'x'
-            @cm.cam.threeD.set false
-            
-#             @cm.items.push bg
-            @cm.items.push m
-            @cm.fit()
-
-        @txt.innerHTML = "
-            #{@src} <br>
-            Height : #{@data.rgba.height}px <br>
-            Width  : #{@data.rgba.width}px <br>
-        "
-
-        @cm.draw()
+            @cm.draw()
 
     @_draw_persp_rec: ( info, rgba, zmin, zmax, O, X, Y, Z, xmin = 0, ymin = 0, xmax = 1, ymax = 1, rec = 0 ) ->
         w = rgba.width

@@ -33,8 +33,9 @@ class ModelEditorItem_Gradient extends ModelEditorItem
     onchange: ->
         ctx = @canvas.getContext '2d'
         lineargradient = ctx.createLinearGradient 0, 0, @canvas.width, 0
+        left_to_right = 1 #true, false set to 0
         for c in @model.color_stop
-            lineargradient.addColorStop c.position.get(), 'rgba(' + c.color.r.get() + ',' + c.color.g.get() + ',' + c.color.b.get() + ',' + c.color.a.get() + ')'
+            lineargradient.addColorStop left_to_right - c.position.get(), 'rgba(' + c.color.r.get() + ',' + c.color.g.get() + ',' + c.color.b.get() + ',' + c.color.a.get() + ')'
         ctx.fillStyle = lineargradient
         ctx.fillRect 0, 0, @canvas.width, @canvas.height
         

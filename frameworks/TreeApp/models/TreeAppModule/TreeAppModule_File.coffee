@@ -4,17 +4,18 @@ class TreeAppModule_File extends TreeAppModule
         super()
         
         @name = 'File'
-        @visible = false
+        @visible = true
                 
         _ina = ( app ) =>
             app.data.focus.get() != app.selected_canvas_inst()?[ 0 ]?.cm.view_id and 
             app.data.focus.get() != app.treeview.view_id
             
         @actions.push
-            #ico: "img/orange_folder.png"
+            ico: "img/orange_folder.png"
             siz: 2
             txt: "Open"
             ina: _ina
+            vis: false
             fun: ( evt, app ) =>
                 
                 @content = new_dom_element
@@ -50,7 +51,7 @@ class TreeAppModule_File extends TreeAppModule
 
 
         @actions.push
-            #ico: "img/orange_folder.png"
+            ico: "img/orange_folder.png"
             siz: 2
             txt: "Open in Tree"
             ina: _ina

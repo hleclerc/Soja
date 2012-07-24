@@ -23,6 +23,12 @@
     height     : 16;
 }
 
+.TreeSelectedItem {
+    background : transparent url( 'img/layer-visible-selected.png' );
+    width      : 16;
+    height     : 16;
+}
+
 .TreeHiddenItem {
     background : transparent url( 'img/layer-visible-off.png' );
     width      : 16;

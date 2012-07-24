@@ -23,6 +23,13 @@ class ImageField extends Drawable
         model.drawing_parameters.add_attr
             gradient     : model.drawing_parameters._legend.gradient
     
+    get_min_data: ->
+        0
+        
+    get_max_data: ->
+        255
+        
+    
     toString: ->
         @name.get()
         

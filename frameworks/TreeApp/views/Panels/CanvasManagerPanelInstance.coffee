@@ -16,12 +16,17 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             
         # active_items
         @cm.active_items = =>
-            res = for i in @cm.items when i.always_active?()
+            res = for i in @cm.items # when i.always_active?()
                 i
             for s in @app_data.selected_tree_items
                 if s[ s.length - 1 ] not in res
                     res.push s[ s.length - 1 ]
             res
+
+        @cm.selected_items = =>
+            for s in @app_data.selected_tree_items
+                s[ s.length - 1 ]
+        
                 
         @app_data.selected_tree_items.bind @cm
 

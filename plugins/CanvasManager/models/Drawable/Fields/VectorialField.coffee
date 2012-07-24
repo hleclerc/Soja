@@ -12,7 +12,17 @@ class VectorialField extends Drawable
             @_vector[ 0 ].get_drawing_parameters model
             model.visualization.add_attr
                 norm: new Choice( 0, [ "norm_2" ] )
-    
+                
+#         model.add_attr
+#             drawing_parameters:
+#                 _legend: new Legend( "todo" )
+#                 
+#         model.drawing_parameters.add_attr
+#             display_style: new Choice( 2, [ "Points", "Wireframe", "Surface", "Surface with Edges", "Arrow" ] )
+#             gradient     : model.drawing_parameters._legend.gradient
+#             legend       : model.drawing_parameters._legend
+            
+            
     get: ( a, b ) ->
         if a?
             if b?
@@ -65,7 +75,6 @@ class VectorialField extends Drawable
             arrow_width_factor = 0.1
             
             for p, ind in points
-                
                 element = new Lst
                 for data, i in @_vector
                     element.push data.get()[ ind ] * warp_factor

@@ -7,7 +7,7 @@ class TreeItem_Computable extends TreeItem
         @add_attr
             _computation_req_date: 1 # request date (updated by the @bind hereafter)
             _computation_rep_date: 0 # response date (updated by the server after each computation)
-            _computation_mode    : true # true -> auto. false -> manual
+            _computation_mode    : false # true -> auto. false -> manual
             _computation_state   : false # (it mean there is something to do), true -> do it. false -> stop
             _messages            : []
         @add_attr
@@ -28,7 +28,7 @@ class TreeItem_Computable extends TreeItem
                 @_computation_req_date.add 1
 
     cosmetic_attribute: ( name ) ->
-        name in [ "_computation_req_date", "_computation_rep_date", "_messages" ]
+        name in [ "_computation_req_date", "_computation_rep_date", "_computation_mode", "_computation_state", "_messages" ]
 
     nothing_to_do: ->
         @_computation_req_date.get() == @_computation_rep_date.get()

@@ -17,9 +17,16 @@ class FieldSet extends Drawable
         f = @color_by.item()
         if f?
             f.draw info,
-                warp_by    : @warp_by.item().data
+                warp_by    : if @warp_by.item()? then @warp_by.item().data else undefined
                 warp_factor: @warp_factor.get()
                 # gradient   : @gradient
+                
+    sub_canvas_items: ( additionnal_parameters ) ->
+        f = @color_by.item()
+        if f?
+            f.sub_canvas_items additionnal_parameters
+        else
+            []
 
     z_index: ->
         50
