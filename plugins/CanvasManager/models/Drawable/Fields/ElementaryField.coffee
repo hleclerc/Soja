@@ -21,7 +21,7 @@ class ElementaryField extends Model
         @name.get()
     
     z_index: () ->
-        return 40
+        return 140
         
     draw: ( info, parameters, additionnal_parameters ) ->
         if parameters.visualization?

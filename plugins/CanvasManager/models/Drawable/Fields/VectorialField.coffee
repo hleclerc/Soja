@@ -9,10 +9,18 @@ class VectorialField extends Drawable
             
     get_drawing_parameters: ( model ) ->
         if @_vector.length
-            @_vector[ 0 ].get_drawing_parameters model
-            model.visualization.add_attr
-                norm: new Choice( 0, [ "norm_2" ] )
-                
+#             @_vector[ 0 ].get_drawing_parameters model
+#             model.visualization.add_attr
+#                 norm: new Choice( 0, [ "norm_2" ] )
+
+            model.add_attr
+                drawing_parameters:
+                    _legend: new Legend( model.name )
+                    
+            model.drawing_parameters.add_attr
+                display_style: new Choice( 4, [ "Points", "Wireframe", "Surface", "Surface with Edges", "Arrow" ] )
+                legend       : model.drawing_parameters._legend
+        
 #         model.add_attr
 #             drawing_parameters:
 #                 _legend: new Legend( "todo" )
@@ -65,9 +73,30 @@ class VectorialField extends Drawable
         return value
     
     z_index: () ->
-        return 75
+        return 175
         
-    draw: ( info, display_style, points, values, warp_factor = 1, legend ) ->
+    
+    draw: ( info, parameters, additionnal_parameters ) ->
+        if parameters?
+            @actualise_value_legend parameters._legend
+            if @dim() >= 2
+                warp_factor = 0
+                if additionnal_parameters?.warp_by?
+                    warp_factor = additionnal_parameters.warp_factor
+                sub_field = @_vector[ 0 ].get_sub_field info
+                if sub_field._mesh?.points? and sub_field._data?._data?
+                    @draw_vectorial_field info, parameters.display_style.get(), sub_field._mesh.points, sub_field._data._data, parameters._legend, warp_factor
+                      
+                # legend
+                parameters._legend.draw info
+                    
+        
+        
+    # TODO should be extended to all vector and indicate norm
+    actualise_value_legend: ( legend ) ->        
+        @_vector[ 0 ].actualise_value_legend_all_fields legend
+    
+    draw_vectorial_field: ( info, display_style, points, values, legend, warp_factor = 1 ) ->
         if display_style == "Arrow"
             color = "white"
             
@@ -76,8 +105,9 @@ class VectorialField extends Drawable
             
             for p, ind in points
                 element = new Lst
-                for data, i in @_vector
-                    element.push data.get()[ ind ] * warp_factor
+                for int_field, i in @_vector
+                    data = int_field.get_sub_field( info )._data._data
+                    element.push data[ ind ] * warp_factor
                 if element.length == 2
                     element.push 0
                      
@@ -100,9 +130,9 @@ class VectorialField extends Drawable
                 position = ( max_legend - values[ ind ] ) / ( max_legend - min_legend )
                 color = legend.gradient.get_color_from_pos position
                 
-                @_draw_arrow_colored info, proj_p0, proj_p1, arrow_p0, arrow_p1, color
+                @_draw_arrow_colored info, proj_p0, proj_p1, arrow_p0, arrow_p1, color, ind
             
-    _draw_arrow_colored: ( info, p0, p1, arrow_p0, arrow_p1, color ) ->
+    _draw_arrow_colored: ( info, p0, p1, arrow_p0, arrow_p1, color, i ) ->
         info.ctx.beginPath()
         info.ctx.lineWidth = 1
         info.ctx.strokeStyle = "rgba( " + color[ 0 ] + ", " + color[ 1 ] + ", " + color[ 2 ] + ", " + color[ 3 ] + " ) "

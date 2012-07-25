@@ -12,7 +12,9 @@ API changes
 * test orientation for elements
 * Bug in input, return, arrow and others keyboard touch don't work
 * Allow user to save a png of his current window
-
+* Test Elementary_field
+* Fix Picked zone item when mesh is cut by a new point
+* Bug (probably from blur event) on Choice
 
 ---Fixed---
 * Global messages (see TreeItem_Computable)
@@ -34,3 +36,4 @@ API changes
 * bug boundary picking no more work since introduction of element (because it still use mesh.lines to pick)
 * Y is in the wrong side for correlation result
 * Color map is reset after each correlation, it should not change
+* Add arrow on vectorial field

@@ -44,7 +44,7 @@ class NodalField extends Model
             []
 
     z_index: ->
-        50
+        150
         
     get_val: ( info, i ) ->
         @_data.get i
