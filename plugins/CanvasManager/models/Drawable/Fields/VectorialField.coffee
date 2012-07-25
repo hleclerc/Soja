@@ -130,9 +130,9 @@ class VectorialField extends Drawable
                 position = ( max_legend - values[ ind ] ) / ( max_legend - min_legend )
                 color = legend.gradient.get_color_from_pos position
                 
-                @_draw_arrow_colored info, proj_p0, proj_p1, arrow_p0, arrow_p1, color, ind
+                @_draw_arrow_colored info, proj_p0, proj_p1, arrow_p0, arrow_p1, color
             
-    _draw_arrow_colored: ( info, p0, p1, arrow_p0, arrow_p1, color, i ) ->
+    _draw_arrow_colored: ( info, p0, p1, arrow_p0, arrow_p1, color ) ->
         info.ctx.beginPath()
         info.ctx.lineWidth = 1
         info.ctx.strokeStyle = "rgba( " + color[ 0 ] + ", " + color[ 1 ] + ", " + color[ 2 ] + ", " + color[ 3 ] + " ) "
