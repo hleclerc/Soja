@@ -12,7 +12,6 @@ API changes
 * test orientation for elements
 * Bug in input, return, arrow and others keyboard touch don't work
 * Allow user to save a png of his current window
-* Test Elementary_field
 * Fix Picked zone item when mesh is cut by a new point
 * Bug (probably from blur event) on Choice
 
@@ -37,3 +36,4 @@ API changes
 * Y is in the wrong side for correlation result
 * Color map is reset after each correlation, it should not change
 * Add arrow on vectorial field
+* Test Elementary_field
