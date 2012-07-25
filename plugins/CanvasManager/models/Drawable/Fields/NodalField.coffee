@@ -13,7 +13,7 @@ class NodalField extends Model
                 _legend: new Legend( model.name )
                 
         model.drawing_parameters.add_attr
-            display_style: new Choice( 2, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
+            display_style: new Choice( 1, [ "Wireframe", "Surface", "Surface with Edges" ] )
             legend       : model.drawing_parameters._legend
     
     toString: ->
@@ -26,7 +26,7 @@ class NodalField extends Model
             # projection points
             proj = if additionnal_parameters?.warp_by? and @_mesh.points.length == additionnal_parameters.warp_by._vector[ 0 ]?._data[ 0 ]?.field?._data.size()?[ 0 ]
                 for p, i in @_mesh.points
-                    info.re_2_sc.proj Vec_3.add p.pos.get(), Vec_3.mus( additionnal_parameters.warp_factor, additionnal_parameters.warp_by.get_val( i, 3 ) )
+                    info.re_2_sc.proj Vec_3.add p.pos.get(), Vec_3.mus( additionnal_parameters.warp_factor, additionnal_parameters.warp_by.get_val( info, i, 3 ) )
             else
                 for p, i in @_mesh.points
                     info.re_2_sc.proj p.pos.get()
@@ -46,7 +46,7 @@ class NodalField extends Model
     z_index: ->
         150
         
-    get_val: ( i ) ->
+    get_val: ( info, i ) ->
         @_data.get i
     
     actualise_value_legend: ( legend ) ->

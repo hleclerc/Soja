@@ -12,11 +12,9 @@ class ElementaryField extends Model
             drawing_parameters:
                 _legend: new Legend( model.name )
                 
-        model.mod_attr
-            drawing_parameters:
-                display_style: new Choice( 0, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
-                legend       : model.drawing_parameters._legend
-    
+        model.drawing_parameters.add_attr
+            display_style: new Choice( 1, [ "Wireframe", "Surface", "Surface with Edges" ] )
+            legend       : model.drawing_parameters._legend
     
     toString: ->
         @name.get()
@@ -33,7 +31,7 @@ class ElementaryField extends Model
     z_index: () ->
         return 140
         
-    get_val: ( i ) ->
+    get_val: ( info, i ) ->
         @_data.get i
         
     draw: ( info, parameters, additionnal_parameters ) ->
@@ -43,13 +41,12 @@ class ElementaryField extends Model
             # projection points
             proj = if additionnal_parameters?.warp_by? and @_mesh.points.length == additionnal_parameters.warp_by._vector[ 0 ]?._data[ 0 ]?.field?._data.size()?[ 0 ]
                 for p, i in @_mesh.points
-                    info.re_2_sc.proj Vec_3.add p.pos.get(), Vec_3.mus( additionnal_parameters.warp_factor, additionnal_parameters.warp_by.get_val( i, 3 ) )
+                    info.re_2_sc.proj Vec_3.add p.pos.get(), Vec_3.mus( additionnal_parameters.warp_factor, additionnal_parameters.warp_by.get_val( info, i, 3 ) )
             else
                 for p, i in @_mesh.points
                     info.re_2_sc.proj p.pos.get()
-
             for el in @_mesh._elements
-                el._draw_elementary_triangle? info, proj, @_data, parameters.display_style.get(), parameters._legend
+                el.draw_elementary_triangle? info, proj, @_data, parameters.display_style.get(), parameters._legend
                 
             # legend
             parameters._legend.draw info
