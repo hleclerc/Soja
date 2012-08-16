@@ -6,7 +6,6 @@ API changes
 * watch_item removed from TreeItem (should be a method of TreeAppData)
 * 
 
-
 * return the type of clicked point for contextual menu
 * display notice
 * test orientation for elements
@@ -14,6 +13,8 @@ API changes
 * Allow user to save a png of his current window
 * Fix Picked zone item when mesh is cut by a new point
 * Bug (probably from blur event) on Choice
+* Allow user to get uncertainty
+* Add a close button to popup
 
 ---Fixed---
 * Global messages (see TreeItem_Computable)

@@ -57,6 +57,7 @@ class TreeAppModule_ImageSet extends TreeAppModule
                 if @collection._children.length == 1
                     app.data.time.set 0
                     
+                @watch_item app, @collection
                 app.fit()
                 
             key: [ "Shift+A" ]
