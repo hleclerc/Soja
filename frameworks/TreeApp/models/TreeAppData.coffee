@@ -154,25 +154,30 @@ class TreeAppData extends Model
             path.push child
             @get_root_path_rec path, item, child, res
             path.pop()
-        
-    delete_from_tree: ( item ) ->
+    
+    # root is a boolean to differenciate primary call item (root) from recursive call item
+    delete_from_tree: ( item, root = true ) ->
         # delete children
-        for c in item._children
+        child = false
+        for i in [ item._children.length - 1 .. 0 ]
+            c = item._children[ i ]
             if c._children.length > 0
-                @delete_from_tree app, c
+                @delete_from_tree c, false
+            child = true
             item.rem_child c
             @closed_tree_items.remove c
             for p in @panel_id_list()
                 @visible_tree_items[ p ].remove c
         
-        # delete item
-        path = item._parents #TODO get_root_path return an empty path, ._parents seems correct but this method need to be tested
-        parent = path[ 0 ][ path[ 0 ].length - 2 ]
-        parent.rem_child item
-        @closed_tree_items.remove item
-        for p in @panel_id_list()
-            @visible_tree_items[ p ].remove item
-    
+        if not child or root
+            # delete item
+            path = item._parents # TODO get_root_path return an empty path, ._parents seems correct but this method need to be tested
+            parent = path[ 0 ][ path[ 0 ].length - 2 ]
+            parent.rem_child item
+            @closed_tree_items.remove item
+            for p in @panel_id_list()
+                @visible_tree_items[ p ].remove item
+        
     _get_child_of_type_rec: ( res, visited, item, type ) ->
         if not visited[ item.model_id ]?
             visited[ item.model_id ] = true

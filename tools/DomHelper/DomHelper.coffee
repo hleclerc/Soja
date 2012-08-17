@@ -153,7 +153,6 @@ new_popup = ( title, params = {} ) ->
             
     _index_current_popup += 2
     
-
     close_element = new_dom_element
         parentNode : w
         className  : "PopupClose"
@@ -162,6 +161,7 @@ new_popup = ( title, params = {} ) ->
             params.onclose?()
             document.body.removeChild b
             document.body.removeChild w
+            
     if title
         t = new_dom_element
             parentNode : w
