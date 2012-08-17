@@ -104,8 +104,10 @@ input {
 
 /* ---------------- Popup ---------------- */
 .Popup {
-    border:thin solid black;
+    border    :thin solid black;
     background:white;
+    resize    : both;
+    overflow  : auto; /* overflow is necessary for resize to work */
 }
 .PopupWindow {
     background: #fff;
@@ -117,6 +119,17 @@ input {
     padding: 3 10 3 10;
     border-bottom:thin solid black;
     cursor:pointer;
+}
+
+.PopupClose {
+    float        : right;
+    margin-right : 4px;
+    margin-top   : 4px;
+    cursor       : pointer;
+}
+
+.PopupClose:hover {
+    text-decoration: underline;
 }
 
 .ModelEditorDragAndDrop {

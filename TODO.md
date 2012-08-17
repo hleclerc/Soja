@@ -14,7 +14,6 @@ API changes
 * Fix Picked zone item when mesh is cut by a new point
 * Bug (probably from blur event) on Choice
 * Allow user to get uncertainty
-* Add a close button to popup
 
 ---Fixed---
 * Global messages (see TreeItem_Computable)
@@ -38,3 +37,4 @@ API changes
 * Color map is reset after each correlation, it should not change
 * Add arrow on vectorial field
 * Test Elementary_field
+* Add a close button to popup

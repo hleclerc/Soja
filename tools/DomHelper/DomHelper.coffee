@@ -153,6 +153,15 @@ new_popup = ( title, params = {} ) ->
             
     _index_current_popup += 2
     
+
+    close_element = new_dom_element
+        parentNode : w
+        className  : "PopupClose"
+        txt        : "X"
+        onmousedown: ( evt ) ->
+            params.onclose?()
+            document.body.removeChild b
+            document.body.removeChild w
     if title
         t = new_dom_element
             parentNode : w
@@ -166,7 +175,7 @@ new_popup = ( title, params = {} ) ->
                 document.addEventListener "mousemove", _drag_evt_func, true
                 document.addEventListener "mouseup"  , _drag_end_func, true
                 evt.preventDefault?()
-    
+            
     res = new_dom_element
         parentNode : w
         className  : "PopupWindow"
