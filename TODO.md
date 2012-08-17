@@ -9,7 +9,6 @@ API changes
 * return the type of clicked point for contextual menu
 * display notice
 * test orientation for elements
-* Bug in input, return, arrow and others keyboard touch don't work
 * Allow user to save a png of his current window
 * Fix Picked zone item when mesh is cut by a new point
 * Bug (probably from blur event) on Choice
@@ -38,3 +37,4 @@ API changes
 * Add arrow on vectorial field
 * Test Elementary_field
 * Add a close button to popup
+* Bug in input, return, arrow and others keyboard touch don't work

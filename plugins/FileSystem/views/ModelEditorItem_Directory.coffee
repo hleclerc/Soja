@@ -24,7 +24,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @clipboard.bind this
         
         
-        @allow_shortkey = true # allow the use of shortkey like Ctrl+C / Delete. Set to false when renaming
+        @allow_shortkey = false # allow the use of shortkey like Ctrl+C / Delete. Set to false when renaming
         
         @line_height = 30 # enough to contain the text
         
