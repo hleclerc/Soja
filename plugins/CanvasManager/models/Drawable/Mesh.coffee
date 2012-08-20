@@ -263,12 +263,6 @@ class Mesh extends Drawable
                 for el in @_elements
                     el.rem_sub_element? sel_point
                     
-                    
-                # delete elements containing points
-                #TODO On work (the aim is to delete pzi when points of a pickedelement is deleted)
-                # Must use a destructor
-                # On peut utiliser update_indices, il faut peut être lui donner un argument qui lui dit soit on actualise (quand on ajoute un point par exemple) mais on n'actualise pas et on supprime le pzi quand le point est supprimé, ou alors on peut le tester dans la fonction directement
-                    
                 # delete points
                 @_selected_points.remove_ref p
                 @_pelected_points.remove_ref p

@@ -172,17 +172,26 @@ class TreeAppData extends Model
             
         if not child or root
             # delete item
-            path = item._parents # TODO get_root_path return an empty path, ._parents seems correct but this method need to be tested
-            if path[ 0 ].length <= 2
-                parent = path[ 0 ][ 0 ]
-            else
-                parent = path[ 0 ][ path[ 0 ].length - 2 ]
-            
+            parent = @_get_parent item
             parent.rem_child item
             @closed_tree_items.remove item
             for p in @panel_id_list()
                 @visible_tree_items[ p ].remove item
-        
+    
+    _get_parent: ( item ) ->
+        path = item._parents
+        if path[ 0 ].length <= 2
+            parent = path[ 0 ][ 0 ]
+        else
+            parent = path[ 0 ][ path[ 0 ].length - 2 ]
+        if parent == item
+            i = 1
+            while parent == item and i < 50
+                if path[ i ].length > 1
+                    parent = path[ i ][ path[ i ].length - 2 ]
+                i++
+        return parent
+    
     _get_child_of_type_rec: ( res, visited, item, type ) ->
         if not visited[ item.model_id ]?
             visited[ item.model_id ] = true
