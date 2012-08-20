@@ -159,20 +159,25 @@ class TreeAppData extends Model
     delete_from_tree: ( item, root = true ) ->
         # delete children
         child = false
-        for i in [ item._children.length - 1 .. 0 ]
-            c = item._children[ i ]
-            if c._children.length > 0
-                @delete_from_tree c, false
-            child = true
-            item.rem_child c
-            @closed_tree_items.remove c
-            for p in @panel_id_list()
-                @visible_tree_items[ p ].remove c
-        
+        if item._children.length
+            for i in [ item._children.length - 1 .. 0 ]
+                c = item._children[ i ]
+                if c._children.length > 0
+                    @delete_from_tree c, false
+                child = true
+                item.rem_child c
+                @closed_tree_items.remove c
+                for p in @panel_id_list()
+                    @visible_tree_items[ p ].remove c
+            
         if not child or root
             # delete item
             path = item._parents # TODO get_root_path return an empty path, ._parents seems correct but this method need to be tested
-            parent = path[ 0 ][ path[ 0 ].length - 2 ]
+            if path[ 0 ].length <= 2
+                parent = path[ 0 ][ 0 ]
+            else
+                parent = path[ 0 ][ path[ 0 ].length - 2 ]
+            
             parent.rem_child item
             @closed_tree_items.remove item
             for p in @panel_id_list()

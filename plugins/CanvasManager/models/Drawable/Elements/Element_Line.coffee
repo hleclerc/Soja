@@ -2,7 +2,8 @@
 class Element_Line extends Element_WithIndices
     constructor: ( indices = [] ) ->
         super indices
-            
+        @cut_with_point_callback = []
+        
     draw: ( info, mesh, proj, is_a_sub, theme = info.theme.lines ) ->
         wf = mesh.visualization.display_style.get() in [ "Wireframe", "Surface with Edges" ]
         if wf or not is_a_sub
@@ -66,6 +67,8 @@ class Element_Line extends Element_WithIndices
                     new Element_Line [ @indices[ 0 ].get(), np ]
                     new Element_Line [ np, @indices[ 1 ].get() ]
                 ]
+            for fun in @cut_with_point_callback
+                fun mesh, @indices, np
                 
 #             
 #         # arcs
