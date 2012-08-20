@@ -160,7 +160,6 @@ class TreeAppModule_PanelManager extends TreeAppModule
                     inst.cm.cam.rotate 0, 0.1, 0
     
 
-    
     split_view: ( evt, app, n ) ->
         app.undo_manager.snapshot()
         cam = undefined

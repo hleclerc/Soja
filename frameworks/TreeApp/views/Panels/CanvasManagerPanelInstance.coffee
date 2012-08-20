@@ -32,12 +32,10 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
 
         #
         @app_data.focus.set @cm.view_id
-                
-        @cm.click_fun.push ( cm, evt ) =>
-            for view in @app_data._views
-                if view instanceof TreeApp
-                    tree_app = view
-            tree_app.data.focus.set @cm.view_id
+
+        
+        @cm.select_canvas_fun.push ( cm, evt ) =>
+            @app_data.focus.set @cm.view_id
             
             if evt.ctrlKey
                 @app_data.selected_canvas_pan.toggle @view_item._panel_id
@@ -46,6 +44,11 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
                 
             if @app_data.selected_canvas_pan.contains @view_item._panel_id
                 @app_data.last_canvas_pan.set @view_item._panel_id
+            
+            
+        
+        @cm.click_fun.push ( cm, evt ) =>
+            
                 
         @cm.dblclick_fun.push ( cm, evt ) =>
             @_add_transform_node( evt )

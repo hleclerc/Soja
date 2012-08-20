@@ -50,8 +50,9 @@ class CanvasManager extends View
         @x_max = [ 1, 1, 1 ]
 
         #
-        @click_fun    = [] # called if mouse down and up without move
-        @dblclick_fun = []
+        @click_fun         = [] # called if mouse down and up without move
+        @dblclick_fun      = []
+        @select_canvas_fun = [] # call if mousedown or dblclick
 
         
     # return a list of items which can take events
@@ -263,6 +264,9 @@ class CanvasManager extends View
         false
             
     _dbl_click: ( evt ) ->
+        for fun in @select_canvas_fun
+            fun this, evt
+            
         evt = window.event if not evt?
                 
         @mouse_x = evt.clientX - get_left( @canvas )
@@ -280,6 +284,10 @@ class CanvasManager extends View
 
     _mouse_down: ( evt ) ->
         @mouse_has_moved_since_mouse_down = false
+        
+        for fun in @select_canvas_fun
+            fun this, evt
+        
         evt = window.event if not evt?
 
         @mouse_b = if evt.which?

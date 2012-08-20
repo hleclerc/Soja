@@ -7,12 +7,14 @@ API changes
 * 
 
 * return the type of clicked point for contextual menu
-* display notice
 * test orientation for elements
 * Allow user to save a png of his current window
-* Fix Picked zone item when mesh is cut by a new point
 * Bug (probably from blur event) on Choice
 * Allow user to get uncertainty
+* Rename from "gradient" to "color map"
+* Fix Picked zone item when mesh is cut by a new point
+* Delete Picked zone item when a point in pzi is deleted
+* display notice
 
 ---Fixed---
 * Global messages (see TreeItem_Computable)
@@ -38,3 +40,4 @@ API changes
 * Test Elementary_field
 * Add a close button to popup
 * Bug in input, return, arrow and others keyboard touch don't work
+* Fix bug on delete point (it delete selected treeitem)
