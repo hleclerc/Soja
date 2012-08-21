@@ -11,7 +11,6 @@ API changes
 * Allow user to save a png of his current window
 * Allow user to get uncertainty
 * Bug (probably from blur event) on Choice
-* Rename from "gradient" to "color map"
 * display notice
 
 ---Fixed---
@@ -43,3 +42,4 @@ API changes
 * Delete Picked zone item when a point in pzi is deleted
 * Reclick on Border does not delete clicked border and pzi anymore (probably coming from the use of _parents in treeappdata)
 * Remove viewitem does not perfectly work, on some case user can lost visualization
+* Rename from "gradient" to "color map"
