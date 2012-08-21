@@ -27,7 +27,7 @@ class VectorialField extends Drawable
 #                 
 #         model.drawing_parameters.add_attr
 #             display_style: new Choice( 2, [ "Points", "Wireframe", "Surface", "Surface with Edges", "Arrow" ] )
-#             gradient     : model.drawing_parameters._legend.gradient
+#             gradient     : model.drawing_parameters._legend.color_map
 #             legend       : model.drawing_parameters._legend
             
             
@@ -128,7 +128,7 @@ class VectorialField extends Drawable
                 max_legend = legend.max_val.get()
                 min_legend = legend.min_val.get()
                 position = ( max_legend - values[ ind ] ) / ( max_legend - min_legend )
-                color = legend.gradient.get_color_from_pos position
+                color = legend.color_map.get_color_from_pos position
                 
                 @_draw_arrow_colored info, proj_p0, proj_p1, arrow_p0, arrow_p1, color
             

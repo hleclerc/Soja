@@ -9,8 +9,8 @@ API changes
 * return the type of clicked point for contextual menu
 * test orientation for elements
 * Allow user to save a png of his current window
-* Bug (probably from blur event) on Choice
 * Allow user to get uncertainty
+* Bug (probably from blur event) on Choice
 * Rename from "gradient" to "color map"
 * display notice
 

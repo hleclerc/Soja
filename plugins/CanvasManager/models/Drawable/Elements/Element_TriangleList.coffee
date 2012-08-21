@@ -128,7 +128,7 @@ class Element_TriangleList extends Element
     _draw_gradient_stroke_triangle: ( info, p0, p1, posit, legend ) ->
         info.ctx.beginPath()
         lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ], p1[ 0 ], p1[ 1 ]
-        for col in legend.gradient.color_stop
+        for col in legend.color_map.color_stop
             lineargradient.addColorStop col.position.get(), col.color.to_rgba()
         info.ctx.strokeStyle = lineargradient
         info.ctx.moveTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
@@ -143,7 +143,7 @@ class Element_TriangleList extends Element
         if isNaN( p0[ 0 ] ) or isNaN( p0[ 1 ] ) or isNaN( p1[ 0 ] ) or isNaN( p1[ 1 ] )
             return
         lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ], p1[ 0 ], p1[ 1 ]
-        for col in legend.gradient.color_stop
+        for col in legend.color_map.color_stop
             lineargradient.addColorStop col.position.get(), col.color.to_rgba()
         info.ctx.strokeStyle = lineargradient
         info.ctx.fillStyle = lineargradient
@@ -181,7 +181,7 @@ class Element_TriangleList extends Element
     
     
             pos = ( max_legend - value ) / ( max_legend - min_legend )
-            col = legend.gradient.get_color_from_pos pos
+            col = legend.color_map.get_color_from_pos pos
             
             if display_style == "Wireframe"
                 @_draw_elementary_stroke_triangle info, position, col
