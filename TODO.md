@@ -3,7 +3,6 @@ UI
 API changes
 * only one inst of FileSystem (use of FileSystem.static_method)
 * ModelEditorList supporting dim changes
-* watch_item removed from TreeItem (should be a method of TreeAppData)
 * 
 
 * return the type of clicked point for contextual menu
@@ -11,7 +10,6 @@ API changes
 * Allow user to save a png of his current window
 * Allow user to get uncertainty
 * Bug (probably from blur event) on Choice
-* display notice
 
 ---Fixed---
 * Global messages (see TreeItem_Computable)
@@ -43,3 +41,5 @@ API changes
 * Reclick on Border does not delete clicked border and pzi anymore (probably coming from the use of _parents in treeappdata)
 * Remove viewitem does not perfectly work, on some case user can lost visualization
 * Rename from "gradient" to "color map"
+* watch_item removed from TreeItem (should be a method of TreeAppData)
+* display notice
