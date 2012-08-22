@@ -9,7 +9,6 @@ API changes
 * test orientation for elements
 * Allow user to save a png of his current window
 * Allow user to get uncertainty
-* Bug (probably from blur event) on Choice
 
 ---Fixed---
 * Global messages (see TreeItem_Computable)
@@ -43,3 +42,4 @@ API changes
 * Rename from "gradient" to "color map"
 * watch_item removed from TreeItem (should be a method of TreeAppData)
 * display notice
+* Bug (probably from blur event) on Choice (came from selected which was not set)
