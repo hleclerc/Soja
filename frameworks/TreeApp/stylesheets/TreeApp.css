@@ -124,7 +124,7 @@
     border-right:thin solid grey;
     color: DarkSlateGrey;
     display: inline-block;
-    padding: 1em 1em 0.2em 1em;
+    padding: 1em 0.85em 0.2em;
     text-align: center;
 }
 

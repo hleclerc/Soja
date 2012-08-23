@@ -46,7 +46,7 @@ class TreeAppModule_ImageSet extends TreeAppModule
                         img = new ImgItem "composite0" + @numpic + ".png", app
                     else
                         img = new ImgItem "composite" + @numpic + ".png", app
-                    @numpic += 3
+                    @numpic += 2
                     
                 @collection.add_child img
                 

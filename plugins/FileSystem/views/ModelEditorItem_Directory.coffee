@@ -299,6 +299,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         # stop rename file
         file.onblur = ( evt ) =>
             @allow_shortkey = true
+            console.log @allow_shortkey
             title = file.innerHTML
             child_index.name.set title
             file.contentEditable = "false"

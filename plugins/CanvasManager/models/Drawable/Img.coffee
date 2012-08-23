@@ -152,7 +152,7 @@ class Img extends Drawable
                     m.points.push [ i , p, 0 ]
                 m.build_w2b_legend()
                 
-                @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.4, constrain_zoom: 'x'
+                @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.4, constrain_zoom: 'x', width: '', class_name: 'histogramm'
                 @cm.cam.threeD.set false
                 
                 # @cm.items.push bg
@@ -214,6 +214,11 @@ class Img extends Drawable
         info.ctx.save()
         info.ctx.setTransform x[ 0 ], x[ 1 ], y[ 0 ], y[ 1 ], d[ 0 ], d[ 1 ]
         info.ctx.transform 1, 0, 0, -1, 0, 0
-        info.ctx.drawImage rgba, sx, sy, dx, dy, 0, 0, dx, dy
+#         try {context.drawImage(this.image,position.x,position.y,size.x,size.y);}
+#         catch(err) {}
+        try
+            info.ctx.drawImage rgba, sx, sy, dx, dy, 0, 0, dx, dy
+        catch err
+            console.log err
         info.ctx.restore()
         
