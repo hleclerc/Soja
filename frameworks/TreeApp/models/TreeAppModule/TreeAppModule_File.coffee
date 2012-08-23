@@ -33,8 +33,8 @@ class TreeAppModule_File extends TreeAppModule
                     #                     clear_page()
 
                     item_cp = new ModelEditorItem_Directory
-                        el    : @content
-                        model : session_dir
+                        el        : @content
+                        model     : session_dir
                     
 
 
