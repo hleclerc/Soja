@@ -5,10 +5,10 @@ API changes
 * ModelEditorList supporting dim changes
 * 
 
-* return the type of clicked point for contextual menu
 * test orientation for elements
 * Allow user to save a png of his current window
 * Allow user to get uncertainty
+* Make black and white icon of each existant icon, and use them when action is inactive
 
 ---Fixed---
 * Global messages (see TreeItem_Computable)
@@ -43,3 +43,4 @@ API changes
 * watch_item removed from TreeItem (should be a method of TreeAppData)
 * display notice
 * Bug (probably from blur event) on Choice (came from selected which was not set)
+* return the type of clicked point for contextual menu

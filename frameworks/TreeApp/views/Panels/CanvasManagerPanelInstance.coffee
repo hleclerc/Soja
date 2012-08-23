@@ -111,10 +111,24 @@ class CanvasManagerPanelInstance extends LayoutManagerPanelInstance
             parent.removeChild menu
 
     # HUM -> should be in respective objects...
+    # TODO Mesh is detect differently from Transform and others, this need to be rewritten
     _find_entity: ( evt ) ->
+        movable_entities = []
+        for item in @cm.active_items()
+            mouse_x = evt.clientX - get_left( @cm.canvas )
+            mouse_y = evt.clientY - get_top ( @cm.canvas )
+            pos = [ mouse_x, mouse_y ]
+            if item._closest_point_closer_than?
+                proj = for p in item.mesh.points
+                    @cm.cam_info.re_2_sc.proj p.pos.get()
+                point = item._closest_point_closer_than proj, pos, 10
+                if point >= 0
+                    point.type = "Mesh"
+                    return point
+    
+    
         for phase in [ 0 ... 2 ]
             for item in @cm.active_items() when item.get_movable_entities?
-                movable_entities = []
                 # BAD
                 item.get_movable_entities movable_entities, @cm.cam_info, [ @cm.mouse_x, @cm.mouse_y ], phase
                 if movable_entities.length
