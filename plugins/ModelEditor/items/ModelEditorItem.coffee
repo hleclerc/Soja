@@ -48,6 +48,10 @@ class ModelEditorItem extends View
     get_item_width: ->
         @get_property "item_width", 100
         
+    # in percent
+    get_className: ->
+        @get_property "className", ''
+        
     # 
     get_closed_models: ->
         @get_property "closed_models"
@@ -151,6 +155,7 @@ class ModelEditorItem extends View
             @ce = new_dom_element
                 parentNode : @el
                 nodeName   : "span"
+                className  : @get_className()
             
             @ew = @get_item_width()
             @ed = @ce
