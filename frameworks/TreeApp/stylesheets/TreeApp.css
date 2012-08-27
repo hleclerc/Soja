@@ -308,12 +308,26 @@
 #timeline_player_button {
     text-align:center;
     position: relative;
-    top: -20px;
+    top: -24px;
 }
+#timeline_player_button img {
+    padding: 0.1em;
+    border:thin solid black;
+}
+
+#timeline_player_button img:hover {
+    border:thin solid lightGrey;
+    background           : darkGrey;
+    -moz-border-radius   : 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius     : 3px;
+    border-radius        : 3px;
+}
+
 .timeline_scroll_pane {
     left: 20%;
     position: relative;
-    top: -45px;
+    top: -51px;
     width: 10%;
 }
 .timeline_speed {

@@ -8,7 +8,6 @@ API changes
 * test orientation for elements
 * Allow user to save a png of his current window
 * Allow user to get uncertainty
-* Make black and white icon of each existant icon, and use them when action is inactive
 
 ---Fixed---
 * Global messages (see TreeItem_Computable)
