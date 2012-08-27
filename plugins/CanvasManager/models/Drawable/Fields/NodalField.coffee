@@ -13,7 +13,7 @@ class NodalField extends Model
                 _legend: new Legend( model.name )
                 
         model.drawing_parameters.add_attr
-            display_style: new Choice( 2, [ "Points", "Wireframe", "Surface", "Surface with Edges" ] )
+            display_style: new Choice( 1, [ "Wireframe", "Surface", "Surface with Edges" ] )
             legend       : model.drawing_parameters._legend
     
     toString: ->
@@ -38,14 +38,13 @@ class NodalField extends Model
             parameters._legend.draw info
                 
     sub_canvas_items: ->
-        console.log @drawing_parameters
         if @drawing_parameters?
             [ @drawing_parameters._legend ]
         else
             []
 
     z_index: ->
-        50
+        150
         
     get_val: ( info, i ) ->
         @_data.get i

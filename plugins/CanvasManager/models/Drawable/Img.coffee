@@ -16,6 +16,7 @@ class Img extends Drawable
 
         onload = =>
             @_signal_change()
+            @loaded = true
             @data.rgba = @data.buff
             @data.buff = new Image
             @data.buff.onload = onload
@@ -26,7 +27,7 @@ class Img extends Drawable
             if need_fit and app?
                 need_fit = false
                 app.fit 0
-            
+        @loaded = false
         @data.buff = new Image
         @data.buff.onload = onload
         if @src.get().length
@@ -104,6 +105,9 @@ class Img extends Drawable
             #                 b = info.re_2_sc.proj [ w, h, @data.zmin ]
             #                 info.ctx.drawImage @data.rgba, a[ 0 ], a[ 1 ], b[ 0 ] - a[ 0 ], b[ 1 ] - a[ 1 ]
             #             else
+            if not @loaded? or @loaded != true
+                console.log Img, this.src.get()
+                console.log @loaded
             Img._draw_persp_rec info, @data.rgba, @data.zmin, @data.zmax, @O, @X, @Y, @Z
 
         
@@ -152,7 +156,7 @@ class Img extends Drawable
                     m.points.push [ i , p, 0 ]
                 m.build_w2b_legend()
                 
-                @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.4, constrain_zoom: 'x'
+                @cm = new CanvasManager el: d, want_aspect_ratio: true, padding_ratio: 1.4, constrain_zoom: 'x', width: '', class_name: 'histogramm'
                 @cm.cam.threeD.set false
                 
                 # @cm.items.push bg
@@ -214,6 +218,10 @@ class Img extends Drawable
         info.ctx.save()
         info.ctx.setTransform x[ 0 ], x[ 1 ], y[ 0 ], y[ 1 ], d[ 0 ], d[ 1 ]
         info.ctx.transform 1, 0, 0, -1, 0, 0
+
+#         try
         info.ctx.drawImage rgba, sx, sy, dx, dy, 0, 0, dx, dy
+#         catch err
+#             console.log err
         info.ctx.restore()
         

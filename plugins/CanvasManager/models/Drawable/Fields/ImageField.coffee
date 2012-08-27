@@ -21,7 +21,14 @@ class ImageField extends Drawable
                 _legend: new Legend( "todo" )
                 
         model.drawing_parameters.add_attr
-            gradient     : model.drawing_parameters._legend.gradient
+            color_map  : model.drawing_parameters._legend.color_map
+    
+    get_min_data: ->
+        0
+        
+    get_max_data: ->
+        255
+        
     
     toString: ->
         @name.get()

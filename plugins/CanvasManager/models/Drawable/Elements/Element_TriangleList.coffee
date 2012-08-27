@@ -32,7 +32,7 @@ class Element_TriangleList extends Element
             info.theme.lines.end_ctx info
                 
     # the trick of this function is that it use only one linear gradient calculate using point value and position
-    draw_nodal_field: ( info, proj, field, display_style, legend ) ->
+    draw_nodal_field: ( info, proj, data, display_style, legend ) ->
         max_legend = legend.max_val.get()
         min_legend = legend.min_val.get()
         div_legend = max_legend - min_legend
@@ -45,17 +45,17 @@ class Element_TriangleList extends Element
             ]
                     
             vals = [
-                field.get tri[ 0 ]
-                field.get tri[ 1 ]
-                field.get tri[ 2 ]
-            ]                
+                data.get tri[ 0 ]
+                data.get tri[ 1 ]
+                data.get tri[ 2 ]
+            ]
 
             for val, i in vals
                 vals[ i ] = ( max_legend - val ) * div_legend
                 
             #             c = max_legend - min_legend + ( max_legend == min_legend )
             #             vals = for i in [ 0 ... 3 ]
-            #                 ( field.get( tri[ i ] ) - min_legend ) / c
+            #                 ( data.get( tri[ i ] ) - min_legend ) / c
             
             posit = for i in [ 0 ... 3 ]
                 proj[ tri[ i ] ]
@@ -123,19 +123,12 @@ class Element_TriangleList extends Element
             if display_style == "Wireframe"
                 @_draw_gradient_stroke_triangle info, p0, p1, posit, legend
                 
-    # draw edges of triangle as normal lines
-    _draw_edge_triangle: ( info, posit ) ->
-        info.theme.lines.beg_ctx info
-        info.theme.lines.draw_straight_proj info, posit[ 0 ], posit[ 1 ]
-        info.theme.lines.draw_straight_proj info, posit[ 1 ], posit[ 2 ]
-        info.theme.lines.draw_straight_proj info, posit[ 2 ], posit[ 0 ]
-        info.theme.lines.end_ctx info
                 
     # wireframe. drawing gradient depending p0 and p1 in the correct triangle with the correct color
     _draw_gradient_stroke_triangle: ( info, p0, p1, posit, legend ) ->
         info.ctx.beginPath()
         lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ], p1[ 0 ], p1[ 1 ]
-        for col in legend.gradient.color_stop
+        for col in legend.color_map.color_stop
             lineargradient.addColorStop col.position.get(), col.color.to_rgba()
         info.ctx.strokeStyle = lineargradient
         info.ctx.moveTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
@@ -150,7 +143,7 @@ class Element_TriangleList extends Element
         if isNaN( p0[ 0 ] ) or isNaN( p0[ 1 ] ) or isNaN( p1[ 0 ] ) or isNaN( p1[ 1 ] )
             return
         lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ], p1[ 0 ], p1[ 1 ]
-        for col in legend.gradient.color_stop
+        for col in legend.color_map.color_stop
             lineargradient.addColorStop col.position.get(), col.color.to_rgba()
         info.ctx.strokeStyle = lineargradient
         info.ctx.fillStyle = lineargradient
@@ -160,3 +153,74 @@ class Element_TriangleList extends Element
         info.ctx.lineTo( posit[ 0 ][ 0 ], posit[ 0 ][ 1 ] )
         info.ctx.fill()
         info.ctx.stroke()
+        
+        
+    draw_elementary_triangle: ( info, proj, data, display_style, legend ) ->
+        max_legend = legend.max_val.get()
+        min_legend = legend.min_val.get()
+        div_legend = max_legend - min_legend
+        div_legend = 1 / ( div_legend + ( div_legend == 0 ) )
+        for num_triangle in [ 0 ... @indices.size( 1 ) ]
+            tri = [
+                @indices.get [ 0, num_triangle ]
+                @indices.get [ 1, num_triangle ]
+                @indices.get [ 2, num_triangle ]
+            ]
+                    
+            value = data.get num_triangle
+
+#             for val, i in vals
+#                 vals[ i ] = ( max_legend - val ) * div_legend
+                
+            #             c = max_legend - min_legend + ( max_legend == min_legend )
+            #             vals = for i in [ 0 ... 3 ]
+            #                 ( field.get( tri[ i ] ) - min_legend ) / c
+            
+            position = for i in [ 0 ... 3 ]
+                proj[ tri[ i ] ]
+    
+    
+            pos = ( max_legend - value ) / ( max_legend - min_legend )
+            col = legend.color_map.get_color_from_pos pos
+            
+            if display_style == "Wireframe"
+                @_draw_elementary_stroke_triangle info, position, col
+                
+            if display_style == "Surface" or display_style == "Surface with Edges"
+                @_draw_elementary_fill_triangle info, position, col
+                
+            if display_style == "Surface with Edges" or display_style == "Edges"
+                @_draw_edge_triangle info, position
+            
+        
+    # draw edges of triangle with adapted color
+    _draw_elementary_stroke_triangle: ( info, position, col ) ->
+        info.ctx.beginPath()        
+        info.ctx.strokeStyle = "rgba( " + col[ 0 ] + ", " + col[ 1 ] + ", " + col[ 2 ] + ", " + col[ 3 ] + " ) "
+        info.ctx.moveTo( position[ 0 ][ 0 ], position[ 0 ][ 1 ] )
+        info.ctx.lineTo( position[ 1 ][ 0 ], position[ 1 ][ 1 ] )
+        info.ctx.lineTo( position[ 2 ][ 0 ], position[ 2 ][ 1 ] )
+        info.ctx.lineTo( position[ 0 ][ 0 ], position[ 0 ][ 1 ] )
+        info.ctx.stroke()        
+        info.ctx.closePath()
+        
+    # draw surface of triangle
+    _draw_elementary_fill_triangle: ( info, position, col ) ->
+        info.ctx.beginPath()
+        info.ctx.fillStyle = "rgba( " + col[ 0 ] + ", " + col[ 1 ] + ", " + col[ 2 ] + ", " + col[ 3 ] + " ) "
+        info.ctx.strokeStyle = "rgba( " + col[ 0 ] + ", " + col[ 1 ] + ", " + col[ 2 ] + ", " + col[ 3 ] + " ) "
+        info.ctx.moveTo( position[ 0 ][ 0 ], position[ 0 ][ 1 ] )
+        info.ctx.lineTo( position[ 1 ][ 0 ], position[ 1 ][ 1 ] )
+        info.ctx.lineTo( position[ 2 ][ 0 ], position[ 2 ][ 1 ] )
+        info.ctx.lineTo( position[ 0 ][ 0 ], position[ 0 ][ 1 ] )
+        info.ctx.fill()
+        info.ctx.stroke()
+        info.ctx.closePath()
+        
+    # draw edges of triangle as normal lines
+    _draw_edge_triangle: ( info, posit ) ->
+        info.theme.lines.beg_ctx info
+        info.theme.lines.draw_straight_proj info, posit[ 0 ], posit[ 1 ]
+        info.theme.lines.draw_straight_proj info, posit[ 1 ], posit[ 2 ]
+        info.theme.lines.draw_straight_proj info, posit[ 2 ], posit[ 0 ]
+        info.theme.lines.end_ctx info

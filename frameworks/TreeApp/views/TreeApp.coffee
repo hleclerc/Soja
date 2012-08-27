@@ -30,6 +30,8 @@ class TreeApp extends View
                 bottom  : 0
                 
         @icobar = new IcoBar @he, this, allow_sub:false
+       
+        @timeline = new Timeline @bel, this
         
         document.addEventListener "keydown", ( ( evt ) => @_on_key_down evt ), true
         

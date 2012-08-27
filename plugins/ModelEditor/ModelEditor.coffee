@@ -14,6 +14,7 @@
 #  - undo_manager
 #  - closed_models (Lst)
 #  - item_type
+#  - class_name
 new_model_editor = ( params ) ->
     # if we only want to display a sub item
     sub_model = params.model.disp_only_in_model_editor?()

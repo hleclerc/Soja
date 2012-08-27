@@ -16,17 +16,17 @@ class Theme extends Model
             selected_elements   : new LineTheme( new Color( 255,   0,   0, 255 ), 1 )
             highlighted_elements: new LineTheme( new Color( 255, 255,   0, 255 ), 1.5 )
             
-            constrain_boundary_displacement       : new LineTheme( new Color( 122,   0,   0, 255 ), 1 )
-            constrain_boundary_displacement_hover : new LineTheme( new Color( 122,   0,   0, 255 ), 2 )
+            constrain_boundary_displacement       : new LineTheme( new Color( 122,   0,   0, 255 ), 2 )
+            constrain_boundary_displacement_hover : new LineTheme( new Color( 122,   0,   0, 255 ), 3 )
             
-            constrain_boundary_strain             : new LineTheme( new Color( 200, 100, 100, 255 ), 1 )
-            constrain_boundary_strain_hover       : new LineTheme( new Color( 200, 100, 100, 255 ), 2 )
+            constrain_boundary_strain             : new LineTheme( new Color( 200, 100, 100, 255 ), 2 )
+            constrain_boundary_strain_hover       : new LineTheme( new Color( 200, 100, 100, 255 ), 3 )
             
-            constrain_boundary_pressure           : new LineTheme( new Color(  50,   0,   0, 255 ), 1 )
-            constrain_boundary_pressure_hover     : new LineTheme( new Color(  50,   0,   0, 255 ), 2 )
+            constrain_boundary_pressure           : new LineTheme( new Color(  50,   0,   0, 255 ), 2 )
+            constrain_boundary_pressure_hover     : new LineTheme( new Color(  50,   0,   0, 255 ), 3 )
             
-            free_boundary                         : new LineTheme( new Color(   0, 122,   0, 255 ), 1 )
-            free_boundary_hover                   : new LineTheme( new Color(   0, 122,   0, 255 ), 2 )
+            free_boundary                         : new LineTheme( new Color(   0, 122,   0, 255 ), 2 )
+            free_boundary_hover                   : new LineTheme( new Color(   0, 122,   0, 255 ), 3 )
             
             
             gradient_legend  : new Gradient

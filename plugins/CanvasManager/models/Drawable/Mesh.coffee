@@ -30,6 +30,8 @@ class Mesh extends Drawable
         @_sub_elements = [] # list of { sub_level: , elem_list: , on_skin: , parent }
         @_sub_date = -1
         
+        @delete_selected_points_callback = []
+        
     # add a new node
     add_point: ( pos = [ 0, 0, 0 ] ) ->
         res = new Point pos, @move_scheme
@@ -173,7 +175,6 @@ class Mesh extends Drawable
                         @_elements.set res
                             
                         
-                    
         return false
         
     on_mouse_up_wo_move: ( cm, evt, pos, b, points_allowed = true ) ->
@@ -245,7 +246,7 @@ class Mesh extends Drawable
     
     delete_selected_point: ->
         index_selected_points = @_get_indices_of_selected_points()
-#         console.log index_selected_points, @points
+           
         if index_selected_points.length > 0
             for ind in [ index_selected_points.length - 1 .. 0 ]
                 sel_point = index_selected_points[ ind ]
@@ -262,16 +263,14 @@ class Mesh extends Drawable
                 for el in @_elements
                     el.rem_sub_element? sel_point
                     
-                    
-                # delete elements containing points
-                #TODO On work (the aim is to delete pzi when points of a pickedelement is deleted
-                # Must use a destructor
-                    
                 # delete points
                 @_selected_points.remove_ref p
                 @_pelected_points.remove_ref p
                 @points.splice sel_point, 1
                 
+                for fun in @delete_selected_points_callback
+                    fun this, index_selected_points
+                    
                 #update indices of all following points using new_indices
                 done = {}
                 for el in @_elements

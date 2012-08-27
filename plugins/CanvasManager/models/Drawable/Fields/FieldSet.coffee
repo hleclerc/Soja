@@ -29,5 +29,5 @@ class FieldSet extends Drawable
             []
 
     z_index: ->
-        50
+        150
         

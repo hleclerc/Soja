@@ -3,16 +3,11 @@ UI
 API changes
 * only one inst of FileSystem (use of FileSystem.static_method)
 * ModelEditorList supporting dim changes
-* watch_item removed from TreeItem (should be a method of TreeAppData)
 * 
 
-
-* return the type of clicked point for contextual menu
-* display notice
 * test orientation for elements
-* Bug in input, return, arrow and others keyboard touch don't work
 * Allow user to save a png of his current window
-
+* Allow user to get uncertainty
 
 ---Fixed---
 * Global messages (see TreeItem_Computable)
@@ -34,3 +29,17 @@ API changes
 * bug boundary picking no more work since introduction of element (because it still use mesh.lines to pick)
 * Y is in the wrong side for correlation result
 * Color map is reset after each correlation, it should not change
+* Add arrow on vectorial field
+* Test Elementary_field
+* Add a close button to popup
+* Bug in input, return, arrow and others keyboard touch don't work
+* Fix bug on delete point (it delete selected treeitem)
+* Add and modify Picked zone item when mesh is cut by a new point
+* Delete Picked zone item when a point in pzi is deleted
+* Reclick on Border does not delete clicked border and pzi anymore (probably coming from the use of _parents in treeappdata)
+* Remove viewitem does not perfectly work, on some case user can lost visualization
+* Rename from "gradient" to "color map"
+* watch_item removed from TreeItem (should be a method of TreeAppData)
+* display notice
+* Bug (probably from blur event) on Choice (came from selected which was not set)
+* return the type of clicked point for contextual menu

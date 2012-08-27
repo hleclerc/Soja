@@ -28,9 +28,13 @@ class ModelEditorItem_Choice extends ModelEditorItem
 
             cpt = 0
             for i in @model._nlst()
+                selected = ""
+                if i.toString() == @model.item().toString()
+                    selected = "selected"
                 new_dom_element
                     parentNode : @select
                     nodeName   : "option"
+                    selected   : selected
                     txt        : i.toString()
                     value      : cpt
                     
