@@ -115,7 +115,7 @@ class TreeAppModule_File extends TreeAppModule
                             for m in @modules
                                 if m instanceof TreeAppModule_ImageSet
                                     m.actions[ 1 ].fun evt, app, img_item
-                                    
+                    
                     item_cp = new ModelEditorItem_Directory
                         el    : @d
                         model : d
