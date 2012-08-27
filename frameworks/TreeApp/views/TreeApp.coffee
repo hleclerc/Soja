@@ -64,7 +64,7 @@ class TreeApp extends View
                                 
                             msg_content.classList.add message.type # msg_info, msg_success or msg_error
                             
-                            setTimeout ( => @msg_container.removeChild msg_box ), 3000
+                            setTimeout ( => @msg_container.removeChild msg_box ), 18000
                                 
                 
         # update layout if current session has changed

@@ -12,6 +12,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         super params
         @use_breadcrumb = if params.use_breadcrumb? then params.use_breadcrumb else true
         @use_icons      = if params.use_icons? then params.use_icons else true
+        @use_upload     = if params.use_upload? then params.use_upload else true
         
         @breadcrumb = new Lst
         @breadcrumb.push @model
@@ -117,6 +118,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         evt.stopPropagation()
                         return false
             
+        if @use_upload
             @upload_form = new_dom_element
                     parentNode: @icon_scene
                     nodeName  : "form"

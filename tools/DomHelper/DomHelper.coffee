@@ -91,7 +91,7 @@ new_popup = ( title, params = {} ) ->
         clientX = params.event.clientX
         clientY = params.event.clientY
     else
-        clientX = window.innerWidth / 2 -10
+        clientX = window.innerWidth / 2 - 10
         clientY = window.innerHeight / 2 - 10
     
     top_x = params.top_x or -1000
