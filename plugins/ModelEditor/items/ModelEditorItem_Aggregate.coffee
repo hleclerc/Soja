@@ -54,3 +54,10 @@ class ModelEditorItem_Aggregate extends ModelEditorItem
 
     ok_for_label: ->
         false
+        
+    contains_labels: ->
+        true
+                
+    set_disabled: ( val ) ->
+        for model_id, me of @containers
+            me.edit.set_disabled val

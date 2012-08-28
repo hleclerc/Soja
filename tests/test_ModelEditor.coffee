@@ -39,7 +39,15 @@ test_ModelEditor = ->
             vec      : new Vec [ 1, 2, 3 ]
             color    : new Color 150, 0, 0
             gradient : new Gradient
+            sa:
+                a: 10
+                b: 20
         simple_matrix: [ [ 1, 2, 3 ], [ 4, 5, 6 ] ]
+        
+    model.simple_aggregate.add_attr
+        const_or_not: new ConstOrNotModel model.simple_aggregate.bool, model.simple_aggregate.sa
+        testst      : new ConstOrNotModel model.simple_aggregate.bool, model.simple_aggregate.val
+    
 
     model.simple_aggregate.gradient.add_color [ 255,255,255, 255 ], 0
     model.simple_aggregate.gradient.add_color [   0,  0,  0, 255 ], 1

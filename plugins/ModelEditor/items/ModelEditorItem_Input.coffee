@@ -27,3 +27,7 @@ class ModelEditorItem_Input extends ModelEditorItem
                 setTimeout ( => @input.focus() ), 1
             else
                 @input.blur()
+                
+    set_disabled: ( val ) ->
+        @input.disabled = val
+        

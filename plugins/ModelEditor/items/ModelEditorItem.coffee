@@ -1,12 +1,13 @@
 #
 class ModelEditorItem extends View
     @default_types: [
-        ( model ) -> ModelEditorItem_CheckBox       if model instanceof Bool
-        ( model ) -> ModelEditorItem_Choice         if model instanceof Choice
-        ( model ) -> ModelEditorItem_Button         if model instanceof Button
-        ( model ) -> ModelEditorItem_ConstrainedVal if model instanceof ConstrainedVal
-        ( model ) -> ModelEditorItem_Input          if model instanceof Obj
-        ( model ) -> ModelEditorItem_Lst            if model.dim() # Tensor
+        ( model ) -> ModelEditorItem_CheckBox        if model instanceof Bool
+        ( model ) -> ModelEditorItem_Choice          if model instanceof Choice
+        ( model ) -> ModelEditorItem_Button          if model instanceof Button
+        ( model ) -> ModelEditorItem_ConstrainedVal  if model instanceof ConstrainedVal
+        ( model ) -> ModelEditorItem_Input           if model instanceof Obj
+        ( model ) -> ModelEditorItem_ConstOrNotModel if model instanceof ConstOrNotModel
+        ( model ) -> ModelEditorItem_Lst             if model.dim() # Tensor
     ]
     
     # el is a div, specific for this
@@ -104,15 +105,19 @@ class ModelEditorItem extends View
                     parentNode : @el
                     nodeName   : "span"
 
-                @ev = new_dom_element
-                    parentNode : @ce
-                    nodeName   : "span"
-                    innerHTML  : @label
-                    style      :
-                        display : "inline-block"
-                        width   : @get_item_width() * @get_label_ratio() + "%"
+                if @display_label()
+                    @ev = new_dom_element
+                        parentNode : @ce
+                        nodeName   : "span"
+                        innerHTML  : @label
+                        style      :
+                            display : "inline-block"
+                            width   : @get_item_width() * @get_label_ratio() + "%"
     
-                @ew = @get_item_width() * ( 1.0 - @get_label_ratio() )
+                    @ew = @get_item_width() * ( 1.0 - @get_label_ratio() )
+                else
+                    @ew = @get_item_width()
+                    
                 @ed = @ce
                 
             else
@@ -163,6 +168,12 @@ class ModelEditorItem extends View
     
     ok_for_label: ->
         true
+        
+    display_label: ->
+        true
+        
+    contains_labels: ->
+        false
     
     @_get_model_editor_parameters: ( model ) ->
         res =
