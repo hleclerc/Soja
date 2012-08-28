@@ -43,7 +43,7 @@ class TreeAppModule_File extends TreeAppModule
                     #                         clear_page()
                     #                         window.location = "#" + encodeURI( "#{d}/#{file.name.get()}" )
             
-                p = new_popup "Browse Session", event : evt, width : 70, child: @content, onclose: =>
+                p = new_popup "Browse Session", event : evt, child: @content, onclose: =>
                     @onPopupClose( app )
                 app.active_key.set false
                 
@@ -120,7 +120,7 @@ class TreeAppModule_File extends TreeAppModule
                         el    : @d
                         model : d
                         
-                p = new_popup "Browse Folder", event : evt, width : 70, child: @d, onclose: =>
+                p = new_popup "Browse Folder", event : evt, child: @d, onclose: =>
                     @onPopupClose( app )
                 app.active_key.set false
                 

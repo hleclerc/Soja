@@ -15,7 +15,8 @@
 .FooterTreeView {
     color: DarkSlateGrey;
     background-color: WhiteSmoke;
-    width: 100%
+    width: 100%;
+    text-align:center;
 }
 .FooterTreeViewIcon {
     cursor : pointer;
