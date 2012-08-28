@@ -5,14 +5,18 @@ class Legend extends Drawable
         
         @add_attr
             show_legend: show_legend
-            color_map   : new Gradient
-            _title     : title
+            color_map  : new Gradient
             auto_fit   : auto_fit
-            max_val    : -1
-            min_val    : 0
+            _title     : title
             _width     : 30
             _height    : 300
+            _min_val    : 0
+            _max_val    : -1
             
+        @add_attr
+            max_val    : new ConstOrNotModel( @auto_fit, @_max_val, false )
+            min_val    : new ConstOrNotModel( @auto_fit, @_min_val, false )
+        
         @color_map.add_color [ 255,255,255, 255 ], 0
         @color_map.add_color [   0,  0,  0, 255 ], 1
         
