@@ -18,7 +18,11 @@ class TreeAppData extends Model
             time               : new ConstrainedVal( 0, { min: 0, max: 2, div: 0 } )
         
     watch_item: ( item ) ->
+        console.log this
+        console.log this.visible_tree_items
+        console.log @panel_id_list
         for p in @panel_id_list()
+            console.log this.visible_tree_items[ p ]
             @visible_tree_items[ p ].push item
             
     close_item: ( item ) ->

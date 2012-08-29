@@ -15,10 +15,12 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @initial_path   = if params.initial_path? then params.initial_path else "Root"
         @use_upload     = if params.use_upload? then params.use_upload else true
         
+        
         @breadcrumb = new Lst
         @breadcrumb.push @model
         @breadcrumb.bind this
         
+        @initial_path = @make_initial_path_as_dom @initial_path
         
         @selected_file = new Lst
         @clipboard     = new Lst # contain last 'copy' or 'cut' file
@@ -38,8 +40,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @container = new_dom_element
                 parentNode: @ed
                 nodeName  : "div"
-                style  :
-                    height: "100%"
+                className : "directory_container"
                 ondragover: ( evt ) =>
 #                     this.container.style.border = "thin dashed grey"
                     return false
@@ -78,12 +79,13 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     alt       : "New folder"
                     title     : "New folder"
                     onclick: ( evt ) =>
-                        n = new File "New folder", 0
-                        n._info.add_attr
-                            icon: "folder"
-                            model_type: "Directory"
+                        t = new Directory
+                        @model.add_file "New folder", t
+#                         n._info.add_attr
+#                             icon: "folder"
+#                             model_type: "Directory"
                             
-                        @model.push n
+#                         @model.push n
     #                     @refresh()
                         
             @icon_cut = new_dom_element
@@ -353,8 +355,18 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     # TODO: make a model of the correct type (containing a Path)
                     @model.add_file file.name, new Path file
 
-    
-    
+    make_initial_path_as_dom: ( initial_path ) ->
+        reg = new RegExp("[\/]+", "g");
+        path = initial_path.split reg
+#         console.log path
+#         for folder in path[ 1 ... path.length ]
+#         
+#         console.log @breadcrumb
+#         console.log @breadcrumb_dom
+# #         @breadcrumb = path.concat @breadcrumb
+#         console.log @breadcrumb
+        return path
+        
     draw_breadcrumb: ->
         @breadcrumb_dom.innerHTML = ""
         for folder, i in @breadcrumb
@@ -364,7 +376,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         parentNode: @breadcrumb_dom
                         nodeName  : "span"
                         className : "breadcrumb"
-                        txt       : @initial_path
+                        txt       : "Root"
                         onclick   : ( evt ) =>
                             @load_model_from_breadcrumb 0
                         

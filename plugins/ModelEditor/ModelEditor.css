@@ -115,7 +115,9 @@ input {
     padding   : 3;
     height    : 90%;
 }
-
+.PopupWindow .directory_container {
+    height    : 100%;
+}
 .PopupTitle {
     background: #fa0;
     padding: 3 10 3 10;
