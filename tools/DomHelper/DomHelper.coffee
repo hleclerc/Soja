@@ -76,6 +76,14 @@ new_popup = ( title, params = {} ) ->
             params.onclose?()
             document.body.removeChild b
             document.body.removeChild w
+        ondrop: ( evt ) ->
+            if not evt
+                evt = window.event
+            evt.cancelBubble = true
+            evt.stopPropagation?()
+            evt.preventDefault?()
+            evt.stopImmediatePropagation?()
+            return false
             
         style      :
             position  : "fixed"
@@ -156,7 +164,7 @@ new_popup = ( title, params = {} ) ->
     close_element = new_dom_element
         parentNode : w
         className  : "PopupClose"
-        txt        : "X"
+        txt        : "Close"
         onmousedown: ( evt ) ->
             params.onclose?()
             document.body.removeChild b

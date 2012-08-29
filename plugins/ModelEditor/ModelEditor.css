@@ -113,6 +113,7 @@ input {
 .PopupWindow {
     background: #fff;
     padding   : 3;
+    height    : 90%;
 }
 
 .PopupTitle {

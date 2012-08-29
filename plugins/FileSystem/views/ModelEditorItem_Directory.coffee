@@ -12,6 +12,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         super params
         @use_breadcrumb = if params.use_breadcrumb? then params.use_breadcrumb else true
         @use_icons      = if params.use_icons? then params.use_icons else true
+        @initial_path   = if params.initial_path? then params.initial_path else "Root"
         @use_upload     = if params.use_upload? then params.use_upload else true
         
         @breadcrumb = new Lst
@@ -30,12 +31,20 @@ class ModelEditorItem_Directory extends ModelEditorItem
         @allow_shortkey = false # allow the use of shortkey like Ctrl+C / Delete. Set to false when renaming
         
         @line_height = 30 # enough to contain the text
-        
+                
+        @ed.ondrop = ( evt ) =>
+            @cancel_natural_hotkeys evt
         
         @container = new_dom_element
                 parentNode: @ed
                 nodeName  : "div"
+                style  :
+                    height: "100%"
                 ondragover: ( evt ) =>
+#                     this.container.style.border = "thin dashed grey"
+                    return false
+                ondragout: ( evt ) =>
+#                     this.container.style.border = "none"
                     return false
                 ondragleave: ( evt ) =>
                     return false
@@ -43,6 +52,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     evt.stopPropagation()
                     evt.preventDefault()
                     @handle_files evt.dataTransfer.files
+                    @cancel_natural_hotkeys evt
                     return false
         
         if @use_icons
@@ -301,7 +311,6 @@ class ModelEditorItem_Directory extends ModelEditorItem
         # stop rename file
         file.onblur = ( evt ) =>
             @allow_shortkey = true
-            console.log @allow_shortkey
             title = file.innerHTML
             child_index.name.set title
             file.contentEditable = "false"
@@ -355,7 +364,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
                         parentNode: @breadcrumb_dom
                         nodeName  : "span"
                         className : "breadcrumb"
-                        txt       : "Root"
+                        txt       : @initial_path
                         onclick   : ( evt ) =>
                             @load_model_from_breadcrumb 0
                         
@@ -424,6 +433,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         evt.cancelBubble = true
         evt.stopPropagation?()
         evt.preventDefault?()
+        evt.stopImmediatePropagation?()
         return false
         
     sort_dir = ( a, b ) -> 
@@ -447,7 +457,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
 #         if @breadcrumb.length > 1
 #             parent = new File Directory, ".."
 #             sorted.unshift parent
-            
+        @allow_shortkey = true
         for elem, i in sorted
             do ( elem, i ) =>
             
@@ -500,7 +510,11 @@ class ModelEditorItem_Directory extends ModelEditorItem
                                 @model.splice index, 1
     
                             @selected_file.clear()
-                        
+                        else
+                            evt.stopPropagation()
+                            evt.preventDefault()
+                            @handle_files evt.dataTransfer.files
+                            
                         @cancel_natural_hotkeys evt
                         
                     onmousedown : ( evt ) =>

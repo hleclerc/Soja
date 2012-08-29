@@ -69,12 +69,12 @@ class TreeAppModule_File extends TreeAppModule
                     
                 fs.load_or_make_dir "/home/monkey/test_browser", ( d, err ) =>
                     t = new Directory
-                    d.add_file "Result", t
-                    d.add_file "composite01.png", ( new Img 'composite01.png' ), model_type: "Img"
-                    t.add_file "Steel", ( new Directory )
-                    t.add_file "Steel", ( new Lst [ 1, 2 ] )
-                    d.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
-                    d.add_file "Work", ( new Lst [ 1, 2 ] )
+                    d.add_file "My first directory", t
+#                     d.add_file "composite01.png", ( new Img 'composite01.png' ), model_type: "Img"
+#                     t.add_file "Steel", ( new Directory )
+#                     t.add_file "Steel", ( new Lst [ 1, 2 ] )
+#                     d.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
+#                     d.add_file "Work", ( new Lst [ 1, 2 ] )
                         
                     ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) ->
                         console.log "open mesh"
@@ -85,11 +85,9 @@ class TreeAppModule_File extends TreeAppModule
                                     m.actions[ 4 ].fun evt, app, file
                                     
                     ModelEditorItem_Directory.add_action "Img", ( file, path, browser ) ->
-                        console.log "open img"                        
                         if TreeAppModule_ImageSet? and app?                            
                             # Check if file is an ImgItem, otherwise, try to build it
                             if file not instanceof ImgItem
-                                console.log file
                                 if file instanceof Img
                                     file = new ImgItem img, app
                                 else if file instanceof File
@@ -117,8 +115,9 @@ class TreeAppModule_File extends TreeAppModule
                                     m.actions[ 1 ].fun evt, app, img_item
                     
                     item_cp = new ModelEditorItem_Directory
-                        el    : @d
-                        model : d
+                        el          : @d
+                        model       : d
+                        initial_path: "/home/monkey/test_browser"
                         
                 p = new_popup "Browse Folder", event : evt, child: @d, onclose: =>
                     @onPopupClose( app )
