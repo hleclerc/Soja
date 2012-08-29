@@ -1,13 +1,13 @@
 # wrapper Trre 
 class ImgItem extends TreeItem
-    constructor: ( file, app ) ->
+    constructor: ( file, app, path ) ->
         super()
         # attributes
         @add_attr
             legend: new Legend( "Displacement X", false )
             
         @add_attr
-            img: new Img file, app, @legend
+            img: new Img file, app, path
 
         if file?
             @_name.set file.replace( /// ^.*/ ///, "" )

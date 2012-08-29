@@ -109,7 +109,7 @@ class TreeAppModule_File extends TreeAppModule
                     ModelEditorItem_Directory.add_action "Path", ( file, path, browser ) ->
                         file.load ( m, err ) =>
 #                             #if name end like a picture (png, jpg, tiff etc)
-                            img_item = new ImgItem "/sceen/_?u=" + m._server_id, app
+                            img_item = new ImgItem "/sceen/_?u=" + m._server_id, app, m
                             img_item._name.set file.name
                             @modules = app.data.modules
                             for m in @modules

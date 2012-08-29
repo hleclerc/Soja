@@ -1,11 +1,15 @@
 #
 class Img extends Drawable
-    constructor: ( src = "", app = undefined, need_fit = true ) ->
+    constructor: ( src = "", app = undefined, path = undefined, need_fit = true ) ->
         super()
         
         @add_attr
             src   : src
             _histo: new Vec
+            
+        if path?
+            @add_attr
+                _path: path
         
         @data = 
             zmin: 0
