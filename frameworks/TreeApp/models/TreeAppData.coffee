@@ -20,10 +20,7 @@ class TreeAppData extends Model
     watch_item: ( item ) ->
         for p in @panel_id_list()
             if not @visible_tree_items[ p ]?
-                console.log 'in'
-                console.log @visible_tree_items, p
                 @visible_tree_items.add_attr p: []
-                console.log @visible_tree_items, p
             @visible_tree_items[ p ].push item
             
     close_item: ( item ) ->
