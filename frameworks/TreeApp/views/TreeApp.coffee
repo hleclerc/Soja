@@ -30,6 +30,8 @@ class TreeApp extends View
                 bottom  : 0
                 
         @icobar = new IcoBar @he, this, allow_sub:false
+       
+#         @timeline = new Timeline @bel, this
         
         document.addEventListener "keydown", ( ( evt ) => @_on_key_down evt ), true
         
@@ -62,7 +64,7 @@ class TreeApp extends View
                                 
                             msg_content.classList.add message.type # msg_info, msg_success or msg_error
                             
-                            setTimeout ( => @msg_container.removeChild msg_box ), 3000
+                            setTimeout ( => @msg_container.removeChild msg_box ), 5000
                                 
                 
         # update layout if current session has changed

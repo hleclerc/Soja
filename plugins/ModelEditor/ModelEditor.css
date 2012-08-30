@@ -104,19 +104,36 @@ input {
 
 /* ---------------- Popup ---------------- */
 .Popup {
-    border:thin solid black;
-    background:white;
+    border    : thin solid black;
+    background: white;
+    resize    : both;
+    overflow  : auto; /* overflow is necessary for resize to work */
+    padding-bottom: 8px; /* Necessary for resize icon to appear on Chrome */
 }
 .PopupWindow {
     background: #fff;
     padding   : 3;
+    height    : 90%;
 }
-
+.PopupWindow .directory_container {
+    height    : 100%;
+}
 .PopupTitle {
     background: #fa0;
     padding: 3 10 3 10;
     border-bottom:thin solid black;
     cursor:pointer;
+}
+
+.PopupClose {
+    float        : right;
+    margin-right : 4px;
+    margin-top   : 4px;
+    cursor       : pointer;
+}
+
+.PopupClose:hover {
+    text-decoration: underline;
 }
 
 .ModelEditorDragAndDrop {

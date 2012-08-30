@@ -15,7 +15,8 @@
 .FooterTreeView {
     color: DarkSlateGrey;
     background-color: WhiteSmoke;
-    width: 100%
+    width: 100%;
+    text-align:center;
 }
 .FooterTreeViewIcon {
     cursor : pointer;
@@ -124,7 +125,7 @@
     border-right:thin solid grey;
     color: DarkSlateGrey;
     display: inline-block;
-    padding: 1em 1em 0.2em 1em;
+    padding: 1em 0.85em 0.2em;
     text-align: center;
 }
 
@@ -284,4 +285,70 @@
         -ms-transform: rotate(-90deg);
          -o-transform: rotate(-90deg);
             transform: rotate(-90deg);
+}
+
+
+/* Timeline */
+#timeline {
+    background-color: black;
+    bottom: 0;
+    clear: both;
+    color: white;
+    height: 1em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    left: 10%;
+    margin: auto;
+    opacity: 0.8;
+/*     overflow: hidden; */
+    position: fixed;
+    width: 80%;
+    z-index: 20;
+    padding: 1em;
+}
+#timeline_player_button {
+    text-align:center;
+    position: relative;
+    top: -24px;
+}
+#timeline_player_button img {
+    padding: 0.1em;
+    border:thin solid black;
+}
+
+#timeline_player_button img:hover {
+    border:thin solid lightGrey;
+    background           : darkGrey;
+    -moz-border-radius   : 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius     : 3px;
+    border-radius        : 3px;
+}
+
+.timeline_scroll_pane {
+    left: 20%;
+    position: relative;
+    top: -51px;
+    width: 10%;
+}
+.timeline_speed {
+    float: right;
+    position:relative;
+    top: -3px;
+    z-index: 30;
+    text-align: right;
+}
+.timeline_speed input {
+    width: 3em;
+    text-align: right;
+}
+.timeline_speed_txt {
+    padding-left: 1em;
+}
+.timeline_current_picture_name {
+    height: 20px;
+    left: 5%;
+    position: relative;
+    text-align: center;
+    width: 35%;
 }

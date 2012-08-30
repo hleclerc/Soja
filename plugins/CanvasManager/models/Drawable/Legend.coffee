@@ -5,16 +5,20 @@ class Legend extends Drawable
         
         @add_attr
             show_legend: show_legend
-            gradient   : new Gradient
-            _title     : title
+            color_map  : new Gradient
             auto_fit   : auto_fit
-            max_val    : -1
-            min_val    : 0
+            _title     : title
             _width     : 30
             _height    : 300
+            _min_val    : 0
+            _max_val    : -1
             
-        @gradient.add_color [ 255,255,255, 255 ], 0
-        @gradient.add_color [   0,  0,  0, 255 ], 1
+        @add_attr
+            max_val    : new ConstOrNotModel( @auto_fit, @_max_val, false )
+            min_val    : new ConstOrNotModel( @auto_fit, @_min_val, false )
+        
+        @color_map.add_color [ 255,255,255, 255 ], 0
+        @color_map.add_color [   0,  0,  0, 255 ], 1
         
     z_index: ->
         return 1000
@@ -36,14 +40,14 @@ class Legend extends Drawable
         info.ctx.font = font_size + "pt Arial"
         info.ctx.fillStyle = "White"
         info.ctx.textAlign = "right"
-        for c_s in @gradient.color_stop
+        for c_s in @color_map.color_stop
             pos = c_s.position.get()
             val = ( @max_val.get() - @min_val.get() ) * ( 1 - c_s.position.get() ) + @min_val.get()
             info.ctx.fillText( val.toFixed( 4 ), pos_x - 8, pos_y + 7 + pos * height )
     
     draw: ( info ) ->
         if @show_legend.get() == true
-            @gradient = info.theme.gradient_legend
+            @color_map = info.theme.gradient_legend
             
             ratio = @get_ratio info
             height = @_height.get() * ratio
@@ -52,7 +56,7 @@ class Legend extends Drawable
             pos_y = info.h * 0.5 - height * 0.5
             pos_x = info.w - width - width * 2.5
             lineargradient = info.ctx.createLinearGradient( 0, pos_y, 0, pos_y + height )
-            for col in @gradient.color_stop
+            for col in @color_map.color_stop
                 lineargradient.addColorStop( col.position.get(), "rgba(#{col.color.r.get()}, #{col.color.g.get()}, #{col.color.b.get()}, #{col.color.a.get()})" )
             info.ctx.fillStyle = lineargradient
             info.ctx.fillRect( pos_x, pos_y, width, height )

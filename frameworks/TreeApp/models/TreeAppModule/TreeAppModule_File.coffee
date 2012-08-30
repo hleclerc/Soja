@@ -33,8 +33,8 @@ class TreeAppModule_File extends TreeAppModule
                     #                     clear_page()
 
                     item_cp = new ModelEditorItem_Directory
-                        el    : @content
-                        model : session_dir
+                        el             : @content
+                        model          : session_dir
                     
 
 
@@ -43,7 +43,7 @@ class TreeAppModule_File extends TreeAppModule
                     #                         clear_page()
                     #                         window.location = "#" + encodeURI( "#{d}/#{file.name.get()}" )
             
-                p = new_popup "Browse Session", event : evt, width : 70, child: @content, onclose: =>
+                p = new_popup "Browse Session", event : evt, child: @content, onclose: =>
                     @onPopupClose( app )
                 app.active_key.set false
                 
@@ -73,6 +73,14 @@ class TreeAppModule_File extends TreeAppModule
                   dir = "/home/projet_" + model_id
                 fs.load_or_make_dir dir, ( d, err ) =>     
                     t = new Directory
+
+                    d.add_file "My first directory", t
+#                     d.add_file "composite01.png", ( new Img 'composite01.png' ), model_type: "Img"
+#                     t.add_file "Steel", ( new Directory )
+#                     t.add_file "Steel", ( new Lst [ 1, 2 ] )
+#                     d.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
+#                     d.add_file "Work", ( new Lst [ 1, 2 ] )
+
                         
                     ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) ->
                         console.log "open mesh"
@@ -83,11 +91,9 @@ class TreeAppModule_File extends TreeAppModule
                                     m.actions[ 4 ].fun evt, app, file
                                     
                     ModelEditorItem_Directory.add_action "Img", ( file, path, browser ) ->
-                        console.log "open img"                        
                         if TreeAppModule_ImageSet? and app?                            
                             # Check if file is an ImgItem, otherwise, try to build it
                             if file not instanceof ImgItem
-                                console.log file
                                 if file instanceof Img
                                     file = new ImgItem img, app
                                 else if file instanceof File
@@ -107,18 +113,19 @@ class TreeAppModule_File extends TreeAppModule
                     ModelEditorItem_Directory.add_action "Path", ( file, path, browser ) ->
                         file.load ( m, err ) =>
 #                             #if name end like a picture (png, jpg, tiff etc)
-                            img_item = new ImgItem "/sceen/_?u=" + m._server_id, app
+                            img_item = new ImgItem "/sceen/_?u=" + m._server_id, app, m
                             img_item._name.set file.name
                             @modules = app.data.modules
                             for m in @modules
                                 if m instanceof TreeAppModule_ImageSet
                                     m.actions[ 1 ].fun evt, app, img_item
-                                    
+                    
                     item_cp = new ModelEditorItem_Directory
-                        el    : @d
-                        model : d
+                        el          : @d
+                        model       : d
+                        initial_path: "/home/monkey/test_browser"
                         
-                p = new_popup "Browse Folder", event : evt, width : 70, child: @d, onclose: =>
+                p = new_popup "Browse Folder", event : evt, child: @d, onclose: =>
                     @onPopupClose( app )
                 app.active_key.set false
                 

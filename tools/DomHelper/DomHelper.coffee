@@ -76,6 +76,14 @@ new_popup = ( title, params = {} ) ->
             params.onclose?()
             document.body.removeChild b
             document.body.removeChild w
+        ondrop: ( evt ) ->
+            if not evt
+                evt = window.event
+            evt.cancelBubble = true
+            evt.stopPropagation?()
+            evt.preventDefault?()
+            evt.stopImmediatePropagation?()
+            return false
             
         style      :
             position  : "fixed"
@@ -91,7 +99,7 @@ new_popup = ( title, params = {} ) ->
         clientX = params.event.clientX
         clientY = params.event.clientY
     else
-        clientX = window.innerWidth / 2 -10
+        clientX = window.innerWidth / 2 - 10
         clientY = window.innerHeight / 2 - 10
     
     top_x = params.top_x or -1000
@@ -153,6 +161,15 @@ new_popup = ( title, params = {} ) ->
             
     _index_current_popup += 2
     
+    close_element = new_dom_element
+        parentNode : w
+        className  : "PopupClose"
+        txt        : "Close"
+        onmousedown: ( evt ) ->
+            params.onclose?()
+            document.body.removeChild b
+            document.body.removeChild w
+            
     if title
         t = new_dom_element
             parentNode : w
@@ -166,7 +183,7 @@ new_popup = ( title, params = {} ) ->
                 document.addEventListener "mousemove", _drag_evt_func, true
                 document.addEventListener "mouseup"  , _drag_end_func, true
                 evt.preventDefault?()
-    
+            
     res = new_dom_element
         parentNode : w
         className  : "PopupWindow"

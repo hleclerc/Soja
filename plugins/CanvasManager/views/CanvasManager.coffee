@@ -8,6 +8,10 @@ class CanvasManager extends View
     #  - allow_gl
     #  - want_aspect_ratio
     #  - constrain_zoom
+    #  - width
+    #  - auto_fit
+    #  - class_name
+    
     constructor: ( params ) ->
         # use params
         for key, val of params
@@ -25,14 +29,17 @@ class CanvasManager extends View
         dv "time"                 , -> new ConstrainedVal( 0, { min: 0, max: -1, div: 0 } )
         dv "padding_ratio"        , -> 1.5
         dv "constrain_zoom"       , -> false
+        dv "width"                , -> 100
         dv "auto_fit"             , -> false
+        dv "class_name"           , -> ''
             
         super [ @items, @cam, @time ]
 
         #
         @canvas = new_dom_element
-            style     : { width: "100%" }
+            style     : { width: @width + "%" }
             nodeName  : "canvas"
+            className : if @class_name? then @class_name or ''
             parentNode: @el
 
         # events
@@ -50,8 +57,9 @@ class CanvasManager extends View
         @x_max = [ 1, 1, 1 ]
 
         #
-        @click_fun    = [] # called if mouse down and up without move
-        @dblclick_fun = []
+        @click_fun         = [] # called if mouse down and up without move
+        @dblclick_fun      = []
+        @select_canvas_fun = [] # call if mousedown or dblclick
 
         
     # return a list of items which can take events
@@ -263,6 +271,9 @@ class CanvasManager extends View
         false
             
     _dbl_click: ( evt ) ->
+        for fun in @select_canvas_fun
+            fun this, evt
+            
         evt = window.event if not evt?
                 
         @mouse_x = evt.clientX - get_left( @canvas )
@@ -280,6 +291,10 @@ class CanvasManager extends View
 
     _mouse_down: ( evt ) ->
         @mouse_has_moved_since_mouse_down = false
+        
+        for fun in @select_canvas_fun
+            fun this, evt
+        
         evt = window.event if not evt?
 
         @mouse_b = if evt.which?

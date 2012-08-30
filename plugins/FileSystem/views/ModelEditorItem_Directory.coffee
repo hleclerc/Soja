@@ -10,29 +10,42 @@ class ModelEditorItem_Directory extends ModelEditorItem
 
     constructor: ( params ) ->
         super params
+        @use_breadcrumb = if params.use_breadcrumb? then params.use_breadcrumb else true
+        @use_icons      = if params.use_icons? then params.use_icons else true
+        @initial_path   = if params.initial_path? then params.initial_path else "Root"
+        @use_upload     = if params.use_upload? then params.use_upload else true
+        
         
         @breadcrumb = new Lst
         @breadcrumb.push @model
+        @breadcrumb.bind this
         
+        @initial_path = @make_initial_path_as_dom @initial_path
         
         @selected_file = new Lst
         @clipboard     = new Lst # contain last 'copy' or 'cut' file
         
             
-        @breadcrumb.bind this
         @selected_file.bind this
         @clipboard.bind this
         
         
-        @allow_shortkey = true # allow the use of shortkey like Ctrl+C / Delete. Set to false when renaming
+        @allow_shortkey = false # allow the use of shortkey like Ctrl+C / Delete. Set to false when renaming
         
         @line_height = 30 # enough to contain the text
-        
+                
+        @ed.ondrop = ( evt ) =>
+            @cancel_natural_hotkeys evt
         
         @container = new_dom_element
                 parentNode: @ed
                 nodeName  : "div"
+                className : "directory_container"
                 ondragover: ( evt ) =>
+#                     this.container.style.border = "thin dashed grey"
+                    return false
+                ondragout: ( evt ) =>
+#                     this.container.style.border = "none"
                     return false
                 ondragleave: ( evt ) =>
                     return false
@@ -40,102 +53,107 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     evt.stopPropagation()
                     evt.preventDefault()
                     @handle_files evt.dataTransfer.files
-                    return false
-                    
-        @icon_scene = new_dom_element
-                parentNode: @container
-                nodeName  : "div"
-                className : "icon_scene"
-                
-        @icon_up = new_dom_element
-                parentNode: @icon_scene
-                nodeName  : "img"
-                src       : "img/parent.png"
-                alt       : "Parent"
-                title     : "Parent"
-                onclick: ( evt ) =>
-                    # watching parent
-                    @load_model_from_breadcrumb @breadcrumb.length - 2
-                    
-        @icon_new_folder = new_dom_element
-                parentNode: @icon_scene
-                nodeName  : "img"
-                src       : "img/add_folder.png"
-                alt       : "New folder"
-                title     : "New folder"
-                onclick: ( evt ) =>
-                    n = new File "New folder", 0
-                    n._info.add_attr
-                        icon: "folder"
-                        model_type: "Directory"
-                        
-                    @model.push n
-#                     @refresh()
-                    
-        @icon_cut = new_dom_element
-                parentNode: @icon_scene
-                nodeName  : "img"
-                src       : "img/cut.png"
-                alt       : "cut"
-                title     : "Cut"
-                onclick: ( evt ) =>
-                    @cut()
-                    
-        @icon_copy = new_dom_element
-                parentNode: @icon_scene
-                nodeName  : "img"
-                src       : "img/copy.png"
-                alt       : "copy"
-                title     : "Copy"
-                onclick: ( evt ) =>
-                    @copy()
-                    
-        @icon_paste = new_dom_element
-                parentNode: @icon_scene
-                nodeName  : "img"
-                src       : "img/paste.png"
-                alt       : "paste"
-                title     : "Paste"
-                onclick: ( evt ) =>
-                    @paste()
-
-        @icon_del_folder = new_dom_element
-                parentNode: @icon_scene
-                nodeName  : "img"
-                src       : "img/trash.png"
-                alt       : "Delete"
-                title     : "Delete"
-                onclick: ( evt ) =>
-                    @delete_file()
-                ondragover: ( evt ) =>
-                    return false
-                ondrop: ( evt ) =>
-                    @delete_file()
-                    evt.stopPropagation()
+                    @cancel_natural_hotkeys evt
                     return false
         
-        @upload_form = new_dom_element
+        if @use_icons
+            @icon_scene = new_dom_element
+                    parentNode: @container
+                    nodeName  : "div"
+                    className : "icon_scene"
+                    
+            @icon_up = new_dom_element
+                    parentNode: @icon_scene
+                    nodeName  : "img"
+                    src       : "img/parent.png"
+                    alt       : "Parent"
+                    title     : "Parent"
+                    onclick: ( evt ) =>
+                        # watching parent
+                        @load_model_from_breadcrumb @breadcrumb.length - 2
+                        
+            @icon_new_folder = new_dom_element
+                    parentNode: @icon_scene
+                    nodeName  : "img"
+                    src       : "img/add_folder.png"
+                    alt       : "New folder"
+                    title     : "New folder"
+                    onclick: ( evt ) =>
+                        t = new Directory
+                        @model.add_file "New folder", t
+#                         n._info.add_attr
+#                             icon: "folder"
+#                             model_type: "Directory"
+                            
+#                         @model.push n
+    #                     @refresh()
+                        
+            @icon_cut = new_dom_element
+                    parentNode: @icon_scene
+                    nodeName  : "img"
+                    src       : "img/cut.png"
+                    alt       : "cut"
+                    title     : "Cut"
+                    onclick: ( evt ) =>
+                        @cut()
+                        
+            @icon_copy = new_dom_element
+                    parentNode: @icon_scene
+                    nodeName  : "img"
+                    src       : "img/copy.png"
+                    alt       : "copy"
+                    title     : "Copy"
+                    onclick: ( evt ) =>
+                        @copy()
+                        
+            @icon_paste = new_dom_element
+                    parentNode: @icon_scene
+                    nodeName  : "img"
+                    src       : "img/paste.png"
+                    alt       : "paste"
+                    title     : "Paste"
+                    onclick: ( evt ) =>
+                        @paste()
+
+            @icon_del_folder = new_dom_element
+                    parentNode: @icon_scene
+                    nodeName  : "img"
+                    src       : "img/trash.png"
+                    alt       : "Delete"
+                    title     : "Delete"
+                    onclick: ( evt ) =>
+                        @delete_file()
+                    ondragover: ( evt ) =>
+                        return false
+                    ondrop: ( evt ) =>
+                        @delete_file()
+                        evt.stopPropagation()
+                        return false
+            
+        if @use_upload
+            @upload_form = new_dom_element
+                    parentNode: @icon_scene
+                    nodeName  : "form"
+                    
+            @txt_upload = new_dom_element
+                    parentNode: @icon_scene
+                    nodeName  : "span"
+                    txt       : "Add new file(s) "
+                    
+            @upload = new_dom_element
                 parentNode: @icon_scene
-                nodeName  : "form"
-                
-        @txt_upload = new_dom_element
-                parentNode: @icon_scene
-                nodeName  : "span"
-                txt       : "Add new file(s) "
-                
-        @upload = new_dom_element
-            parentNode: @icon_scene
-            nodeName  : "input"
-            type      : "file"
-            multiple  : "true"
-            onchange  : ( evt ) =>
-                @handle_files @upload.files
+                nodeName  : "input"
+                type      : "file"
+                multiple  : "true"
+                onchange  : ( evt ) =>
+                    @handle_files @upload.files
                                 
         
-        @breadcrumb_dom = new_dom_element
-                parentNode: @container                
-                nodeName  : "div"
-                    
+        if @use_breadcrumb
+            @breadcrumb_dom = new_dom_element
+                    parentNode: @container                
+                    nodeName  : "div"
+            
         @all_file_container = new_dom_element
                 parentNode: @container
                 nodeName  : "div"
@@ -337,8 +355,18 @@ class ModelEditorItem_Directory extends ModelEditorItem
                     # TODO: make a model of the correct type (containing a Path)
                     @model.add_file file.name, new Path file
 
-    
-    
+    make_initial_path_as_dom: ( initial_path ) ->
+        reg = new RegExp("[\/]+", "g");
+        path = initial_path.split reg
+#         console.log path
+#         for folder in path[ 1 ... path.length ]
+#         
+#         console.log @breadcrumb
+#         console.log @breadcrumb_dom
+# #         @breadcrumb = path.concat @breadcrumb
+#         console.log @breadcrumb
+        return path
+        
     draw_breadcrumb: ->
         @breadcrumb_dom.innerHTML = ""
         for folder, i in @breadcrumb
@@ -417,6 +445,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
         evt.cancelBubble = true
         evt.stopPropagation?()
         evt.preventDefault?()
+        evt.stopImmediatePropagation?()
         return false
         
     sort_dir = ( a, b ) -> 
@@ -440,7 +469,7 @@ class ModelEditorItem_Directory extends ModelEditorItem
 #         if @breadcrumb.length > 1
 #             parent = new File Directory, ".."
 #             sorted.unshift parent
-            
+        @allow_shortkey = true
         for elem, i in sorted
             do ( elem, i ) =>
             
@@ -493,7 +522,11 @@ class ModelEditorItem_Directory extends ModelEditorItem
                                 @model.splice index, 1
     
                             @selected_file.clear()
-                        
+                        else
+                            evt.stopPropagation()
+                            evt.preventDefault()
+                            @handle_files evt.dataTransfer.files
+                            
                         @cancel_natural_hotkeys evt
                         
                     onmousedown : ( evt ) =>
@@ -640,9 +673,9 @@ class ModelEditorItem_Directory extends ModelEditorItem
 #                         txt       : elem.name.get() + stext
 #                         onclick: ( evt ) =>
 #                             @rename_file text, sorted[ i ]
-                            
-                
-        @draw_breadcrumb()
+            
+        if @use_breadcrumb
+            @draw_breadcrumb()
         
         # use for dropable area
         bottom = new_dom_element
