@@ -181,6 +181,8 @@ class TreeApp extends View
                     if not ( tree_item instanceof ViewItem )
                         @data.visible_tree_items[ data.panel_id ].push tree_item
                 break
+        else
+            @data.visible_tree_items[ data.panel_id ].push view_item
         
         # add a CanvasManager
         # @model.tree.visibility_context.set data.panel_id
