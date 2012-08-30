@@ -28,6 +28,7 @@ class FileSystem
     @_objects = {} # _server_id -> object
     
     @url_com = "/sceen/_" # 
+    @url_upload = "/sceen/upload" # 
 
     constructor: ->
         # default values

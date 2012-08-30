@@ -66,15 +66,13 @@ class TreeAppModule_File extends TreeAppModule
                 else
                     fs = new FileSystem
                     FileSystem._disp = false
-                    
-                fs.load_or_make_dir "/home/monkey/test_browser", ( d, err ) =>
+                 
+                if !model_id? or  model_id == -1
+                  dir = "/home/monkey/test_browser"
+                else
+                  dir = "/home/projet_" + model_id
+                fs.load_or_make_dir dir, ( d, err ) =>     
                     t = new Directory
-                    d.add_file "Result", t
-                    d.add_file "composite01.png", ( new Img 'composite01.png' ), model_type: "Img"
-                    t.add_file "Steel", ( new Directory )
-                    t.add_file "Steel", ( new Lst [ 1, 2 ] )
-                    d.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
-                    d.add_file "Work", ( new Lst [ 1, 2 ] )
                         
                     ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) ->
                         console.log "open mesh"
