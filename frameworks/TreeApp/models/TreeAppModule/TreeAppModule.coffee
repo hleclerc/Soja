@@ -21,21 +21,21 @@ class TreeAppModule extends Model
         #        act: an array that can contain another actions
 
 
-    select_item: ( app, item, parent ) ->
+    select_item: ( app_data, item, parent ) ->
         if !parent
             path = []
-            path.push app.data.selected_session()
+            path.push app_data.selected_session()
         else
-            path = app.data.get_root_path_in_selected parent
+            path = app_data.get_root_path_in_selected parent
         path.push item
-        @unselect_all_item app
-        app.data.selected_tree_items.push path
+        @unselect_all_item app_data
+        app_data.selected_tree_items.push path
 
-    unselect_all_item: ( app ) ->
-        app.data.selected_tree_items.clear()
+    unselect_all_item: ( app_data ) ->
+        app_data.selected_tree_items.clear()
 
-    watch_item: ( app, item ) ->
-        app.data.watch_item item
+    watch_item: ( app_data, item ) ->
+        app_data.watch_item item
             
     get_animation_module: ( app ) ->
         for child in app.data.modules
@@ -60,8 +60,8 @@ class TreeAppModule extends Model
     
     # this function is used to create item on the right tree place
     # typeItem represent the type of item you want to use
-    add_item_depending_selected_tree: ( app, typeItem ) ->
-        items = app.data.get_selected_tree_items()
+    add_item_depending_selected_tree: ( app_data, typeItem ) ->
+        items = app_data.get_selected_tree_items()
         # search for typeItem in tree
         find_object = false
         for it in items
@@ -79,7 +79,7 @@ class TreeAppModule extends Model
                     for child_item in it._children
                         if child_item instanceof typeItem
                             object = child_item
-                            @select_item app, object, it
+                            @select_item app_data, object, it
 #                             console.log '2'
                             find_object = true
                             
@@ -88,8 +88,8 @@ class TreeAppModule extends Model
                         object = item
                         it.add_child object
                         
-                        @select_item app, object, it
-                        @watch_item app, object
+                        @select_item app_data, object, it
+                        @watch_item app_data, object
                         
 #                         app.undo_manager.snapshot()
 #                         console.log '3'
@@ -97,7 +97,7 @@ class TreeAppModule extends Model
 
         #search if typeItem can be a child of the parent of selected item in tree        
         if find_object == false
-            for items in app.data.selected_tree_items
+            for items in app_data.selected_tree_items
                 parent = items[ items.length - 2 ]
                 item = new typeItem
                 if parent instanceof typeItem
@@ -107,11 +107,11 @@ class TreeAppModule extends Model
         #If selection didn't help to find a typeItem child
         if find_object == false
             object = new typeItem
-            session = app.data.selected_session()
+            session = app_data.selected_session()
             session.add_child object
             
-            @select_item app, object
-            @watch_item app, object
+            @select_item app_data, object
+            @watch_item app_data, object
 #             console.log '4'
 #             app.undo_manager.snapshot()
             
