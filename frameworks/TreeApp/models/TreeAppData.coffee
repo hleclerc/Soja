@@ -22,7 +22,7 @@ class TreeAppData extends Model
             if not @visible_tree_items[ p ]?
                 console.log 'in'
                 console.log @visible_tree_items, p
-                @visible_tree_items.add_attr p: []
+                @visible_tree_items.add_attr p, []
                 console.log @visible_tree_items, p
             @visible_tree_items[ p ].push item
             
