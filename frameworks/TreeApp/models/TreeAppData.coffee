@@ -22,6 +22,8 @@ class TreeAppData extends Model
         console.log this.visible_tree_items
         console.log @panel_id_list
         for p in @panel_id_list()
+            if not @visible_tree_items[ p ]?
+                @visible_tree_items.add_attr p: []
             console.log this.visible_tree_items[ p ]
             @visible_tree_items[ p ].push item
             
