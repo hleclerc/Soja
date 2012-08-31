@@ -17,9 +17,9 @@ class TreeAppModule_ImageSet extends TreeAppModule
                 
                 session = app.data.selected_session()
                 session._children.push @collection
-                @unselect_all_item app
-                @select_item app, @collection
-                @watch_item app, @collection
+                @unselect_all_item app.data
+                @select_item app.data, @collection
+                @watch_item app.data, @collection
                 
                 
         @actions.push
@@ -28,7 +28,7 @@ class TreeAppModule_ImageSet extends TreeAppModule
             txt: "Add Image"
             fun: ( evt, app, img ) =>
                 app.undo_manager.snapshot()
-                @collection = @add_item_depending_selected_tree app, ImgSetItem
+                @collection = @add_item_depending_selected_tree app.data, ImgSetItem
                 if not img?
                     #                     tab = [ "explo_dz.png", "explo_in.png", "explo_re.png" ]
                     #                     console.log @numpic
@@ -57,7 +57,7 @@ class TreeAppModule_ImageSet extends TreeAppModule
                 if @collection._children.length == 1
                     app.data.time.set 0
                     
-                @watch_item app, @collection
+                @watch_item app.data, @collection
                 app.fit()
                 
             key: [ "Shift+A" ]
@@ -74,5 +74,5 @@ class TreeAppModule_ImageSet extends TreeAppModule
                 session = app.data.selected_session()
                 session._children.push @collection
                 
-                @unselect_all_item app
-                @select_item app, @collection
+                @unselect_all_item app.data
+                @select_item app.data, @collection
