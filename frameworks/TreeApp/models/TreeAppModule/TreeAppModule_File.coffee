@@ -67,14 +67,14 @@ class TreeAppModule_File extends TreeAppModule
                     fs = new FileSystem
                     FileSystem._disp = false
                     
-                fs.load_or_make_dir "/home/monkey/test_browser", ( d, err ) =>
-                    t = new Directory
-                    d.add_file "My first directory", t
-#                     d.add_file "composite01.png", ( new Img 'composite01.png' ), model_type: "Img"
-#                     t.add_file "Steel", ( new Directory )
-#                     t.add_file "Steel", ( new Lst [ 1, 2 ] )
-#                     d.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
-#                     d.add_file "Work", ( new Lst [ 1, 2 ] )
+                fs.load_or_make_dir "/home/monkey/sessions", ( d, err ) =>
+                    #                     t = new Directory
+                    #                     d.add_file "My first directory", t
+                    #                     d.add_file "composite01.png", ( new Img 'composite01.png' ), model_type: "Img"
+                    #                     t.add_file "Steel", ( new Directory )
+                    #                     t.add_file "Steel", ( new Lst [ 1, 2 ] )
+                    #                     d.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
+                    #                     d.add_file "Work", ( new Lst [ 1, 2 ] )
                         
                     ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) ->
                         console.log "open mesh"
@@ -106,8 +106,9 @@ class TreeAppModule_File extends TreeAppModule
                                     
                     ModelEditorItem_Directory.add_action "Path", ( file, path, browser ) ->
                         file.load ( m, err ) =>
-#                             #if name end like a picture (png, jpg, tiff etc)
-                            img_item = new ImgItem "/sceen/_?u=" + m._server_id, app, m
+                            # if file.name.get()
+#                           #if name end like a picture (png, jpg, tiff etc)
+                            img_item = new ImgItem m, app #"/sceen/_?u=" + m._server_id
                             img_item._name.set file.name
                             @modules = app.data.modules
                             for m in @modules
@@ -117,9 +118,9 @@ class TreeAppModule_File extends TreeAppModule
                     item_cp = new ModelEditorItem_Directory
                         el          : @d
                         model       : d
-                        initial_path: "/home/monkey/test_browser"
+                        initial_path: "/home/monkey/sessions"
                         
-                p = new_popup "Browse Folder", event : evt, child: @d, onclose: =>
+                p = new_popup "Browse Folder", event: evt, child: @d, onclose: =>
                     @onPopupClose( app )
                 app.active_key.set false
                 
