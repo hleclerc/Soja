@@ -29,7 +29,6 @@ class UndoManager
 
             # console.log "patch : ", JSON.stringify( @patch_undo, null, "\t" )
             if @patch_undo.length > @max_patchs
-                console.log "patch : ", JSON.stringify( @patch_undo, null, "\t" )
                 lst_0 = @patch_undo[ 0 ].data.split "\n"
                 lst_1 = @patch_undo[ 1 ].data.split "\n"
                 mid_0 = lst_0.shift()
