@@ -9,7 +9,7 @@ class Axes extends Drawable
             d: 1 # "real" diameter of axes. Used only if @p == "mm" (middle middle)
             l: new ConstrainedVal( 2, { min: 0, max: 10, div: 10 } ) # line width
             
-    z_index: () ->
+    z_index: ->
         return 10000
         
     draw: ( info ) ->

@@ -19,7 +19,7 @@ class Cam extends Model
             @add_attr
                r: 1
                
-    #
+    # bad name
     focal_point: ->
         nZ = Vec_3.nor Vec_3.cro @X.get(), @Y.get()
         ap = Math.tan( @a.get() / 2 * 3.14159265358979323846 / 180 )

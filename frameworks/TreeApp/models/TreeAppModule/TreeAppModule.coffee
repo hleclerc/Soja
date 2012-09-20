@@ -64,24 +64,24 @@ class TreeAppModule extends Model
         items = app_data.get_selected_tree_items()
         # search for typeItem in tree
         find_object = false
-        for it in items
-            if it instanceof typeItem
-                object = it
-#                 console.log '1'
-                find_object = true
+        #         for it in items
+        #             if it instanceof typeItem
+        #                 object = it
+        # #                 console.log '1'
+        #                 find_object = true
         
         # search if typeItem can be a child of the selected item in tree
         if find_object == false
             for it in items
                 item = new typeItem
-                if it.accept_child()? and it.accept_child item
+                if it.accept_child? item
                     # If he already have a typeItem child
-                    for child_item in it._children
-                        if child_item instanceof typeItem
-                            object = child_item
-                            @select_item app_data, object, it
-#                             console.log '2'
-                            find_object = true
+                    #                     for child_item in it._children
+                    #                         if child_item instanceof typeItem
+                    #                             object = child_item
+                    #                             @select_item app_data, object, it
+                    # #                             console.log '2'
+                    #                             find_object = true
                             
                     # Else create a child
                     if find_object == false

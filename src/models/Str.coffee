@@ -28,7 +28,12 @@ class Str extends Obj
     #
     equals: ( str ) ->
         @_data == str.toString()
-
+        
+    #
+    ends_with: ( str ) ->
+        l = @_data.match( str + "$" )
+        l?.length and l[ 0 ] == str
+        
     #
     deep_copy: ->
         new Str @_data + ""

@@ -474,6 +474,7 @@ class CanvasManager extends View
             sc_2_rw  : @cam.sc_2_rw w, h
             sel_item : i
             time     : @time.get()
+            time_ref : @time
             theme    : @theme
             padding  : ( 1 - 1 / @padding_ratio ) * Math.min( w, h ) # padding size in pixels
                     

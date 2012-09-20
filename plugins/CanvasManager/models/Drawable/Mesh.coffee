@@ -55,7 +55,7 @@ class Mesh extends Drawable
         #         if @visualisation.display_field.lst?[ @visualisation.display_field.num.get() ]
         #             return @visualisation.display_field.lst[ @visualisation.display_field.num.get() ].z_index()
         #         else
-        return 100
+        return 1000
 
     draw: ( info ) ->
         if @points?.length

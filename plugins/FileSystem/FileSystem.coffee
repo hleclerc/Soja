@@ -125,7 +125,7 @@ class FileSystem
             FileSystem._objects_to_send[ m.model_id ] = m
             if FileSystem._timer_chan?
                 clearTimeout FileSystem._timer_chan
-            FileSystem._timer_chan = setTimeout FileSystem._timeout_chan_func, 100
+            FileSystem._timer_chan = setTimeout FileSystem._timeout_chan_func, 250
 
     #
     @_tmp_id_to_real: ( tmp_id, res ) ->

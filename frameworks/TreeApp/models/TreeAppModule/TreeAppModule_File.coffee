@@ -76,44 +76,48 @@ class TreeAppModule_File extends TreeAppModule
                     #                     d.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
                     #                     d.add_file "Work", ( new Lst [ 1, 2 ] )
                         
-                    ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) ->
+                    ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) =>
                         console.log "open mesh"
                         if TreeAppModule_Sketch? and app?
-                            @modules = app.data.modules
-                            for m in @modules 
+                            modules = app.data.modules
+                            for m in modules
                                 if m instanceof TreeAppModule_Sketch
                                     m.actions[ 4 ].fun evt, app, file
                                     
-                    ModelEditorItem_Directory.add_action "Img", ( file, path, browser ) ->
-                        if TreeAppModule_ImageSet? and app?                            
-                            # Check if file is an ImgItem, otherwise, try to build it
-                            if file not instanceof ImgItem
-                                if file instanceof Img
-                                    file = new ImgItem img, app
-                                else if file instanceof File
-                                    if FileSystem? and FileSystem.get_inst()?
-                                        fs = FileSystem.get_inst()
-                                        fs.load img, ( m, err ) ->
-                                            file = file#TODO, use ptr to build real ImgItem
-                                else
-                                    return                                    
+                    #                     ModelEditorItem_Directory.add_action "Img", ( file, path, browser ) ->
+                    #                         if TreeAppModule_ImageSet? and app?                            
+                    #                             # Check if file is an ImgItem, otherwise, try to build it
+                    #                             if file not instanceof ImgItem
+                    #                                 if file instanceof Img
+                    #                                     file = new ImgItem img, app
+                    #                                 else if file instanceof File
+                    #                                     if FileSystem? and FileSystem.get_inst()?
+                    #                                         fs = FileSystem.get_inst()
+                    #                                         fs.load img, ( m, err ) ->
+                    #                                             file = file#TODO, use ptr to build real ImgItem
+                    #                                 else
+                    #                                     return                                    
+                    #                                     
+                    #                             @modules = app.data.modules
+                    #                             for m in @modules
+                    #                                 if m instanceof TreeAppModule_ImageSet
+                    #                                     m.actions[ 1 ].fun evt, app, file
                                     
-                            @modules = app.data.modules
-                            for m in @modules
-                                if m instanceof TreeAppModule_ImageSet
-                                    m.actions[ 1 ].fun evt, app, file
                                     
-                                    
-                    ModelEditorItem_Directory.add_action "Path", ( file, path, browser ) ->
+                    ModelEditorItem_Directory.add_action "Path", ( file, path, browser ) =>
                         file.load ( m, err ) =>
                             # if file.name.get()
 #                           #if name end like a picture (png, jpg, tiff etc)
-                            img_item = new ImgItem m, app #"/sceen/_?u=" + m._server_id
-                            img_item._name.set file.name
-                            @modules = app.data.modules
-                            for m in @modules
-                                if m instanceof TreeAppModule_ImageSet
-                                    m.actions[ 1 ].fun evt, app, img_item
+                            if file.name.ends_with( ".raw" )
+                                rv = @add_item_depending_selected_tree app.data, RawVolume
+                                rv._children.push new FileItem file
+                            else
+                                img_item = new ImgItem m, app #"/sceen/_?u=" + m._server_id
+                                img_item._name.set file.name
+                                @modules = app.data.modules
+                                for m in @modules
+                                    if m instanceof TreeAppModule_ImageSet
+                                        m.actions[ 1 ].fun evt, app, img_item
                     
                     item_cp = new ModelEditorItem_Directory
                         el          : @d

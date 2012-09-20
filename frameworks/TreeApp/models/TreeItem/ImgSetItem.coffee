@@ -1,6 +1,6 @@
 #
 class ImgSetItem extends TreeItem
-    constructor: ( @app_data, @panel_id ) ->
+    constructor: ->
         super()
         
         @_name.set "Image collection"
@@ -8,9 +8,16 @@ class ImgSetItem extends TreeItem
         @_viewable.set true
         
     accept_child: ( ch ) ->
-        ch instanceof ImgItem
+        ch instanceof ImgItem or
+        ch instanceof RawVolume
 
     draw: ( info ) ->
+        # TODO: use min max for that
+        if info.time_ref._max? and @_children.length - 1 > info.time_ref._max.get()
+            info.time_ref._max.set @_children.length - 1
+            info.time_ref._div.set @_children.length - 1
+            
+        #
         if @_children[ info.time ]?
             @_children[ info.time ].draw info
         else if @_children[ 0 ]?
