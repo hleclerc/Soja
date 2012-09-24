@@ -5,6 +5,7 @@
 # lib UndoManager.js
 
 test_UndoManager = ->
+    # a function to create a simple button...
     add_butt = ( txt, fun ) ->
         new_dom_element
             parentNode: document.body

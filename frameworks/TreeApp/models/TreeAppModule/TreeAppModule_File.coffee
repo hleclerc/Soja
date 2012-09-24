@@ -112,12 +112,21 @@ class TreeAppModule_File extends TreeAppModule
                                 rv = @add_item_depending_selected_tree app.data, RawVolume
                                 rv._children.push new FileItem file
                             else
-                                img_item = new ImgItem m, app #"/sceen/_?u=" + m._server_id
+                                img_item = new ImgItem m, app # "/sceen/_?u=" + m._server_id
                                 img_item._name.set file.name
-                                @modules = app.data.modules
-                                for m in @modules
-                                    if m instanceof TreeAppModule_ImageSet
-                                        m.actions[ 1 ].fun evt, app, img_item
+                                # @add_item_depending_selected_tree app_data, CorrelationItem
+                                done = false
+                                for item in app.data.get_selected_tree_items()
+                                    if item.accept_child? img_item
+                                        item.add_child img_item
+                                        done = true
+                                if not done
+                                    alert "Please select in the tree an item which accepts an image"
+
+                                #@modules = app.data.modules
+                                #for m in @modules
+                                #    if m instanceof TreeAppModule_ImageSet
+                                #        m.actions[ 1 ].fun evt, app, img_item
                     
                     item_cp = new ModelEditorItem_Directory
                         el          : @d

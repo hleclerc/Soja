@@ -398,7 +398,7 @@ class TreeView extends View
                 className  : @css_prefix + classTitle
                 onmousedown: ( evt ) =>
                     if info.item._computation_mode.get() == false and info.item._computation_state.get() == false
-                        info.item._computation_state.set true
+                        info.item.do_it()
                 style      :
                     position: "absolute"
                     top     : 0
