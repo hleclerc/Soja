@@ -82,50 +82,64 @@ class TreeAppModule_File extends TreeAppModule
 #                     d.add_file "Work", ( new Lst [ 1, 2 ] )
 
                         
-                    ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) ->
+                    ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) =>
                         console.log "open mesh"
                         if TreeAppModule_Sketch? and app?
-                            @modules = app.data.modules
-                            for m in @modules 
+                            modules = app.data.modules
+                            for m in modules
                                 if m instanceof TreeAppModule_Sketch
                                     m.actions[ 4 ].fun evt, app, file
                                     
-                    ModelEditorItem_Directory.add_action "Img", ( file, path, browser ) ->
-                        if TreeAppModule_ImageSet? and app?                            
-                            # Check if file is an ImgItem, otherwise, try to build it
-                            if file not instanceof ImgItem
-                                if file instanceof Img
-                                    file = new ImgItem img, app
-                                else if file instanceof File
-                                    if FileSystem? and FileSystem.get_inst()?
-                                        fs = FileSystem.get_inst()
-                                        fs.load img, ( m, err ) ->
-                                            file = file#TODO, use ptr to build real ImgItem
-                                else
-                                    return                                    
+                    #                     ModelEditorItem_Directory.add_action "Img", ( file, path, browser ) ->
+                    #                         if TreeAppModule_ImageSet? and app?                            
+                    #                             # Check if file is an ImgItem, otherwise, try to build it
+                    #                             if file not instanceof ImgItem
+                    #                                 if file instanceof Img
+                    #                                     file = new ImgItem img, app
+                    #                                 else if file instanceof File
+                    #                                     if FileSystem? and FileSystem.get_inst()?
+                    #                                         fs = FileSystem.get_inst()
+                    #                                         fs.load img, ( m, err ) ->
+                    #                                             file = file#TODO, use ptr to build real ImgItem
+                    #                                 else
+                    #                                     return                                    
+                    #                                     
+                    #                             @modules = app.data.modules
+                    #                             for m in @modules
+                    #                                 if m instanceof TreeAppModule_ImageSet
+                    #                                     m.actions[ 1 ].fun evt, app, file
                                     
-                            @modules = app.data.modules
-                            for m in @modules
-                                if m instanceof TreeAppModule_ImageSet
-                                    m.actions[ 1 ].fun evt, app, file
                                     
-                                    
-                    ModelEditorItem_Directory.add_action "Path", ( file, path, browser ) ->
+                    ModelEditorItem_Directory.add_action "Path", ( file, path, browser ) =>
                         file.load ( m, err ) =>
-#                             #if name end like a picture (png, jpg, tiff etc)
-                            img_item = new ImgItem "/sceen/_?u=" + m._server_id, app, m
-                            img_item._name.set file.name
-                            @modules = app.data.modules
-                            for m in @modules
-                                if m instanceof TreeAppModule_ImageSet
-                                    m.actions[ 1 ].fun evt, app, img_item
+                            # if file.name.get()
+#                           #if name end like a picture (png, jpg, tiff etc)
+                            if file.name.ends_with( ".raw" )
+                                rv = @add_item_depending_selected_tree app.data, RawVolume
+                                rv._children.push new FileItem file
+                            else
+                                img_item = new ImgItem m, app # "/sceen/_?u=" + m._server_id
+                                img_item._name.set file.name
+                                # @add_item_depending_selected_tree app_data, CorrelationItem
+                                done = false
+                                for item in app.data.get_selected_tree_items()
+                                    if item.accept_child? img_item
+                                        item.add_child img_item
+                                        done = true
+                                if not done
+                                    alert "Please select in the tree an item which accepts an image"
+
+                                #@modules = app.data.modules
+                                #for m in @modules
+                                #    if m instanceof TreeAppModule_ImageSet
+                                #        m.actions[ 1 ].fun evt, app, img_item
                     
                     item_cp = new ModelEditorItem_Directory
                         el          : @d
                         model       : d
-                        initial_path: "/home/monkey/test_browser"
+                        initial_path: "/home/monkey/sessions"
                         
-                p = new_popup "Browse Folder", event : evt, child: @d, onclose: =>
+                p = new_popup "Browse Folder", event: evt, child: @d, onclose: =>
                     @onPopupClose( app )
                 app.active_key.set false
                 

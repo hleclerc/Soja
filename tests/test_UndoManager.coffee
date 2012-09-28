@@ -5,6 +5,7 @@
 # lib UndoManager.js
 
 test_UndoManager = ->
+    # a function to create a simple button...
     add_butt = ( txt, fun ) ->
         new_dom_element
             parentNode: document.body
@@ -17,7 +18,7 @@ test_UndoManager = ->
     m = new Model
         l: [ 666 ]
         #         b: 1
-        #         t: new ConstrainedVal( 1, min: 0, max: 10 )
+        t: new ConstrainedVal( 1, min: 0, max: 10 )
         #         z: "toto"
     
     # undo manager

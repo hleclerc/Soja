@@ -9,7 +9,15 @@ class ViewItem extends TreeItem
             cam       : cam
             axes      : new Axes
             _panel_id : panel_id
+            _repr     : ""
             
+        @_buff = new Image
+        @_buff.onload = =>
+            @_signal_change()
+            
+        @bind =>
+            if @_repr? and @_repr.has_been_modified()
+                @_buff.src = @_repr.get()
         
         # default values
         @_name.set "View"
@@ -18,9 +26,15 @@ class ViewItem extends TreeItem
         
     accept_child: ( ch ) ->
         #
+
+    z_index: ->
+        1
+        
+    draw: ( info ) ->
+        info.ctx.drawImage @_buff, 0, 0
         
     sub_canvas_items: ->
         [ @background, @axes ]
 
-    has_nothing_to_draw: ->
-        true
+    #     has_nothing_to_draw: ->
+    #         true

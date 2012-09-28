@@ -38,5 +38,5 @@ class ImageField extends Drawable
             Img._draw_persp_rec info, @rgba, 0, 0, [ 0, @rgba.height, 0 ], [ 1, 0, 0 ], [ 0, -1, 0 ], [ 0, 0, 1 ]
             
     z_index: () ->
-        return 50
+        return 200
         

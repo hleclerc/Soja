@@ -1,16 +1,13 @@
 #
 class Img extends Drawable
-    constructor: ( src = "", app = undefined, path = undefined, need_fit = true ) ->
+    constructor: ( src = "", app = undefined, need_fit = true ) ->
         super()
         
         @add_attr
             src   : src
             _histo: new Vec
+            # _repr -> representation, compatible with web browsers
             
-        if path?
-            @add_attr
-                _path: path
-        
         @data = 
             zmin: 0
             zmax: 0
@@ -34,16 +31,15 @@ class Img extends Drawable
         @loaded = false
         @data.buff = new Image
         @data.buff.onload = onload
-        if @src.get().length
-            @data.buff.src = @src.get()
+        @_get_src_data()
         
     z_index: ->
         return 1
         
     draw: ( info ) ->
-        if @src.has_been_modified() or @data.begl
+        if @src.has_been_modified() or @_repr?.has_been_modified() or @data.begl
             @data.begl = false
-            @data.buff.src = @src.get()
+            @_get_src_data()
         
         if not @data.rgba?
             return false
@@ -175,6 +171,14 @@ class Img extends Drawable
 
             @cm.draw()
 
+    _get_src_data: ->
+        s = if @_repr? then @_repr else @src
+        #
+        if s instanceof Path
+            @data.buff.src = "/sceen/_?u=" + s._server_id
+        else if s.get().length
+            @data.buff.src = s.get()
+            
     @_draw_persp_rec: ( info, rgba, zmin, zmax, O, X, Y, Z, xmin = 0, ymin = 0, xmax = 1, ymax = 1, rec = 0 ) ->
         w = rgba.width
         h = rgba.height
@@ -228,4 +232,5 @@ class Img extends Drawable
 #         catch err
 #             console.log err
         info.ctx.restore()
+
         

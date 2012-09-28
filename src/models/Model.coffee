@@ -31,7 +31,7 @@ class Model
 
     destructor: ->
     
-    # return true if this (or a child of this) has changed since previous synchronisation
+    # return true if this (or a child of this) has changed since the previous synchronisation
     has_been_modified: ->
         @_date_last_modification > Model._counter - 2 or Model._force_m
         
@@ -179,7 +179,7 @@ class Model
         for r in to_rem
             @rem_attr r
 
-    # dimension of the object -> [] for a scalar, [ length ] for a vector, ...
+    # dimension of the object -> [] for a scalar, [ length ] for a vector, [ nb_row, nb_cols ] for a matrix...
     size: ( for_display = false ) ->
         []
 

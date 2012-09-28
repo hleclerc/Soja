@@ -1,15 +1,15 @@
 # wrapper Trre 
 class ImgItem extends TreeItem
-    constructor: ( file, app, path ) ->
+    constructor: ( file, app ) ->
         super()
         # attributes
-        @add_attr
-            legend: new Legend( "Displacement X", false )
+        #@add_attr
+        #    legend: new Legend( "Displacement X", false )
             
         @add_attr
-            img: new Img file, app, path
+            img: new Img file, app
 
-        if file?
+        if file instanceof Str
             @_name.set file.replace( /// ^.*/ ///, "" )
             
         @_ico.set "img/krita_16.png"
@@ -19,7 +19,7 @@ class ImgItem extends TreeItem
         false
         
     sub_canvas_items: ->
-        [ @img, @legend ]
+        [ @img ] # , @legend
         
     # disp_only_in_model_editor: ->
     #     [ @img, @legend ]
@@ -28,7 +28,7 @@ class ImgItem extends TreeItem
         return @img.z_index()
         
     update_min_max: ( x_min, x_max ) ->
-        @img.update_min_max( x_min, x_max )
+        @img.update_min_max x_min, x_max
         
     # use on directory when browsing
     get_file_info: ( info ) ->

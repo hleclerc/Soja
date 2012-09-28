@@ -10,7 +10,7 @@ class Background extends Drawable
         @gradient.add_color [  0,  0,    0, 255 ], 0
         @gradient.add_color [ 76, 76,  100, 255 ], 1
         
-    z_index: () ->
+    z_index: ->
         return 0
     
     draws_a_background: ->

@@ -4,7 +4,7 @@ class UndoManager
     
     #
     constructor: ( @model ) ->
-        @max_patchs = 20
+        @max_patchs = 3
         @patch_undo = []
         @patch_redo = []
         @snapshotok = true
@@ -18,10 +18,7 @@ class UndoManager
             date = @_date_last_snapshot()
             
 
-            #console.log "--PATCH--"
             # if something has changed since previous undo or snapshot
-            #console.log 'date ' , @model._date_last_modification, date
-
             if @model._date_last_modification > date
                 @patch_redo = []
                 
@@ -30,7 +27,27 @@ class UndoManager
                     data: @model.get_state date
             
 
-            #console.log "patch : ", JSON.stringify(@patch_undo, null, "\t")
+            # console.log "patch : ", JSON.stringify( @patch_undo, null, "\t" )
+            if @patch_undo.length > @max_patchs
+                lst_0 = @patch_undo[ 0 ].data.split "\n"
+                lst_1 = @patch_undo[ 1 ].data.split "\n"
+                mid_0 = lst_0.shift()
+                mid_1 = lst_1.shift()
+                if mid_0 != mid_1
+                    console.log "weird"
+                map = {}
+                for l in lst_0 when l.length
+                    s = l.split " "
+                    map[ s[ 0 ] ] = 
+                        type: s[ 1 ]
+                        data: s[ 2 ]
+                n_data = ""
+                for l in lst_1 when l.length
+                    s = l.split " "
+                    delete map[ s[ 0 ] ]
+                for mid, dma of map
+                    @patch_undo[ 1 ].data += "\n" + mid + " " + dma.type + " " + dma.data
+                @patch_undo.shift()
 
         # snapshot authorization after 250ms of inactivity
         if @_timer_snap?
