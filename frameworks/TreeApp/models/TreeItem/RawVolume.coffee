@@ -12,7 +12,8 @@ class RawVolume extends TreeItem
             
         @_name.set "Raw volume"
         @_ico.set "img/krita_16.png"
-        
+        @_viewable.set true
+
     update_min_max: ( x_min, x_max ) ->
         for d in [ 0 ... 3 ]
             x_min[ d ] = Math.min x_min[ d ], 0

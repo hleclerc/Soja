@@ -24,7 +24,7 @@ class Mesh extends Drawable
             _pelected_elements: [] # elements refs
             
         # default move scheme
-        @move_scheme = new MoveScheme_3D
+        @move_scheme = MoveScheme_3D
         
         # cache
         @_sub_elements = [] # list of { sub_level: , elem_list: , on_skin: , parent }
@@ -34,7 +34,7 @@ class Mesh extends Drawable
         
     # add a new node
     add_point: ( pos = [ 0, 0, 0 ] ) ->
-        res = new Point pos, @move_scheme
+        res = new Point pos, new @move_scheme
         @points.push res
         return res
         

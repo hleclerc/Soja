@@ -15,8 +15,8 @@ class ImgSetItem extends TreeItem
         # TODO: use min max for that
         if info.time_ref._max? and info.time_ref._max.get() < @_children.length - 1
             info.time_ref._max.set @_children.length - 1
-            if @_children.length > 1
-                info.time_ref._div.set @_children.length - 1
+        if info.time_ref?
+            info.time_ref._div.set Math.max info.time_ref._max.get(), 1
             
         #
         if @_children[ info.time ]?
