@@ -13,9 +13,10 @@ class ImgSetItem extends TreeItem
 
     draw: ( info ) ->
         # TODO: use min max for that
-        if info.time_ref._max? and @_children.length - 1 != info.time_ref._max.get()
+        if info.time_ref._max? and info.time_ref._max.get() < @_children.length - 1
             info.time_ref._max.set @_children.length - 1
-            info.time_ref._div.set @_children.length - 1
+            if @_children.length > 1
+                info.time_ref._div.set @_children.length - 1
             
         #
         if @_children[ info.time ]?

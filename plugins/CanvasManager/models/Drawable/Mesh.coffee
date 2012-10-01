@@ -295,9 +295,13 @@ class Mesh extends Drawable
         if @_sub_date < @_elements._date_last_modification
             @_sub_date = @_elements._date_last_modification
     
+            l = ( e for e in @_elements )
             @_sub_elements = []
-            for el in @_elements
-                el.add_sub_element? @_sub_elements
+            while l.length
+                oi = @_sub_elements.length
+                l.pop().add_sub_element? @_sub_elements
+                for n in @_sub_elements[ oi.. ]
+                    l.push n
     
     _closest_point_closer_than: ( proj, pos, dist ) ->
         best = -1
