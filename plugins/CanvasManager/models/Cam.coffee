@@ -104,13 +104,19 @@ class Cam extends Model
         
     # return coordinates depending the current cam state from real coordinates
     get_screen_coord : ( coord ) ->
+        x = coord[ 0 ]
+        y = coord[ 1 ]
+        z = coord[ 2 ] or 0
+        
         O = @O.get()
         X = @X.get()
         Y = @Y.get()
+        Z = @get_Z()
         d = @d
-        Cx = Vec_3.mus ( d * coord[0] ), X
-        Cy = Vec_3.mus ( d * coord[1] ), Y
-        return Vec_3.add O, Vec_3.add(Cx, Cy)
+        Cx = Vec_3.mus d * x, X
+        Cy = Vec_3.mus d * y, Y
+        Cz = Vec_3.mus d * z, Z
+        return Vec_3.add O, Vec_3.add Cx, Vec_3.add Cy, Cz
     
     class TransEye # screen -> eye dir and pos
         constructor: ( d, w, h ) ->

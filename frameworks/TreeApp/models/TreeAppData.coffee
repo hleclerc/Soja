@@ -21,7 +21,8 @@ class TreeAppData extends Model
         for p in @panel_id_list()
             if not @visible_tree_items[ p ]?
                 @visible_tree_items.add_attr p, []
-            @visible_tree_items[ p ].push item
+            if not @visible_tree_items[ p ].contains_ref item
+                @visible_tree_items[ p ].push item
             
     close_item: ( item ) ->
         @closed_tree_items.push item

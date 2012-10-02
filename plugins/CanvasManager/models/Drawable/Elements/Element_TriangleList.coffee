@@ -1,6 +1,6 @@
 # 
 class Element_TriangleList extends Element
-    constructor: ( points = new TypedArray_Float64 [ 3, 0 ] )->
+    constructor: ->
         super()
         
         @add_attr
