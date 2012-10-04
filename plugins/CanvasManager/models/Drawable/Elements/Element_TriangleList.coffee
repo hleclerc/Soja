@@ -8,14 +8,23 @@ class Element_TriangleList extends Element
             
     draw: ( info, mesh, proj, is_a_sub ) ->
         if mesh.visualization.display_style.get() in [ "Surface", "Surface with Edges" ]
-            for i in [ 0 ... @indices.size( 1 ) ]
+            lt = for i in [ 0 ... @indices.size( 1 ) ]
+                [
+                    proj[ @indices.get [ 0, i ] ]
+                    proj[ @indices.get [ 1, i ] ]
+                    proj[ @indices.get [ 2, i ] ]
+                ]
+                
+            lt.sort ( a, b ) -> ( b[ 0 ][ 2 ] + b[ 1 ][ 2 ] + b[ 2 ][ 2 ] ) - ( a[ 0 ][ 2 ] + a[ 1 ][ 2 ] + a[ 2 ][ 2 ] )
+            
+            for pl in lt
                 info.theme.surfaces.beg_ctx info
                 
                 info.theme.surfaces.draw info, =>
-                    info.ctx.moveTo proj[ @indices.get [ 0, i ] ][ 0 ], proj[ @indices.get [ 0, i ] ][ 1 ]
-                    info.ctx.lineTo proj[ @indices.get [ 1, i ] ][ 0 ], proj[ @indices.get [ 1, i ] ][ 1 ]
-                    info.ctx.lineTo proj[ @indices.get [ 2, i ] ][ 0 ], proj[ @indices.get [ 2, i ] ][ 1 ]
-                    info.ctx.lineTo proj[ @indices.get [ 0, i ] ][ 0 ], proj[ @indices.get [ 0, i ] ][ 1 ]
+                    info.ctx.moveTo pl[ 0 ][ 0 ], pl[ 0 ][ 1 ]
+                    info.ctx.lineTo pl[ 1 ][ 0 ], pl[ 1 ][ 1 ]
+                    info.ctx.lineTo pl[ 2 ][ 0 ], pl[ 2 ][ 1 ]
+                    info.ctx.lineTo pl[ 0 ][ 0 ], pl[ 0 ][ 1 ]
 
                 info.theme.surfaces.end_ctx info
 
@@ -37,13 +46,17 @@ class Element_TriangleList extends Element
         min_legend = legend.min_val.get()
         div_legend = max_legend - min_legend
         div_legend = 1 / ( div_legend + ( div_legend == 0 ) )
-        for num_triangle in [ 0 ... @indices.size( 1 ) ]
-            tri = [
+        
+        indices = for num_triangle in [ 0 ... @indices.size( 1 ) ]
+            [
                 @indices.get [ 0, num_triangle ]
                 @indices.get [ 1, num_triangle ]
                 @indices.get [ 2, num_triangle ]
             ]
-                    
+            
+        indices.sort ( a, b ) -> ( proj[ b[ 0 ] ][ 2 ] + proj[ b[ 1 ] ][ 2 ] + proj[ b[ 2 ] ][ 2 ] ) - ( proj[ a[ 0 ] ][ 2 ] + proj[ a[ 1 ] ][ 2 ] + proj[ a[ 2 ] ][ 2 ] )
+        
+        for tri in indices
             vals = [
                 data.get tri[ 0 ]
                 data.get tri[ 1 ]
@@ -141,6 +154,8 @@ class Element_TriangleList extends Element
     _draw_gradient_fill_triangle: ( info, p0, p1, posit, legend ) ->
         info.ctx.beginPath()
         if isNaN( p0[ 0 ] ) or isNaN( p0[ 1 ] ) or isNaN( p1[ 0 ] ) or isNaN( p1[ 1 ] )
+            return
+        if Math.abs( p0[ 0 ] ) > 1e40 or Math.abs( p0[ 1 ] ) > 1e40 or Math.abs( p1[ 0 ] ) > 1e40 or Math.abs( p1[ 1 ] ) > 1e40
             return
         lineargradient = info.ctx.createLinearGradient p0[ 0 ], p0[ 1 ], p1[ 0 ], p1[ 1 ]
         for col in legend.color_map.color_stop

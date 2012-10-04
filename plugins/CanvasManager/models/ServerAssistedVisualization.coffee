@@ -6,7 +6,8 @@ class ServerAssistedVisualization extends Model
             data  : app.data
             layout: {}
         
-        bs.bind =>
+        ds = app.data.selected_display_settings()
+        bind [ bs, ds._layout ], =>
             used_lid = {}
             for mid, lm of app.layouts
                 for lid, lay of lm._pan_vs_id when lay.cm?
