@@ -25,7 +25,7 @@
 from concat_js import *
 
 # main lib
-concat_js( "src", "gen/Soda.js" )
+concat_js( "src", "gen/Soja.js" )
 
 # ext tools
 for plugins_dir in [ "plugins", "tools", "frameworks" ]:
