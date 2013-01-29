@@ -76,6 +76,13 @@
     width      : 16;
     height     : 16;
 }
+.TreeProcessingItem {
+    background : transparent url( 'img/ajax-loader.gif' );
+    width      : 16;
+    height     : 16;
+}
+
+
 /* data:image/png;base64, */
 .TreeIcon_tree_cnt     { background: transparent url( 'img/tree_cnt.png'     ); }
 .TreeIcon_tree_beg     { background: transparent url( 'img/tree_beg.png'     ); }

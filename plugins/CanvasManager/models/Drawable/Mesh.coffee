@@ -76,6 +76,10 @@ class Mesh extends Drawable
         #         else
         return 1000
 
+    clear: ->
+        @points.clear()
+        @_elements.clear()
+    
     draw: ( info ) ->
         if @points?.length
             # 2d screen projection
