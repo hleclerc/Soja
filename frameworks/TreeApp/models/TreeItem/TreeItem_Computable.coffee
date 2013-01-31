@@ -27,8 +27,17 @@ class TreeItem_Computable extends TreeItem
             _computation_req_date: 1 # request date (updated by the @bind hereafter)
             _computation_rep_date: 0 # response date (updated by the server after each computation)
             _computation_mode    : false # true -> auto. false -> manual
-            _computation_state   : false # true -> do it. false -> stop
-            _processing_state    : false # true -> process is runnning. false -> process is not runnnings
+            
+            
+            _ready_state         : true  # true -> nothing to compute, ready to be used in browser false -> server side is working
+            _computation_state   : false # true -> do it. false -> dont do anything
+            _pending_state       : false # true -> in queue for server updater
+            _processing_state    : false # true -> server updater is runnning. false -> server updater is not runnnings
+            _finish_state        : false # true -> server updater is finish. false -> server updater is not finish
+            _stop_state          : false # true -> kill server updater false -> dont do anything
+            
+            
+            
             _messages            : []
         @add_attr
             auto_compute         : @_computation_mode
