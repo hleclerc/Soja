@@ -40,7 +40,7 @@ class ImageField extends Drawable
                 _legend: new Legend( "todo" )
                 
         model.drawing_parameters.add_attr
-            color_map  : model.drawing_parameters._legend.color_map
+            color_map : model.drawing_parameters._legend.color_map
     
     get_min_data: ->
         0
@@ -57,5 +57,5 @@ class ImageField extends Drawable
             Img._draw_persp_rec info, @rgba, 0, 0, [ 0, @rgba.height, 0 ], [ 1, 0, 0 ], [ 0, -1, 0 ], [ 0, 0, 1 ]
             
     z_index: () ->
-        return 200
+        return 20000
         
