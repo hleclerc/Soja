@@ -61,6 +61,12 @@ class CanvasManager extends View
             className : if @class_name? then @class_name or ''
             parentNode: @el
 
+        #touchable events
+        #@canvas.Touchable
+        #@canvas.touchablemove = ( evt ) => @_mouse_move evt
+        #@canvas.tap  = ( evt ) => @_mouse_down evt
+        
+        
         # events
         @canvas.onmousewheel = ( evt ) => @_mouse_wheel evt
         @canvas.onmousedown  = ( evt ) => @_mouse_down evt

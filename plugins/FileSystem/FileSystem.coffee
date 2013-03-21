@@ -25,7 +25,7 @@ class FileSystem
     # when object are saved, their _server_id is assigned to a tmp value
     @_cur_tmp_server_id = 0
     @_sig_server = true # if changes has to be sent
-    @_disp = false
+    @_disp = true
     
     # data are sent after a timeout (and are concatened before)
     @_objects_to_send = {}
@@ -47,6 +47,7 @@ class FileSystem
     @_objects = {} # _server_id -> object
     
     @url_com = "/sceen/_" # 
+    @url_upload = "/sceen/upload" # 
 
     constructor: ->
         # default values
@@ -111,6 +112,7 @@ class FileSystem
                         FileSystem._objects[ sid ] = obj
                     
                 FileSystem._sig_server = false
+                
                 eval @responseText
                 FileSystem._sig_server = true
         xhr_object.send()

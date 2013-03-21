@@ -397,21 +397,25 @@ class TreeView extends View
 #                 name.contentEditable = true
 
         if info.is_an_output
-            name.style.textAlign = "right"
+            name.style.textAlign = "left"
+            name.style.color = "red"
             name.style.right = "20px"
                 
         # computable
         if @get_computable_of( info.item )?
-            if info.item._computation_mode.get() == true
-                if info.item._computation_state.get() == true
-                    classTitle = "TreeAutoComputedItem"
-                else
-                    classTitle = "TreeAutoComputableItem"
+            if info.item._processing_state.get() == true
+                classTitle = "TreeProcessingItem"
             else
-                if info.item._computation_state.get() == true
-                    classTitle = "TreeComputedItem"
+                if info.item._computation_mode.get() == true
+                    if info.item._computation_state.get() == true
+                        classTitle = "TreeAutoComputedItem"
+                    else
+                        classTitle = "TreeAutoComputableItem"
                 else
-                    classTitle = "TreeComputableItem"
+                    if info.item._computation_state.get() == true
+                        classTitle = "TreeComputedItem"
+                    else
+                        classTitle = "TreeComputableItem"
             new_dom_element
                 parentNode : div
                 className  : @css_prefix + classTitle

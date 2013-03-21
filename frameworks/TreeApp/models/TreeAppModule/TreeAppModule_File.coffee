@@ -85,15 +85,21 @@ class TreeAppModule_File extends TreeAppModule
                 else
                     fs = new FileSystem
                     FileSystem._disp = false
-                    
-                fs.load_or_make_dir "/home/monkey/sessions", ( d, err ) =>
-                    #                     t = new Directory
-                    #                     d.add_file "My first directory", t
-                    #                     d.add_file "composite01.png", ( new Img 'composite01.png' ), model_type: "Img"
-                    #                     t.add_file "Steel", ( new Directory )
-                    #                     t.add_file "Steel", ( new Lst [ 1, 2 ] )
-                    #                     d.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
-                    #                     d.add_file "Work", ( new Lst [ 1, 2 ] )
+                 
+                if !model_id? or  model_id == -1
+                  dir = "/home/monkey/test_browser"
+                else
+                  dir = "/home/projet_" + model_id
+                fs.load_or_make_dir dir, ( d, err ) =>     
+                    t = new Directory
+
+#                     d.add_file "My first directory", t
+#                     d.add_file "composite01.png", ( new Img 'composite01.png' ), model_type: "Img"
+#                     t.add_file "Steel", ( new Directory )
+#                     t.add_file "Steel", ( new Lst [ 1, 2 ] )
+#                     d.add_file "Mesh", ( new Lst [ 1, 2 ] ), model_type: "Mesh"
+#                     d.add_file "Work", ( new Lst [ 1, 2 ] )
+
                         
                     ModelEditorItem_Directory.add_action "Mesh", ( file, path, browser ) =>
                         console.log "open mesh"
@@ -130,6 +136,15 @@ class TreeAppModule_File extends TreeAppModule
                             if file.name.ends_with( ".raw" )
                                 rv = @add_item_depending_selected_tree app.data, RawVolume
                                 rv._children.push new FileItem file
+                            else if file.name.ends_with( ".unv" )
+                                file_item = new FileItem file
+                                for item in app.data.get_selected_tree_items()
+                                    if item.accept_child? file_item
+                                        item.add_child file_item
+                                        done = true
+                                if not done
+                                    alert "Please select in the tree an item which accepts a file"
+                                #rv = @add_item_depending_selected_tree app.data, nf
                             else
                                 img_item = new ImgItem m, app # "/sceen/_?u=" + m._server_id
                                 img_item._name.set file.name

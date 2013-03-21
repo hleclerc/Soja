@@ -58,7 +58,24 @@ class EditView extends View
                         focus       : @app_data.focus
                     
                     # information div
+                    #if s.img?.information? #bad, should remove img and use sub_canvas_item
+                    if s.information? #bad, should remove img and use sub_canvas_item
+                        f = new_dom_element
+                            nodeName  : "fieldset"
+                            parentNode: e
+                                
+                        legend = new_dom_element
+                            nodeName  : "legend"
+                            parentNode: f
+                            txt       : "Informations"
+                            
+                        d = new_dom_element parentNode: f
+                        s.bind ->
+                            #s.img?.information d
+                            s.information d
+                            
                     if s.img?.information? #bad, should remove img and use sub_canvas_item
+                    #if s.information? #bad, should remove img and use sub_canvas_item
                         f = new_dom_element
                             nodeName  : "fieldset"
                             parentNode: e
@@ -71,6 +88,23 @@ class EditView extends View
                         d = new_dom_element parentNode: f
                         s.bind ->
                             s.img?.information d
+                            #s.information d
+                     
+                    # information div
+                    #if s._tfunc?.information? #bad, should remove img and use sub_canvas_item
+                    #    f = new_dom_element
+                    #        nodeName  : "fieldset"
+                    #        parentNode: e
+                    #            
+                    #    legend = new_dom_element
+                    #        nodeName  : "legend"
+                    #        parentNode: f
+                    #        txt       : "Informations"
+                    #        
+                    #    d = new_dom_element parentNode: f
+                    #    s.bind ->
+                    #        if s._tfunc.has_been_modified()
+                    #          s._tfunc.information d
                         
                     @model_editors[ s.model_id ] = o
                     
