@@ -21,16 +21,13 @@ class MyModel extends Model
 # m.tata[ 1 ].val = 10
 # console.log m.val
 # console.log m.tata[ 1 ].val
-# m = mew Vec( Int )
-# m.length = 2
-# console.log m.length
-# console.log m.val
-# console.log m.get 0
-m = mmew Int, 2
-p = mew Ptr Int
-p.ref m
-p.at( 1 ).val = 12
-console.log p.at( 1 ).val
+m = mew Vec( Int )
+m.length = 2
+console.log m.length
+m.at( 1 ).set 20
+console.log m.val
+console.log m.get 0
+console.log m.get 1
 
 # s = mmew MySubModel, 2
 # # m.toto.set { a: 157 }
