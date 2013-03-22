@@ -1,28 +1,36 @@
 # dep $Soja/models/all.coffee
 
-class MonSousModel extends Model
+class MySubModel extends Model
     @attr =
         a: 11
         b: 12
 
 
-class MonModel extends Model
+class MyModel extends Model
     @attr =
-        tata: 100
-        # toto: mew MonSousModel
-        p   : mew Ptr( Int )
-        d   : mew Ptr( MonSousModel )
+        tata: Vec( Int, 5 )
+        # toto: mew MySubModel
+        # p   : mew Ptr( Int )
+        # d   : mew Ptr( MySubModel )
     
     init: ( val ) ->
         @tata.set val
 
 # test_0 = ->
-s = mew MonSousModel
-m = mew MonModel, 15
-# m.toto.set { a: 157 }
-m.p.ref s.a
+m = mew MyModel, 15
+m.tata[ 1 ].val = 10
 console.log m.val
-console.log m.p.obj.val
+console.log m.tata[ 1 ].val
+
+# s = mmew MySubModel, 2
+# # m.toto.set { a: 157 }
+# m.p.ref s.b
+# console.log m.val
+# console.log m.p.obj.val
+# m.p.num_attr.val = 4
+# console.log m.p.obj.val
+# m.p.num_attr.val = 5
+# console.log m.p.obj.val
 # console.log Boolean m.tata
 # console.log String m.tata
 

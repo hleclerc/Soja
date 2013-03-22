@@ -14,6 +14,7 @@ class Model
     
     # static arguments
     @__conv_list = [
+        ( val ) -> if typeof val == "function" then val
         ( val ) -> if val instanceof Model then val.constructor
     ]
     
@@ -49,17 +50,23 @@ class Model
     __iterator__: ->
         new ModelIterator @constructor.__type_info.attr
 
-    # get sub attr number n
+    # get sub attr number n. Must be called from an __orig object
     __subn: ( n ) ->
+        nsub = @constructor.__type_info.nsub
+        size = @constructor.__type_info.size
+        @__subn_rec n % nsub, Math.floor( n / nsub ) * size
+
+    # get sub attr number n assuming n < nsub (inside a given item of a vector)
+    __subn_rec: ( n, offset ) ->
         if n
             n--
             for item in @constructor.__type_info.attr
                 s = item.type.__type_info.nsub
                 if n < s
-                    return @[ item.name ].__subn n
+                    m = @[ item.name ]
+                    m.__offset += offset
+                    return m.__subn_rec n, offset
                 n -= s
-            console.error "sub attribute #{n} does not exist"
-            return undefined
         return this
     
     # allows for conversion from standard javascript objects (e.g. 10, "foo") to Model
@@ -81,6 +88,8 @@ class Model
             for n, v of type.attr
                 t = Model.__conv v
                 Model.__make___type_info_and_protoype t
+                if typeof v == "function"
+                    v = undefined
 
                 lst.push
                     name         : n
