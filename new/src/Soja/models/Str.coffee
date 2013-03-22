@@ -23,27 +23,54 @@ class Str extends Model
         if val instanceof Str
             todo()
         else if typeof val == "string"
-            for i in val
-                console.log i.charCodeAt 0
-#                 cps = if (!inRange(c, 0xD800, 0xDFFF)) {
-#           cps.push(c);
-#         } else if (inRange(c, 0xDC00, 0xDFFF)) {
-#           cps.push(0xFFFD);
-#         } else { // (inRange(cu, 0xD800, 0xDBFF))
-#           if (i === n - 1) {
-#             cps.push(0xFFFD);
-#           } else {
-#             var d = string.charCodeAt(i + 1);
-#             if (inRange(d, 0xDC00, 0xDFFF)) {
-#               var a = c & 0x3FF;
-#               var b = d & 0x3FF;
-#               i += 1;
-#               cps.push(0x10000 + (a << 10) + b);
-#             } else {
-#               cps.push(0xFFFD);
-#             }
-#           }
-#         }
+            i = 0
+            while i < val.length
+                c = val.charCodeAt i
+                p = if c < 0xD800 or c > 0xDFFF
+                    c
+                else if c >= 0xDC00 and c <= 0xDFFF
+                    0xFFFD
+                else
+                    if i == n - 1
+                        0xFFFD
+                    else
+                        d = string.charCodeAt( i + 1 )
+                        if d >= 0xDC00 and c <= 0xDFFF
+                            a = c & 0x3FF
+                            b = d & 0x3FF
+                            i += 1
+                            0x10000 + ( a << 10 ) + b
+                        else
+                            0xFFFD
+                            
+                console.log c, p
+                if (inRange(code_point, 0xD800, 0xDFFF)) {
+                    return encoderError(code_point);
+                }
+                if (inRange(code_point, 0x0000, 0x007f)) {
+                    return output_byte_stream.emit(code_point);
+                }
+                var count, offset;
+                if (inRange(code_point, 0x0080, 0x07FF)) {
+                    count = 1;
+                    offset = 0xC0;
+                } else if (inRange(code_point, 0x0800, 0xFFFF)) {
+                    count = 2;
+                    offset = 0xE0;
+                } else if (inRange(code_point, 0x10000, 0x10FFFF)) {
+                    count = 3;
+                    offset = 0xF0;
+                }
+                var result = output_byte_stream.emit(
+                    div(code_point, Math.pow(64, count)) + offset);
+                while (count > 0) {
+                    var temp = div(code_point, Math.pow(64, count - 1));
+                    result = output_byte_stream.emit(0x80 + (temp % 64));
+                    count -= 1;
+                }
+                
+                
+                i += 1
 
         res
         
