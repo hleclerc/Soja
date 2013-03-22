@@ -10,15 +10,23 @@ Ptr = ( type, args ) ->
                 model_id: 0
                 num_attr: 0
             @type = type
+            @__type_name = "Ptr( #{ n } )"
             
             ref: ( obj ) ->
                 if obj not instanceof Loc.type
                     console.error "Bad ptr ('#{obj.constructor.__type_info.name}' is not and instance of '#{Loc.type.__type_info.name}') !"
                 @model_id.set obj.__orig.__id
                 @num_attr.set obj.__numsub
+             
+            at: ( n ) ->
+                if @model_id.val
+                    Model.__id_map[ @model_id.val ].__subn @num_attr.val + n * Loc.type.__type_info.nsub
+             
+            Loc.prototype.__defineGetter__ "obj", ->
+                if @model_id.val
+                    Model.__id_map[ @model_id.val ].__subn @num_attr.val
                 
-            Model.prototype.__defineGetter__ "obj", ->
-                Model.__id_map[ @model_id.val ].__subn @num_attr.val
+            
                 
         __ptr_type_map[ n ] = Loc
         

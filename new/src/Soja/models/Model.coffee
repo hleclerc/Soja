@@ -64,10 +64,12 @@ class Model
                 s = item.type.__type_info.nsub
                 if n < s
                     m = @[ item.name ]
-                    m.__offset += offset
                     return m.__subn_rec n, offset
                 n -= s
-        return this
+        if offset
+            __clone this, __offset: @__offset + offset
+        else
+            this
     
     # allows for conversion from standard javascript objects (e.g. 10, "foo") to Model
     # if val is already a Model, returns val
@@ -82,8 +84,11 @@ class Model
     @__make___type_info_and_protoype: ( type ) ->
         if not type.__type_info?
             # basic data 
-            type.__type_info = 
-                name: type.toString().match( ///function\s*(\w+)/// )[ 1 ]
+            type.__type_info = {}
+            if type.__type_name?
+                type.__type_info.name = type.__type_name
+            else
+                type.__type_info.name = type.toString().match( ///function\s*(\w+)/// )[ 1 ]
                 
             # precomputations
             s = 0

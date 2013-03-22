@@ -9,11 +9,17 @@ class Str extends Model
     Model.__conv_list.push ( val ) ->
         if typeof val == "string" then Str
 
-    Model.prototype.__defineGetter__ "length", ->
-        @size.get()
+    Str.prototype.__defineGetter__ "length", ->
+        @size.val
         
     get: -> 
+        res = ""
+        obj = @data.obj
         
+        view = new Int32Array obj.__orig.__data, obj.__offset, @length
+        for i in view
+            res += String.fromCharCode i
+        res
         
     set: ( val ) -> 
         res = mmew Char, val.length
@@ -23,55 +29,9 @@ class Str extends Model
         if val instanceof Str
             todo()
         else if typeof val == "string"
-            i = 0
-            while i < val.length
-                c = val.charCodeAt i
-                p = if c < 0xD800 or c > 0xDFFF
-                    c
-                else if c >= 0xDC00 and c <= 0xDFFF
-                    0xFFFD
-                else
-                    if i == n - 1
-                        0xFFFD
-                    else
-                        d = string.charCodeAt( i + 1 )
-                        if d >= 0xDC00 and c <= 0xDFFF
-                            a = c & 0x3FF
-                            b = d & 0x3FF
-                            i += 1
-                            0x10000 + ( a << 10 ) + b
-                        else
-                            0xFFFD
-                            
-                console.log c, p
-                if (inRange(code_point, 0xD800, 0xDFFF)) {
-                    return encoderError(code_point);
-                }
-                if (inRange(code_point, 0x0000, 0x007f)) {
-                    return output_byte_stream.emit(code_point);
-                }
-                var count, offset;
-                if (inRange(code_point, 0x0080, 0x07FF)) {
-                    count = 1;
-                    offset = 0xC0;
-                } else if (inRange(code_point, 0x0800, 0xFFFF)) {
-                    count = 2;
-                    offset = 0xE0;
-                } else if (inRange(code_point, 0x10000, 0x10FFFF)) {
-                    count = 3;
-                    offset = 0xF0;
-                }
-                var result = output_byte_stream.emit(
-                    div(code_point, Math.pow(64, count)) + offset);
-                while (count > 0) {
-                    var temp = div(code_point, Math.pow(64, count - 1));
-                    result = output_byte_stream.emit(0x80 + (temp % 64));
-                    count -= 1;
-                }
-                
-                
-                i += 1
-
+            view = new Int32Array res.__data, res.__offset, val.length
+            for i in [ 0 ... val.length ]
+                view[ i ] = val.charCodeAt( i )
         res
         
         

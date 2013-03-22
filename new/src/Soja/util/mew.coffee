@@ -43,6 +43,18 @@ mmew = ( type, size, args ) ->
 
 # delete model
 del = ( m ) ->
-    delete Model.__id_map[ m.__id ]
-
+    if m.__id
+        delete Model.__id_map[ m.__id ]
+    else
+        console.log "Delete works only with __orig objects (to delete an object from a pointer, use del ptr.obj)"
  
+#
+__clone = ( obj, c = {} ) ->
+    res = new obj.constructor
+    for n, v of obj
+        res[ n ] = v
+    for n, v of c
+        res[ n ] = v
+    res
+    
+    
