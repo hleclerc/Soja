@@ -2,6 +2,12 @@
     
 #    
 class Int extends Model
+    @__type_info =
+        size: 4
+        attr: []
+        name: "Int"
+        nsub: 1
+        
     Model.__conv_list.push ( val ) ->
         if typeof val == "number" then Int
     
@@ -18,11 +24,6 @@ class Int extends Model
         
     toBoolean: ->
         Boolean @get()
-        
-    @__type_info =
-        size: 4
-        attr: []
-        name: "Int"
         
     @__init: ( data, offset, val ) ->
         Int.__set data, offset, val
