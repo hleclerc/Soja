@@ -24,7 +24,3 @@ class Int extends Model
         
     toBoolean: ->
         Boolean @get()
-        
-    @__init: ( data, offset, val ) ->
-        Int.__set data, offset, val
-    

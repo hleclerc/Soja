@@ -81,6 +81,10 @@ class Model
     # if no __type_info, make it, and add getters in prototypes
     @__make___type_info_and_protoype: ( type ) ->
         if not type.__type_info?
+            # basic data 
+            type.__type_info = 
+                name: type.toString().match( ///function\s*(\w+)/// )[ 1 ]
+                
             # precomputations
             s = 0
             i = 1
@@ -111,11 +115,9 @@ class Model
                 s += t.__type_info.size
                 i += t.__type_info.nsub
             
-            # __type_info
-            type.__type_info = 
-                size: s
-                nsub: i
-                attr: lst
-                name: type.toString().match( ///function\s*(\w+)/// )[ 1 ]
+            # completion of __type_info
+            type.__type_info.size = s
+            type.__type_info.nsub = i
+            type.__type_info.attr = lst
 
 

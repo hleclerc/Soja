@@ -17,10 +17,12 @@ class MyModel extends Model
         @tata.set val
 
 # test_0 = ->
-m = mew MyModel, 15
-m.tata[ 1 ].val = 10
+# m = mew MyModel, 15
+# m.tata[ 1 ].val = 10
+# console.log m.val
+# console.log m.tata[ 1 ].val
+m = mew Str, "أكل"
 console.log m.val
-console.log m.tata[ 1 ].val
 
 # s = mmew MySubModel, 2
 # # m.toto.set { a: 157 }

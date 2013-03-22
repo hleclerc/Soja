@@ -32,6 +32,10 @@ mmew = ( type, size, args ) ->
         for o in [ 0 ... size ]
             res.__offset = o * type.__type_info.size
             res.init args
+    else if args?
+        for o in [ 0 ... size ]
+            res.__offset = o * type.__type_info.size
+            res.set args
     
     res.__offset = 0
     return res
