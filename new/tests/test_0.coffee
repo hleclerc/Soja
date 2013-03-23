@@ -26,8 +26,8 @@ m.length = 2
 console.log m.length
 m.at( 1 ).set 20
 console.log m.val
-console.log m.get 0
-console.log m.get 1
+m.resize 3, 17
+console.log m.val
 
 # s = mmew MySubModel, 2
 # # m.toto.set { a: 157 }

@@ -70,6 +70,10 @@ class Model
             __clone this, __offset: @__offset + offset
         else
             this
+
+    # get array buffer (or corresponding slice) that stores the data of this
+    __array_buffer: ( n = 1 ) ->
+        @__orig.__data.slice @__offset, @__offset + n * @constructor.__type_info.size
     
     # allows for conversion from standard javascript objects (e.g. 10, "foo") to Model
     # if val is already a Model, returns val

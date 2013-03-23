@@ -34,11 +34,7 @@ Vec = ( type, size = -1, args ) ->
                     @_size.val
 
                 Loc.prototype.__defineSetter__ "length", ( l ) ->
-                    if @_size.val < l
-                        res = mmew type, l
-                        del @_data.obj
-                        @_data.ref res
-                        @_size.set l
+                    @resize l
 
                 at: ( n ) ->
                     @_data.at n
@@ -53,6 +49,16 @@ Vec = ( type, size = -1, args ) ->
                     
                 set: ( val ) -> 
                     
+                resize: ( l, default_value ) ->
+                    if @_size.val < l
+                        old = if @_data.obj? then @_data.obj.__array_buffer l
+                        res = mmew type, l,
+                            default_value: default_value
+                            array_buffer : old
+                            beg_init     : @length
+                        del @_data.obj
+                        @_data.ref res
+                    @_size.set l
                     
             __ptr_type_map[ n ] = Loc
         
