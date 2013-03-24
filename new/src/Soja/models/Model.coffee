@@ -12,7 +12,7 @@ class Model
     # __data   -> only if orig == this. Binary buffer that contains the data
     # __numsub -> num sub attr from __orig (each object and sub object in __orig has a specific __numsub)
     # __offset -> offset in bytes from the beginning of __data
-    # _views   -> connected views
+    # __views  -> connected views
     # _parents -> parent model (that may use this with a ptr) 
     # _date_last_modification ->
     
@@ -65,7 +65,7 @@ class Model
     # onchange_construction true means that onchange will be automatically called after the bind
     bind: ( f, onchange_construction = true ) ->
         if f instanceof View
-            @_views.push f
+            @__views.push f
             f.__models.push this
 
             if onchange_construction
@@ -78,10 +78,10 @@ class Model
     # 
     unbind: ( f ) ->
         if f instanceof View
-            @_views.splice @_views.indexOf( f ), 1
+            @__views.splice @__views.indexOf( f ), 1
             f.__models.splice f.__models.indexOf( this ), 1
         else
-            for v in @_views when v instanceof FunctionBinder and v.f == f
+            for v in @__views when v instanceof FunctionBinder and v.f == f
                 @unbind v
 
     #
@@ -90,31 +90,51 @@ class Model
         for name in @attr_names
             res[ name ] = @[ name ].get()
         return res
+    # modify data, using another values, or Model instances. Should not be redefined (but _set should be)
+    # returns true if object os modified
+    set: ( value ) ->
+        if @__set value # change internal data
+            @_signal_change()
+            true
+        else
+            false
 
     #
-    set: ( val ) -> 
+    __set: ( val ) -> 
         # TODO: remove this first case when JS 1.7 will appear :)
+        res = false
         if val instanceof Model
             for name in @attr_names
-                @[ name ]?.set val[ name ]
+                res |= @[ name ]?.__set val[ name ]
         else
             for n, v of val
-                @[ n ]?.set v
+                res |= @[ n ]?.__set v
+        res
 
+    # helper
+    __set_view: ( view, val ) ->
+        if view[ 0 ] == val
+            return false
+        view[ 0 ] = val
+        return true
 
     #        
     __iterator__: ->
         new ModelIterator @constructor.__type_info.attr
 
+    # true if ModelEditorInput works for this
+    Model::__defineGetter__ "__input_edition", ->
+        false
+    
     # called by set. change_level should not be defined by the user (it permits to != change from child of from this)
     _signal_change: ( change_level = 2 ) ->
         # register this as a modified model
-        Model._modlist[ @__id ] = this
+        Model._modlist[ @__orig.__id ] = this
 
         # do the same thing for the parents
         if @_date_last_modification <= Model._counter
             @_date_last_modification = Model._counter + change_level
-            for p in @_parents
+            for p in @__orig._parents
                 p._signal_change 1
                 
         # start if not done a timer
@@ -210,7 +230,7 @@ class Model
     @_sync_views: ->
         views = {}
         for id, model of Model._modlist
-            for view in model._views
+            for view in model.__views
                 views[ view.view_id ] = 
                     value: view
                     force: false

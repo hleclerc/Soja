@@ -12,14 +12,14 @@ class Char extends Model
         view = new Int32Array @__orig.__data, @__offset, 1
         String.fromCharCode( view[ 0 ] )
 
-    set: ( val ) -> 
+    __set: ( val ) -> 
         view = new Int32Array @__orig.__data, @__offset, 1
         if typeof val == "number"
-            view[ 0 ] = val
+            @__set_view view, val
         else
             if typeof val != "string"
                 val = String val
-            view[ 0 ] = val.charCodeAt 0 
+            @__set_view view, val.charCodeAt( 0 ) 
         
     toString: ->
         @get()

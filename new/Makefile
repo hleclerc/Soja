@@ -1,5 +1,9 @@
-all:
-	python bin/soja_comp.py -e tests/test_0.coffee
+browser = google-chrome
+xdotool = xdotool
 
-# 	coffee -c model.coffee
-# 	nodejs model.js
+all: test_0
+
+test_%:
+	python bin/soja_comp.py tests/${@}.coffee
+# 	${xdotool} search __gen/${@}__ windowactivate key F5 || ${browser} gen/$@.html
+	

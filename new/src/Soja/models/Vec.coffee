@@ -47,15 +47,16 @@ Vec = ( type, size = -1, args ) ->
                         for i in [ 0 ... @length ]
                             @_data.at( i ).val
                     
-                set: ( val ) ->
+                __set: ( val ) ->
+                    out = @length != val.length
                     @resize val.length
                     if val instanceof Model # TODO rm this specific case when js > 1.7
                         for i in [ 0 ... @length ]
-                            @at( i ).set val.at iS
+                            out |= @at( i ).__set val.at iS
                     else
                         for i in [ 0 ... @length ]
-                            @at( i ).set val[ i ]
-                    
+                            out |= @at( i ).__set val[ i ]
+                    out
                     
                 resize: ( l, default_value ) ->
                     if @_size.val < l

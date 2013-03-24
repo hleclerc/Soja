@@ -24,7 +24,7 @@ mmew = ( type, size, args = {} ) ->
     res.__offset = 0
     res.__numsub = 0
     res.__id     = Model.__cur_id++
-    res._views   = [] 
+    res.__views  = [] 
     res._parents = [] 
     res._date_last_modification = Model._counter + 2
     

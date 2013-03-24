@@ -193,6 +193,7 @@ def main():
     # html
     if not args.e:
         nout = os.path.join( args.d, re.sub( ".coffee$", ".html", os.path.basename( args.input_file ) ) )
+        func = re.sub( ".coffee$", "", os.path.basename( args.input_file ) )
         print 'html output:', nout
         hout = file( nout, 'w' )
         print >> hout, "<html>"
@@ -202,7 +203,7 @@ def main():
             print >> hout, '    <link type="text/css" href="' + css + '" rel="stylesheet"/>'
         for js in js_files:
             print >> hout, "    <script type='text/javascript' src='" + js + "'></script>"
-        print >> hout, "  <body>"
+        print >> hout, "  <body onload='if ( " + func + " != null ) { " + func + "(); }'>"
         print >> hout, "  </body>"
         print >> hout, "</html>"
     

@@ -1,3 +1,4 @@
+# dep $ModelEditor/views/ModelEditor.coffee
 # dep $Soja/models/all.coffee
 
 class MySubModel extends Model
@@ -41,12 +42,10 @@ class MyModel extends Model
 # console.log m.p.obj.val
 # console.log Boolean m.tata
 # console.log String m.tata
-class MyView extends View
-#     constructor: ( m ) ->
-#         super m
-    onchange: ->
-        console.log "pouet"
+test_0 = ->
+    m = mew Str, "2"
+    v = new ModelEditor el: document.body, model: m
+    w = new ModelEditor el: document.body, model: m
 
-m = mew Int, 21
-v = new MyView [ m ]
+
 

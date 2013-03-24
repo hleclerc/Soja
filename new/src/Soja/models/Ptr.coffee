@@ -12,7 +12,7 @@ Ptr = ( type, args ) ->
             @type = type
             @__type_name = "Ptr( #{ n } )"
             
-            set: ( obj ) ->
+            __set: ( obj ) ->
                 if obj not instanceof Model and obj.orig not instanceof Loc.type
                     console.error "Bad ptr ('#{obj.orig.constructor.__type_info.name}' is not and instance of '#{Loc.type.__type_info.name}') !"
                 super obj
