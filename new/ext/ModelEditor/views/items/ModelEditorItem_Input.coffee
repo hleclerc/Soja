@@ -21,12 +21,11 @@ class ModelEditorItem_Input extends ModelEditorItem
             @focus?.set @view_id
                 
     onchange: ->
-        console.log new Date
         if @model.has_been_modified
             @input.value = @model.get()
         
-        if @focus?.has_been_modified
-            if @focus.get() == @view_id
+        if @get_focus()?.has_been_modified
+            if @get_focus().get() == @view_id
                 setTimeout ( => @input.focus() ), 1
             else
                 @input.blur()
