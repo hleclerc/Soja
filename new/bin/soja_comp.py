@@ -156,11 +156,13 @@ def main():
     soja_dir = os.path.dirname( soja_dir )
     soja_dir = os.path.dirname( soja_dir )
     
+    blib_dir = [ os.path.join( soja_dir, d ) for d in [ "src", "ext" ] ]
+    
     parser = argparse.ArgumentParser( description = 'Generation of .js, .css and .html files to run a .coffee.' )
-    parser.add_argument( 'input_file', metavar = 'foo.coffee', help='input file' )
-    parser.add_argument( '-d', metavar = 'output directory', default='gen', help='output directory (for e.g. js, css or html file)' )
-    parser.add_argument( '-I', action='append', metavar = 'directory', default=[ os.path.join( soja_dir, 'src' ) ], help='add a repository directory' )
-    parser.add_argument( '-e', action='store_true', help='execute file' )
+    parser.add_argument( 'input_file', metavar = 'foo.coffee', help = 'input file' )
+    parser.add_argument( '-d', metavar = 'output directory', default = 'gen', help = 'output directory (for e.g. js, css or html file)' )
+    parser.add_argument( '-I', action = 'append', metavar = 'directory', default = blib_dir, help = 'add a repository directory' )
+    parser.add_argument( '-e', action = 'store_true', help = 'execute file' )
 
     args = parser.parse_args()
 

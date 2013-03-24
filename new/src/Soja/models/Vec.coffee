@@ -13,7 +13,7 @@ Vec = ( type, size = -1, args ) ->
                 @size = size
                 @__type_name = "Vec( #{ type.__type_info.name }, #{ size } )"
                 
-                Loc.prototype.__defineGetter__ "length", ->
+                Loc::__defineGetter__ "length", ->
                     Loc.size
 
             for i in [ 0 ... size ]
@@ -30,10 +30,10 @@ Vec = ( type, size = -1, args ) ->
                 @size = size
                 @__type_name = "Vec( #{ type.__type_info.name } )"
                 
-                Loc.prototype.__defineGetter__ "length", ->
+                Loc::__defineGetter__ "length", ->
                     @_size.val
 
-                Loc.prototype.__defineSetter__ "length", ( l ) ->
+                Loc::__defineSetter__ "length", ( l ) ->
                     @resize l
 
                 at: ( n ) ->
@@ -47,7 +47,15 @@ Vec = ( type, size = -1, args ) ->
                         for i in [ 0 ... @length ]
                             @_data.at( i ).val
                     
-                set: ( val ) -> 
+                set: ( val ) ->
+                    @resize val.length
+                    if val instanceof Model # TODO rm this specific case when js > 1.7
+                        for i in [ 0 ... @length ]
+                            @at( i ).set val.at iS
+                    else
+                        for i in [ 0 ... @length ]
+                            @at( i ).set val[ i ]
+                    
                     
                 resize: ( l, default_value ) ->
                     if @_size.val < l
@@ -57,7 +65,7 @@ Vec = ( type, size = -1, args ) ->
                             array_buffer : old
                             beg_init     : @length
                         del @_data.obj
-                        @_data.ref res
+                        @_data.set res.ptr
                     @_size.set l
                     
             __ptr_type_map[ n ] = Loc

@@ -2,7 +2,7 @@
 # creates an Model of type $type. Acts like a new
 # for each mew (which create room for binary data and register the object in Model.__id_map), del should be called
 mew = ( type, args ) ->
-    mmew type, 1, args
+    mmew type, 1, default_value: args
 
 
 # multiple
@@ -21,9 +21,12 @@ mmew = ( type, size, args = {} ) ->
     else
         res.__data   = new ArrayBuffer size * type.__type_info.size
     res.__orig   = res
-    res.__n_attr = 0
     res.__offset = 0
+    res.__numsub = 0
     res.__id     = Model.__cur_id++
+    res._views   = [] 
+    res._parents = [] 
+    res._date_last_modification = Model._counter + 2
     
     # register
     Model.__id_map[ res.__id ] = res
@@ -69,8 +72,8 @@ __clone = ( obj, c = {} ) ->
     res
     
 # slice dies not appear to be available on all interpreter
-if not ArrayBuffer.prototype.slice
-    ArrayBuffer.prototype.slice = ( start, end ) ->
+if not ArrayBuffer::slice
+    ArrayBuffer::slice = ( start, end ) ->
         that = new Uint8Array this
         if not end?
             end = that.length

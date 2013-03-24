@@ -9,7 +9,7 @@ class Str extends Model
     Model.__conv_list.push ( val ) ->
         if typeof val == "string" then Str
 
-    Str.prototype.__defineGetter__ "length", ->
+    Str::__defineGetter__ "length", ->
         @size.val
         
     get: -> 
@@ -24,7 +24,7 @@ class Str extends Model
     set: ( val ) -> 
         res = mmew Char, val.length
         @size.set val.length
-        @data.ref res
+        @data.set res.ptr
         
         if val instanceof Str
             todo()
