@@ -2,3 +2,4 @@
 # dep Str.coffee
 # dep Ptr.coffee
 # dep Int.coffee
+# dep Bool.coffee

@@ -5,6 +5,7 @@ class MySubModel extends Model
     @attr =
         a: 11
         b: 12
+        c: Bool
 
 
 class MyModel extends Model
@@ -42,8 +43,14 @@ class MyModel extends Model
 # console.log m.p.obj.val
 # console.log Boolean m.tata
 # console.log String m.tata
-test_0 = ->
-    m = mew Str # MySubModel
-    v = new ModelEditor el: document.body, model: m
-    w = new ModelEditor el: document.body, model: m
-
+# test_0 = ->
+#     m = mew Str # MySubModel
+#     v = new ModelEditor el: document.body, model: m
+#     w = new ModelEditor el: document.body, model: m
+m = mew Vec( Bool )
+m.length = 3
+m.at( 1 ).val = true
+console.log m.val
+m.at( 1 ).val = false
+console.log m.val
+# console.log m.constructor.__type_info

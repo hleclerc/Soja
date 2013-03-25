@@ -14,17 +14,23 @@ class Bool extends Model
     
     get: -> 
         view = new Int8Array @__orig.__data, @__offset / 8, 1
-        view[ 0 ]
+        Boolean view[ 0 ] & ( 1 << ( @__offset % 8 ) )
 
     __set: ( val ) -> 
-        if val instanceof Model
+        if typeof val != "boolean" 
             @__set val.get()
         else
-            view = new Int32Array @__orig.__data, @__offset / 8, 1
-            if typeof val == "number"
-                @__set_view view, val
+            view = new Int8Array @__orig.__data, @__offset / 8, 1
+            mask = 1 << ( @__offset % 8 )
+            old = Boolean view[ 0 ] & mask
+            if old != val
+                if val
+                    view[ 0 ] |= mask
+                else
+                    view[ 0 ] &= ~mask
+                true
             else
-                @__set_view view, Number val
+                false
         
     toString: ->
         @get().toString()

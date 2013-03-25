@@ -164,7 +164,10 @@ class Model
 
     # get array buffer (or corresponding slice) that stores the data of this
     __array_buffer: ( n = 1 ) ->
-        @__orig.__data.slice @__offset, @__offset + n * @constructor.__type_info.size
+        @__orig.__data.slice @__offset, @__offset + n * @__size_if_in_vec() # constructor.__type_info.size
+
+    __size_if_in_vec: ->
+        Math.ceil( @constructor.__type_info.size / @constructor.__type_info.alig ) * @constructor.__type_info.alig
     
     # allows for conversion from standard javascript objects (e.g. 10, "foo") to Model
     # if val is already a Model, returns val
@@ -174,9 +177,6 @@ class Model
             if res?
                 return res
         console.error "unknown type (#{val.constructor})"
-
-    @__size_if_in_vec: ->
-        Math.ceil type.__type_info.size, type.__type_info.alig
 
     # if no __type_info, make it, and add getters in prototypes
     @__make___type_info_and_protoype: ( type ) ->
@@ -188,8 +188,17 @@ class Model
             else
                 type.__type_info.name = type.toString().match( ///function\s*(\w+)/// )[ 1 ]
                 
+            
+            #
+            gcd = ( a, b ) ->
+                if b
+                    gcd b, a % b
+                else
+                    a
+                    
             # precomputations
             s = 0
+            a = 1
             i = 1
             lst = []
             for n, v of type.attr
@@ -197,6 +206,8 @@ class Model
                 Model.__make___type_info_and_protoype t
                 if typeof v == "function"
                     v = undefined
+
+                s = Math.ceil( s / t.__type_info.alig ) * t.__type_info.alig
 
                 lst.push
                     name         : n
@@ -214,11 +225,14 @@ class Model
                         
                     type::__defineSetter__ n, ( val ) ->
                         @[ n ].set val
-                
+          
+                g = gcd a, t.__type_info.alig
+                a = a * t.__type_info.alig / g
                 s += t.__type_info.size
                 i += t.__type_info.nsub
             
             # completion of __type_info
+            type.__type_info.alig = a
             type.__type_info.size = s
             type.__type_info.nsub = i
             type.__type_info.attr = lst

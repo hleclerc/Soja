@@ -12,14 +12,14 @@ mew = ( type, args ) ->
 mmew = ( type, size, args = {} ) ->
     # complete prototype if necessary
     Model.__make___type_info_and_protoype type
-    sv = type.__size_if_in_vec()
-
+    sv = Math.ceil( type.__type_info.size / type.__type_info.alig ) * type.__type_info.alig
+    
     # new instance
     res = new type
     if args.array_buffer?
         res.__data   = args.array_buffer
     else
-        res.__data   = new ArrayBuffer size * sv / 8
+        res.__data   = new ArrayBuffer Math.ceil size * sv / 8
     res.__orig   = res
     res.__offset = 0
     res.__numsub = 0
