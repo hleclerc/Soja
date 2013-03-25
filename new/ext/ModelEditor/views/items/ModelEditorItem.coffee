@@ -4,8 +4,8 @@
 #
 class ModelEditorItem extends View
     @default_types: [
-        ( model ) -> ModelEditorItem_Input        if model.__input_edition
-        #         ( model ) -> ModelEditorItem_CheckBox        if model instanceof Bool
+        ( model ) -> ModelEditorItem_Input           if model.__input_edition
+        ( model ) -> ModelEditorItem_CheckBox        if model instanceof Bool
         #         ( model ) -> ModelEditorItem_Choice          if model instanceof Choice
         #         ( model ) -> ModelEditorItem_Button          if model instanceof Button
         #         ( model ) -> ModelEditorItem_ConstrainedVal  if model instanceof ConstrainedVal

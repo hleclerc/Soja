@@ -1,4 +1,4 @@
-# dep $ModelEditor/views/ModelEditor.coffee
+# dep $ModelEditor/views/all.coffee
 # dep $Soja/models/all.coffee
 
 class MySubModel extends Model
@@ -43,14 +43,8 @@ class MyModel extends Model
 # console.log m.p.obj.val
 # console.log Boolean m.tata
 # console.log String m.tata
-# test_0 = ->
-#     m = mew Str # MySubModel
-#     v = new ModelEditor el: document.body, model: m
-#     w = new ModelEditor el: document.body, model: m
-m = mew Vec( Bool )
-m.length = 3
-m.at( 1 ).val = true
-console.log m.val
-m.at( 1 ).val = false
-console.log m.val
+test_0 = ->
+    m = mew Bool # MySubModel
+    v = new ModelEditor el: document.body, model: m
+    w = new ModelEditor el: document.body, model: m
 # console.log m.constructor.__type_info

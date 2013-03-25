@@ -11,6 +11,9 @@ class Bool extends Model
         
     Model.__conv_list.push ( val ) ->
         if typeof val == "boolean" then Bool
+
+    toggle: ->
+        @set not @get()
     
     get: -> 
         view = new Int8Array @__orig.__data, @__offset / 8, 1
