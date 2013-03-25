@@ -15,11 +15,16 @@ class Str extends Model
     get: -> 
         res = ""
         obj = @data.obj
-        
-        view = new Int32Array obj.__orig.__data, obj.__offset, @length
-        for i in view
-            res += String.fromCharCode i
+        if obj?
+            view = new Int32Array obj.__orig.__data, obj.__offset / 8, @length
+            for i in view
+                res += String.fromCharCode i
         res
+        
+    charCodeAt: ( n ) ->
+        obj = @data.obj
+        view = new Int32Array obj.__orig.__data, obj.__offset / 8, @length
+        view[ n ]
         
     __set: ( val ) ->
         out = @__ch_str val
@@ -29,7 +34,7 @@ class Str extends Model
         @size.__set val.length
         @data.__set res.ptr
         
-        view = new Int32Array res.__data, res.__offset, val.length
+        view = new Int32Array res.__data, res.__offset / 8, val.length
         for i in [ 0 ... val.length ]
             view[ i ] = val.charCodeAt( i )
         
@@ -44,5 +49,8 @@ class Str extends Model
                     return true
             false
     
+    # true if ModelEditorInput works for this
+    Str::__defineGetter__ "__input_edition", ->
+        true
         
         

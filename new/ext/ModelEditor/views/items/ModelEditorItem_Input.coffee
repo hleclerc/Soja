@@ -22,7 +22,7 @@ class ModelEditorItem_Input extends ModelEditorItem
                 
     onchange: ->
         if @model.has_been_modified
-            @input.value = @model.get()
+            @input.value = @model.val
         
         if @get_focus()?.has_been_modified
             if @get_focus().get() == @view_id

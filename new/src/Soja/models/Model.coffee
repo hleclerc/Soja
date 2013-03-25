@@ -11,19 +11,19 @@ class Model
     # __id     -> only if orig == this. Id of the model (used by pointers).
     # __data   -> only if orig == this. Binary buffer that contains the data
     # __numsub -> num sub attr from __orig (each object and sub object in __orig has a specific __numsub)
-    # __offset -> offset in bytes from the beginning of __data
+    # __offset -> offset in bits from the beginning of __data
     # __views  -> connected views
-    # _parents -> parent model (that may use this with a ptr) 
-    # _date_last_modification ->
+    # __parents -> parent model (that may use this with a ptr) 
+    # __date_last_modification ->
     
     # static arguments
-    @_counter: 0  # nb "change rounds" since the beginning ( * 2 to differenciate direct and indirect changes )
-    @_modlist: {} # changed models (current round)
-    @_n_views: {} # new views (that will need a first onchange call in "force" mode)
-    @_timeout: undefined # timer used to create a new "round" (to call View.on_change)
-    @_force_m: false # if _force_m == true, every has_been_modified function will return true    
-    @__id_map: {} # __id -> model
-    @__cur_id: 1 # current model id (the one that will be used for the next created base model)
+    @__counter: 0  # nb "change rounds" since the beginning ( * 2 to differenciate direct and indirect changes )
+    @__modlist: {} # changed models (current round)
+    @__n_views: {} # new views (that will need a first onchange call in "force" mode)
+    @__timeout: undefined # timer used to create a new "round" (to call View.on_change)
+    @__force_m: false # if __force_m == true, every has_been_modified function will return true    
+    @__id_map : {} # __id -> model
+    @__cur_id : 1 # current model id (the one that will be used for the next created base model)
     
     @__conv_list: [
         ( val ) -> if typeof val == "function" then val
@@ -50,11 +50,11 @@ class Model
 
     # return true if this (or a child of this) has changed since the previous synchronisation
     Model::__defineGetter__ "has_been_modified", ->
-        @_date_last_modification > Model._counter - 2 or Model._force_m
+        @__date_last_modification > Model.__counter - 2 or Model.__force_m
         
     # return true if this has changed since previous synchronisation due to a direct modification (not from a child one)
     Model::__defineGetter__ "has_been_directly_modified", ->
-        @_date_last_modification > Model._counter - 1 or Model._force_m
+        @__date_last_modification > Model.__counter - 1 or Model.__force_m
 
     # if this has been modified during the preceding round, f will be called
     # If f is a view:
@@ -69,7 +69,7 @@ class Model
             f.__models.push this
 
             if onchange_construction
-                Model._n_views[ f.view_id ] = f
+                Model.__n_views[ f.view_id ] = f
                 Model._need_sync_views()
         else
             new FunctionBinder this, onchange_construction, f
@@ -129,12 +129,12 @@ class Model
     # called by set. change_level should not be defined by the user (it permits to != change from child of from this)
     _signal_change: ( change_level = 2 ) ->
         # register this as a modified model
-        Model._modlist[ @__orig.__id ] = this
+        Model.__modlist[ @__orig.__id ] = @__orig
 
         # do the same thing for the parents
-        if @_date_last_modification <= Model._counter
-            @_date_last_modification = Model._counter + change_level
-            for p in @__orig._parents
+        if @__date_last_modification <= Model.__counter
+            @__date_last_modification = Model.__counter + change_level
+            for p in @__orig.__parents
                 p._signal_change 1
                 
         # start if not done a timer
@@ -174,6 +174,9 @@ class Model
             if res?
                 return res
         console.error "unknown type (#{val.constructor})"
+
+    @__size_if_in_vec: ->
+        Math.ceil type.__type_info.size, type.__type_info.alig
 
     # if no __type_info, make it, and add getters in prototypes
     @__make___type_info_and_protoype: ( type ) ->
@@ -223,31 +226,31 @@ class Model
         
     # say that something will need a call to Model._sync_views during the next round
     @_need_sync_views: ->
-        if not Model._timeout?
-            Model._timeout = setTimeout Model._sync_views, 1
+        if not Model.__timeout?
+            Model.__timeout = setTimeout Model._sync_views, 1
 
     # the function that is called after a very short timeout, when at least one object has been modified
     @_sync_views: ->
         views = {}
-        for id, model of Model._modlist
+        for id, model of Model.__modlist
             for view in model.__views
                 views[ view.view_id ] = 
                     value: view
                     force: false
 
-        for id, view of Model._n_views
+        for id, view of Model.__n_views
             views[ id ] =
                 value: view
                 force: true
 
-        Model._timeout = undefined
-        Model._modlist = {}
-        Model._n_views = {}
-        Model._counter += 2
+        Model.__timeout = undefined
+        Model.__modlist = {}
+        Model.__n_views = {}
+        Model.__counter += 2
         
         for id, view of views
-            Model._force_m = view.force
+            Model.__force_m = view.force
             view.value.onchange()
                 
-        Model._force_m = false
+        Model.__force_m = false
 

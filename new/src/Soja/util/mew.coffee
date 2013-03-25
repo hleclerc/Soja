@@ -4,7 +4,6 @@
 mew = ( type, args ) ->
     mmew type, 1, default_value: args
 
-
 # multiple
 # optionnal args :
 #  array_buffer Araybuffer to has to be used
@@ -13,20 +12,21 @@ mew = ( type, args ) ->
 mmew = ( type, size, args = {} ) ->
     # complete prototype if necessary
     Model.__make___type_info_and_protoype type
+    sv = type.__size_if_in_vec()
 
     # new instance
     res = new type
     if args.array_buffer?
         res.__data   = args.array_buffer
     else
-        res.__data   = new ArrayBuffer size * type.__type_info.size
+        res.__data   = new ArrayBuffer size * sv / 8
     res.__orig   = res
     res.__offset = 0
     res.__numsub = 0
     res.__id     = Model.__cur_id++
     res.__views  = [] 
-    res._parents = [] 
-    res._date_last_modification = Model._counter + 2
+    res.__parents = [] 
+    res.__date_last_modification = Model.__counter + 2
     
     # register
     Model.__id_map[ res.__id ] = res
@@ -38,16 +38,16 @@ mmew = ( type, size, args = {} ) ->
             for item in type.__type_info.attr
                 if item.default_value?
                     for o in [ beg_init ... size ]
-                        res.__offset = o * type.__type_info.size
+                        res.__offset = o * sv
                         res[ item.name ].set item.default_value
                     
             if res.init?
                 for o in [ beg_init ... size ]
-                    res.__offset = o * type.__type_info.size
+                    res.__offset = o * sv
                     res.init args.default_value
             else if args.default_value?
                 for o in [ beg_init ... size ]
-                    res.__offset = o * type.__type_info.size
+                    res.__offset = o * sv
                     res.set args.default_value
     
     res.__offset = 0

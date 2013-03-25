@@ -43,9 +43,7 @@ class MyModel extends Model
 # console.log Boolean m.tata
 # console.log String m.tata
 test_0 = ->
-    m = mew Str, "2"
+    m = mew Str # MySubModel
     v = new ModelEditor el: document.body, model: m
     w = new ModelEditor el: document.body, model: m
-
-
 
