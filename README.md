@@ -24,6 +24,9 @@ There is also a "basic" application framework, based on the preceding tools:
 
 * [`TreeApp`](Soja/tree/master/frameworks/TreeApp) permits to define modular applications based with one or several canvas, a construction tree and an icon bar. 
 
+To send/receive/update shared models in realtime, [`SODA`](https://github.com/hleclerc/Soda) is a database that allows to transparently permanently save/load data and communicate with other clients (with commet or websocket).
+
+
 SOJA is released under the LGPL v3 license.
 
 # How SOJA works ?
